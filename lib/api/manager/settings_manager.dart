@@ -1,0 +1,97 @@
+import 'dart:io';
+import 'package:GitSync/api/helper.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+import '../../../constant/strings.dart';
+import 'package:GitSync/api/manager/storage.dart';
+import '../../../global.dart';
+import '../../../type/git_provider.dart';
+
+class SettingsManager extends Storage {
+  static const keyPrefix = "git_sync_settings";
+  static String keyNamespace = "git_sync_settings---main";
+
+  SettingsManager({super.name, super.keyTransformer = k});
+
+  Future<SettingsManager> reinit({int? repoIndex}) async {
+    final repoName = await repoManager.getRepoName(repoIndex ?? await repoManager.getInt(StorageKey.repoman_repoIndex));
+    keyNamespace = "$keyPrefix---$repoName";
+    return this;
+  }
+
+  static String k(String key) => "$keyNamespace::$key";
+
+  Future<void> clearAll() async {
+    final all = await storage.readAll();
+    for (var entry in all.entries) {
+      if (entry.key.startsWith(keyNamespace)) {
+        await storage.delete(key: entry.key);
+      }
+    }
+  }
+
+  Future<void> renameNamespace(String newRepoName) async {
+    final newNamespace = "$keyPrefix---$newRepoName";
+    final all = await storage.readAll();
+
+    for (var entry in all.entries) {
+      if (entry.key.startsWith(keyNamespace)) {
+        final suffix = entry.key.substring(keyNamespace.length + 2);
+        final newKey = "$newNamespace::$suffix";
+        await storage.write(key: newKey, value: entry.value);
+        await storage.delete(key: entry.key);
+      }
+    }
+
+    keyNamespace = newNamespace;
+  }
+
+  Future<void> setGitDirPath(String dir) async {
+    await setString(StorageKey.setman_gitDirPath, dir);
+  }
+
+  Future<String?> getGitDirPath([bool iosGetPath = false]) async {
+    final bookmarkPath = await getString(StorageKey.setman_gitDirPath);
+    if (bookmarkPath.isEmpty) return null;
+
+    return await useDirectory(bookmarkPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (path) async {
+      final gitConfigFile = Directory('$path/$gitPath');
+      if (!await requestStoragePerm(false) || !await gitConfigFile.exists()) {
+        await setString(StorageKey.setman_gitDirPath, "");
+        return null;
+      }
+      return path.isEmpty == true ? null : (Platform.isIOS && iosGetPath ? path : bookmarkPath);
+    });
+  }
+
+  Future<GitProvider> getGitProvider() async {
+    final gitProviderName = await getStringNullable(StorageKey.setman_gitProvider);
+    return GitProvider.values.firstWhere((p) => p.name == gitProviderName, orElse: () => GitProvider.GITHUB);
+  }
+
+  Future<void> setGitHttpAuthCredentials(String username, String accessToken) async {
+    await setString(StorageKey.setman_authorName, username.trim());
+    await setString(StorageKey.setman_gitAuthUsername, username.trim());
+    await setString(StorageKey.setman_gitAuthToken, accessToken.trim());
+  }
+
+  Future<(String, String)> getGitHttpAuthCredentials() async => (
+    await getString(StorageKey.setman_gitAuthUsername),
+    await getString(StorageKey.setman_gitAuthToken),
+  );
+
+  Future<void> setGitSshAuthCredentials(String passphrase, String sshKey) async {
+    await setString(StorageKey.setman_gitSshKey, sshKey.trim());
+    await setString(StorageKey.setman_gitSshPassphrase, passphrase);
+  }
+
+  Future<(String, String)> getGitSshAuthCredentials() async => (
+    await getString(StorageKey.setman_gitSshPassphrase),
+    await getString(StorageKey.setman_gitSshKey),
+  );
+
+  Future<Set<String>> getApplicationPackages() async {
+    final packages = await getStringList(StorageKey.setman_packageNames);
+    return packages.toSet();
+  }
+}

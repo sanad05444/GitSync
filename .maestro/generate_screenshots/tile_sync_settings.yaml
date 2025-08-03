@@ -1,0 +1,12 @@
+appId: com.viscouspot.gitsync
+---
+- launchApp
+- assertVisible: "Git Sync"
+- runFlow:
+    when:
+      notVisible: "Use for Tile Sync"
+    commands:
+      - tapOn: "Tile Sync Settings"
+- scroll
+- scroll
+- takeScreenshot: generate_screenshots/raw/screenshot_tile_sync_settings

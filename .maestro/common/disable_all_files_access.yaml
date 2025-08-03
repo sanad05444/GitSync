@@ -1,0 +1,28 @@
+appId: com.android.settings
+---
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - launchApp
+      - tapOn: "Search settings"
+      - inputText: "All files"
+      - tapOn: "All files access"
+      - tapOn: "All files access"
+      - assertVisible: "Git Sync"
+      - runFlow:
+          when:
+            visible:
+              text: "Allowed"
+              below:
+                text: "Git Sync"
+          commands:
+            - tapOn: "Git Sync"
+            - assertVisible: "Allow access to manage all files"
+            - tapOn: "Allow access to manage all files"
+      - back
+      - back
+      - back
+      - back
+      - back
+      - killApp

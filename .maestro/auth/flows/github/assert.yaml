@@ -1,0 +1,13 @@
+appId: com.viscouspot.gitsync
+---
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - assertVisible: github.com
+
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn: "‎github.com"

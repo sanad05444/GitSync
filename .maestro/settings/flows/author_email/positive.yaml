@@ -1,0 +1,7 @@
+appId: com.viscouspot.gitsync
+---
+
+- tapOn:
+    below: AUTHOR EMAIL
+- eraseText
+- inputText: "bugs.viscouspotential@gmail.com"
