@@ -188,6 +188,7 @@ class GitManager {
             remoteName: await uiSettingsManager.getString(StorageKey.setman_remote),
             provider: (await uiSettingsManager.getGitProvider()).name,
             credentials: await _getCredentials(uiSettingsManager),
+            commitSigningCredentials: await uiSettingsManager.getGitCommitSigningCredentials(),
             author: (
               await uiSettingsManager.getString(StorageKey.setman_authorName),
               await uiSettingsManager.getString(StorageKey.setman_authorEmail),
@@ -747,6 +748,7 @@ class GitManager {
             provider: (await settingsManager.getGitProvider()).name,
             author: (await settingsManager.getString(StorageKey.setman_authorName), await settingsManager.getString(StorageKey.setman_authorEmail)),
             credentials: await _getCredentials(settingsManager),
+            commitSigningCredentials: await settingsManager.getGitCommitSigningCredentials(),
             syncCallback: syncCallback,
             log: _logWrapper,
           );
@@ -783,6 +785,7 @@ class GitManager {
             provider: (await settingsManager.getGitProvider()).name,
             author: (await settingsManager.getString(StorageKey.setman_authorName), await settingsManager.getString(StorageKey.setman_authorEmail)),
             credentials: await _getCredentials(settingsManager),
+            commitSigningCredentials: await settingsManager.getGitCommitSigningCredentials(),
             syncCallback: syncCallback,
             mergeConflictCallback: () {
               repoManager.setInt(StorageKey.repoman_repoIndex, repomanRepoindex);

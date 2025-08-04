@@ -36,7 +36,9 @@ enum StorageKey<T> {
   setman_packageNames<List<String>>(name: "packageNames", defaultValue: []),
   setman_syncOnAppOpened<bool>(name: "syncOnAppOpened", defaultValue: false),
   setman_syncOnAppClosed<bool>(name: "syncOnAppClosed", defaultValue: false),
-  setman_lastSyncMethod<String>(name: "lastSyncMethod", defaultValue: "");
+  setman_lastSyncMethod<String>(name: "lastSyncMethod", defaultValue: ""),
+  setman_gitCommitSigningKey<String?>(name: "gitCommitSigningKey", defaultValue: null),
+  setman_gitCommitSigningPassphrase<String?>(name: "gitCommitSigningPassphrase", defaultValue: null);
 
   const StorageKey({required this.name, required this.defaultValue});
   final T defaultValue;

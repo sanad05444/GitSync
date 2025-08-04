@@ -35,6 +35,7 @@ enum LogType {
   Sync,
   Status,
   AbortMerge,
+  Commit,
   // GetRepos,
   CloneRepo,
   // SelectDirectory,

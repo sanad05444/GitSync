@@ -5,8 +5,9 @@ use osshkeys::{KeyPair, KeyType};
 use git2::{
     opts::set_verify_owner_validation, CertificateCheckStatus, Cred,  Diff, DiffOptions, DiffDelta, Delta, ErrorCode,
     FetchOptions, PushOptions, RemoteCallbacks, Repository, RepositoryState, ResetType, Signature,
-    StatusOptions, Status, BranchType
+    StatusOptions, Status, BranchType, Tree,
 };
+use ssh_key::{HashAlg, LineEnding, PrivateKey};
 
 pub struct Commit {
     pub timestamp: i64,
@@ -28,6 +29,7 @@ pub enum LogType {
   PullFromRepo,
   PushToRepo,
   RecentCommits,
+  Commit,
 }
 
 pub fn init(homepath: Option<String>) {
@@ -265,11 +267,98 @@ fn fast_forward(
     Ok(())
 }
 
+fn commit(
+    repo: &Repository,
+    update_ref: Option<&str>,
+    author_committer: &Signature<'_>,
+    message: &str,
+    tree: &Tree<'_>,
+    parents: &[&git2::Commit<'_>],
+    commit_signing_credentials: Option<(String, String)>,
+    log_callback: &Arc<impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static>,
+) -> Result<git2::Oid, git2::Error> {
+	let commit_id = if let Some((ref pass, ref key)) = commit_signing_credentials
+	{
+        _log(
+            Arc::clone(&log_callback),
+            LogType::Commit,
+            "Signing commit".to_string(),
+        );
+		let buffer = repo.commit_create_buffer(
+			&author_committer,
+			&author_committer,
+			message,
+			&tree,
+			parents,
+		)?;
+
+		let commit = std::str::from_utf8(&buffer).map_err(|_e| {
+			git2::Error::from_str(&"utf8 conversion error".to_string())
+		})?;
+
+        
+        let mut secret_key = PrivateKey::from_openssh(key.as_bytes())
+            .map_err(|e| git2::Error::from_str(&e.to_string()))?;
+        if !pass.is_empty() {
+            secret_key.decrypt(pass.as_bytes())
+                .map_err(|e| git2::Error::from_str(&e.to_string()))?;
+        }
+        _log(
+            Arc::clone(&log_callback),
+            LogType::Commit,
+            "Committing".to_string(),
+        );
+        let sig = secret_key
+            .sign("git", HashAlg::Sha256, &commit.as_bytes())
+            .map_err(|e| git2::Error::from_str(&e.to_string()))?
+            .to_pem(LineEnding::LF)
+            .map_err(|e| git2::Error::from_str(&e.to_string()))?;
+
+            let commit_id = repo.commit_signed(
+			commit,
+			&sig,
+			None,
+		)?;
+
+		if let Ok(mut head) = repo.head() {
+			head.set_target(commit_id, message)?;
+		} else {
+            let current_branch = get_branch_name_priv(&repo).unwrap_or_else(|| "master".to_string());
+            
+			repo.reference(
+				&format!("refs/heads/{current_branch}"),
+				commit_id,
+				true,
+				message,
+			)?;
+		}
+
+		commit_id
+	} else {
+        _log(
+            Arc::clone(&log_callback),
+            LogType::Commit,
+            "Committing".to_string(),
+        );
+		repo.commit(
+			update_ref,
+			&author_committer,
+			&author_committer,
+			message,
+			&tree,
+			parents,
+		)?
+	};
+
+	Ok(commit_id.into())
+}
+
 pub async fn download_changes(
     path_string: &String,
     remote: &String,
     provider: &String,
     credentials: &(String, String),
+    commit_signing_credentials: Option<(String, String)>,
     author: &(String, String),
     sync_callback: impl Fn() -> DartFnFuture<()> + Send + Sync + 'static,
     log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
@@ -420,13 +509,15 @@ pub async fn download_changes(
         let sig = repo.signature()?;
         let local_commit = repo.find_commit(head_commit.id())?;
         let remote_commit = repo.find_commit(fetch_commit.id())?;
-        let _merge_commit = repo.commit(
+        commit(
+            &repo,
             Some("HEAD"),
-            &sig,
             &sig,
             &msg,
             &result_tree,
             &[&local_commit, &remote_commit],
+            commit_signing_credentials,
+            &log_callback,
         )?;
         repo.checkout_head(None)?;
         return Ok(Some(true));
@@ -442,6 +533,7 @@ pub async fn upload_changes(
     remote_name: String,
     provider: String,
     credentials: (String, String),
+    commit_signing_credentials: Option<(String, String)>,
     author: (String, String),
     sync_callback: impl Fn() -> DartFnFuture<()> + Send + Sync + 'static,
     merge_conflict_callback: impl Fn() -> DartFnFuture<()> + Send + Sync + 'static,
@@ -546,13 +638,15 @@ pub async fn upload_changes(
             let tree_oid = updated_tree_oid.unwrap_or_else(|| index.write_tree_to(&repo).unwrap());
             let tree = repo.find_tree(tree_oid)?;
 
-            repo.commit(
+            commit(
+                &repo,
                 Some("HEAD"),
-                &signature,
                 &signature,
                 &sync_message,
                 &tree,
                 &parents.iter().collect::<Vec<_>>(),
+                commit_signing_credentials,
+                &log_callback,
             )?;
         } else {
             _log(
@@ -751,6 +845,7 @@ pub async fn force_push(
     remote_name: String,
     provider: String,
     credentials: (String, String),
+    commit_signing_credentials: Option<(String, String)>,
     author: (String, String),
     sync_message: String,
     log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
@@ -799,13 +894,15 @@ pub async fn force_push(
             LogType::PushToRepo,
             "Committing changes".to_string(),
         );
-        repo.commit(
+        commit(
+            &repo,
             Some("HEAD"),
-            &signature,
             &signature,
             &sync_message,
             &tree,
             &[&parent_commit],
+            commit_signing_credentials,
+            &log_callback,
         )?;
     }
 
@@ -1130,14 +1227,27 @@ pub async fn get_branch_name(
     let log_callback = Arc::new(log);
 
     let repo = Repository::open(Path::new(path_string)).unwrap();
+    let branch_name = get_branch_name_priv(&repo);
+
+    if (branch_name == None) {
+        _log(
+            Arc::clone(&log_callback),
+            LogType::Global,
+            "Failed to get HEAD".to_string(),
+        );
+    }
+
+    return branch_name;
+}
+
+
+fn get_branch_name_priv(
+    repo: &Repository,
+) -> Option<String> {
+
     let head = match repo.head() {
         Ok(h) => h,
         Err(e) => {
-            _log(
-                Arc::clone(&log_callback),
-                LogType::Global,
-                format!("Failed to get HEAD: {}", e),
-            );
             return None;
         }
     };
@@ -1291,7 +1401,7 @@ pub async fn create_branch(
 
     let repo = Repository::open(Path::new(path_string))?;
     
-    let current_branch = get_branch_name(path_string, |_level: LogType, _msg: String| Box::pin(async {})).await;
+    let current_branch = get_branch_name_priv(&repo);
     
     // If we're not on the source branch, check it out first
     if current_branch.as_deref() != Some(source_branch_name) {

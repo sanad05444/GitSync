@@ -6,7 +6,7 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `_log`, `fast_forward`, `get_default_callbacks`, `get_uncommitted_file_paths_priv`, `set_author`
+// These functions are ignored because they are not marked as `pub`: `_log`, `commit`, `fast_forward`, `get_branch_name_priv`, `get_default_callbacks`, `get_uncommitted_file_paths_priv`, `set_author`
 
 Future<void> init({String? homepath}) =>
     RustLib.instance.api.crateApiGitManagerInit(homepath: homepath);
@@ -44,6 +44,7 @@ Future<bool?> downloadChanges({
   required String remote,
   required String provider,
   required (String, String) credentials,
+  (String, String)? commitSigningCredentials,
   required (String, String) author,
   required FutureOr<void> Function() syncCallback,
   required FutureOr<void> Function(LogType, String) log,
@@ -52,6 +53,7 @@ Future<bool?> downloadChanges({
   remote: remote,
   provider: provider,
   credentials: credentials,
+  commitSigningCredentials: commitSigningCredentials,
   author: author,
   syncCallback: syncCallback,
   log: log,
@@ -62,6 +64,7 @@ Future<bool?> uploadChanges({
   required String remoteName,
   required String provider,
   required (String, String) credentials,
+  (String, String)? commitSigningCredentials,
   required (String, String) author,
   required FutureOr<void> Function() syncCallback,
   required FutureOr<void> Function() mergeConflictCallback,
@@ -73,6 +76,7 @@ Future<bool?> uploadChanges({
   remoteName: remoteName,
   provider: provider,
   credentials: credentials,
+  commitSigningCredentials: commitSigningCredentials,
   author: author,
   syncCallback: syncCallback,
   mergeConflictCallback: mergeConflictCallback,
@@ -86,6 +90,7 @@ Future<void> forcePush({
   required String remoteName,
   required String provider,
   required (String, String) credentials,
+  (String, String)? commitSigningCredentials,
   required (String, String) author,
   required String syncMessage,
   required FutureOr<void> Function(LogType, String) log,
@@ -94,6 +99,7 @@ Future<void> forcePush({
   remoteName: remoteName,
   provider: provider,
   credentials: credentials,
+  commitSigningCredentials: commitSigningCredentials,
   author: author,
   syncMessage: syncMessage,
   log: log,
@@ -265,4 +271,5 @@ enum LogType {
   pullFromRepo,
   pushToRepo,
   recentCommits,
+  commit,
 }

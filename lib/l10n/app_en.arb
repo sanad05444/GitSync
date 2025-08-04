@@ -203,7 +203,7 @@
     "syncMessageLabel": "Sync Message",
     "syncMessageDescription": "use %s for the date and time",
     "syncMessageTimeFormatLabel": "Sync Message Time Format",
-    "syncMessageTimeFormatDescription": "Uses standard datetime formatting syntax",
+    "syncMessageTimeFormatDescription": "uses standard datetime formatting syntax",
     "remoteLabel": "default remote",
     "defaultRemote": "origin",
     "authorNameLabel": "author name",
@@ -218,6 +218,12 @@
     "gitInfoExcludeHint": ".trash/\n./…",
     "disableSsl": "Disable SSL",
     "moreOptions": "More Options",
+    "signedCommitsLabel": "Signed Commits",
+    "signedCommitsDescription": "sign commits to verify your identity",
+    "importCommitKey": "Import Key",
+    "commitKeyImported": "Key Imported",
+    "useSshKey": "Use SSH Key for Commit Signing",
+
 
 
     "@@x-GLOBAL_SETTINGS_PAGE": "",

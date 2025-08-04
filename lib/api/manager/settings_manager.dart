@@ -90,6 +90,19 @@ class SettingsManager extends Storage {
     await getString(StorageKey.setman_gitSshKey),
   );
 
+  Future<(String, String)?> getGitCommitSigningCredentials() async {
+    final passphrase = await getStringNullable(StorageKey.setman_gitCommitSigningPassphrase);
+    final key = await getStringNullable(StorageKey.setman_gitCommitSigningKey);
+
+    if (key != null) {
+      if (key.isEmpty) {
+        return await getGitSshAuthCredentials();
+      }
+      return (passphrase ?? "", key);
+    }
+    return null;
+  }
+
   Future<Set<String>> getApplicationPackages() async {
     final packages = await getStringList(StorageKey.setman_packageNames);
     return packages.toSet();
