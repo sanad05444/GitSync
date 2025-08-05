@@ -148,6 +148,7 @@ pub async fn clone_repository(
     let mut fo = FetchOptions::new();
     fo.update_fetchhead(true);
     fo.remote_callbacks(callbacks);
+    fo.prune(git2::FetchPrune::On);
 
     builder.fetch_options(fo);
     let path = Path::new(path_string.as_str());
@@ -379,6 +380,7 @@ pub async fn download_changes(
 
     let callbacks = get_default_callbacks(Some(&provider), Some(&credentials));
     let mut fetch_options = FetchOptions::new();
+    fetch_options.prune(git2::FetchPrune::On);
     fetch_options.update_fetchhead(true);
     fetch_options.remote_callbacks(callbacks);
     fetch_options.download_tags(git2::AutotagOption::All);
@@ -408,7 +410,7 @@ pub async fn download_changes(
         LogType::PullFromRepo,
         "Fetching changes".to_string(),
     );
-    remote.fetch(&[remote_branch], Some(&mut fetch_options), None)?;
+    remote.fetch::<&str>(&[], Some(&mut fetch_options), None)?;
 
     let fetch_head = repo.find_reference("FETCH_HEAD")?;
     let fetch_commit = repo.reference_to_annotated_commit(&fetch_head)?;
@@ -986,6 +988,7 @@ pub async fn force_pull(
 
     let callbacks = get_default_callbacks(Some(&provider), Some(&credentials));
     let mut fetch_options = FetchOptions::new();
+    fetch_options.prune(git2::FetchPrune::On);
     fetch_options.update_fetchhead(true);
     fetch_options.remote_callbacks(callbacks);
     fetch_options.download_tags(git2::AutotagOption::All);
@@ -996,7 +999,7 @@ pub async fn force_pull(
         "Force fetching changes".to_string(),
     );
 
-    remote.fetch(&[&remote_branch], Some(&mut fetch_options), None)?;
+    remote.fetch::<&str>(&[], Some(&mut fetch_options), None)?;
 
     let fetch_commit = repo
         .find_reference("FETCH_HEAD")
