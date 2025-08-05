@@ -404,9 +404,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                 Fluttertoast.showToast(msg: AppLocalizations.of(context).syncStartPull, toastLength: Toast.LENGTH_LONG, gravity: null);
               }
             });
-            if (result == null) return;
-
-            if (result == false) {
+            if (result == null) {
               Fluttertoast.showToast(msg: AppLocalizations.of(context).pullFailed, toastLength: Toast.LENGTH_LONG, gravity: null);
               return;
             }
