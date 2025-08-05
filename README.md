@@ -137,3 +137,7 @@ Ensure that the .entitlements file contains the correct APS environment string:
     Use "production" for App Store or TestFlight builds.
 
 If the file doesn’t exist, create one manually or let Xcode generate it when adding the capability.
+
+for android builds??
+export LIBGIT2_SYS_USE_PKG_CONFIG=0
+export ZLIB_SRC=1

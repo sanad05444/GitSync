@@ -8,7 +8,7 @@ crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
 flutter_rust_bridge = "=2.9.0"
-git2 = "0.20.0"
+git2 = { version = "0.20.2", features = ["vendored-libgit2"] }
 openssl = { version = "0.10.35", features = ["vendored"] }
 ssh-key = { version = "0.6.7", features = ["crypto", "encryption"] }
 osshkeys = "0.7.0"
