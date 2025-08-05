@@ -7,9 +7,9 @@ import 'package:GitSync/ui/component/custom_showcase.dart';
 import 'package:GitSync/ui/component/scheduled_sync_settings.dart';
 import 'package:GitSync/ui/dialog/base_alert_dialog.dart';
 import 'package:GitSync/api/manager/storage.dart';
-import 'package:GitSync/ui/dialog/change_language.dart' as ChangeLanguageDialog show showDialog;
 import 'package:GitSync/ui/dialog/create_branch.dart' as CreateBranchDialog;
 import 'package:GitSync/ui/dialog/merge_conflict.dart' as MergeConflictDialog;
+import 'package:GitSync/ui/page/file_explorer.dart';
 import 'package:GitSync/ui/page/global_settings_main.dart';
 import 'package:animated_reorderable_list/animated_reorderable_list.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -1335,258 +1335,311 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                 ),
               ),
               SizedBox(height: spaceLG),
-              CustomShowcase(
-                cornerRadius: cornerRadiusMD,
-                globalKey: _configKey,
-                description: AppLocalizations.of(context).configHint,
-                child: FutureBuilder(
-                  future: uiSettingsManager.getGitDirPath(true),
-                  builder:
-                      (context, gitDirPathSnapshot) => FutureBuilder(
-                        future: isAuthenticated(),
-                        builder:
-                            (context, isAuthenticatedSnapshot) => Column(
-                              children: [
-                                IntrinsicHeight(
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                                    children: [
-                                      FutureBuilder(
-                                        future: GitManager.getRemoteUrlLink(),
-                                        builder:
-                                            (context, snapshot) => Expanded(
-                                              child: TextButton.icon(
-                                                onPressed:
-                                                    demo
-                                                        ? () {
-                                                          ManualSyncDialog.showDialog(context);
-                                                        }
-                                                        : (snapshot.data == null ? null : () => launchUrl(Uri.parse(snapshot.data!.$2))),
-                                                style: ButtonStyle(
-                                                  alignment: Alignment.centerLeft,
-                                                  backgroundColor: WidgetStatePropertyAll(secondaryDark),
-                                                  padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
-                                                  shape: WidgetStatePropertyAll(
-                                                    RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
-                                                  ),
-                                                ),
-                                                icon: Padding(
-                                                  padding: EdgeInsets.only(left: spaceMD),
-                                                  child: FaIcon(
-                                                    snapshot.data != null ? FontAwesomeIcons.squareArrowUpRight : FontAwesomeIcons.solidCircleXmark,
-                                                    color: snapshot.data != null ? primaryPositive : primaryNegative,
-                                                    size: textLG,
-                                                  ),
-                                                ),
-                                                iconAlignment: IconAlignment.end,
-                                                label: SizedBox.expand(
-                                                  child: ExtendedText(
-                                                    demo
-                                                        ? "https://github.com/ViscousTests/TestObsidianVault.git"
-                                                        : (snapshot.data == null ? AppLocalizations.of(context).repoNotFound : snapshot.data!.$1),
-                                                    maxLines: 1,
-                                                    textAlign: TextAlign.left,
-                                                    softWrap: false,
-                                                    overflowWidget: TextOverflowWidget(
-                                                      position: TextOverflowPosition.start,
-                                                      child: Text(
-                                                        "…",
-                                                        style: TextStyle(color: tertiaryLight, fontSize: textMD, fontWeight: FontWeight.w400),
+              FutureBuilder(
+                future: uiSettingsManager.getGitDirPath(true),
+                builder:
+                    (context, gitDirPathSnapshot) => FutureBuilder(
+                      future: isAuthenticated(),
+                      builder:
+                          (context, isAuthenticatedSnapshot) => Column(
+                            children: [
+                              CustomShowcase(
+                                cornerRadius: cornerRadiusMD,
+                                globalKey: _configKey,
+                                description: AppLocalizations.of(context).configHint,
+                                child: Column(
+                                  children: [
+                                    IntrinsicHeight(
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                                        children: [
+                                          FutureBuilder(
+                                            future: GitManager.getRemoteUrlLink(),
+                                            builder:
+                                                (context, snapshot) => Expanded(
+                                                  child: TextButton.icon(
+                                                    onPressed:
+                                                        demo
+                                                            ? () {
+                                                              ManualSyncDialog.showDialog(context);
+                                                            }
+                                                            : (snapshot.data == null ? null : () => launchUrl(Uri.parse(snapshot.data!.$2))),
+                                                    style: ButtonStyle(
+                                                      alignment: Alignment.centerLeft,
+                                                      backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                                                      padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
+                                                      shape: WidgetStatePropertyAll(
+                                                        RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
                                                       ),
                                                     ),
-                                                    style: TextStyle(
-                                                      color: snapshot.data != null ? primaryLight : secondaryLight,
-                                                      fontSize: textMD,
-                                                      fontWeight: FontWeight.w400,
+                                                    icon: Padding(
+                                                      padding: EdgeInsets.only(left: spaceMD),
+                                                      child: FaIcon(
+                                                        snapshot.data != null
+                                                            ? FontAwesomeIcons.squareArrowUpRight
+                                                            : FontAwesomeIcons.solidCircleXmark,
+                                                        color: snapshot.data != null ? primaryPositive : primaryNegative,
+                                                        size: textLG,
+                                                      ),
+                                                    ),
+                                                    iconAlignment: IconAlignment.end,
+                                                    label: SizedBox.expand(
+                                                      child: ExtendedText(
+                                                        demo
+                                                            ? "https://github.com/ViscousTests/TestObsidianVault.git"
+                                                            : (snapshot.data == null ? AppLocalizations.of(context).repoNotFound : snapshot.data!.$1),
+                                                        maxLines: 1,
+                                                        textAlign: TextAlign.left,
+                                                        softWrap: false,
+                                                        overflowWidget: TextOverflowWidget(
+                                                          position: TextOverflowPosition.start,
+                                                          child: Text(
+                                                            "…",
+                                                            style: TextStyle(color: tertiaryLight, fontSize: textMD, fontWeight: FontWeight.w400),
+                                                          ),
+                                                        ),
+                                                        style: TextStyle(
+                                                          color: snapshot.data != null ? primaryLight : secondaryLight,
+                                                          fontSize: textMD,
+                                                          fontWeight: FontWeight.w400,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
+                                          ),
+                                          SizedBox(width: gitDirPathSnapshot.data == null ? spaceSM : 0),
+                                          Visibility(
+                                            visible: gitDirPathSnapshot.data == null,
+                                            child: IconButton(
+                                              onPressed:
+                                                  isAuthenticatedSnapshot.data == true
+                                                      ? () async {
+                                                        await showCloneRepoPage();
+                                                      }
+                                                      : null,
+                                              style: ButtonStyle(
+                                                backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                                                padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
+                                                shape: WidgetStatePropertyAll(
+                                                  RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
+                                                ),
+                                              ),
+                                              icon: FaIcon(
+                                                FontAwesomeIcons.cloudArrowDown,
+                                                color: isAuthenticatedSnapshot.data == true ? primaryLight : tertiaryLight,
+                                                size: textLG - 2,
                                               ),
                                             ),
-                                      ),
-                                      SizedBox(width: gitDirPathSnapshot.data == null ? spaceSM : 0),
-                                      Visibility(
-                                        visible: gitDirPathSnapshot.data == null,
-                                        child: IconButton(
-                                          onPressed:
+                                          ),
+                                          SizedBox(width: spaceSM),
+                                          TextButton.icon(
+                                            onPressed: () async {
+                                              await showAuthDialog();
+                                            },
+                                            style: ButtonStyle(
+                                              alignment: Alignment.centerLeft,
+                                              backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                                              padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
+                                              shape: WidgetStatePropertyAll(
+                                                RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
+                                              ),
+                                            ),
+                                            icon: FaIcon(
                                               isAuthenticatedSnapshot.data == true
-                                                  ? () async {
-                                                    await showCloneRepoPage();
-                                                  }
-                                                  : null,
-                                          style: ButtonStyle(
-                                            backgroundColor: WidgetStatePropertyAll(secondaryDark),
-                                            padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
-                                            shape: WidgetStatePropertyAll(
-                                              RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
+                                                  ? FontAwesomeIcons.solidCircleCheck
+                                                  : FontAwesomeIcons.solidCircleXmark,
+                                              color: isAuthenticatedSnapshot.data == true ? primaryPositive : primaryNegative,
+                                              size: textLG,
+                                            ),
+                                            label: Padding(
+                                              padding: EdgeInsets.only(left: spaceXS),
+                                              child: Text(
+                                                AppLocalizations.of(context).auth.toUpperCase(),
+                                                style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
+                                              ),
                                             ),
                                           ),
-                                          icon: FaIcon(
-                                            FontAwesomeIcons.cloudArrowDown,
-                                            color: isAuthenticatedSnapshot.data == true ? primaryLight : tertiaryLight,
-                                            size: textLG - 2,
-                                          ),
-                                        ),
+                                        ],
                                       ),
-                                      SizedBox(width: spaceSM),
-                                      TextButton.icon(
-                                        onPressed: () async {
-                                          await showAuthDialog();
-                                        },
-                                        style: ButtonStyle(
-                                          alignment: Alignment.centerLeft,
-                                          backgroundColor: WidgetStatePropertyAll(secondaryDark),
-                                          padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
-                                          shape: WidgetStatePropertyAll(
-                                            RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
-                                          ),
-                                        ),
-                                        icon: FaIcon(
-                                          isAuthenticatedSnapshot.data == true
-                                              ? FontAwesomeIcons.solidCircleCheck
-                                              : FontAwesomeIcons.solidCircleXmark,
-                                          color: isAuthenticatedSnapshot.data == true ? primaryPositive : primaryNegative,
-                                          size: textLG,
-                                        ),
-                                        label: Padding(
-                                          padding: EdgeInsets.only(left: spaceXS),
-                                          child: Text(
-                                            AppLocalizations.of(context).auth.toUpperCase(),
-                                            style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(height: spaceMD),
-                                IntrinsicHeight(
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                                    children: [
-                                      Expanded(
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: secondaryDark,
-                                            borderRadius: BorderRadius.only(
-                                              bottomLeft: cornerRadiusMD,
-                                              bottomRight: cornerRadiusSM,
-                                              topLeft: cornerRadiusMD,
-                                              topRight: cornerRadiusSM,
-                                            ),
-                                          ),
-                                          child: Row(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Flexible(
-                                                child: Padding(
-                                                  padding: EdgeInsets.all(spaceMD),
-                                                  child: ExtendedText(
-                                                    demo
-                                                        ? (Platform.isIOS
-                                                            ? "TestObsidianVault"
-                                                            : "/storage/emulated/0/github/ViscousTests/TestObsidianVault")
-                                                        : (gitDirPathSnapshot.data == null
-                                                            ? AppLocalizations.of(context).repoNotFound
-                                                            : (Platform.isIOS ? gitDirPathSnapshot.data?.split("/").last : gitDirPathSnapshot.data) ??
-                                                                ""),
-                                                    maxLines: 1,
-                                                    textAlign: TextAlign.left,
-                                                    softWrap: false,
-                                                    overflowWidget: TextOverflowWidget(
-                                                      position: TextOverflowPosition.start,
-                                                      child: Text(
-                                                        "…",
+                                    ),
+                                    SizedBox(height: spaceMD),
+                                    IntrinsicHeight(
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                                        children: [
+                                          Expanded(
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: secondaryDark,
+                                                borderRadius: BorderRadius.only(
+                                                  bottomLeft: cornerRadiusMD,
+                                                  bottomRight: cornerRadiusSM,
+                                                  topLeft: cornerRadiusMD,
+                                                  topRight: cornerRadiusSM,
+                                                ),
+                                              ),
+                                              child: Row(
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Flexible(
+                                                    child: Padding(
+                                                      padding: EdgeInsets.all(spaceMD),
+                                                      child: ExtendedText(
+                                                        demo
+                                                            ? (Platform.isIOS
+                                                                ? "TestObsidianVault"
+                                                                : "/storage/emulated/0/github/ViscousTests/TestObsidianVault")
+                                                            : (gitDirPathSnapshot.data == null
+                                                                ? AppLocalizations.of(context).repoNotFound
+                                                                : (Platform.isIOS
+                                                                        ? gitDirPathSnapshot.data?.split("/").last
+                                                                        : gitDirPathSnapshot.data) ??
+                                                                    ""),
+                                                        maxLines: 1,
+                                                        textAlign: TextAlign.left,
+                                                        softWrap: false,
+                                                        overflowWidget: TextOverflowWidget(
+                                                          position: TextOverflowPosition.start,
+                                                          child: Text(
+                                                            "…",
+                                                            style: TextStyle(
+                                                              color: gitDirPathSnapshot.data == null ? secondaryLight : primaryLight,
+                                                              fontSize: textMD,
+                                                            ),
+                                                          ),
+                                                        ),
                                                         style: TextStyle(
                                                           color: gitDirPathSnapshot.data == null ? secondaryLight : primaryLight,
                                                           fontSize: textMD,
                                                         ),
                                                       ),
                                                     ),
-                                                    style: TextStyle(
-                                                      color: gitDirPathSnapshot.data == null ? secondaryLight : primaryLight,
-                                                      fontSize: textMD,
-                                                    ),
                                                   ),
-                                                ),
-                                              ),
-                                              gitDirPathSnapshot.data == null
-                                                  ? SizedBox.shrink()
-                                                  : IconButton(
-                                                    onPressed: () async {
-                                                      await uiSettingsManager.setString(StorageKey.setman_gitDirPath, "");
-                                                      setState(() {});
-                                                    },
-                                                    constraints: BoxConstraints(),
-                                                    style: ButtonStyle(
-                                                      backgroundColor: WidgetStatePropertyAll(secondaryDark),
-                                                      padding: WidgetStatePropertyAll(EdgeInsets.all(spaceMD)),
-                                                      visualDensity: VisualDensity.compact,
-                                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                      shape: WidgetStatePropertyAll(
-                                                        RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusSM), side: BorderSide.none),
+                                                  gitDirPathSnapshot.data == null
+                                                      ? SizedBox.shrink()
+                                                      : IconButton(
+                                                        onPressed: () async {
+                                                          await uiSettingsManager.setString(StorageKey.setman_gitDirPath, "");
+                                                          setState(() {});
+                                                        },
+                                                        constraints: BoxConstraints(),
+                                                        style: ButtonStyle(
+                                                          backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                                                          padding: WidgetStatePropertyAll(EdgeInsets.all(spaceMD)),
+                                                          visualDensity: VisualDensity.compact,
+                                                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                          shape: WidgetStatePropertyAll(
+                                                            RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius.all(cornerRadiusSM),
+                                                              side: BorderSide.none,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        icon: FaIcon(
+                                                          FontAwesomeIcons.solidCircleXmark,
+                                                          size: textLG,
+                                                          color: primaryLight,
+                                                          semanticLabel: AppLocalizations.of(context).deselectDirLabel,
+                                                        ),
                                                       ),
-                                                    ),
-                                                    icon: FaIcon(
-                                                      FontAwesomeIcons.solidCircleXmark,
-                                                      size: textLG,
-                                                      color: primaryLight,
-                                                      semanticLabel: AppLocalizations.of(context).deselectDirLabel,
-                                                    ),
-                                                  ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(width: spaceSM),
-                                      IconButton(
-                                        onPressed:
-                                            isAuthenticatedSnapshot.data == true
-                                                ? () async {
-                                                  String? selectedDirectory;
-                                                  if (await requestStoragePerm()) {
-                                                    selectedDirectory = await pickDirectory();
-                                                  }
-                                                  if (selectedDirectory == null) return;
-
-                                                  await uiSettingsManager.setString(StorageKey.setman_gitDirPath, selectedDirectory);
-                                                  await repoManager.setOnboardingStep(4);
-
-                                                  await onboardingController?.show();
-
-                                                  setState(() {});
-                                                }
-                                                : null,
-                                        style: ButtonStyle(
-                                          backgroundColor: WidgetStatePropertyAll(secondaryDark),
-                                          padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
-                                          shape: WidgetStatePropertyAll(
-                                            RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.only(
-                                                bottomLeft: cornerRadiusSM,
-                                                bottomRight: cornerRadiusMD,
-                                                topLeft: cornerRadiusSM,
-                                                topRight: cornerRadiusMD,
+                                                ],
                                               ),
-                                              side: BorderSide.none,
                                             ),
                                           ),
-                                        ),
-                                        icon: FaIcon(
-                                          FontAwesomeIcons.solidFolderOpen,
-                                          color: isAuthenticatedSnapshot.data == true ? primaryLight : tertiaryLight,
-                                          size: textLG - 2,
-                                          semanticLabel: AppLocalizations.of(context).selectDirLabel,
-                                        ),
+                                          SizedBox(width: spaceSM),
+                                          IconButton(
+                                            onPressed:
+                                                isAuthenticatedSnapshot.data == true
+                                                    ? () async {
+                                                      String? selectedDirectory;
+                                                      if (await requestStoragePerm()) {
+                                                        selectedDirectory = await pickDirectory();
+                                                      }
+                                                      if (selectedDirectory == null) return;
+
+                                                      await uiSettingsManager.setString(StorageKey.setman_gitDirPath, selectedDirectory);
+                                                      await repoManager.setOnboardingStep(4);
+
+                                                      await onboardingController?.show();
+
+                                                      setState(() {});
+                                                    }
+                                                    : null,
+                                            style: ButtonStyle(
+                                              backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                                              padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
+                                              shape: WidgetStatePropertyAll(
+                                                RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.only(
+                                                    bottomLeft: cornerRadiusSM,
+                                                    bottomRight: cornerRadiusMD,
+                                                    topLeft: cornerRadiusSM,
+                                                    topRight: cornerRadiusMD,
+                                                  ),
+                                                  side: BorderSide.none,
+                                                ),
+                                              ),
+                                            ),
+                                            icon: FaIcon(
+                                              FontAwesomeIcons.solidFolderOpen,
+                                              color: isAuthenticatedSnapshot.data == true ? primaryLight : tertiaryLight,
+                                              size: textLG - 2,
+                                              semanticLabel: AppLocalizations.of(context).selectDirLabel,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: spaceMD),
+                              SizedBox(
+                                width: double.infinity,
+                                child: TextButton.icon(
+                                  onPressed:
+                                      gitDirPathSnapshot.data == null
+                                          ? null
+                                          : () async {
+                                            await useDirectory(
+                                              await uiSettingsManager.getString(StorageKey.setman_gitDirPath),
+                                              (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath),
+                                              (path) async {
+                                                await Navigator.of(context).push(createFileExplorerRoute(path));
+                                              },
+                                            );
+                                          },
+                                  style: ButtonStyle(
+                                    alignment: Alignment.center,
+                                    backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                                    padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
+                                    shape: WidgetStatePropertyAll(
+                                      RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
+                                    ),
+                                  ),
+                                  icon: FaIcon(
+                                    FontAwesomeIcons.filePen,
+                                    color: gitDirPathSnapshot.data == null ? secondaryLight : tertiaryInfo,
+                                    size: textLG,
+                                  ),
+                                  label: Padding(
+                                    padding: EdgeInsets.only(left: spaceXS),
+                                    child: Text(
+                                      "Browse & Edit Files".toUpperCase(),
+                                      style: TextStyle(
+                                        color: gitDirPathSnapshot.data == null ? secondaryLight : tertiaryInfo,
+                                        fontSize: textMD,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ],
-                            ),
-                      ),
-                ),
+                              ),
+                            ],
+                          ),
+                    ),
               ),
               SizedBox(height: spaceLG),
               CustomShowcase(

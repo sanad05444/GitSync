@@ -71,6 +71,11 @@ dependencies:
   flutter_email_sender: ^7.0.0
   archive: ^4.0.7
   showcaseview: ^4.0.1
+  file_manager: ^1.0.2
+  flutter_code_editor:
+    path: /home/kdavidson/Documents/ViscousPotential/flutter-code-editor/
+    # git:
+    #   url: https://github.com/ViscousPot/flutter-code-editor
 
 dependency_overrides:
   flutter_background_service_platform_interface:
