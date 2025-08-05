@@ -1,21 +1,9 @@
-import 'dart:io';
-
 import 'package:GitSync/api/manager/storage.dart';
 import 'package:GitSync/type/git_provider.dart';
 import 'package:GitSync/ui/component/button_setting.dart';
-import 'package:GitSync/ui/component/custom_showcase.dart';
 import 'package:GitSync/ui/page/global_settings_main.dart';
-import 'package:archive/archive_io.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:GitSync/api/logger.dart';
-import 'package:GitSync/ui/dialog/unlock_premium.dart' as UnlockPremiumDialog;
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:showcaseview/showcaseview.dart';
 import '../../../api/helper.dart';
 import '../../../api/manager/git_manager.dart';
 import '../../../constant/colors.dart';
@@ -23,7 +11,6 @@ import '../../../constant/dimens.dart';
 import '../../../constant/strings.dart';
 import '../../../global.dart';
 import '../../../ui/component/item_setting.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:GitSync/ui/dialog/import_priv_key.dart' as ImportPrivKeyDialog;
 

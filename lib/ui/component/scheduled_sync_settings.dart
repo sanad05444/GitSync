@@ -145,7 +145,7 @@ class _ScheduledSyncSettingsState extends State<ScheduledSyncSettings> {
                                                       children: [
                                                         FaIcon(
                                                           (item ? FontAwesomeIcons.arrowsRotate : FontAwesomeIcons.ban),
-                                                          color: item == null ? tertiaryPositive : (!item ? tertiaryNegative : primaryLight),
+                                                          color: (!item ? tertiaryNegative : primaryLight),
                                                           size: textSM,
                                                         ),
                                                         SizedBox(width: spaceXS),

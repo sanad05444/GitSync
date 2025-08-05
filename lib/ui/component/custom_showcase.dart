@@ -1,11 +1,7 @@
 import 'package:GitSync/constant/colors.dart';
 import 'package:GitSync/constant/dimens.dart';
-import 'package:GitSync/constant/strings.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class CustomShowcase extends StatelessWidget {
   const CustomShowcase({

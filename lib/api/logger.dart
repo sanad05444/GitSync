@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:GitSync/api/helper.dart';
 import 'package:GitSync/api/manager/auth/github_manager.dart';
@@ -10,16 +9,13 @@ import 'package:GitSync/main.dart';
 import 'package:GitSync/ui/dialog/github_issue_oauth.dart' as GithubIssueOauthDialog;
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:GitSync/constant/strings.dart';
 import 'package:GitSync/api/manager/storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:mixin_logger/mixin_logger.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:sprintf/sprintf.dart';
 import '../global.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:GitSync/ui/dialog/error_occurred.dart' as ErrorOccurredDialog;
 

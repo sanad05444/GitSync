@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:GitSync/api/helper.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import '../../../constant/strings.dart';
 import 'package:GitSync/api/manager/storage.dart';

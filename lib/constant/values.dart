@@ -24,7 +24,6 @@ import 'package:highlight/languages/perl.dart';
 import 'package:highlight/languages/rust.dart';
 import 'package:highlight/languages/lua.dart';
 import 'package:highlight/languages/shell.dart';
-import 'package:highlight/languages/cpp.dart';
 import 'package:highlight/languages/scala.dart';
 import 'package:highlight/languages/haskell.dart';
 import 'package:highlight/languages/clojure.dart';
