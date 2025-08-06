@@ -451,7 +451,7 @@ pub async fn download_changes(
                         LogType::PullFromRepo,
                         "Uncommitted changes exist!".to_string(),
                     );
-                    return Ok(None);
+                    return Ok(Some(false));
                 }
                 return Ok(Some(true));
             }
