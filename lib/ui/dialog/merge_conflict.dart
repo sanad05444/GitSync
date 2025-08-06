@@ -236,22 +236,27 @@ Future<void> showDialog(BuildContext parentContext, List<String> conflictingPath
                           child: Column(
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  TextButton.icon(
-                                    onPressed: () => OpenFile.open("$dirPath/${conflictingPaths[conflictIndex]}"),
-                                    style: ButtonStyle(
-                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                      shape: WidgetStatePropertyAll(
-                                        RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusSM), side: BorderSide.none),
+                                  Expanded(
+                                    child: TextButton.icon(
+                                      onPressed: () => OpenFile.open("$dirPath/${conflictingPaths[conflictIndex]}"),
+                                      style: ButtonStyle(
+                                        alignment: Alignment.centerLeft,
+                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                        shape: WidgetStatePropertyAll(
+                                          RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusSM), side: BorderSide.none),
+                                        ),
+                                      ),
+                                      icon: FaIcon(FontAwesomeIcons.squareArrowUpRight, color: primaryLight, size: textMD),
+                                      label: Text(
+                                        conflictingPaths.isEmpty ? "-" : conflictingPaths[conflictIndex].split("/").last.toUpperCase(),
+                                        maxLines: 1,
+                                        textAlign: TextAlign.start,
+                                        style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                                       ),
                                     ),
-                                    icon: FaIcon(FontAwesomeIcons.squareArrowUpRight, color: primaryLight, size: textMD),
-                                    label: Text(
-                                      conflictingPaths.isEmpty ? "-" : conflictingPaths[conflictIndex].split("/").last.toUpperCase(),
-                                      style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
-                                    ),
                                   ),
+                                  SizedBox(width: spaceXXS),
                                   Row(
                                     children: [
                                       IconButton(
