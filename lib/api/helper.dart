@@ -133,7 +133,7 @@ Future<T?> useDirectory<T>(String bookmarkPath, Future<void> Function(String) se
   String? path;
 
   try {
-    final bookmarkAndPath = await iosDocumentPickerPlugin.resolveBookmark(bookmarkPath);
+    final bookmarkAndPath = await iosDocumentPickerPlugin.resolveBookmark(bookmarkPath, isDirectory: true);
     if (bookmarkAndPath == null) return null;
     await setBookmarkPath(bookmarkAndPath.$1);
     path = bookmarkAndPath.$2;
@@ -146,17 +146,17 @@ Future<T?> useDirectory<T>(String bookmarkPath, Future<void> Function(String) se
     return null;
   }
 
-  debounce("$iosFolderAccessDebounceReference-$path", 60000, () async => await iosDocumentPickerPlugin.stopAccessing(path!));
-
   final hasAccess = await iosDocumentPickerPlugin.startAccessing(path);
   if (!hasAccess) {
     print("//// No folder access");
     return null;
   }
 
-  final result = preUseAccess(path);
+  final result = await preUseAccess(path);
 
-  return await result;
+  debounce("$iosFolderAccessDebounceReference-$path", 60000, () async => await iosDocumentPickerPlugin.stopAccessing(path!));
+
+  return result;
 }
 
 Future<String> encryptMap(Map<String, dynamic> data, String password) async {

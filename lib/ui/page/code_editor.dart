@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:GitSync/api/helper.dart';
 import 'package:GitSync/constant/colors.dart';
 import 'package:GitSync/constant/dimens.dart';
@@ -19,14 +17,14 @@ class CodeEditor extends StatefulWidget {
 }
 
 class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
-  final CodeController controller = CodeController();
+  final CodeController controller = CodeController(chunkConfig: ChunkConfig(chunkSize: 800, chunkLineOverlap: 100));
 
   @override
   void initState() {
     super.initState();
     try {
-      controller.text = File(widget.path).readAsStringSync();
       controller.language = extensionToLanguageMap[p.extension(widget.path).replaceFirst('.', '')];
+      controller.openFile(widget.path);
     } catch (e) {
       print(e);
       controller.text = "";
@@ -92,10 +90,11 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
         child: Container(
           decoration: BoxDecoration(borderRadius: BorderRadius.all(cornerRadiusMD), color: tertiaryDark),
           margin: EdgeInsets.only(left: spaceSM, right: spaceSM, bottom: spaceLG),
+          padding: EdgeInsets.only(right: spaceXS),
           clipBehavior: Clip.hardEdge,
           child: CodeField(
             expands: true,
-            readOnly: true,
+            readOnly: false,
             controller: controller,
             textStyle: TextStyle(fontSize: textMD),
             background: Colors.transparent,
@@ -105,7 +104,7 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
               showFoldingHandles: true,
               showLineNumbers: true,
               textStyle: TextStyle(height: 1.5, fontSize: textMD),
-              margin: 0,
+              margin: spaceXS,
               textAlign: TextAlign.right,
             ),
           ),
