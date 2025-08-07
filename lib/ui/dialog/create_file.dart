@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
-import 'package:GitSync/global.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future<void> showDialog(BuildContext context, Function(String text) callback) {
   final textController = TextEditingController();
@@ -14,7 +14,7 @@ Future<void> showDialog(BuildContext context, Function(String text) callback) {
           backgroundColor: secondaryDark,
           title: SizedBox(
             width: MediaQuery.of(context).size.width,
-            child: Text("Create a directory", style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold)),
+            child: Text("Create a File", style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold)),
           ),
           content: SingleChildScrollView(
             child: ListBody(
@@ -34,9 +34,9 @@ Future<void> showDialog(BuildContext context, Function(String text) callback) {
                     fillColor: tertiaryDark,
                     filled: true,
                     border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusSM), borderSide: BorderSide.none),
-                    label: Text("Folder Name".toUpperCase(), style: TextStyle(color: secondaryLight, fontSize: textSM, fontWeight: FontWeight.bold)),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
                     isCollapsed: true,
+                    label: Text("File Name".toUpperCase(), style: TextStyle(color: secondaryLight, fontSize: textSM, fontWeight: FontWeight.bold)),
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
                     contentPadding: const EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
                     isDense: true,
                   ),
@@ -46,13 +46,13 @@ Future<void> showDialog(BuildContext context, Function(String text) callback) {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text(t.cancel.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textMD)),
+              child: Text(AppLocalizations.of(context).cancel.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textMD)),
               onPressed: () {
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;
               },
             ),
             TextButton(
-              child: Text(t.add.toUpperCase(), style: TextStyle(color: primaryPositive, fontSize: textMD)),
+              child: Text(AppLocalizations.of(context).create.toUpperCase(), style: TextStyle(color: primaryPositive, fontSize: textMD)),
               onPressed: () async {
                 callback(textController.text);
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;
