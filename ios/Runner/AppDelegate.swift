@@ -2,7 +2,6 @@ import Flutter
 import UIKit
 import workmanager
 import flutter_background_service_ios 
-import FirebaseMessaging
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -127,9 +126,4 @@ import FirebaseMessaging
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
-    
-    func application(application: UIApplication,
-                    didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-       Messaging.messaging().apnsToken = deviceToken
-    }
 }
