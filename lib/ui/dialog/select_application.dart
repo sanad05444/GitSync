@@ -9,7 +9,7 @@ import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../global.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
-import 'package:GitSync/global.dart';
+import 'package:async/async.dart';
 
 Future<void> showDialog(BuildContext parentContext, Set<String>? prevSelectedApplications) async {
   final List<String> selectedApplications = prevSelectedApplications?.toList() ?? [];
@@ -60,7 +60,7 @@ Future<void> showDialog(BuildContext parentContext, Set<String>? prevSelectedApp
                       ),
                       SizedBox(height: spaceMD),
                       FutureBuilder(
-                        future: AccessibilityServiceHelper.getDeviceApplications(searchController.text),
+                        future: AsyncMemoizer().runOnce(() => AccessibilityServiceHelper.getDeviceApplications(searchController.text)),
                         builder: (context, deviceAppsSnapshot) {
                           final packageNames = <String>{...selectedApplications, ...deviceAppsSnapshot.data ?? []}.toList();
 
@@ -108,7 +108,9 @@ Future<void> showDialog(BuildContext parentContext, Set<String>? prevSelectedApp
                                                       height: textXXL,
                                                       width: textXXL,
                                                       child: FutureBuilder(
-                                                        future: AccessibilityServiceHelper.getApplicationIcon(packageName),
+                                                        future: AsyncMemoizer().runOnce(
+                                                          () async => AccessibilityServiceHelper.getApplicationIcon(packageName),
+                                                        ),
                                                         builder:
                                                             (context, snapshot) =>
                                                                 snapshot.data == null
@@ -123,7 +125,10 @@ Future<void> showDialog(BuildContext parentContext, Set<String>? prevSelectedApp
                                                     ),
                                                     SizedBox(height: spaceSM),
                                                     FutureBuilder(
-                                                      future: AccessibilityServiceHelper.getApplicationLabel(packageName),
+                                                      future: AsyncMemoizer().runOnce(
+                                                        () async => AccessibilityServiceHelper.getApplicationLabel(packageName),
+                                                      ),
+                                                      // future: AccessibilityServiceHelper.getApplicationLabel(packageName),
                                                       builder:
                                                           (context, snapshot) => Text(
                                                             (snapshot.data ?? "").toUpperCase(),
