@@ -214,7 +214,13 @@ class _MyAppState extends State<MyApp> {
               return const Locale('en');
             },
             theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: primaryDark), useMaterial3: true),
-            home: ShowCaseWidget(blurValue: 3, builder: (context) => MyHomePage(title: appName, setState: setState)),
+            home: ShowCaseWidget(
+              blurValue: 3,
+              builder: (context) {
+                t = AppLocalizations.of(context);
+                return MyHomePage(title: appName, setState: setState);
+              },
+            ),
           ),
     );
   }
