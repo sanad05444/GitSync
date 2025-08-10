@@ -19,7 +19,7 @@ import '../../../constant/dimens.dart';
 import '../../../global.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
 import 'package:anchor_scroll_controller/anchor_scroll_controller.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/global.dart';
 
 final demoConflictSections = [
   (
@@ -185,7 +185,7 @@ Future<void> showDialog(BuildContext parentContext, List<String> conflictingPath
                 title: SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: Text(
-                    AppLocalizations.of(context).mergeConflict.toUpperCase(),
+                    t.mergeConflict.toUpperCase(),
                     textAlign: TextAlign.center,
                     style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
                   ),
@@ -195,7 +195,7 @@ Future<void> showDialog(BuildContext parentContext, List<String> conflictingPath
                         ? (List<Widget> children) => Column(children: children)
                         : (List<Widget> children) => SingleChildScrollView(child: ListBody(children: children)))(<Widget>[
                       Text(
-                        AppLocalizations.of(context).mergeDialogMessage,
+                        t.mergeDialogMessage,
                         textAlign: TextAlign.center,
                         style: const TextStyle(color: secondaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
                       ),
@@ -217,7 +217,7 @@ Future<void> showDialog(BuildContext parentContext, List<String> conflictingPath
                           hintText: syncMessage,
                           isCollapsed: true,
                           label: Text(
-                            AppLocalizations.of(context).commitMessage.toUpperCase(),
+                            t.commitMessage.toUpperCase(),
                             style: TextStyle(color: secondaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                           ),
                           floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -370,7 +370,7 @@ Future<void> showDialog(BuildContext parentContext, List<String> conflictingPath
                                                           Padding(
                                                             padding: EdgeInsets.only(left: spaceSM, top: spaceSM),
                                                             child: Text(
-                                                              AppLocalizations.of(context).keepChanges.toUpperCase(),
+                                                              t.keepChanges.toUpperCase(),
                                                               style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                                                             ),
                                                           ),
@@ -407,7 +407,7 @@ Future<void> showDialog(BuildContext parentContext, List<String> conflictingPath
                                                                       ),
                                                                     ),
                                                                     child: Text(
-                                                                      AppLocalizations.of(context).local.toUpperCase(),
+                                                                      t.local.toUpperCase(),
                                                                       style: TextStyle(color: secondaryDark, fontWeight: FontWeight.bold),
                                                                     ),
                                                                   ),
@@ -440,7 +440,7 @@ Future<void> showDialog(BuildContext parentContext, List<String> conflictingPath
                                                                       ),
                                                                     ),
                                                                     child: Text(
-                                                                      AppLocalizations.of(context).both.toUpperCase(),
+                                                                      t.both.toUpperCase(),
                                                                       style: TextStyle(color: secondaryDark, fontWeight: FontWeight.bold),
                                                                     ),
                                                                   ),
@@ -472,7 +472,7 @@ Future<void> showDialog(BuildContext parentContext, List<String> conflictingPath
                                                                       ),
                                                                     ),
                                                                     child: Text(
-                                                                      AppLocalizations.of(context).remote.toUpperCase(),
+                                                                      t.remote.toUpperCase(),
                                                                       style: TextStyle(color: secondaryDark, fontWeight: FontWeight.bold),
                                                                     ),
                                                                   ),
@@ -582,10 +582,7 @@ Future<void> showDialog(BuildContext parentContext, List<String> conflictingPath
                             RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusSM), side: BorderSide.none),
                           ),
                         ),
-                        child: Text(
-                          AppLocalizations.of(context).abortMerge.toUpperCase(),
-                          style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
-                        ),
+                        child: Text(t.abortMerge.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold)),
                       ),
                       TextButton.icon(
                         onPressed:
@@ -628,12 +625,10 @@ Future<void> showDialog(BuildContext parentContext, List<String> conflictingPath
                                 : null,
                         label: Text(
                           (isMerging
-                                  ? AppLocalizations.of(context).merging
+                                  ? t.merging
                                   // 0 1
                                   // 0 1
-                                  : (conflictIndex == conflictingPaths.length - 1 || conflictingPaths.length <= 1
-                                      ? AppLocalizations.of(context).merge
-                                      : "next"))
+                                  : (conflictIndex == conflictingPaths.length - 1 || conflictingPaths.length <= 1 ? t.merge : "next"))
                               .toUpperCase(),
                           style: TextStyle(
                             color: !demo && conflictSections.indexWhere((section) => section.$2.contains("\n")) == -1 ? tertiaryDark : tertiaryLight,

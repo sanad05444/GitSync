@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/global.dart';
 
 final Map<String, Future<void> Function([int? repomanRepoindex])> autoFixCallbackMap = {
   invalidIndexHeaderError: GitManager.deleteGitIndex,
@@ -23,12 +23,7 @@ Future<void> showDialog(BuildContext context, String error, Function() callback)
     builder:
         (BuildContext context) => BaseAlertDialog(
           key: errorDialogKey,
-          title: SizedBox(
-            child: Text(
-              AppLocalizations.of(context).errorOccurredTitle,
-              style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
-            ),
-          ),
+          title: SizedBox(child: Text(t.errorOccurredTitle, style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold))),
           content: SingleChildScrollView(
             child: ListBody(
               children: [
@@ -68,7 +63,7 @@ Future<void> showDialog(BuildContext context, String error, Function() callback)
                                       ? SizedBox(height: textSM, width: textSM, child: CircularProgressIndicator(color: primaryPositive))
                                       : FaIcon(FontAwesomeIcons.bugSlash, color: primaryPositive, size: textLG),
                               label: Text(
-                                AppLocalizations.of(context).attemptAutoFix.toUpperCase(),
+                                t.attemptAutoFix.toUpperCase(),
                                 style: TextStyle(color: primaryPositive, fontSize: textSM, fontWeight: FontWeight.bold),
                               ),
                             ),
@@ -76,27 +71,21 @@ Future<void> showDialog(BuildContext context, String error, Function() callback)
                       SizedBox(height: spaceMD),
                     ]
                     : [],
-                Text(
-                  AppLocalizations.of(context).errorOccurredMessagePart1,
-                  style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
-                ),
+                Text(t.errorOccurredMessagePart1, style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM)),
                 SizedBox(height: spaceSM),
-                Text(
-                  AppLocalizations.of(context).errorOccurredMessagePart2,
-                  style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
-                ),
+                Text(t.errorOccurredMessagePart2, style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM)),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text(AppLocalizations.of(context).dismiss, style: TextStyle(color: primaryLight, fontSize: textMD)),
+              child: Text(t.dismiss, style: TextStyle(color: primaryLight, fontSize: textMD)),
               onPressed: () {
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;
               },
             ),
             TextButton(
-              child: Text(AppLocalizations.of(context).reportABug, style: TextStyle(color: tertiaryNegative, fontSize: textMD)),
+              child: Text(t.reportABug, style: TextStyle(color: tertiaryNegative, fontSize: textMD)),
               onPressed: () async {
                 callback();
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;

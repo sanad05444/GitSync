@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/global.dart';
 
 Future<void> showDialog(BuildContext context, String currentName, Function(String text) callback) {
   final textController = TextEditingController(text: currentName);
@@ -13,18 +13,12 @@ Future<void> showDialog(BuildContext context, String currentName, Function(Strin
         (BuildContext context) => BaseAlertDialog(
           title: SizedBox(
             width: MediaQuery.of(context).size.width,
-            child: Text(
-              AppLocalizations.of(context).renameRepository,
-              style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
-            ),
+            child: Text(t.renameRepository, style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold)),
           ),
           content: SingleChildScrollView(
             child: ListBody(
               children: [
-                Text(
-                  AppLocalizations.of(context).renameRepositoryMsg,
-                  style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
-                ),
+                Text(t.renameRepositoryMsg, style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM)),
                 SizedBox(height: spaceMD + spaceSM),
                 TextField(
                   controller: textController,
@@ -42,7 +36,7 @@ Future<void> showDialog(BuildContext context, String currentName, Function(Strin
                     border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusSM), borderSide: BorderSide.none),
                     isCollapsed: true,
                     label: Text(
-                      AppLocalizations.of(context).defaultContainerName.toUpperCase(),
+                      t.defaultContainerName.toUpperCase(),
                       style: TextStyle(color: secondaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                     ),
                     floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -55,13 +49,13 @@ Future<void> showDialog(BuildContext context, String currentName, Function(Strin
           ),
           actions: <Widget>[
             TextButton(
-              child: Text(AppLocalizations.of(context).cancel.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textMD)),
+              child: Text(t.cancel.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textMD)),
               onPressed: () {
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;
               },
             ),
             TextButton(
-              child: Text(AppLocalizations.of(context).rename.toUpperCase(), style: TextStyle(color: primaryPositive, fontSize: textMD)),
+              child: Text(t.rename.toUpperCase(), style: TextStyle(color: primaryPositive, fontSize: textMD)),
               onPressed: () async {
                 callback(textController.text);
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;

@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/global.dart';
 
 Future<void> showDialog(BuildContext context, Future<void> Function(String, String, String) report) {
   final titleController = TextEditingController();
@@ -23,7 +23,7 @@ Future<void> showDialog(BuildContext context, Future<void> Function(String, Stri
                 title: SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: Text(
-                    AppLocalizations.of(context).reportABug.toUpperCase(),
+                    t.reportABug.toUpperCase(),
                     textAlign: TextAlign.center,
                     style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
                   ),
@@ -40,14 +40,14 @@ Future<void> showDialog(BuildContext context, Future<void> Function(String, Stri
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: spaceMD),
                             child: Text(
-                              AppLocalizations.of(context).issueReportTitleTitle.toUpperCase(),
+                              t.issueReportTitleTitle.toUpperCase(),
                               style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
                             ),
                           ),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: spaceMD),
                             child: Text(
-                              AppLocalizations.of(context).issueReportTitleDesc,
+                              t.issueReportTitleDesc,
                               style: TextStyle(color: secondaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                             ),
                           ),
@@ -70,7 +70,7 @@ Future<void> showDialog(BuildContext context, Future<void> Function(String, Stri
                               isCollapsed: true,
                               floatingLabelBehavior: FloatingLabelBehavior.always,
                               contentPadding: const EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
-                              errorText: titleController.text.isEmpty ? AppLocalizations.of(context).fieldCannotBeEmpty : null,
+                              errorText: titleController.text.isEmpty ? t.fieldCannotBeEmpty : null,
                               errorStyle: TextStyle(color: tertiaryNegative),
                               isDense: true,
                             ),
@@ -88,14 +88,14 @@ Future<void> showDialog(BuildContext context, Future<void> Function(String, Stri
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: spaceMD),
                               child: Text(
-                                AppLocalizations.of(context).issueReportDescTitle.toUpperCase(),
+                                t.issueReportDescTitle.toUpperCase(),
                                 style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
                               ),
                             ),
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: spaceMD),
                               child: Text(
-                                AppLocalizations.of(context).issueReportDescDesc,
+                                t.issueReportDescDesc,
                                 style: TextStyle(color: secondaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                               ),
                             ),
@@ -116,7 +116,7 @@ Future<void> showDialog(BuildContext context, Future<void> Function(String, Stri
                                 decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
                                   border: const OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.all(cornerRadiusMD)),
-                                  errorText: descriptionController.text.isEmpty ? AppLocalizations.of(context).fieldCannotBeEmpty : null,
+                                  errorText: descriptionController.text.isEmpty ? t.fieldCannotBeEmpty : null,
                                   errorStyle: TextStyle(color: tertiaryNegative),
                                   isCollapsed: true,
                                   fillColor: tertiaryDark,
@@ -139,14 +139,14 @@ Future<void> showDialog(BuildContext context, Future<void> Function(String, Stri
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: spaceMD),
                               child: Text(
-                                AppLocalizations.of(context).issueReportMinimalReproTitle.toUpperCase(),
+                                t.issueReportMinimalReproTitle.toUpperCase(),
                                 style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
                               ),
                             ),
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: spaceMD),
                               child: Text(
-                                AppLocalizations.of(context).issueReportMinimalReproDesc,
+                                t.issueReportMinimalReproDesc,
                                 style: TextStyle(color: secondaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                               ),
                             ),
@@ -168,7 +168,7 @@ Future<void> showDialog(BuildContext context, Future<void> Function(String, Stri
                                   contentPadding: const EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
                                   border: const OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.all(cornerRadiusMD)),
                                   isCollapsed: true,
-                                  errorText: minimalReproController.text.isEmpty ? AppLocalizations.of(context).fieldCannotBeEmpty : null,
+                                  errorText: minimalReproController.text.isEmpty ? t.fieldCannotBeEmpty : null,
                                   errorStyle: TextStyle(color: tertiaryNegative),
                                   fillColor: tertiaryDark,
                                   filled: true,
@@ -186,7 +186,7 @@ Future<void> showDialog(BuildContext context, Future<void> Function(String, Stri
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            AppLocalizations.of(context).issueReportMessage,
+                            t.issueReportMessage,
                             textAlign: TextAlign.end,
                             style: const TextStyle(color: secondaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
                           ),
@@ -195,7 +195,7 @@ Future<void> showDialog(BuildContext context, Future<void> Function(String, Stri
                     ]),
                 actions: <Widget>[
                   TextButton(
-                    child: Text(AppLocalizations.of(context).cancel.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textMD)),
+                    child: Text(t.cancel.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textMD)),
                     onPressed: () async {
                       Navigator.of(context).canPop() ? Navigator.pop(context) : null;
                     },
@@ -211,7 +211,7 @@ Future<void> showDialog(BuildContext context, Future<void> Function(String, Stri
                       size: textMD,
                     ),
                     label: Text(
-                      AppLocalizations.of(context).report.toUpperCase(),
+                      t.report.toUpperCase(),
                       style: TextStyle(
                         color:
                             minimalReproController.text.isEmpty || descriptionController.text.isEmpty || titleController.text.isEmpty

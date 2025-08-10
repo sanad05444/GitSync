@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/global.dart';
 
 Future<void> showDialog(BuildContext context, Function() callback) {
   return mat.showDialog(
@@ -12,31 +12,25 @@ Future<void> showDialog(BuildContext context, Function() callback) {
         (BuildContext context) => BaseAlertDialog(
           title: SizedBox(
             width: MediaQuery.of(context).size.width,
-            child: Text(
-              AppLocalizations.of(context).invalidRepositoryUrlTitle,
-              style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
-            ),
+            child: Text(t.invalidRepositoryUrlTitle, style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold)),
           ),
           content: SingleChildScrollView(
             child: ListBody(
               children: [
-                Text(
-                  AppLocalizations.of(context).invalidRepositoryUrlMessage,
-                  style: const TextStyle(color: tertiaryNegative, fontWeight: FontWeight.bold, fontSize: textSM),
-                ),
+                Text(t.invalidRepositoryUrlMessage, style: const TextStyle(color: tertiaryNegative, fontWeight: FontWeight.bold, fontSize: textSM)),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text(AppLocalizations.of(context).cloneAnyway, style: TextStyle(color: secondaryLight, fontSize: textMD)),
+              child: Text(t.cloneAnyway, style: TextStyle(color: secondaryLight, fontSize: textMD)),
               onPressed: () {
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;
                 callback();
               },
             ),
             TextButton(
-              child: Text(AppLocalizations.of(context).cancel, style: TextStyle(color: primaryPositive, fontSize: textMD)),
+              child: Text(t.cancel, style: TextStyle(color: primaryPositive, fontSize: textMD)),
               onPressed: () async {
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;
               },

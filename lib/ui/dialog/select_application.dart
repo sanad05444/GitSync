@@ -9,7 +9,7 @@ import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../global.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/global.dart';
 
 Future<void> showDialog(BuildContext parentContext, Set<String>? prevSelectedApplications) async {
   final List<String> selectedApplications = prevSelectedApplications?.toList() ?? [];
@@ -22,7 +22,7 @@ Future<void> showDialog(BuildContext parentContext, Set<String>? prevSelectedApp
           title: SizedBox(
             width: MediaQuery.of(context).size.width,
             child: Text(
-              AppLocalizations.of(context).selectApplication.toUpperCase(),
+              t.selectApplication.toUpperCase(),
               textAlign: TextAlign.center,
               style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
             ),
@@ -47,10 +47,7 @@ Future<void> showDialog(BuildContext parentContext, Set<String>? prevSelectedApp
                           filled: true,
                           border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusMD), borderSide: BorderSide.none),
                           isCollapsed: true,
-                          label: Text(
-                            AppLocalizations.of(context).search.toUpperCase(),
-                            style: TextStyle(color: secondaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
-                          ),
+                          label: Text(t.search.toUpperCase(), style: TextStyle(color: secondaryLight, fontSize: textSM, fontWeight: FontWeight.bold)),
                           floatingLabelBehavior: FloatingLabelBehavior.always,
                           contentPadding: const EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
                           isDense: true,
@@ -160,13 +157,13 @@ Future<void> showDialog(BuildContext parentContext, Set<String>? prevSelectedApp
           ),
           actions: <Widget>[
             TextButton(
-              child: Text(AppLocalizations.of(context).cancel.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textMD)),
+              child: Text(t.cancel.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textMD)),
               onPressed: () {
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;
               },
             ),
             TextButton(
-              child: Text(AppLocalizations.of(context).saveApplication.toUpperCase(), style: TextStyle(color: primaryPositive, fontSize: textMD)),
+              child: Text(t.saveApplication.toUpperCase(), style: TextStyle(color: primaryPositive, fontSize: textMD)),
               onPressed: () async {
                 uiSettingsManager.setStringList(StorageKey.setman_packageNames, selectedApplications);
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;

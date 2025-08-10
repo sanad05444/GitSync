@@ -370,55 +370,55 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
     if ((await GitManager.getConflicting()).isEmpty) {
       syncOptions.addAll({
-        AppLocalizations.of(context).syncNow: (
+        t.syncNow: (
           FontAwesomeIcons.solidCircleDown,
           () async {
             FlutterBackgroundService().invoke(GitsyncService.FORCE_SYNC);
           },
         ),
-        AppLocalizations.of(context).manualSync: (
+        t.manualSync: (
           FontAwesomeIcons.listCheck,
           () async {
             ManualSyncDialog.showDialog(context);
           },
         ),
-        AppLocalizations.of(context).pushChanges: (
+        t.pushChanges: (
           FontAwesomeIcons.angleUp,
           () async {
             final result = await GitManager.uploadChanges(repomanRepoindex, uiSettingsManager, () async {
               if (await uiSettingsManager.getBool(StorageKey.setman_syncMessageEnabled)) {
-                Fluttertoast.showToast(msg: AppLocalizations.of(context).syncStartPush, toastLength: Toast.LENGTH_LONG, gravity: null);
+                Fluttertoast.showToast(msg: t.syncStartPush, toastLength: Toast.LENGTH_LONG, gravity: null);
               }
             });
             if (result == null) return;
 
             if (result == false) {
-              Fluttertoast.showToast(msg: AppLocalizations.of(context).syncNotRequired, toastLength: Toast.LENGTH_LONG, gravity: null);
+              Fluttertoast.showToast(msg: t.syncNotRequired, toastLength: Toast.LENGTH_LONG, gravity: null);
               return;
             }
 
             if (await uiSettingsManager.getBool(StorageKey.setman_syncMessageEnabled)) {
-              Fluttertoast.showToast(msg: AppLocalizations.of(context).syncComplete, toastLength: Toast.LENGTH_LONG, gravity: null);
+              Fluttertoast.showToast(msg: t.syncComplete, toastLength: Toast.LENGTH_LONG, gravity: null);
             }
           },
         ),
-        AppLocalizations.of(context).pullChanges: (
+        t.pullChanges: (
           FontAwesomeIcons.angleDown,
           () async {
             final result = await GitManager.downloadChanges(repomanRepoindex, uiSettingsManager, () async {
               if (await uiSettingsManager.getBool(StorageKey.setman_syncMessageEnabled)) {
-                Fluttertoast.showToast(msg: AppLocalizations.of(context).syncStartPull, toastLength: Toast.LENGTH_LONG, gravity: null);
+                Fluttertoast.showToast(msg: t.syncStartPull, toastLength: Toast.LENGTH_LONG, gravity: null);
               }
             });
             if (result == null) return;
 
             if (result == false && (await GitManager.getUncommittedFilePaths(repomanRepoindex)).isNotEmpty) {
-              Fluttertoast.showToast(msg: AppLocalizations.of(context).pullFailed, toastLength: Toast.LENGTH_LONG, gravity: null);
+              Fluttertoast.showToast(msg: t.pullFailed, toastLength: Toast.LENGTH_LONG, gravity: null);
               return;
             }
 
             if (await uiSettingsManager.getBool(StorageKey.setman_syncMessageEnabled)) {
-              Fluttertoast.showToast(msg: AppLocalizations.of(context).syncComplete, toastLength: Toast.LENGTH_LONG, gravity: null);
+              Fluttertoast.showToast(msg: t.syncComplete, toastLength: Toast.LENGTH_LONG, gravity: null);
             }
           },
         ),
@@ -426,7 +426,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     }
 
     syncOptions.addAll({
-      AppLocalizations.of(context).forcePush: (
+      t.forcePush: (
         FontAwesomeIcons.anglesUp,
         () async {
           ConfirmForcePushPullDialog.showDialog(context, push: true, () async {
@@ -438,7 +438,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
           });
         },
       ),
-      AppLocalizations.of(context).forcePull: (
+      t.forcePull: (
         FontAwesomeIcons.anglesDown,
         () async {
           ConfirmForcePushPullDialog.showDialog(context, () async {
@@ -528,7 +528,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
         actions: [
           CustomShowcase(
             globalKey: _globalSettingsKey,
-            description: AppLocalizations.of(context).globalSettingsHint,
+            description: t.globalSettingsHint,
             cornerRadius: cornerRadiusMax,
             first: true,
             child: IconButton(
@@ -573,7 +573,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                     alignment: Alignment.center,
                     child: CustomShowcase(
                       globalKey: _syncProgressKey,
-                      description: AppLocalizations.of(context).syncProgressHint,
+                      description: t.syncProgressHint,
                       cornerRadius: cornerRadiusMax,
                       child: Container(
                         width: spaceMD + spaceXS,
@@ -617,14 +617,14 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
           SizedBox(width: spaceSM),
           CustomShowcase(
             globalKey: _addMoreKey,
-            description: AppLocalizations.of(context).addMoreHint,
+            description: t.addMoreHint,
             cornerRadius: cornerRadiusMax,
             customTooltipActions: [
               TooltipActionButton(
                 backgroundColor: secondaryInfo,
                 textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: textSM, color: primaryLight),
                 leadIcon: ActionButtonIcon(icon: Icon(FontAwesomeIcons.solidFileLines, color: primaryLight, size: textSM)),
-                name: AppLocalizations.of(context).learnMore.toUpperCase(),
+                name: t.learnMore.toUpperCase(),
                 onTap: () => launchUrl(Uri.parse(multiRepoDocsLink)),
                 type: null,
               ),
@@ -700,7 +700,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                 : Padding(
                                                   padding: EdgeInsets.only(left: spaceSM),
                                                   child: Text(
-                                                    AppLocalizations.of(context).addMore.toUpperCase(),
+                                                    t.addMore.toUpperCase(),
                                                     style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.w900),
                                                   ),
                                                 ),
@@ -840,7 +840,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
               CustomShowcase(
                 globalKey: _controlKey,
                 cornerRadius: cornerRadiusMD,
-                description: AppLocalizations.of(context).controlHint,
+                description: t.controlHint,
                 child: FutureBuilder(
                   future: GitManager.getRecentCommits(),
                   builder:
@@ -924,7 +924,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                     : (recentCommitsSnapshot.data!.isEmpty && conflictingSnapshot.data!.isEmpty
                                                         ? Center(
                                                           child: Text(
-                                                            AppLocalizations.of(context).commitsNotFound.toUpperCase(),
+                                                            t.commitsNotFound.toUpperCase(),
                                                             style: TextStyle(color: secondaryLight, fontWeight: FontWeight.bold, fontSize: textLG),
                                                           ),
                                                         )
@@ -986,7 +986,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                         isDense: true,
                                                         isExpanded: true,
                                                         hint: Text(
-                                                          AppLocalizations.of(context).detachedHead.toUpperCase(),
+                                                          t.detachedHead.toUpperCase(),
                                                           style: TextStyle(fontSize: textMD, fontWeight: FontWeight.bold, color: secondaryLight),
                                                         ),
                                                         padding: EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceXS),
@@ -1077,7 +1077,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                                 ? primaryLight
                                                                 : secondaryLight,
                                                         size: textXL,
-                                                        semanticLabel: AppLocalizations.of(context).addBranchLabel,
+                                                        semanticLabel: t.addBranchLabel,
                                                       ),
                                                     ),
                                                   ],
@@ -1142,7 +1142,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                               ((syncOptionsSnapshot.data?.containsKey(lastSyncMethodSnapshot.data) == true
                                                                           ? lastSyncMethodSnapshot.data
                                                                           : syncOptionsSnapshot.data?.keys.first) ??
-                                                                      AppLocalizations.of(context).syncNow)
+                                                                      t.syncNow)
                                                                   .toUpperCase(),
                                                               style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
                                                             ),
@@ -1263,7 +1263,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                             FontAwesomeIcons.ellipsis,
                                                             color: primaryLight,
                                                             size: textLG,
-                                                            semanticLabel: AppLocalizations.of(context).moreSyncOptionsLabel,
+                                                            semanticLabel: t.moreSyncOptionsLabel,
                                                           ),
                                                         ),
                                                       ),
@@ -1288,7 +1288,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                         FontAwesomeIcons.gear,
                                         color: primaryLight,
                                         size: textLG,
-                                        semanticLabel: AppLocalizations.of(context).repositorySettingsLabel,
+                                        semanticLabel: t.repositorySettingsLabel,
                                       ),
                                     ),
                                     SizedBox(width: spaceSM),
@@ -1327,7 +1327,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                   demo || snapshot.data == true ? FontAwesomeIcons.solidBell : FontAwesomeIcons.solidBellSlash,
                                                   color: demo || snapshot.data == true ? primaryPositive : primaryLight,
                                                   size: textLG - 2,
-                                                  semanticLabel: AppLocalizations.of(context).syncMessagesLabel,
+                                                  semanticLabel: t.syncMessagesLabel,
                                                 ),
                                               ],
                                             ),
@@ -1354,7 +1354,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                               CustomShowcase(
                                 cornerRadius: cornerRadiusMD,
                                 globalKey: _configKey,
-                                description: AppLocalizations.of(context).configHint,
+                                description: t.configHint,
                                 child: Column(
                                   children: [
                                     IntrinsicHeight(
@@ -1395,7 +1395,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                       child: ExtendedText(
                                                         demo
                                                             ? "https://github.com/ViscousTests/TestObsidianVault.git"
-                                                            : (snapshot.data == null ? AppLocalizations.of(context).repoNotFound : snapshot.data!.$1),
+                                                            : (snapshot.data == null ? t.repoNotFound : snapshot.data!.$1),
                                                         maxLines: 1,
                                                         textAlign: TextAlign.left,
                                                         softWrap: false,
@@ -1463,7 +1463,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                             label: Padding(
                                               padding: EdgeInsets.only(left: spaceXS),
                                               child: Text(
-                                                AppLocalizations.of(context).auth.toUpperCase(),
+                                                t.auth.toUpperCase(),
                                                 style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
                                               ),
                                             ),
@@ -1500,7 +1500,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                                 ? "TestObsidianVault"
                                                                 : "/storage/emulated/0/github/ViscousTests/TestObsidianVault")
                                                             : (gitDirPathSnapshot.data == null
-                                                                ? AppLocalizations.of(context).repoNotFound
+                                                                ? t.repoNotFound
                                                                 : (Platform.isIOS
                                                                         ? gitDirPathSnapshot.data?.split("/").last
                                                                         : gitDirPathSnapshot.data) ??
@@ -1549,7 +1549,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                           FontAwesomeIcons.solidCircleXmark,
                                                           size: textLG,
                                                           color: primaryLight,
-                                                          semanticLabel: AppLocalizations.of(context).deselectDirLabel,
+                                                          semanticLabel: t.deselectDirLabel,
                                                         ),
                                                       ),
                                                 ],
@@ -1594,7 +1594,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                               FontAwesomeIcons.solidFolderOpen,
                                               color: isAuthenticatedSnapshot.data == true ? primaryLight : tertiaryLight,
                                               size: textLG - 2,
-                                              semanticLabel: AppLocalizations.of(context).selectDirLabel,
+                                              semanticLabel: t.selectDirLabel,
                                             ),
                                           ),
                                         ],
@@ -1652,7 +1652,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
               SizedBox(height: spaceLG),
               CustomShowcase(
                 globalKey: _autoSyncOptionsKey,
-                description: AppLocalizations.of(context).autoSyncOptionsHint,
+                description: t.autoSyncOptionsHint,
                 cornerRadius: cornerRadiusMD,
                 targetPadding: EdgeInsets.all(spaceSM),
                 customTooltipActions: [
@@ -1660,7 +1660,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                     backgroundColor: secondaryInfo,
                     textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: textSM, color: primaryLight),
                     leadIcon: ActionButtonIcon(icon: Icon(FontAwesomeIcons.solidFileLines, color: primaryLight, size: textSM)),
-                    name: AppLocalizations.of(context).learnMore.toUpperCase(),
+                    name: t.learnMore.toUpperCase(),
                     onTap: () => launchUrl(Uri.parse(syncOptionsBGDocsLink)),
                     type: null,
                   ),
@@ -1686,7 +1686,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                       label: SizedBox(
                         width: double.infinity,
                         child: Text(
-                          AppLocalizations.of(context).otherSyncSettings,
+                          t.otherSyncSettings,
                           style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),
                         ),
                       ),
@@ -1710,8 +1710,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                       child: Text.rich(
                         TextSpan(
                           children: [
-                            TextSpan(text: AppLocalizations.of(context).youreOffline, style: TextStyle(fontWeight: FontWeight.bold)),
-                            TextSpan(text: AppLocalizations.of(context).someFeaturesMayNotWork),
+                            TextSpan(text: t.youreOffline, style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(text: t.someFeaturesMayNotWork),
                           ],
                         ),
                       ),

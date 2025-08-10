@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/global.dart';
 
 Future<void> showDialog(BuildContext context, bool backupRestore, Function(String text) callback) {
   final textController = TextEditingController();
@@ -14,10 +14,7 @@ Future<void> showDialog(BuildContext context, bool backupRestore, Function(Strin
           backgroundColor: secondaryDark,
           title: SizedBox(
             width: MediaQuery.of(context).size.width,
-            child: Text(
-              AppLocalizations.of(context).enterPassword,
-              style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
-            ),
+            child: Text(t.enterPassword, style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold)),
           ),
           content: SingleChildScrollView(
             child: ListBody(
@@ -49,16 +46,13 @@ Future<void> showDialog(BuildContext context, bool backupRestore, Function(Strin
           ),
           actions: <Widget>[
             TextButton(
-              child: Text(AppLocalizations.of(context).cancel.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textMD)),
+              child: Text(t.cancel.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textMD)),
               onPressed: () {
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;
               },
             ),
             TextButton(
-              child: Text(
-                (backupRestore ? AppLocalizations.of(context).backup : AppLocalizations.of(context).restore).toUpperCase(),
-                style: TextStyle(color: primaryPositive, fontSize: textMD),
-              ),
+              child: Text((backupRestore ? t.backup : t.restore).toUpperCase(), style: TextStyle(color: primaryPositive, fontSize: textMD)),
               onPressed: () async {
                 callback(textController.text);
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;

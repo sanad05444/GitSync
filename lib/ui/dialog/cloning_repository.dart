@@ -4,7 +4,7 @@ import '../../../api/manager/git_manager.dart';
 import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/global.dart';
 
 Future<void> showDialog(BuildContext context, String repoUrl, String dir, Function(String?) callback) async {
   String task = "";
@@ -36,10 +36,7 @@ Future<void> showDialog(BuildContext context, String repoUrl, String dir, Functi
           child: BaseAlertDialog(
             title: SizedBox(
               width: MediaQuery.of(context).size.width,
-              child: Text(
-                AppLocalizations.of(context).cloningRepository,
-                style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
-              ),
+              child: Text(t.cloningRepository, style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold)),
             ),
             content: StatefulBuilder(
               builder: (context, internalSetState) {
@@ -47,11 +44,8 @@ Future<void> showDialog(BuildContext context, String repoUrl, String dir, Functi
                 return SingleChildScrollView(
                   child: ListBody(
                     children: [
-                      Text(
-                        AppLocalizations.of(context).cloneMessagePart1,
-                        style: const TextStyle(color: tertiaryNegative, fontWeight: FontWeight.bold, fontSize: textMD),
-                      ),
-                      Text(AppLocalizations.of(context).cloneMessagePart2, style: const TextStyle(color: primaryLight, fontSize: textMD)),
+                      Text(t.cloneMessagePart1, style: const TextStyle(color: tertiaryNegative, fontWeight: FontWeight.bold, fontSize: textMD)),
+                      Text(t.cloneMessagePart2, style: const TextStyle(color: primaryLight, fontSize: textMD)),
                       SizedBox(height: spaceMD),
                       Text(task, maxLines: 1, style: const TextStyle(color: primaryLight, fontSize: textMD, overflow: TextOverflow.ellipsis)),
                       SizedBox(height: spaceMD),
@@ -59,7 +53,7 @@ Future<void> showDialog(BuildContext context, String repoUrl, String dir, Functi
                         value: progress,
                         backgroundColor: secondaryLight,
                         color: primaryPositive,
-                        semanticsLabel: AppLocalizations.of(context).cloneProgressLabel,
+                        semanticsLabel: t.cloneProgressLabel,
                       ),
                     ],
                   ),

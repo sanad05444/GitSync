@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/global.dart';
 
 Future<void> showDialog(BuildContext context, Function((String, String) sshCredentials) callback) {
   final keyController = TextEditingController();
@@ -15,18 +15,12 @@ Future<void> showDialog(BuildContext context, Function((String, String) sshCrede
         (BuildContext context) => BaseAlertDialog(
           title: SizedBox(
             width: MediaQuery.of(context).size.width,
-            child: Text(
-              AppLocalizations.of(context).importPrivateKey,
-              style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
-            ),
+            child: Text(t.importPrivateKey, style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold)),
           ),
           content: SingleChildScrollView(
             child: ListBody(
               children: [
-                Text(
-                  AppLocalizations.of(context).importPrivateKeyMsg,
-                  style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
-                ),
+                Text(t.importPrivateKeyMsg, style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM)),
                 SizedBox(height: spaceLG),
                 Row(
                   children: [
@@ -42,10 +36,7 @@ Future<void> showDialog(BuildContext context, Function((String, String) sshCrede
                         SizedBox(height: spaceMD),
                         Padding(
                           padding: EdgeInsets.symmetric(vertical: spaceSM),
-                          child: Text(
-                            AppLocalizations.of(context).privKey.toUpperCase(),
-                            style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
-                          ),
+                          child: Text(t.privKey.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold)),
                         ),
                       ],
                     ),
@@ -100,7 +91,7 @@ Future<void> showDialog(BuildContext context, Function((String, String) sshCrede
 
                                 decoration: InputDecoration(
                                   border: const OutlineInputBorder(borderSide: BorderSide.none),
-                                  hintText: AppLocalizations.of(context).sshPrivKeyExample,
+                                  hintText: t.sshPrivKeyExample,
                                   hintStyle: TextStyle(
                                     fontSize: textSM,
                                     fontWeight: FontWeight.bold,
@@ -124,13 +115,13 @@ Future<void> showDialog(BuildContext context, Function((String, String) sshCrede
           ),
           actions: <Widget>[
             TextButton(
-              child: Text(AppLocalizations.of(context).cancel.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textMD)),
+              child: Text(t.cancel.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textMD)),
               onPressed: () {
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;
               },
             ),
             TextButton(
-              child: Text(AppLocalizations.of(context).importKey.toUpperCase(), style: TextStyle(color: primaryPositive, fontSize: textMD)),
+              child: Text(t.importKey.toUpperCase(), style: TextStyle(color: primaryPositive, fontSize: textMD)),
               onPressed: () async {
                 callback((passphraseController.text, keyController.text));
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;

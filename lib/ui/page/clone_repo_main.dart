@@ -18,7 +18,7 @@ import '../../../ui/dialog/cloning_repository.dart' as CloningRepositoryDialog;
 import '../../../ui/dialog/repo_url_invalid.dart' as RepoUrlInvalid;
 import '../../../ui/dialog/clone_failed.dart' as CloneFailedDialog;
 import '../../../ui/dialog/confirm_clone_overwrite.dart' as ConfirmCloneOverwriteDialog;
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/global.dart';
 
 class CloneRepoMain extends StatefulWidget {
   const CloneRepoMain({super.key});
@@ -80,9 +80,9 @@ class _CloneRepoMain extends State<CloneRepoMain> with WidgetsBindingObserver {
 
   void setLoadingRepos(bool loading) {
     if (loading && loadNextRepos != null) {
-      repoList.add((AppLocalizations.of(context).loadingElipsis, AppLocalizations.of(context).loadingElipsis));
+      repoList.add((t.loadingElipsis, t.loadingElipsis));
     } else {
-      repoList.removeWhere((repo) => repo.$1 == AppLocalizations.of(context).loadingElipsis);
+      repoList.removeWhere((repo) => repo.$1 == t.loadingElipsis);
     }
     loadingRepos = loading;
 
@@ -161,7 +161,7 @@ class _CloneRepoMain extends State<CloneRepoMain> with WidgetsBindingObserver {
         surfaceTintColor: Colors.transparent,
         centerTitle: true,
         leading: getBackButton(context, () => Navigator.of(context).canPop() ? Navigator.pop(context) : null),
-        title: Text(AppLocalizations.of(context).cloneRepo, style: TextStyle(color: primaryLight, fontWeight: FontWeight.bold)),
+        title: Text(t.cloneRepo, style: TextStyle(color: primaryLight, fontWeight: FontWeight.bold)),
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: spaceMD),
@@ -257,7 +257,7 @@ class _CloneRepoMain extends State<CloneRepoMain> with WidgetsBindingObserver {
                             maxLines: 1,
                             style: TextStyle(color: primaryLight, decoration: TextDecoration.none, decorationThickness: 0, fontSize: textLG),
                             decoration: InputDecoration(
-                              hintText: AppLocalizations.of(context).gitRepoUrlHint,
+                              hintText: t.gitRepoUrlHint,
                               hintStyle: TextStyle(color: secondaryLight, fontSize: textLG),
                               fillColor: secondaryDark,
                               filled: true,
@@ -302,7 +302,7 @@ class _CloneRepoMain extends State<CloneRepoMain> with WidgetsBindingObserver {
                           label: Padding(
                             padding: EdgeInsets.only(left: spaceXS),
                             child: Text(
-                              AppLocalizations.of(context).clone.toUpperCase(),
+                              t.clone.toUpperCase(),
                               style: TextStyle(color: cloneUrlController.text.isEmpty ? tertiaryLight : primaryLight, fontSize: textMD),
                             ),
                           ),
@@ -352,7 +352,7 @@ class _CloneRepoMain extends State<CloneRepoMain> with WidgetsBindingObserver {
                             width: double.infinity,
                             padding: EdgeInsets.only(left: spaceXS),
                             child: Text(
-                              AppLocalizations.of(context).iHaveALocalRepository.toUpperCase(),
+                              t.iHaveALocalRepository.toUpperCase(),
                               textAlign: TextAlign.center,
                               style: TextStyle(color: primaryLight, fontSize: textMD),
                             ),

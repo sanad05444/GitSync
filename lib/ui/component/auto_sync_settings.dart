@@ -9,7 +9,7 @@ import 'package:GitSync/constant/strings.dart';
 import 'package:GitSync/global.dart';
 import 'package:GitSync/ui/dialog/select_application.dart' as SelectApplicationDialog;
 import 'package:GitSync/ui/dialog/prominent_disclosure.dart' as ProminentDisclosureDialog;
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/global.dart';
 import 'package:sprintf/sprintf.dart';
 
 class AutoSyncSettings extends StatefulWidget {
@@ -72,7 +72,7 @@ class _AutoSyncSettingsState extends State<AutoSyncSettings> {
                           label: SizedBox(
                             width: double.infinity,
                             child: Text(
-                              AppLocalizations.of(context).enableApplicationObserver,
+                              t.enableApplicationObserver,
                               style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),
                             ),
                           ),
@@ -143,7 +143,7 @@ class _AutoSyncSettingsState extends State<AutoSyncSettings> {
                                                       ),
                                                 ),
                                                 label: Text(
-                                                  AppLocalizations.of(context).syncOnAppOpened,
+                                                  t.syncOnAppOpened,
                                                   style: TextStyle(
                                                     color: (applicationPackagesSnapshot.data ?? {}).isEmpty ? tertiaryLight : primaryLight,
                                                     fontSize: textMD,
@@ -202,7 +202,7 @@ class _AutoSyncSettingsState extends State<AutoSyncSettings> {
                                                       ),
                                                 ),
                                                 label: Text(
-                                                  AppLocalizations.of(context).syncOnAppClosed,
+                                                  t.syncOnAppClosed,
                                                   style: TextStyle(
                                                     color: (applicationPackagesSnapshot.data ?? {}).isEmpty ? tertiaryLight : primaryLight,
                                                     fontSize: textMD,
@@ -255,7 +255,7 @@ class _AutoSyncSettingsState extends State<AutoSyncSettings> {
                                                       builder:
                                                           (context, labelSnapshot) => Text(
                                                             ((applicationPackagesSnapshot.data ?? {}).isEmpty
-                                                                    ? AppLocalizations.of(context).applicationNotSet
+                                                                    ? t.applicationNotSet
                                                                     : ((applicationPackagesSnapshot.data ?? {}).length == 1
                                                                         ? (labelSnapshot.data ?? "")
                                                                         : sprintf(multipleApplicationSelected, [

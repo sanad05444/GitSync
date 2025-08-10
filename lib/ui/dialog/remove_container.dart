@@ -7,7 +7,7 @@ import 'package:GitSync/api/manager/storage.dart';
 import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/global.dart';
 
 import 'confirm_remove_container.dart' as ConfirmRemoveContainer;
 
@@ -21,16 +21,13 @@ Future<void> showDialog(BuildContext context, Function(bool deleteContents) call
         (BuildContext context) => BaseAlertDialog(
           title: SizedBox(
             width: MediaQuery.of(context).size.width,
-            child: Text(
-              AppLocalizations.of(context).confirmRepositoryDelete,
-              style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
-            ),
+            child: Text(t.confirmRepositoryDelete, style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold)),
           ),
           content: SingleChildScrollView(
             child: ListBody(
               children: [
                 Text(
-                  sprintf(AppLocalizations.of(context).confirmRepositoryDeleteMsg, [containerName]),
+                  sprintf(t.confirmRepositoryDeleteMsg, [containerName]),
                   style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
                 ),
                 SizedBox(height: spaceSM),
@@ -45,7 +42,7 @@ Future<void> showDialog(BuildContext context, Function(bool deleteContents) call
                         label: Padding(
                           padding: EdgeInsets.only(left: spaceSM),
                           child: Text(
-                            AppLocalizations.of(context).deleteRepoDirectoryCheckbox,
+                            t.deleteRepoDirectoryCheckbox,
                             style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -58,16 +55,13 @@ Future<void> showDialog(BuildContext context, Function(bool deleteContents) call
                       ),
                 ),
                 SizedBox(height: spaceSM),
-                Text(
-                  AppLocalizations.of(context).thisActionCannotBeUndone,
-                  style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
-                ),
+                Text(t.thisActionCannotBeUndone, style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM)),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text(AppLocalizations.of(context).confirm.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textMD)),
+              child: Text(t.confirm.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textMD)),
               onPressed: () async {
                 if (deleteContents) {
                   await ConfirmRemoveContainer.showDialog(context, containerName, () async {
@@ -82,7 +76,7 @@ Future<void> showDialog(BuildContext context, Function(bool deleteContents) call
               },
             ),
             TextButton(
-              child: Text(AppLocalizations.of(context).cancel.toUpperCase(), style: TextStyle(color: primaryPositive, fontSize: textMD)),
+              child: Text(t.cancel.toUpperCase(), style: TextStyle(color: primaryPositive, fontSize: textMD)),
               onPressed: () async {
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;
               },

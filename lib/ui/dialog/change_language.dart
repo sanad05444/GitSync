@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
+import 'package:GitSync/global.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future<void> showDialog(BuildContext context, Future<void> Function(String locale) callback) {
@@ -30,7 +31,7 @@ Future<void> showDialog(BuildContext context, Future<void> Function(String local
                 FaIcon(FontAwesomeIcons.language, color: primaryLight, size: textLG),
                 SizedBox(width: spaceSM),
                 Text(
-                  AppLocalizations.of(context).language.toUpperCase(),
+                  t.language.toUpperCase(),
                   textAlign: TextAlign.center,
                   style: TextStyle(color: primaryLight, fontSize: textLG, fontWeight: FontWeight.bold),
                 ),

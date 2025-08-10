@@ -11,7 +11,7 @@ import 'package:GitSync/global.dart';
 import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/global.dart';
 import 'package:GitSync/ui/dialog/confirm_discard_changes.dart' as ConfirmDiscardChangesDialog;
 
 Future<void> showDialog(BuildContext context) {
@@ -52,7 +52,7 @@ Future<void> showDialog(BuildContext context) {
                       title: SizedBox(
                         width: MediaQuery.of(context).size.width,
                         child: Text(
-                          AppLocalizations.of(context).manualSync.toUpperCase(),
+                          t.manualSync.toUpperCase(),
                           textAlign: TextAlign.center,
                           style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
                         ),
@@ -62,7 +62,7 @@ Future<void> showDialog(BuildContext context) {
                               ? (List<Widget> children) => Column(children: children)
                               : (List<Widget> children) => SingleChildScrollView(child: ListBody(children: children)))(<Widget>[
                             Text(
-                              AppLocalizations.of(context).manualSyncMsg,
+                              t.manualSyncMsg,
                               textAlign: TextAlign.center,
                               style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
                             ),
@@ -84,7 +84,7 @@ Future<void> showDialog(BuildContext context) {
                                 hintText: syncMessage,
                                 isCollapsed: true,
                                 label: Text(
-                                  AppLocalizations.of(context).commitMessage.toUpperCase(),
+                                  t.commitMessage.toUpperCase(),
                                   style: TextStyle(color: secondaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                                 ),
                                 floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -109,7 +109,7 @@ Future<void> showDialog(BuildContext context) {
                                           : snapshot.data!.isEmpty
                                           ? Center(
                                             child: Text(
-                                              AppLocalizations.of(context).noUncommittedChanges.toUpperCase(),
+                                              t.noUncommittedChanges.toUpperCase(),
                                               style: TextStyle(fontWeight: FontWeight.bold, color: primaryLight, fontSize: textMD),
                                             ),
                                           )
@@ -147,10 +147,7 @@ Future<void> showDialog(BuildContext context) {
                                                         size: textMD,
                                                       ),
                                                       label: Text(
-                                                        (selectedFiles.isNotEmpty
-                                                                ? AppLocalizations.of(context).deselectAll
-                                                                : AppLocalizations.of(context).selectAll)
-                                                            .toUpperCase(),
+                                                        (selectedFiles.isNotEmpty ? t.deselectAll : t.selectAll).toUpperCase(),
                                                         style: TextStyle(fontWeight: FontWeight.bold, color: primaryLight),
                                                       ),
                                                     ),
@@ -312,7 +309,7 @@ Future<void> showDialog(BuildContext context) {
                                       )
                                       : null,
                               label: Text(
-                                (uploading ? AppLocalizations.of(context).syncStartPull : AppLocalizations.of(context).syncNow).toUpperCase(),
+                                (uploading ? t.syncStartPull : t.syncNow).toUpperCase(),
                                 style: TextStyle(
                                   color: selectedFiles.isNotEmpty ? tertiaryDark : tertiaryLight,
                                   fontSize: textSM,

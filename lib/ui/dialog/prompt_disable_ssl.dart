@@ -1,12 +1,13 @@
 import 'dart:io';
 
+import 'package:GitSync/global.dart';
 import 'package:flutter/material.dart' as mat;
 import 'package:flutter/material.dart';
 import 'package:sprintf/sprintf.dart';
 import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/global.dart';
 import 'package:path/path.dart' as p;
 
 Future<void> showDialog(BuildContext context, Future<void> Function() callback) {
@@ -32,7 +33,7 @@ Future<void> showDialog(BuildContext context, Future<void> Function() callback) 
           ),
           actions: <Widget>[
             TextButton(
-              child: Text(AppLocalizations.of(context).cancel.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textMD)),
+              child: Text(t.cancel.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textMD)),
               onPressed: () {
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;
               },

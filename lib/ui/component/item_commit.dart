@@ -8,7 +8,7 @@ import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../src/rust/api/git_manager.dart' as GitManagerRs;
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/global.dart';
 
 class ItemCommit extends StatefulWidget {
   const ItemCommit(this.commit, {super.key});
@@ -63,7 +63,7 @@ class _ItemCommit extends State<ItemCommit> {
                 children: [
                   Text(widget.commit.commitMessage, style: TextStyle(color: primaryLight, fontSize: textMD, overflow: TextOverflow.ellipsis)),
                   Text(
-                    "${demo ? "ViscousTests" : widget.commit.author} ${AppLocalizations.of(context).committed} $_relativeCommitDate",
+                    "${demo ? "ViscousTests" : widget.commit.author} ${t.committed} $_relativeCommitDate",
                     style: TextStyle(color: secondaryLight, fontSize: textSM, overflow: TextOverflow.ellipsis),
                   ),
                 ],

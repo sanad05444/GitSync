@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../dialog/merge_conflict.dart' as MergeConflictDialog;
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/global.dart';
 
 class ItemMergeConflict extends StatefulWidget {
   const ItemMergeConflict(this.conflictingPaths, this.conflictCallback, {super.key});
@@ -46,13 +46,10 @@ class _ItemMergeConflict extends State<ItemMergeConflict> {
           mainAxisSize: MainAxisSize.max,
           children: [
             Text(
-              AppLocalizations.of(context).mergeConflict.toUpperCase(),
+              t.mergeConflict.toUpperCase(),
               style: TextStyle(color: primaryDark, fontSize: textMD, overflow: TextOverflow.ellipsis, fontWeight: FontWeight.bold),
             ),
-            Text(
-              AppLocalizations.of(context).mergeConflictItemMessage,
-              style: TextStyle(color: secondaryDark, fontSize: textSM, overflow: TextOverflow.ellipsis),
-            ),
+            Text(t.mergeConflictItemMessage, style: TextStyle(color: secondaryDark, fontSize: textSM, overflow: TextOverflow.ellipsis)),
           ],
         ),
       ),

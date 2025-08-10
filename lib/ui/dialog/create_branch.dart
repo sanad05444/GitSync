@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/global.dart';
 
 Future<void> showDialog(BuildContext context, Future<void> Function(String branchName, String basedOn) callback) async {
   final textController = TextEditingController();
@@ -18,10 +18,7 @@ Future<void> showDialog(BuildContext context, Future<void> Function(String branc
               (context, setState) => BaseAlertDialog(
                 title: SizedBox(
                   width: MediaQuery.of(context).size.width,
-                  child: Text(
-                    AppLocalizations.of(context).createBranch,
-                    style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
-                  ),
+                  child: Text(t.createBranch, style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold)),
                 ),
                 content: SingleChildScrollView(
                   child: ListBody(
@@ -43,7 +40,7 @@ Future<void> showDialog(BuildContext context, Future<void> Function(String branc
                           border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusSM), borderSide: BorderSide.none),
                           isCollapsed: true,
                           label: Text(
-                            AppLocalizations.of(context).createBranchName.toUpperCase(),
+                            t.createBranchName.toUpperCase(),
                             style: TextStyle(color: secondaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                           ),
                           floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -120,7 +117,7 @@ Future<void> showDialog(BuildContext context, Future<void> Function(String branc
                             top: -spaceXS,
                             left: spaceMD,
                             child: Text(
-                              AppLocalizations.of(context).createBranchBasedOn.toUpperCase(),
+                              t.createBranchBasedOn.toUpperCase(),
                               style: TextStyle(color: secondaryLight, fontSize: textXXS, fontWeight: FontWeight.bold),
                             ),
                           ),
@@ -131,7 +128,7 @@ Future<void> showDialog(BuildContext context, Future<void> Function(String branc
                 ),
                 actions: <Widget>[
                   TextButton(
-                    child: Text(AppLocalizations.of(context).cancel.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textMD)),
+                    child: Text(t.cancel.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textMD)),
                     onPressed: () {
                       Navigator.of(context).canPop() ? Navigator.pop(context) : null;
                     },
@@ -145,7 +142,7 @@ Future<void> showDialog(BuildContext context, Future<void> Function(String branc
                             }
                             : null,
                     child: Text(
-                      AppLocalizations.of(context).add.toUpperCase(),
+                      t.add.toUpperCase(),
                       style: TextStyle(
                         color: (textController.text.isNotEmpty && basedOnBranchName != null) ? primaryPositive : secondaryPositive,
                         fontSize: textMD,

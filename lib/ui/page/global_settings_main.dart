@@ -23,7 +23,7 @@ import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../constant/strings.dart';
 import '../../../global.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/global.dart';
 
 import '../dialog/change_language.dart' as ChangeLanguageDialog;
 import '../dialog/enter_backup_restore_password.dart' as EnterBackupRestorePasswordDialog;
@@ -72,7 +72,7 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain> with WidgetsBindingO
         surfaceTintColor: Colors.transparent,
         leading: getBackButton(context, () => Navigator.of(context).canPop() ? Navigator.pop(context) : null),
         centerTitle: true,
-        title: Text(AppLocalizations.of(context).globalSettings.toUpperCase(), style: TextStyle(color: primaryLight, fontWeight: FontWeight.bold)),
+        title: Text(t.globalSettings.toUpperCase(), style: TextStyle(color: primaryLight, fontWeight: FontWeight.bold)),
       ),
       body: ShaderMask(
         shaderCallback: (Rect rect) {
@@ -93,7 +93,7 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain> with WidgetsBindingO
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 ButtonSetting(
-                  text: AppLocalizations.of(context).language,
+                  text: t.language,
                   icon: FontAwesomeIcons.earthOceania,
                   onPressed: () async {
                     await ChangeLanguageDialog.showDialog(context, (locale) async {
@@ -108,7 +108,7 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain> with WidgetsBindingO
                 // Padding(
                 //   padding: EdgeInsets.only(left: spaceXS),
                 //   child: Text(
-                //     AppLocalizations.of(context).backupRestoreTitle,
+                //     t.backupRestoreTitle,
                 //     style: TextStyle(fontSize: textLG, color: primaryLight, fontWeight: FontWeight.bold),
                 //   ),
                 // ),
@@ -118,17 +118,14 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain> with WidgetsBindingO
                   child: Row(
                     children: [
                       Expanded(child: Container(color: tertiaryLight, height: spaceXXXXS, margin: EdgeInsets.only(right: spaceSM))),
-                      Text(
-                        AppLocalizations.of(context).backupRestoreTitle.toUpperCase(),
-                        style: TextStyle(fontSize: textSM, color: primaryLight, fontWeight: FontWeight.bold),
-                      ),
+                      Text(t.backupRestoreTitle.toUpperCase(), style: TextStyle(fontSize: textSM, color: primaryLight, fontWeight: FontWeight.bold)),
                       Expanded(child: Container(color: tertiaryLight, height: spaceXXXXS, margin: EdgeInsets.only(left: spaceSM))),
                     ],
                   ),
                 ),
                 SizedBox(height: spaceSM),
                 ButtonSetting(
-                  text: AppLocalizations.of(context).backup,
+                  text: t.backup,
                   icon: FontAwesomeIcons.solidFloppyDisk,
                   onPressed: () async {
                     await EnterBackupRestorePasswordDialog.showDialog(context, true, (text) async {
@@ -154,7 +151,7 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain> with WidgetsBindingO
                 ),
                 SizedBox(height: spaceMD),
                 ButtonSetting(
-                  text: AppLocalizations.of(context).restore,
+                  text: t.restore,
                   icon: FontAwesomeIcons.arrowRotateLeft,
                   onPressed: () async {
                     FilePickerResult? result = await FilePicker.platform.pickFiles();
@@ -167,11 +164,7 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain> with WidgetsBindingO
                       try {
                         settingsMap = await decryptMap(file.readAsStringSync(), text);
                       } catch (e) {
-                        await Fluttertoast.showToast(
-                          msg: AppLocalizations.of(context).invalidPassword,
-                          toastLength: Toast.LENGTH_LONG,
-                          gravity: null,
-                        );
+                        await Fluttertoast.showToast(msg: t.invalidPassword, toastLength: Toast.LENGTH_LONG, gravity: null);
                         return;
                       }
 
@@ -203,7 +196,7 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain> with WidgetsBindingO
                 ),
                 SizedBox(height: spaceSM),
                 ButtonSetting(
-                  text: AppLocalizations.of(context).reportABug,
+                  text: t.reportABug,
                   icon: FontAwesomeIcons.bug,
                   textColor: primaryDark,
                   iconColor: primaryDark,
@@ -214,7 +207,7 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain> with WidgetsBindingO
                 ),
                 SizedBox(height: spaceMD),
                 ButtonSetting(
-                  text: AppLocalizations.of(context).shareLogs,
+                  text: t.shareLogs,
                   icon: FontAwesomeIcons.envelopeOpenText,
                   loads: true,
                   onPressed: () async {
@@ -279,7 +272,7 @@ App Version: $appVersion
                 ),
                 SizedBox(height: spaceMD),
                 ButtonSetting(
-                  text: AppLocalizations.of(context).requestAFeature,
+                  text: t.requestAFeature,
                   icon: FontAwesomeIcons.solidHandPointUp,
                   onPressed: () async {
                     if (await canLaunchUrl(Uri.parse(githubFeatureTemplate))) {
@@ -289,7 +282,7 @@ App Version: $appVersion
                 ),
                 SizedBox(height: spaceMD),
                 ButtonSetting(
-                  text: AppLocalizations.of(context).joinTheDiscussion,
+                  text: t.joinTheDiscussion,
                   icon: FontAwesomeIcons.solidComments,
                   onPressed: () async {
                     if (await canLaunchUrl(Uri.parse(githubDiscussionsLink))) {
@@ -312,7 +305,7 @@ App Version: $appVersion
                 ),
                 SizedBox(height: spaceSM),
                 ButtonSetting(
-                  text: AppLocalizations.of(context).viewDocumentation,
+                  text: t.viewDocumentation,
                   icon: FontAwesomeIcons.solidFileLines,
                   onPressed: () async {
                     launchUrl(Uri.parse(documentationLink));
@@ -321,13 +314,13 @@ App Version: $appVersion
                 SizedBox(height: spaceMD),
                 CustomShowcase(
                   globalKey: _uiSetupGuideKey,
-                  description: AppLocalizations.of(context).guidedSetupHint,
+                  description: t.guidedSetupHint,
                   last: true,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       ButtonSetting(
-                        text: AppLocalizations.of(context).guidedSetup,
+                        text: t.guidedSetup,
                         icon: FontAwesomeIcons.chalkboardUser,
                         onPressed: () async {
                           await repoManager.setInt(StorageKey.repoman_onboardingStep, 0);
@@ -337,7 +330,7 @@ App Version: $appVersion
                       ),
                       SizedBox(height: spaceMD),
                       ButtonSetting(
-                        text: AppLocalizations.of(context).uiGuide,
+                        text: t.uiGuide,
                         icon: FontAwesomeIcons.route,
                         onPressed: () async {
                           await repoManager.setInt(StorageKey.repoman_onboardingStep, 4);
@@ -355,9 +348,7 @@ App Version: $appVersion
                   valueListenable: premiumManager.hasPremiumNotifier,
                   builder:
                       (context, hasPremium, child) => ButtonSetting(
-                        text:
-                            (hasPremium == true ? AppLocalizations.of(context).contributeTitle : AppLocalizations.of(context).premiumDialogTitle)
-                                .toUpperCase(),
+                        text: (hasPremium == true ? t.contributeTitle : t.premiumDialogTitle).toUpperCase(),
                         icon: hasPremium == true ? FontAwesomeIcons.circleDollarToSlot : FontAwesomeIcons.solidGem,
                         iconColor: tertiaryPositive,
                         onPressed: () async {
@@ -372,7 +363,7 @@ App Version: $appVersion
                 ),
                 SizedBox(height: spaceMD),
                 ButtonSetting(
-                  text: AppLocalizations.of(context).viewPrivacyPolicy,
+                  text: t.viewPrivacyPolicy,
                   icon: FontAwesomeIcons.userShield,
                   onPressed: () async {
                     launchUrl(Uri.parse(privacyPolicyLink));
@@ -380,7 +371,7 @@ App Version: $appVersion
                 ),
                 SizedBox(height: spaceMD),
                 ButtonSetting(
-                  text: AppLocalizations.of(context).viewEula,
+                  text: t.viewEula,
                   icon: FontAwesomeIcons.fileContract,
                   onPressed: () async {
                     launchUrl(Uri.parse(eulaLink));

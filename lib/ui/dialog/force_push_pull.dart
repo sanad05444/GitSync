@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/global.dart';
 
 Future<void> showDialog(BuildContext context, {push = false}) async {
   return mat.showDialog(
@@ -15,10 +15,7 @@ Future<void> showDialog(BuildContext context, {push = false}) async {
             title: Row(
               mainAxisAlignment: mat.MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  push ? AppLocalizations.of(context).forcePushing : AppLocalizations.of(context).forcePulling,
-                  style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
-                ),
+                Text(push ? t.forcePushing : t.forcePulling, style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold)),
                 SizedBox(
                   height: textXL,
                   width: textXL,
@@ -26,8 +23,7 @@ Future<void> showDialog(BuildContext context, {push = false}) async {
                     child: CircularProgressIndicator(
                       backgroundColor: secondaryLight,
                       color: primaryPositive,
-                      semanticsLabel:
-                          push ? AppLocalizations.of(context).forcePushProgressLabel : AppLocalizations.of(context).forcePullProgressLabel,
+                      semanticsLabel: push ? t.forcePushProgressLabel : t.forcePullProgressLabel,
                     ),
                   ),
                 ),
@@ -36,10 +32,7 @@ Future<void> showDialog(BuildContext context, {push = false}) async {
             content: SingleChildScrollView(
               child: ListBody(
                 children: [
-                  Text(
-                    AppLocalizations.of(context).forcePushPullMessage,
-                    style: const TextStyle(color: tertiaryNegative, fontSize: textMD, fontWeight: FontWeight.bold),
-                  ),
+                  Text(t.forcePushPullMessage, style: const TextStyle(color: tertiaryNegative, fontSize: textMD, fontWeight: FontWeight.bold)),
                   SizedBox(height: spaceMD),
                 ],
               ),

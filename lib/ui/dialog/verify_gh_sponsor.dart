@@ -4,7 +4,7 @@ import 'package:GitSync/global.dart';
 import 'package:flutter/material.dart' as mat;
 import 'package:GitSync/constant/colors.dart';
 import 'package:GitSync/constant/dimens.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/global.dart';
 import 'package:GitSync/ui/dialog/base_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -16,23 +16,14 @@ Future<void> showDialog(BuildContext context) async {
         (BuildContext context) => BaseAlertDialog(
           title: SizedBox(
             width: MediaQuery.of(context).size.width,
-            child: Text(
-              AppLocalizations.of(context).verifyGhSponsorTitle,
-              style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
-            ),
+            child: Text(t.verifyGhSponsorTitle, style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold)),
           ),
           content: SingleChildScrollView(
             child: ListBody(
               children: [
-                Text(
-                  AppLocalizations.of(context).verifyGhSponsorMsg,
-                  style: TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
-                ),
+                Text(t.verifyGhSponsorMsg, style: TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM)),
                 SizedBox(height: spaceSM),
-                Text(
-                  AppLocalizations.of(context).verifyGhSponsorNote,
-                  style: TextStyle(color: tertiaryInfo, fontWeight: FontWeight.bold, fontSize: textSM),
-                ),
+                Text(t.verifyGhSponsorNote, style: TextStyle(color: tertiaryInfo, fontWeight: FontWeight.bold, fontSize: textSM)),
               ],
             ),
           ),
@@ -56,10 +47,7 @@ Future<void> showDialog(BuildContext context) async {
                   shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none)),
                 ),
                 icon: FaIcon(FontAwesomeIcons.squareArrowUpRight, color: secondaryDark, size: textLG),
-                label: Text(
-                  AppLocalizations.of(context).oauth.toUpperCase(),
-                  style: TextStyle(color: secondaryDark, fontSize: textSM, fontWeight: FontWeight.bold),
-                ),
+                label: Text(t.oauth.toUpperCase(), style: TextStyle(color: secondaryDark, fontSize: textSM, fontWeight: FontWeight.bold)),
               ),
             ),
           ],

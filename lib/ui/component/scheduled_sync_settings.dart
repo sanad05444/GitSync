@@ -8,7 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:GitSync/constant/colors.dart';
 import 'package:GitSync/api/manager/storage.dart';
 import 'package:GitSync/constant/dimens.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/global.dart';
 import 'package:GitSync/global.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -89,7 +89,7 @@ class _ScheduledSyncSettingsState extends State<ScheduledSyncSettings> {
                       child: Row(
                         children: [
                           Text(
-                            AppLocalizations.of(context).scheduledSyncSettings,
+                            t.scheduledSyncSettings,
                             style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),
                           ),
                         ],
@@ -150,8 +150,7 @@ class _ScheduledSyncSettingsState extends State<ScheduledSyncSettings> {
                                                         ),
                                                         SizedBox(width: spaceXS),
                                                         Text(
-                                                          (item ? AppLocalizations.of(context).sync : AppLocalizations.of(context).dontSync)
-                                                              .toUpperCase(),
+                                                          (item ? t.sync : t.dontSync).toUpperCase(),
                                                           style: TextStyle(
                                                             fontSize: textSM,
                                                             color: primaryLight,
@@ -172,7 +171,7 @@ class _ScheduledSyncSettingsState extends State<ScheduledSyncSettings> {
                                                 ? [
                                                   SizedBox(width: spaceSM),
                                                   Text(
-                                                    AppLocalizations.of(context).iosDefaultSyncRate.toUpperCase(),
+                                                    t.iosDefaultSyncRate.toUpperCase(),
                                                     style: TextStyle(
                                                       fontSize: textSM,
                                                       color: primaryLight,
@@ -184,7 +183,7 @@ class _ScheduledSyncSettingsState extends State<ScheduledSyncSettings> {
                                                 : [
                                                   SizedBox(width: spaceSM),
                                                   Text(
-                                                    AppLocalizations.of(context).aboutEvery.toUpperCase(),
+                                                    t.aboutEvery.toUpperCase(),
                                                     style: TextStyle(
                                                       fontSize: textSM,
                                                       color: primaryLight,

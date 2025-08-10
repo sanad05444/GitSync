@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:GitSync/constant/colors.dart';
 import 'package:GitSync/api/manager/storage.dart';
 import 'package:GitSync/constant/dimens.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/global.dart';
 import 'package:GitSync/global.dart';
 
 class TileSyncSettings extends StatefulWidget {
@@ -45,7 +45,7 @@ class _TileSyncSettingsState extends State<TileSyncSettings> {
                     label: SizedBox(
                       width: double.infinity,
                       child: Text(
-                        AppLocalizations.of(context).tileSyncSettings,
+                        t.tileSyncSettings,
                         style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),
                       ),
                     ),
@@ -92,7 +92,7 @@ class _TileSyncSettingsState extends State<TileSyncSettings> {
                                   ),
                                   label: SizedBox(
                                     width: double.infinity,
-                                    child: Text(AppLocalizations.of(context).useForTileSync, style: TextStyle(color: primaryLight, fontSize: textMD)),
+                                    child: Text(t.useForTileSync, style: TextStyle(color: primaryLight, fontSize: textMD)),
                                   ),
                                 ),
                                 TextButton.icon(
@@ -127,10 +127,7 @@ class _TileSyncSettingsState extends State<TileSyncSettings> {
                                   ),
                                   label: SizedBox(
                                     width: double.infinity,
-                                    child: Text(
-                                      AppLocalizations.of(context).useForTileManualSync,
-                                      style: TextStyle(color: primaryLight, fontSize: textMD),
-                                    ),
+                                    child: Text(t.useForTileManualSync, style: TextStyle(color: primaryLight, fontSize: textMD)),
                                   ),
                                 ),
                                 // SizedBox(height: spaceSM),

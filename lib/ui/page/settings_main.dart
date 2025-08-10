@@ -12,7 +12,7 @@ import '../../../constant/dimens.dart';
 import '../../../constant/strings.dart';
 import '../../../global.dart';
 import '../../../ui/component/item_setting.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/global.dart';
 import 'package:GitSync/ui/dialog/import_priv_key.dart' as ImportPrivKeyDialog;
 
 class SettingsMain extends StatefulWidget {
@@ -61,7 +61,7 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver {
         surfaceTintColor: Colors.transparent,
         leading: getBackButton(context, () => Navigator.of(context).canPop() ? Navigator.pop(context) : null),
         centerTitle: true,
-        title: Text(AppLocalizations.of(context).settings.toUpperCase(), style: TextStyle(color: primaryLight, fontWeight: FontWeight.bold)),
+        title: Text(t.settings.toUpperCase(), style: TextStyle(color: primaryLight, fontWeight: FontWeight.bold)),
       ),
       body: ShaderMask(
         shaderCallback: (Rect rect) {
@@ -91,14 +91,14 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver {
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: spaceMD),
                           child: Text(
-                            AppLocalizations.of(context).signedCommitsLabel.toUpperCase(),
+                            t.signedCommitsLabel.toUpperCase(),
                             style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
                           ),
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: spaceMD),
                           child: Text(
-                            AppLocalizations.of(context).signedCommitsDescription,
+                            t.signedCommitsDescription,
                             style: TextStyle(color: secondaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -148,9 +148,7 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver {
                                                 label: Padding(
                                                   padding: EdgeInsets.only(left: spaceXS),
                                                   child: Text(
-                                                    (gitCommitSigningKeySnapshot.data?.isNotEmpty == true
-                                                            ? AppLocalizations.of(context).commitKeyImported
-                                                            : AppLocalizations.of(context).importCommitKey)
+                                                    (gitCommitSigningKeySnapshot.data?.isNotEmpty == true ? t.commitKeyImported : t.importCommitKey)
                                                         .toUpperCase(),
                                                     style: TextStyle(
                                                       color: gitCommitSigningKeySnapshot.data?.isNotEmpty == true ? primaryPositive : primaryLight,
@@ -216,7 +214,7 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver {
                                                     label: SizedBox(
                                                       width: double.infinity,
                                                       child: Text(
-                                                        AppLocalizations.of(context).useSshKey.toUpperCase(),
+                                                        t.useSshKey.toUpperCase(),
                                                         style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
                                                       ),
                                                     ),
@@ -233,8 +231,8 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver {
                 ItemSetting(
                   setFn: (value) => uiSettingsManager.setString(StorageKey.setman_syncMessage, value),
                   getFn: () => uiSettingsManager.getString(StorageKey.setman_syncMessage),
-                  title: AppLocalizations.of(context).syncMessageLabel,
-                  description: AppLocalizations.of(context).syncMessageDescription,
+                  title: t.syncMessageLabel,
+                  description: t.syncMessageDescription,
                   hint: syncMessage,
                   maxLines: null,
                   minLines: null,
@@ -243,8 +241,8 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver {
                 ItemSetting(
                   setFn: (value) => uiSettingsManager.setString(StorageKey.setman_syncMessageTimeFormat, value),
                   getFn: () => uiSettingsManager.getString(StorageKey.setman_syncMessageTimeFormat),
-                  title: AppLocalizations.of(context).syncMessageTimeFormatLabel,
-                  description: AppLocalizations.of(context).syncMessageTimeFormatDescription,
+                  title: t.syncMessageTimeFormatLabel,
+                  description: t.syncMessageTimeFormatDescription,
                   hint: syncMessageTimeFormat,
                 ),
                 SizedBox(height: spaceLG),
@@ -261,15 +259,15 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver {
                       ItemSetting(
                         setFn: (value) => uiSettingsManager.setString(StorageKey.setman_authorName, value.trim()),
                         getFn: demo ? () async => "" : () => uiSettingsManager.getString(StorageKey.setman_authorName),
-                        title: AppLocalizations.of(context).authorNameLabel,
-                        hint: AppLocalizations.of(context).authorName,
+                        title: t.authorNameLabel,
+                        hint: t.authorName,
                       ),
                       SizedBox(height: spaceMD),
                       ItemSetting(
                         setFn: (value) => uiSettingsManager.setString(StorageKey.setman_authorEmail, value.trim()),
                         getFn: demo ? () async => "" : () => uiSettingsManager.getString(StorageKey.setman_authorEmail),
-                        title: AppLocalizations.of(context).authorEmailLabel,
-                        hint: AppLocalizations.of(context).authorEmail,
+                        title: t.authorEmailLabel,
+                        hint: t.authorEmail,
                       ),
                     ],
                   ),
@@ -278,8 +276,8 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver {
                 ItemSetting(
                   setFn: (value) => uiSettingsManager.setString(StorageKey.setman_remote, value),
                   getFn: () => uiSettingsManager.getString(StorageKey.setman_remote),
-                  title: AppLocalizations.of(context).remoteLabel,
-                  hint: AppLocalizations.of(context).defaultRemote,
+                  title: t.remoteLabel,
+                  hint: t.defaultRemote,
                 ),
                 SizedBox(height: spaceLG),
                 ...gitDirPath == null
@@ -288,9 +286,9 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver {
                       ItemSetting(
                         setFn: GitManager.writeGitignore,
                         getFn: demo ? () async => "" : GitManager.readGitignore,
-                        title: AppLocalizations.of(context).gitIgnore,
-                        description: AppLocalizations.of(context).gitIgnoreDescription,
-                        hint: AppLocalizations.of(context).gitIgnoreHint,
+                        title: t.gitIgnore,
+                        description: t.gitIgnoreDescription,
+                        hint: t.gitIgnoreHint,
                         maxLines: -1,
                         minLines: -1,
                         isTextArea: true,
@@ -299,9 +297,9 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver {
                       ItemSetting(
                         setFn: GitManager.writeGitInfoExclude,
                         getFn: demo ? () async => "" : GitManager.readGitInfoExclude,
-                        title: AppLocalizations.of(context).gitInfoExclude,
-                        description: AppLocalizations.of(context).gitInfoExcludeDescription,
-                        hint: AppLocalizations.of(context).gitInfoExcludeHint,
+                        title: t.gitInfoExclude,
+                        description: t.gitInfoExcludeDescription,
+                        hint: t.gitInfoExcludeHint,
                         maxLines: -1,
                         minLines: -1,
                         isTextArea: true,
@@ -318,7 +316,7 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver {
                               label: SizedBox(
                                 width: double.infinity,
                                 child: Text(
-                                  AppLocalizations.of(context).disableSsl.toUpperCase(),
+                                  t.disableSsl.toUpperCase(),
                                   style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
                                 ),
                               ),
@@ -333,7 +331,7 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver {
                     ],
                 SizedBox(height: spaceMD),
                 ButtonSetting(
-                  text: AppLocalizations.of(context).moreOptions,
+                  text: t.moreOptions,
                   icon: FontAwesomeIcons.ellipsisVertical,
                   onPressed: () async {
                     Navigator.of(context).canPop() ? Navigator.pop(context) : null;

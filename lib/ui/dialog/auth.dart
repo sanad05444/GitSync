@@ -11,7 +11,7 @@ import '../../../global.dart';
 import '../../../type/git_provider.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
 import 'import_priv_key.dart' as ImportPrivKeyDialog;
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/global.dart';
 import 'confirm_priv_key_copy.dart' as ConfirmPrivKeyCopyDialog;
 
 final GlobalKey authDialogKey = GlobalKey();
@@ -70,10 +70,7 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
             shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none)),
           ),
           icon: FaIcon(FontAwesomeIcons.squareArrowUpRight, color: secondaryDark, size: textLG),
-          label: Text(
-            AppLocalizations.of(context).oauth.toUpperCase(),
-            style: TextStyle(color: secondaryDark, fontSize: textSM, fontWeight: FontWeight.bold),
-          ),
+          label: Text(t.oauth.toUpperCase(), style: TextStyle(color: secondaryDark, fontSize: textSM, fontWeight: FontWeight.bold)),
         );
       case GitProvider.HTTPS:
         return TextButton(
@@ -90,7 +87,7 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
             shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none)),
           ),
           child: Text(
-            AppLocalizations.of(context).login.toUpperCase(),
+            t.login.toUpperCase(),
             style: TextStyle(color: getHttpsCanLogin() ? secondaryDark : tertiaryDark, fontSize: textSM, fontWeight: FontWeight.bold),
           ),
         );
@@ -120,7 +117,7 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                     shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none)),
                   ),
                   child: Text(
-                    (keyPair == null ? AppLocalizations.of(context).generateKeys : AppLocalizations.of(context).confirmKeySaved).toUpperCase(),
+                    (keyPair == null ? t.generateKeys : t.confirmKeySaved).toUpperCase(),
                     style: TextStyle(
                       color: (keyPair != null && !pubKeyCopied) ? tertiaryDark : secondaryDark,
                       fontSize: textSM,
@@ -162,7 +159,7 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
         return Padding(
           padding: EdgeInsets.only(top: spaceMD, left: spaceMD, right: spaceMD),
           child: Text(
-            AppLocalizations.of(parentContext).oauthNoAffiliation,
+            t.oauthNoAffiliation,
             textAlign: TextAlign.center,
             style: const TextStyle(color: secondaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
           ),
@@ -172,7 +169,7 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
           children: [
             SizedBox(height: spaceLG),
             Text(
-              AppLocalizations.of(parentContext).ensureTokenScope,
+              t.ensureTokenScope,
               textAlign: TextAlign.center,
               style: const TextStyle(color: secondaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
             ),
@@ -184,18 +181,12 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                   children: [
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: spaceSM),
-                      child: Text(
-                        AppLocalizations.of(parentContext).user.toUpperCase(),
-                        style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
-                      ),
+                      child: Text(t.user.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold)),
                     ),
                     SizedBox(height: spaceMD),
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: spaceSM),
-                      child: Text(
-                        AppLocalizations.of(parentContext).token.toUpperCase(),
-                        style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
-                      ),
+                      child: Text(t.token.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold)),
                     ),
                   ],
                 ),
@@ -217,7 +208,7 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                           fillColor: secondaryDark,
                           filled: true,
                           border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusSM), borderSide: BorderSide.none),
-                          hintText: AppLocalizations.of(parentContext).exampleUser,
+                          hintText: t.exampleUser,
                           hintStyle: TextStyle(fontSize: textSM, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis, color: tertiaryLight),
                           isCollapsed: true,
                           floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -243,7 +234,7 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                           fillColor: secondaryDark,
                           filled: true,
                           border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusSM), borderSide: BorderSide.none),
-                          hintText: AppLocalizations.of(parentContext).exampleToken,
+                          hintText: t.exampleToken,
                           hintStyle: TextStyle(fontSize: textSM, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis, color: tertiaryLight),
                           isCollapsed: true,
                           floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -276,18 +267,12 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                     SizedBox(height: spaceMD),
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: spaceSM),
-                      child: Text(
-                        AppLocalizations.of(parentContext).privKey.toUpperCase(),
-                        style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
-                      ),
+                      child: Text(t.privKey.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold)),
                     ),
                     SizedBox(height: spaceMD),
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: spaceSM),
-                      child: Text(
-                        AppLocalizations.of(parentContext).pubKey.toUpperCase(),
-                        style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
-                      ),
+                      child: Text(t.pubKey.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold)),
                     ),
                   ],
                 ),
@@ -345,7 +330,7 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                           size: textMD,
                         ),
                         label: Text(
-                          keyPair == null ? AppLocalizations.of(parentContext).sshPrivKeyExample : keyPair!.$1,
+                          keyPair == null ? t.sshPrivKeyExample : keyPair!.$1,
                           maxLines: 1,
                           style: TextStyle(
                             color: keyPair == null ? tertiaryLight : primaryLight,
@@ -380,7 +365,7 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                           size: textMD,
                         ),
                         label: Text(
-                          keyPair == null ? AppLocalizations.of(parentContext).sshPubKeyExample : keyPair!.$2,
+                          keyPair == null ? t.sshPubKeyExample : keyPair!.$2,
                           maxLines: 1,
                           style: TextStyle(
                             color: keyPair == null ? tertiaryLight : primaryLight,
@@ -410,7 +395,7 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                 title: SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: Text(
-                    AppLocalizations.of(context).auth.toUpperCase(),
+                    t.auth.toUpperCase(),
                     textAlign: TextAlign.center,
                     style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
                   ),
@@ -419,7 +404,7 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                   child: ListBody(
                     children: [
                       Text(
-                        AppLocalizations.of(context).selectYourGitProviderAndAuthenticate,
+                        t.selectYourGitProviderAndAuthenticate,
                         textAlign: TextAlign.center,
                         style: const TextStyle(color: secondaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
                       ),
@@ -432,12 +417,7 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                           padding: const EdgeInsets.only(left: spaceSM),
                           icon: Padding(
                             padding: EdgeInsets.only(right: spaceMD),
-                            child: FaIcon(
-                              FontAwesomeIcons.caretDown,
-                              color: secondaryLight,
-                              size: textMD,
-                              semanticLabel: AppLocalizations.of(context).authDropdownLabel,
-                            ),
+                            child: FaIcon(FontAwesomeIcons.caretDown, color: secondaryLight, size: textMD, semanticLabel: t.authDropdownLabel),
                           ),
                           value: selectedGitProvider.name,
                           style: const TextStyle(backgroundColor: secondaryDark, color: tertiaryLight, fontWeight: FontWeight.bold, fontSize: textMD),

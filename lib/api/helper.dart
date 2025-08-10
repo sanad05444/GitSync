@@ -19,7 +19,7 @@ import 'package:ios_document_picker/ios_document_picker.dart';
 import 'package:ios_document_picker/types.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/global.dart';
 import '../constant/colors.dart';
 import '../constant/dimens.dart';
 
@@ -58,10 +58,8 @@ Future<bool> requestStoragePerm([bool request = true]) async {
   return false;
 }
 
-Widget? getBackButton(BuildContext context, Function() onPressed) => IconButton(
-  onPressed: onPressed,
-  icon: FaIcon(FontAwesomeIcons.arrowLeft, color: primaryLight, size: textLG, semanticLabel: AppLocalizations.of(context).backLabel),
-);
+Widget? getBackButton(BuildContext context, Function() onPressed) =>
+    IconButton(onPressed: onPressed, icon: FaIcon(FontAwesomeIcons.arrowLeft, color: primaryLight, size: textLG, semanticLabel: t.backLabel));
 
 void debounce(String index, int milliseconds, VoidCallback callback) {
   debounceTimers[index]?.cancel();
