@@ -91,7 +91,7 @@ class _FileExplorer extends State<FileExplorer> with WidgetsBindingObserver {
                     getBackButton(context, () {
                       selectedPathsNotifier.value.isNotEmpty
                           ? selectedPathsNotifier.value = []
-                          : (currentPath == widget.path
+                          : (controller.getCurrentPath.replaceFirst(RegExp(r'/$'), '') == widget.path.replaceFirst(RegExp(r'/$'), '')
                               ? (Navigator.of(context).canPop() ? Navigator.pop(context) : null)
                               : controller.goToParentDirectory());
                     }) ??
