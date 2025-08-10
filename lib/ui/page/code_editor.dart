@@ -53,6 +53,20 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
         leading: getBackButton(context, () => (Navigator.of(context).canPop() ? Navigator.pop(context) : null)) ?? SizedBox.shrink(),
         title: Text(p.basename(widget.path), style: TextStyle(fontSize: textLG, color: primaryLight, fontWeight: FontWeight.bold)),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+      floatingActionButton: ValueListenableBuilder(
+        valueListenable: controller.fileSaving,
+        builder:
+            (context, saving, _) =>
+                saving
+                    ? Container(
+                      height: spaceMD + spaceXXS,
+                      width: spaceMD + spaceXXS,
+                      margin: EdgeInsets.only(right: spaceXXXS, top: spaceLG + spaceXXS),
+                      child: CircularProgressIndicator(color: primaryLight),
+                    )
+                    : SizedBox.shrink(),
+      ),
       body: CodeTheme(
         data: CodeThemeData(
           styles: {
