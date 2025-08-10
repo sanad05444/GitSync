@@ -23,7 +23,7 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     try {
-      controller.language = extensionToLanguageMap[p.extension(widget.path).replaceFirst('.', '')];
+      controller.language = extensionToLanguageMap[p.extension(widget.path).replaceFirst('.', '')] ?? extensionToLanguageMap["txt"];
       controller.openFile(widget.path);
       controller.fileAutoSave = true;
     } catch (e) {
