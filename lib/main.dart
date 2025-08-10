@@ -1635,7 +1635,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                   label: Padding(
                                     padding: EdgeInsets.only(left: spaceXS),
                                     child: Text(
-                                      "Browse & Edit Files".toUpperCase(),
+                                      "Browse & Edit".toUpperCase(),
                                       style: TextStyle(
                                         color: gitDirPathSnapshot.data == null ? secondaryLight : tertiaryInfo,
                                         fontSize: textMD,

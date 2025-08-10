@@ -6,6 +6,7 @@ import 'package:GitSync/api/manager/settings_manager.dart';
 import 'package:GitSync/api/manager/storage.dart';
 import 'package:GitSync/ui/component/button_setting.dart';
 import 'package:GitSync/ui/component/custom_showcase.dart';
+import 'package:GitSync/ui/page/file_explorer.dart';
 import 'package:archive/archive_io.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
@@ -104,15 +105,23 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain> with WidgetsBindingO
                     });
                   },
                 ),
+                SizedBox(height: spaceMD),
+                ButtonSetting(
+                  text: "Browse & Edit Directory",
+                  icon: FontAwesomeIcons.folderTree,
+                  onPressed: () async {
+                    String? selectedDirectory;
+                    if (await requestStoragePerm()) {
+                      selectedDirectory = await pickDirectory();
+                    }
+                    if (selectedDirectory == null) return;
+
+                    await useDirectory(selectedDirectory, (_) async {}, (path) async {
+                      await Navigator.of(context).push(createFileExplorerRoute(path));
+                    });
+                  },
+                ),
                 SizedBox(height: spaceLG),
-                // Padding(
-                //   padding: EdgeInsets.only(left: spaceXS),
-                //   child: Text(
-                //     t.backupRestoreTitle,
-                //     style: TextStyle(fontSize: textLG, color: primaryLight, fontWeight: FontWeight.bold),
-                //   ),
-                // ),
-                // SizedBox(height: spaceLG),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: spaceMD),
                   child: Row(
