@@ -489,7 +489,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
         await AuthorDetailsPromptDialog.showDialog(
           context,
           () async {
-            await Navigator.of(context).push(createSettingsMainRoute());
+            await Navigator.of(context).push(createSettingsMainRoute(showcaseAuthorDetails: true));
           },
           () async {
             await onboardingController?.show();

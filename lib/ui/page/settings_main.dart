@@ -4,6 +4,7 @@ import 'package:GitSync/ui/component/button_setting.dart';
 import 'package:GitSync/ui/page/global_settings_main.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:showcaseview/showcaseview.dart';
 import '../../../api/helper.dart';
 import '../../../api/manager/git_manager.dart';
 import '../../../constant/colors.dart';
@@ -15,7 +16,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:GitSync/ui/dialog/import_priv_key.dart' as ImportPrivKeyDialog;
 
 class SettingsMain extends StatefulWidget {
-  const SettingsMain({super.key});
+  const SettingsMain({super.key, this.showcaseAuthorDetails = false});
+
+  final bool showcaseAuthorDetails;
 
   @override
   State<SettingsMain> createState() => _SettingsMain();
@@ -23,6 +26,7 @@ class SettingsMain extends StatefulWidget {
 
 class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver {
   final _controller = ScrollController();
+  final _authorDetailsKey = GlobalKey();
   bool atTop = true;
   String? gitDirPath;
 
@@ -33,6 +37,13 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver {
       atTop = _controller.offset <= 0;
       setState(() {});
     });
+
+    if (widget.showcaseAuthorDetails) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        ShowCaseWidget.of(context).startShowCase([_authorDetailsKey]);
+      });
+    }
+
     initAsync(() async {
       gitDirPath = await uiSettingsManager.getStringNullable(StorageKey.setman_gitDirPath);
       if (gitDirPath == "") gitDirPath = null;
@@ -237,18 +248,31 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver {
                   hint: syncMessageTimeFormat,
                 ),
                 SizedBox(height: spaceLG),
-                ItemSetting(
-                  setFn: (value) => uiSettingsManager.setString(StorageKey.setman_authorName, value.trim()),
-                  getFn: demo ? () async => "" : () => uiSettingsManager.getString(StorageKey.setman_authorName),
-                  title: AppLocalizations.of(context).authorNameLabel,
-                  hint: AppLocalizations.of(context).authorName,
-                ),
-                SizedBox(height: spaceMD),
-                ItemSetting(
-                  setFn: (value) => uiSettingsManager.setString(StorageKey.setman_authorEmail, value.trim()),
-                  getFn: demo ? () async => "" : () => uiSettingsManager.getString(StorageKey.setman_authorEmail),
-                  title: AppLocalizations.of(context).authorEmailLabel,
-                  hint: AppLocalizations.of(context).authorEmail,
+                Showcase(
+                  key: _authorDetailsKey,
+                  description: "Fill out your author details",
+                  tooltipBackgroundColor: tertiaryInfo,
+                  textColor: secondaryDark,
+                  targetBorderRadius: BorderRadius.all(cornerRadiusMD),
+                  descTextStyle: TextStyle(fontSize: textMD, fontWeight: FontWeight.w500, color: primaryDark),
+                  targetPadding: EdgeInsets.all(spaceSM),
+                  child: Column(
+                    children: [
+                      ItemSetting(
+                        setFn: (value) => uiSettingsManager.setString(StorageKey.setman_authorName, value.trim()),
+                        getFn: demo ? () async => "" : () => uiSettingsManager.getString(StorageKey.setman_authorName),
+                        title: AppLocalizations.of(context).authorNameLabel,
+                        hint: AppLocalizations.of(context).authorName,
+                      ),
+                      SizedBox(height: spaceMD),
+                      ItemSetting(
+                        setFn: (value) => uiSettingsManager.setString(StorageKey.setman_authorEmail, value.trim()),
+                        getFn: demo ? () async => "" : () => uiSettingsManager.getString(StorageKey.setman_authorEmail),
+                        title: AppLocalizations.of(context).authorEmailLabel,
+                        hint: AppLocalizations.of(context).authorEmail,
+                      ),
+                    ],
+                  ),
                 ),
                 SizedBox(height: spaceLG),
                 ItemSetting(
@@ -326,10 +350,11 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver {
   }
 }
 
-Route createSettingsMainRoute() {
+Route createSettingsMainRoute({bool showcaseAuthorDetails = false}) {
   return PageRouteBuilder(
     settings: const RouteSettings(name: settings_main),
-    pageBuilder: (context, animation, secondaryAnimation) => SettingsMain(),
+    pageBuilder:
+        (context, animation, secondaryAnimation) => ShowCaseWidget(builder: (context) => SettingsMain(showcaseAuthorDetails: showcaseAuthorDetails)),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(0.0, 1.0);
       const end = Offset.zero;
