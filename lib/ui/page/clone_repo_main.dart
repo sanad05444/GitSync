@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:GitSync/api/manager/git_manager.dart';
 import 'package:GitSync/api/manager/storage.dart';
+import 'package:GitSync/ui/dialog/prompt_disable_ssl.dart' as PromptDisableSslDialog;
 import 'package:animated_reorderable_list/animated_reorderable_list.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -118,6 +119,11 @@ class _CloneRepoMain extends State<CloneRepoMain> with WidgetsBindingObserver {
         await CloningRepositoryDialog.showDialog(context, repoUrl, selectedDirectory!, (result) async {
           if (result == null) {
             await uiSettingsManager.setString(StorageKey.setman_gitDirPath, selectedDirectory!);
+            if (repoUrl.startsWith("http") && !repoUrl.startsWith("https")) {
+              await PromptDisableSslDialog.showDialog(context, () async {
+                GitManager.setDisableSsl(true);
+              });
+            }
             await repoManager.setOnboardingStep(4);
             if (context.mounted) {
               Navigator.of(context).canPop() ? Navigator.pop(context) : null;
