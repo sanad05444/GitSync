@@ -333,9 +333,11 @@ packages:
   flutter_code_editor:
     dependency: "direct main"
     description:
-      path: "/home/kdavidson/Documents/ViscousPotential/flutter-code-editor"
-      relative: false
-    source: path
+      path: "."
+      ref: "31e71534dc1946967e564a68c7ad10cc5a4b7a2d"
+      resolved-ref: "31e71534dc1946967e564a68c7ad10cc5a4b7a2d"
+      url: "https://github.com/ViscousPot/flutter-code-editor"
+    source: git
     version: "0.3.4"
   flutter_driver:
     dependency: transitive

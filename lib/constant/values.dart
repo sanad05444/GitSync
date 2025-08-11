@@ -35,6 +35,7 @@ import 'package:highlight/languages/prolog.dart';
 import 'package:highlight/languages/r.dart';
 import 'package:highlight/languages/tcl.dart';
 import 'package:highlight/languages/vbnet.dart';
+import 'package:highlight/languages/plaintext.dart';
 
 final extensionToLanguageMap = {
   'dart': dart,
@@ -92,4 +93,5 @@ final extensionToLanguageMap = {
   'r': r,
   'tcl': tcl,
   'vb': vbnet,
+  'txt': plaintext,
 };
