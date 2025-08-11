@@ -29,5 +29,6 @@ appId: com.viscouspot.gitsync
                   notVisible: "Sync on app(s) opened"
                 commands:
                   - tapOn: "Auto Sync Settings"
+- scroll
 - runFlow: ../auto_sync/flows/add_applications/single_app.yaml
 - takeScreenshot: generate_screenshots/raw/screenshot_auto_sync_settings

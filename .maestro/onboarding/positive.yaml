@@ -28,8 +28,14 @@ appId: com.viscouspot.gitsync
 - runFlow: ../clone/flows/select_folder/positive.yaml
 - runFlow: ../clone/flows/select_folder/assert_not.yaml
 - runFlow: ../clone/flows/select_folder_dialog/assert_not.yaml
-- runFlow: flows/auto_sync_dialog/negative.yaml
-- runFlow: flows/auto_sync_dialog/assert_not.yaml
+- runFlow: flows/showcase/positive.yaml
+- runFlow: flows/showcase/positive.yaml
+- runFlow: flows/showcase/positive.yaml
+- runFlow: flows/showcase/positive.yaml
+- runFlow: flows/showcase/positive.yaml
+- runFlow: flows/showcase/positive.yaml
+- runFlow: flows/showcase/finish.yaml
+- runFlow: ../home/flows/sync_now/assert.yaml
 - runFlow: ../common/kill.yaml
 
 

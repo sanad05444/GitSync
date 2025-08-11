@@ -1,6 +1,6 @@
 appId: com.viscouspot.gitsync
 ---
-
+- tapOn: AUTHOR EMAIL
 - tapOn:
     below: AUTHOR EMAIL
 - eraseText

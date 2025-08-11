@@ -89,15 +89,23 @@ pub fn get_input() -> Input {
                         "../clone/flows/select_folder/positive",
                         "../clone/flows/select_folder/assert_not",
                         "../clone/flows/select_folder_dialog/assert_not",
-                        "auto_sync_dialog/assert",
                     ],
                 ],
             ],
             vec![vec![
-                vec!["auto_sync_dialog/negative", "auto_sync_dialog/assert_not"],
+                vec!["showcase/positive"],
+                vec![
+                    "showcase/positive",
+                    "showcase/positive",
+                    "showcase/positive",
+                    "showcase/positive",
+                    "showcase/positive",
+                    "showcase/finish",
+                ],
+            ]],
+            vec![vec![
                 vec![
                     "../home/flows/sync_now/assert",
-                    "auto_sync_dialog/assert_not",
                 ],
             ]],
         ],
