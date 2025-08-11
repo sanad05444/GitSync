@@ -8,9 +8,10 @@ import '../../../constant/strings.dart';
 import 'package:path/path.dart' as p;
 
 class CodeEditor extends StatefulWidget {
-  const CodeEditor({super.key, required this.path});
+  const CodeEditor({super.key, required this.path, this.logs = false});
 
   final String path;
+  final bool logs;
 
   @override
   State<CodeEditor> createState() => _CodeEditor();
@@ -26,6 +27,7 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
       controller.language = extensionToLanguageMap[p.extension(widget.path).replaceFirst('.', '')] ?? extensionToLanguageMap["txt"];
       controller.openFile(widget.path);
       controller.fileAutoSave = true;
+      controller.reversed = widget.logs;
     } catch (e) {
       print(e);
       controller.text = "";
@@ -117,9 +119,9 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
             gutterStyle: GutterStyle(
               showErrors: true,
               showFoldingHandles: true,
-              showLineNumbers: true,
+              showLineNumbers: !widget.logs,
               textStyle: TextStyle(height: 1.5, fontSize: textMD),
-              margin: spaceXS,
+              margin: widget.logs ? 0 : spaceXS,
               textAlign: TextAlign.right,
             ),
           ),
@@ -129,10 +131,10 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
   }
 }
 
-Route createCodeEditorRoute(String path) {
+Route createCodeEditorRoute(String path, {bool logs = false}) {
   return PageRouteBuilder(
     settings: const RouteSettings(name: settings_main),
-    pageBuilder: (context, animation, secondaryAnimation) => CodeEditor(path: path),
+    pageBuilder: (context, animation, secondaryAnimation) => CodeEditor(path: path, logs: logs),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(0.0, 1.0);
       const end = Offset.zero;

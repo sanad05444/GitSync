@@ -9,6 +9,7 @@ import 'package:GitSync/ui/dialog/base_alert_dialog.dart';
 import 'package:GitSync/api/manager/storage.dart';
 import 'package:GitSync/ui/dialog/create_branch.dart' as CreateBranchDialog;
 import 'package:GitSync/ui/dialog/merge_conflict.dart' as MergeConflictDialog;
+import 'package:GitSync/ui/page/code_editor.dart';
 import 'package:GitSync/ui/page/file_explorer.dart';
 import 'package:GitSync/ui/page/global_settings_main.dart';
 import 'package:animated_reorderable_list/animated_reorderable_list.dart';
@@ -567,50 +568,62 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
               previousLocked = locked;
 
-              return Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.center,
-                    child: CustomShowcase(
-                      globalKey: _syncProgressKey,
-                      description: t.syncProgressHint,
-                      cornerRadius: cornerRadiusMax,
-                      child: Container(
-                        width: spaceMD + spaceXS,
-                        height: spaceMD + spaceXS,
-                        decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: tertiaryDark, width: 4)),
-                      ),
-                    ),
-                  ),
-
-                  if (locked)
+              return GestureDetector(
+                onTap: () async {
+                  final Directory dir = await getTemporaryDirectory();
+                  print(Directory("${dir.path}/logs").listSync().map((e) => e.path));
+                  File logFile = File("${dir.path}/logs/log_1.log");
+                  print(logFile.existsSync());
+                  if (!logFile.existsSync()) {
+                    logFile = File("${dir.path}/logs/log_0.log");
+                  }
+                  await Navigator.of(context).push(createCodeEditorRoute(logFile.path, logs: true));
+                },
+                child: Stack(
+                  children: [
                     Align(
                       alignment: Alignment.center,
-                      child: SizedBox(
-                        width: spaceMD + spaceXS,
-                        height: spaceMD + spaceXS,
-                        child: CircularProgressIndicator(
-                          color: primaryLight,
-                          padding: EdgeInsets.zero,
-                          strokeAlign: BorderSide.strokeAlignInside,
-                          strokeWidth: 4.2,
+                      child: CustomShowcase(
+                        globalKey: _syncProgressKey,
+                        description: AppLocalizations.of(context).syncProgressHint,
+                        cornerRadius: cornerRadiusMax,
+                        child: Container(
+                          width: spaceMD + spaceXS,
+                          height: spaceMD + spaceXS,
+                          decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: tertiaryDark, width: 4)),
                         ),
                       ),
                     ),
-                  AnimatedOpacity(
-                    opacity: locked ? 0 : opacity,
-                    duration: Duration(milliseconds: 500),
-                    curve: Curves.easeInOut,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: SizedBox(
-                        width: spaceMD + spaceXS,
-                        height: spaceMD + spaceXS,
-                        child: FaIcon(FontAwesomeIcons.solidCircleCheck, color: primaryPositive, size: spaceMD + spaceXS),
+
+                    if (locked)
+                      Align(
+                        alignment: Alignment.center,
+                        child: SizedBox(
+                          width: spaceMD + spaceXS,
+                          height: spaceMD + spaceXS,
+                          child: CircularProgressIndicator(
+                            color: primaryLight,
+                            padding: EdgeInsets.zero,
+                            strokeAlign: BorderSide.strokeAlignInside,
+                            strokeWidth: 4.2,
+                          ),
+                        ),
+                      ),
+                    AnimatedOpacity(
+                      opacity: locked ? 0 : opacity,
+                      duration: Duration(milliseconds: 500),
+                      curve: Curves.easeInOut,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: SizedBox(
+                          width: spaceMD + spaceXS,
+                          height: spaceMD + spaceXS,
+                          child: FaIcon(FontAwesomeIcons.solidCircleCheck, color: primaryPositive, size: spaceMD + spaceXS),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             },
           ),
