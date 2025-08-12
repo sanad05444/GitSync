@@ -5,7 +5,7 @@ use osshkeys::{KeyPair, KeyType};
 use git2::{
     opts::set_verify_owner_validation, CertificateCheckStatus, Cred,  Diff, DiffOptions, DiffDelta, Delta, ErrorCode,
     FetchOptions, PushOptions, RemoteCallbacks, Repository, RepositoryState, ResetType, Signature,
-    StatusOptions, Status, BranchType, Tree,
+    StatusOptions, Status, BranchType, Tree, SubmoduleUpdateOptions
 };
 use ssh_key::{HashAlg, LineEnding, PrivateKey};
 
@@ -100,6 +100,20 @@ fn _log(
     });
 }
 
+pub async fn get_submodule_paths(path_string: String,) -> Result<Vec<String>, git2::Error> {
+    let repo = Repository::open(path_string)?;
+    let mut paths = Vec::new();
+
+    for mut submodule in repo.submodules()? {
+        submodule.reload(false)?; 
+        if let Some(path) = submodule.path().to_str() {
+            paths.push(path.to_string());
+        }
+    }
+
+    Ok(paths)
+}
+
 pub async fn clone_repository(
     url: String,
     path_string: String,
@@ -167,6 +181,29 @@ pub async fn clone_repository(
         Arc::clone(&log_callback),
         LogType::CloneRepo,
         "Repository cloned successfully".to_string(),
+    );
+    
+    repo.submodules()?.iter_mut().try_for_each(|mut sm| {
+
+        let mut options = SubmoduleUpdateOptions::new();
+        let mut fetch_opts = FetchOptions::new();
+        fetch_opts.remote_callbacks(get_default_callbacks(Some(&provider), Some(&credentials)));
+        fetch_opts.prune(git2::FetchPrune::On);
+        options.fetch(fetch_opts);
+        options.allow_fetch(true);
+
+        sm.init(true)?;
+        sm.update(true, Some(&mut options))?;
+        Ok::<(), git2::Error>(())
+    })?;
+
+    set_author(&repo, &author);
+    repo.cleanup_state();
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::CloneRepo,
+        "Submodules updated successfully".to_string(),
     );
 
     Ok(())

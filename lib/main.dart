@@ -849,27 +849,32 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                               dropdownColor: secondaryDark,
                                               onChanged: (value) async {
                                                 if (value == null) return;
-
                                                 await repoManager.setInt(StorageKey.repoman_repoIndex, value);
                                                 await uiSettingsManager.reinit();
-
                                                 setState(() {});
                                               },
-                                              items:
-                                                  List.generate(
-                                                    (repoNamesSnapshot.data!.length),
-                                                    (index) => DropdownMenuItem(
-                                                      value: index,
-                                                      child: Row(
-                                                        children: [
-                                                          Text(
-                                                            repoNamesSnapshot.data![index].toUpperCase(),
-                                                            style: TextStyle(fontSize: textXS, color: primaryLight),
-                                                          ),
-                                                        ],
+                                              selectedItemBuilder:
+                                                  (context) => List.generate(
+                                                    repoNamesSnapshot.data!.length,
+                                                    (index) => ConstrainedBox(
+                                                      constraints: BoxConstraints(maxWidth: spaceXXL + spaceLG),
+                                                      child: Text(
+                                                        repoNamesSnapshot.data![index].toUpperCase(),
+                                                        style: TextStyle(fontSize: textXS, color: primaryLight),
+                                                        overflow: TextOverflow.ellipsis,
                                                       ),
                                                     ),
-                                                  ).toList(),
+                                                  ),
+                                              items: List.generate(
+                                                repoNamesSnapshot.data!.length,
+                                                (index) => DropdownMenuItem(
+                                                  value: index,
+                                                  child: Text(
+                                                    repoNamesSnapshot.data![index].toUpperCase(),
+                                                    style: TextStyle(fontSize: textXS, color: primaryLight),
+                                                  ),
+                                                ),
+                                              ),
                                             ),
                                           ]
                                           : [SizedBox.shrink()],
@@ -1584,7 +1589,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                       ? SizedBox.shrink()
                                                       : IconButton(
                                                         onPressed: () async {
-                                                          await uiSettingsManager.setString(StorageKey.setman_gitDirPath, "");
+                                                          await uiSettingsManager.setGitDirPath("");
                                                           setState(() {});
                                                         },
                                                         constraints: BoxConstraints(),
@@ -1622,7 +1627,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                       }
                                                       if (selectedDirectory == null) return;
 
-                                                      await uiSettingsManager.setString(StorageKey.setman_gitDirPath, selectedDirectory);
+                                                      await setGitDirPathGetSubmodules(selectedDirectory);
                                                       await repoManager.setOnboardingStep(4);
 
                                                       await onboardingController?.show();

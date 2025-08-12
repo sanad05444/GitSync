@@ -11,6 +11,11 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 Future<void> init({String? homepath}) =>
     RustLib.instance.api.crateApiGitManagerInit(homepath: homepath);
 
+Future<List<String>> getSubmodulePaths({required String pathString}) => RustLib
+    .instance
+    .api
+    .crateApiGitManagerGetSubmodulePaths(pathString: pathString);
+
 Future<void> cloneRepository({
   required String url,
   required String pathString,

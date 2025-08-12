@@ -117,7 +117,7 @@ class _CloneRepoMain extends State<CloneRepoMain> with WidgetsBindingObserver {
       Future<void> startClone() async {
         await CloningRepositoryDialog.showDialog(context, repoUrl, selectedDirectory!, (result) async {
           if (result == null) {
-            await uiSettingsManager.setString(StorageKey.setman_gitDirPath, selectedDirectory!);
+            await setGitDirPathGetSubmodules(selectedDirectory!);
             if (repoUrl.startsWith("http") && !repoUrl.startsWith("https")) {
               await PromptDisableSslDialog.showDialog(context, () async {
                 GitManager.setDisableSsl(true);
@@ -331,7 +331,7 @@ class _CloneRepoMain extends State<CloneRepoMain> with WidgetsBindingObserver {
                             }
                             if (selectedDirectory == null) return;
 
-                            await uiSettingsManager.setGitDirPath(selectedDirectory);
+                            await setGitDirPathGetSubmodules(selectedDirectory);
                             await repoManager.setOnboardingStep(4);
 
                             Navigator.of(context).canPop() ? Navigator.pop(context) : null;

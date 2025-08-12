@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
+import 'package:GitSync/api/manager/settings_manager.dart';
+import 'package:GitSync/api/manager/storage.dart';
+import 'package:GitSync/type/git_provider.dart';
 import 'package:cryptography/cryptography.dart';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -17,6 +20,7 @@ import 'package:GitSync/constant/strings.dart';
 import 'package:GitSync/src/rust/api/git_manager.dart' as GitManagerRs;
 import 'package:ios_document_picker/ios_document_picker.dart';
 import 'package:ios_document_picker/types.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:GitSync/global.dart';
@@ -122,6 +126,78 @@ Future<String?> pickDirectory() async {
   return null;
 }
 
+Future<void> setGitDirPathGetSubmodules(String dir) async {
+  await uiSettingsManager.setGitDirPath(dir);
+
+  if (premiumManager.hasPremiumNotifier.value == true) {
+    final submodulePaths = await GitManagerRs.getSubmodulePaths(pathString: dir);
+    if (submodulePaths.isNotEmpty) {
+      List<String> repomanReponames = List.from(await repoManager.getStringList(StorageKey.repoman_repoNames));
+      String currentContainerName = await repoManager.getRepoName(await repoManager.getInt(StorageKey.repoman_repoIndex));
+      final currentSyncMessage = await uiSettingsManager.getString(StorageKey.setman_syncMessage);
+      final currentDirPath = await uiSettingsManager.getString(StorageKey.setman_gitDirPath);
+      final currentAuthorName = await uiSettingsManager.getString(StorageKey.setman_authorName);
+      final currentAuthorEmail = await uiSettingsManager.getString(StorageKey.setman_authorEmail);
+      final currentAuthUsername = await uiSettingsManager.getString(StorageKey.setman_gitAuthUsername);
+      final currentAuthToken = await uiSettingsManager.getString(StorageKey.setman_gitAuthToken);
+      final currentGitSshKey = await uiSettingsManager.getString(StorageKey.setman_gitSshKey);
+      final currentSshPassphrase = await uiSettingsManager.getString(StorageKey.setman_gitSshPassphrase);
+      final currentGitCommitSigningPassphrase = await uiSettingsManager.getStringNullable(StorageKey.setman_gitCommitSigningPassphrase);
+      final currentGitCommitSigningKey = await uiSettingsManager.getStringNullable(StorageKey.setman_gitCommitSigningKey);
+      final currentSyncMessageTimeFormat = await uiSettingsManager.getString(StorageKey.setman_syncMessageTimeFormat);
+      final currentRemote = await uiSettingsManager.getString(StorageKey.setman_remote);
+      final currentSyncMessageEnabled = await uiSettingsManager.getBool(StorageKey.setman_syncMessageEnabled);
+      final currentGitProvider = await uiSettingsManager.getStringNullable(StorageKey.setman_gitProvider);
+      final currentLastSyncMethod = await uiSettingsManager.getString(StorageKey.setman_lastSyncMethod);
+
+      for (var path in submodulePaths) {
+        String containerName = "$currentContainerName-${path.split("/").last}";
+
+        if (repomanReponames.contains(containerName)) {
+          containerName = "${containerName}_alt";
+        }
+
+        repomanReponames = [...repomanReponames, containerName];
+
+        await repoManager.setStringList(StorageKey.repoman_repoNames, repomanReponames);
+
+        final tempSettingsManager = SettingsManager();
+        await tempSettingsManager.reinit(repoIndex: repomanReponames.indexOf(containerName));
+
+        await tempSettingsManager.setString(StorageKey.setman_authorName, currentAuthorName);
+        await tempSettingsManager.setString(StorageKey.setman_authorEmail, currentAuthorEmail);
+        await tempSettingsManager.setString(StorageKey.setman_syncMessage, currentSyncMessage);
+        await tempSettingsManager.setString(StorageKey.setman_syncMessageTimeFormat, currentSyncMessageTimeFormat);
+        await tempSettingsManager.setString(StorageKey.setman_remote, currentRemote);
+        await tempSettingsManager.setBool(StorageKey.setman_syncMessageEnabled, currentSyncMessageEnabled);
+        await tempSettingsManager.setStringNullable(StorageKey.setman_gitProvider, currentGitProvider);
+        await tempSettingsManager.setString(StorageKey.setman_gitAuthUsername, currentAuthUsername);
+        await tempSettingsManager.setString(StorageKey.setman_gitAuthToken, currentAuthToken);
+        await tempSettingsManager.setString(StorageKey.setman_gitSshKey, currentGitSshKey);
+        await tempSettingsManager.setString(StorageKey.setman_gitSshPassphrase, currentSshPassphrase);
+        await tempSettingsManager.setStringNullable(StorageKey.setman_gitCommitSigningPassphrase, currentGitCommitSigningPassphrase);
+        await tempSettingsManager.setStringNullable(StorageKey.setman_gitCommitSigningKey, currentGitCommitSigningKey);
+        await tempSettingsManager.setString(StorageKey.setman_lastSyncMethod, currentLastSyncMethod);
+
+        if (Platform.isIOS) {
+          final bookmarkParts = currentDirPath.split(conflictSeparator);
+          final bookmark = bookmarkParts.first;
+          final pathSuffix = bookmarkParts.last;
+          await tempSettingsManager.setGitDirPath("$bookmark$conflictSeparator${pathSuffix.isEmpty ? path : "$pathSuffix/$path"}");
+        } else {
+          print(currentDirPath);
+          print(path);
+          print("$currentDirPath/$path");
+          await tempSettingsManager.setGitDirPath("$currentDirPath/$path");
+        }
+      }
+
+      await repoManager.setInt(StorageKey.repoman_repoIndex, repomanReponames.indexOf(currentContainerName));
+      await uiSettingsManager.reinit();
+    }
+  }
+}
+
 Future<T?> useDirectory<T>(String bookmarkPath, Future<void> Function(String) setBookmarkPath, Future<T?> Function(String path) useAccess) async {
   Future<T?> preUseAccess(String path) async {
     final dir = Directory(path);
@@ -139,11 +215,15 @@ Future<T?> useDirectory<T>(String bookmarkPath, Future<void> Function(String) se
   final iosDocumentPickerPlugin = IosDocumentPicker();
   String? path;
 
+  final bookmarkParts = bookmarkPath.split(conflictSeparator);
+  final bookmark = bookmarkParts.first;
+  final pathSuffix = bookmarkParts.last;
+
   try {
-    final bookmarkAndPath = await iosDocumentPickerPlugin.resolveBookmark(bookmarkPath, isDirectory: true);
+    final bookmarkAndPath = await iosDocumentPickerPlugin.resolveBookmark(bookmark, isDirectory: true);
     if (bookmarkAndPath == null) return null;
     await setBookmarkPath(bookmarkAndPath.$1);
-    path = bookmarkAndPath.$2;
+    path = pathSuffix.isEmpty ? bookmarkAndPath.$2 : "${bookmarkAndPath.$2}/$pathSuffix";
   } catch (e) {
     print(e);
     return null;

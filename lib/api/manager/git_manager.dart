@@ -240,8 +240,11 @@ class GitManager {
 
     final result =
         await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
-          if (!Directory("$dirPath/$gitPath").existsSync()) return <GitManagerRs.Commit>[];
-          if (!File("$dirPath/$gitIndexPath").existsSync()) return <GitManagerRs.Commit>[];
+          if (!Directory("$dirPath/$gitPath").existsSync() &&
+              !File("$dirPath/$gitIndexPath").existsSync() &&
+              !File("$dirPath/$gitPath").existsSync()) {
+            return <GitManagerRs.Commit>[];
+          }
 
           Logger.gmLog(type: LogType.RecentCommits, ".git folder found");
 
@@ -270,7 +273,7 @@ class GitManager {
     final result =
         await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
           if (!Directory("$dirPath/$gitPath").existsSync()) return <String>[];
-          if (!File("$dirPath/$gitIndexPath").existsSync()) return <String>[];
+          if (!File("$dirPath/$gitIndexPath").existsSync() && !File("$dirPath/$gitPath").existsSync()) return <String>[];
 
           Logger.gmLog(type: LogType.RecentCommits, ".git folder found");
 
@@ -593,7 +596,18 @@ class GitManager {
           throw Exception('Directory does not exist: $gitDirPath');
         }
 
-        final gitConfigPath = path.join(gitDirPath, '.git', 'config');
+        String gitConfigPath = path.join(gitDirPath, '.git', 'config');
+
+        final gitDirFile = File(path.join(gitDirPath, '.git'));
+        if (await gitDirFile.exists()) {
+          final gitDirContent = await gitDirFile.readAsString();
+          final match = RegExp(r'gitdir:\s*(.+)').firstMatch(gitDirContent);
+          if (match != null) {
+            final actualGitDirPath = path.normalize(path.join(gitDirPath, match.group(1)!.trim()));
+            gitConfigPath = path.join(actualGitDirPath, 'config');
+          }
+        }
+
         final configFile = File(gitConfigPath);
 
         if (!await configFile.exists()) {
