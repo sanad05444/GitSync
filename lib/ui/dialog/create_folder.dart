@@ -52,7 +52,7 @@ Future<void> showDialog(BuildContext context, Function(String text) callback) {
               },
             ),
             TextButton(
-              child: Text(t.add.toUpperCase(), style: TextStyle(color: primaryPositive, fontSize: textMD)),
+              child: Text(t.create.toUpperCase(), style: TextStyle(color: primaryPositive, fontSize: textMD)),
               onPressed: () async {
                 callback(textController.text);
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;

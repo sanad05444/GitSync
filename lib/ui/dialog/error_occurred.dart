@@ -79,13 +79,13 @@ Future<void> showDialog(BuildContext context, String error, Function() callback)
           ),
           actions: <Widget>[
             TextButton(
-              child: Text(t.dismiss, style: TextStyle(color: primaryLight, fontSize: textMD)),
+              child: Text(t.dismiss.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textMD)),
               onPressed: () {
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;
               },
             ),
             TextButton(
-              child: Text(t.reportABug, style: TextStyle(color: tertiaryNegative, fontSize: textMD)),
+              child: Text(t.reportABug.toUpperCase(), style: TextStyle(color: tertiaryNegative, fontSize: textMD)),
               onPressed: () async {
                 callback();
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;

@@ -23,14 +23,14 @@ Future<void> showDialog(BuildContext context, Future<void> Function() successCal
           ),
           actions: <Widget>[
             TextButton(
-              child: Text(t.dismiss, style: TextStyle(color: primaryLight, fontSize: textMD)),
+              child: Text(t.dismiss.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textMD)),
               onPressed: () async {
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;
                 await callback();
               },
             ),
             TextButton(
-              child: Text(t.goToSettings, style: TextStyle(color: primaryPositive, fontSize: textMD)),
+              child: Text(t.goToSettings.toUpperCase(), style: TextStyle(color: primaryPositive, fontSize: textMD)),
               onPressed: () async {
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;
                 await successCallback();

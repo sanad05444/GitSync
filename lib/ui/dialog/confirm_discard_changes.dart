@@ -37,7 +37,7 @@ Future<void> showDialog(BuildContext context, List<String> selectedFiles, Future
               },
             ),
             TextButton(
-              child: Text(t.discardChanges, style: TextStyle(color: tertiaryNegative, fontSize: textMD)),
+              child: Text(t.discardChanges.toUpperCase(), style: TextStyle(color: tertiaryNegative, fontSize: textMD)),
               onPressed: () async {
                 await callback();
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;

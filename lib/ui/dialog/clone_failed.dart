@@ -22,13 +22,13 @@ Future<void> showDialog(BuildContext context, String errorMessage) {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text(t.cancel, style: TextStyle(color: primaryLight, fontSize: textMD)),
+              child: Text(t.cancel.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textMD)),
               onPressed: () {
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;
               },
             ),
             TextButton(
-              child: Text(t.ok, style: TextStyle(color: primaryPositive, fontSize: textMD)),
+              child: Text(t.ok.toUpperCase(), style: TextStyle(color: primaryPositive, fontSize: textMD)),
               onPressed: () async {
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;
               },

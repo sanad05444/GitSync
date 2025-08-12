@@ -27,7 +27,7 @@ Future<void> showDialog(BuildContext context, Function callback) {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text(t.setUp, style: TextStyle(color: primaryPositive, fontSize: textMD)),
+              child: Text(t.setUp.toUpperCase(), style: TextStyle(color: primaryPositive, fontSize: textMD)),
               onPressed: () async {
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;
                 callback();

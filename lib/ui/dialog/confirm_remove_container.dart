@@ -35,7 +35,7 @@ Future<void> showDialog(BuildContext context, String containerName, Future<void>
               },
             ),
             TextButton(
-              child: Text(t.delete, style: TextStyle(color: tertiaryNegative, fontSize: textMD)),
+              child: Text(t.delete.toUpperCase(), style: TextStyle(color: tertiaryNegative, fontSize: textMD)),
               onPressed: () async {
                 await callback();
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;

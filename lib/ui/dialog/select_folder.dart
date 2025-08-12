@@ -17,13 +17,13 @@ Future<void> showDialog(BuildContext context, Function() callback) {
           content: null,
           actions: <Widget>[
             TextButton(
-              child: Text(t.cancel, style: TextStyle(color: primaryLight, fontSize: textMD)),
+              child: Text(t.cancel.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textMD)),
               onPressed: () {
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;
               },
             ),
             TextButton(
-              child: Text(t.select, style: TextStyle(color: primaryPositive, fontSize: textMD)),
+              child: Text(t.select.toUpperCase(), style: TextStyle(color: primaryPositive, fontSize: textMD)),
               onPressed: () async {
                 callback();
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;

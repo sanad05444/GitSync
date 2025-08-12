@@ -53,7 +53,7 @@ Future<void> showDialog(BuildContext context, List<String> selectedPaths, Future
               },
             ),
             TextButton(
-              child: Text(AppLocalizations.of(context).delete, style: TextStyle(color: tertiaryNegative, fontSize: textMD)),
+              child: Text(AppLocalizations.of(context).delete.toUpperCase(), style: TextStyle(color: tertiaryNegative, fontSize: textMD)),
               onPressed: () async {
                 await callback();
                 Navigator.of(context).canPop() ? Navigator.pop(context) : null;

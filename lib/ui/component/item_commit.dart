@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:GitSync/constant/strings.dart';
 import 'package:GitSync/global.dart';
 import 'package:sprintf/sprintf.dart';
 import '../../../constant/colors.dart';
