@@ -1,9 +1,11 @@
+import 'package:GitSync/constant/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:GitSync/constant/colors.dart';
 import 'package:GitSync/api/manager/storage.dart';
 import 'package:GitSync/constant/dimens.dart';
 import 'package:GitSync/global.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TileSyncSettings extends StatefulWidget {
   const TileSyncSettings({super.key});
@@ -43,9 +45,31 @@ class _TileSyncSettingsState extends State<TileSyncSettings> {
                     ),
                     label: SizedBox(
                       width: double.infinity,
-                      child: Text(
-                        t.tileSyncSettings,
-                        style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),
+                      child: Row(
+                        children: [
+                          AnimatedSize(
+                            duration: Duration(milliseconds: 200),
+                            child: Container(
+                              width: (snapshot.data ?? false) ? null : 0,
+                              decoration: BoxDecoration(),
+                              clipBehavior: Clip.hardEdge,
+                              child: IconButton(
+                                padding: EdgeInsets.zero,
+                                style: ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                                constraints: BoxConstraints(),
+                                onPressed: () async {
+                                  launchUrl(Uri.parse(tileSyncDocsLink));
+                                },
+                                icon: FaIcon(FontAwesomeIcons.circleQuestion, color: primaryLight, size: textLG),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: (snapshot.data ?? false) ? spaceSM : 0),
+                          Text(
+                            t.tileSyncSettings,
+                            style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),
+                          ),
+                        ],
                       ),
                     ),
                   ),

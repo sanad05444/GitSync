@@ -9,6 +9,7 @@ import 'package:GitSync/constant/colors.dart';
 import 'package:GitSync/api/manager/storage.dart';
 import 'package:GitSync/constant/dimens.dart';
 import 'package:GitSync/global.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:workmanager/workmanager.dart';
 
 class ScheduledSyncSettings extends StatefulWidget {
@@ -87,6 +88,25 @@ class _ScheduledSyncSettingsState extends State<ScheduledSyncSettings> {
                       width: double.infinity,
                       child: Row(
                         children: [
+                          AnimatedSize(
+                            duration: Duration(milliseconds: 200),
+                            child: Container(
+                              // height: (snapshot.data ?? false) ? null : 0,
+                              width: (snapshot.data ?? false) ? null : 0,
+                              decoration: BoxDecoration(),
+                              clipBehavior: Clip.hardEdge,
+                              child: IconButton(
+                                padding: EdgeInsets.zero,
+                                style: ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                                constraints: BoxConstraints(),
+                                onPressed: () async {
+                                  launchUrl(Uri.parse(scheduledSyncDocsLink));
+                                },
+                                icon: FaIcon(FontAwesomeIcons.circleQuestion, color: primaryLight, size: textLG),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: (snapshot.data ?? false) ? spaceSM : 0),
                           Text(
                             t.scheduledSyncSettings,
                             style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),

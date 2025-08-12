@@ -66,6 +66,9 @@ const String privacyPolicyLink = "https://gitsync.viscouspotenti.al/wiki/privacy
 const String eulaLink = "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/";
 const String githubDiscussionsLink = "https://github.com/ViscousPot/GitSync/discussions";
 const String multiRepoDocsLink = "https://gitsync.viscouspotenti.al/wiki/multi-repo-support";
+const String scheduledSyncDocsLink = "https://gitsync.viscouspotenti.al/wiki/sync-options/background/scheduled";
+const String autoSyncDocsLink = "https://gitsync.viscouspotenti.al/wiki/sync-options/background/app-based";
+const String tileSyncDocsLink = "https://gitsync.viscouspotenti.al/wiki/sync-options/background/quick-tile";
 const String enhancedShcheduledSyncDocsLink =
     "https://gitsync.viscouspotenti.al/wiki/sync-options/background/scheduled#enhanced-scheduled-sync-ios-only";
 const String syncOptionsDocsLink = "https://gitsync.viscouspotenti.al/wiki/sync-options";

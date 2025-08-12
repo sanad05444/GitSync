@@ -10,6 +10,7 @@ import 'package:GitSync/global.dart';
 import 'package:GitSync/ui/dialog/select_application.dart' as SelectApplicationDialog;
 import 'package:GitSync/ui/dialog/prominent_disclosure.dart' as ProminentDisclosureDialog;
 import 'package:sprintf/sprintf.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AutoSyncSettings extends StatefulWidget {
   const AutoSyncSettings({super.key});
@@ -70,9 +71,31 @@ class _AutoSyncSettingsState extends State<AutoSyncSettings> {
                           ),
                           label: SizedBox(
                             width: double.infinity,
-                            child: Text(
-                              t.enableApplicationObserver,
-                              style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),
+                            child: Row(
+                              children: [
+                                AnimatedSize(
+                                  duration: Duration(milliseconds: 200),
+                                  child: Container(
+                                    width: (expandedSnapshot.data ?? false) ? null : 0,
+                                    decoration: BoxDecoration(),
+                                    clipBehavior: Clip.hardEdge,
+                                    child: IconButton(
+                                      padding: EdgeInsets.zero,
+                                      style: ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                                      constraints: BoxConstraints(),
+                                      onPressed: () async {
+                                        launchUrl(Uri.parse(autoSyncDocsLink));
+                                      },
+                                      icon: FaIcon(FontAwesomeIcons.circleQuestion, color: primaryLight, size: textLG),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: (expandedSnapshot.data ?? false) ? spaceSM : 0),
+                                Text(
+                                  t.enableApplicationObserver,
+                                  style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),
+                                ),
+                              ],
                             ),
                           ),
                         ),
