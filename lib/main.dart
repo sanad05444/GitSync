@@ -298,6 +298,12 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     // Logger.logError(LogType.TEST, "test", StackTrace.fromString("test stack"));
     // Future.delayed(Duration(seconds: 5), () => Logger.logError(LogType.TEST, "test", StackTrace.fromString("test stack")));
 
+    initAsync(() async {
+      if (premiumManager.hasPremiumNotifier.value == false) {
+        await premiumManager.cullNonPremium();
+      }
+    });
+
     premiumManager.hasPremiumNotifier.addListener(() async {
       if (premiumManager.hasPremiumNotifier.value == false) {
         await premiumManager.cullNonPremium();
