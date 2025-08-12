@@ -109,7 +109,7 @@ Consider [sponsoring](https://github.com/sponsors/ViscousPot)! Any help is hugel
 - [git2-rs](https://github.com/rust-lang/git2-rs)
 
 <!-- Find unstringed strings regex:
-`^(?!.*\b(?:Logger\.log|import|static|invokeMethod|initLogger|GitManagerRs\.init|pragma)\b).*['"](.{2,})['"]`
+`^(?!.*\b(?:Logger\.log|Logger\.logError|Logger\.gmLog|import|static|invokeMethod|initLogger|GitManagerRs\.init|pragma)\b).*['"](?![^'"]*\$)(.{2,})['"]`
 
 include
 ui/

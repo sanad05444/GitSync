@@ -12,7 +12,6 @@ import '../../../constant/dimens.dart';
 import '../../../constant/strings.dart';
 import '../../../global.dart';
 import '../../../ui/component/item_setting.dart';
-import 'package:GitSync/global.dart';
 import 'package:GitSync/ui/dialog/import_priv_key.dart' as ImportPrivKeyDialog;
 
 class SettingsMain extends StatefulWidget {
@@ -248,7 +247,7 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver {
                 SizedBox(height: spaceLG),
                 Showcase(
                   key: _authorDetailsKey,
-                  description: "Fill out your author details",
+                  description: t.authorDetailsShowcasePrompt,
                   tooltipBackgroundColor: tertiaryInfo,
                   textColor: secondaryDark,
                   targetBorderRadius: BorderRadius.all(cornerRadiusMD),

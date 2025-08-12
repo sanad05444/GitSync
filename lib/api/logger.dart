@@ -34,7 +34,7 @@ enum LogType {
   Commit,
   // GetRepos,
   CloneRepo,
-  // SelectDirectory,
+  SelectDirectory,
   // ForcePull,
   PullFromRepo,
   PushToRepo,
@@ -137,7 +137,7 @@ class Logger {
 
     await GithubIssueReportDialog.showDialog(context, (title, description, minimalRepro) async {
       final logs = utf8.decode(utf8.encode((await _generateLogs()).split("\n").reversed.join("\n")).take(62 * 1024).toList(), allowMalformed: true);
-      final deviceInfo = await _generateDeviceInfo();
+      final deviceInfo = await generateDeviceInfo();
 
       final url = Uri.parse('https://api.github.com/repos/ViscousPot/GitSync/issues');
 
@@ -175,7 +175,7 @@ $logs
     });
   }
 
-  static Future<String> _generateDeviceInfo() async {
+  static Future<String> generateDeviceInfo() async {
     final deviceInfo = DeviceInfoPlugin();
     final packageInfo = await PackageInfo.fromPlatform();
 

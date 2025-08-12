@@ -66,7 +66,7 @@ Future<void> showDialog(BuildContext context, Future<void> Function(String branc
                                           isDense: true,
                                           isExpanded: true,
                                           hint: Text(
-                                            "Detached Head".toUpperCase(),
+                                            t.detachedHead.toUpperCase(),
                                             style: TextStyle(fontSize: textMD, fontWeight: FontWeight.bold, color: secondaryLight),
                                           ),
                                           padding: EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceXS),

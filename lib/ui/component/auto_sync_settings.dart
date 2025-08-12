@@ -9,7 +9,6 @@ import 'package:GitSync/constant/strings.dart';
 import 'package:GitSync/global.dart';
 import 'package:GitSync/ui/dialog/select_application.dart' as SelectApplicationDialog;
 import 'package:GitSync/ui/dialog/prominent_disclosure.dart' as ProminentDisclosureDialog;
-import 'package:GitSync/global.dart';
 import 'package:sprintf/sprintf.dart';
 
 class AutoSyncSettings extends StatefulWidget {
@@ -258,7 +257,7 @@ class _AutoSyncSettingsState extends State<AutoSyncSettings> {
                                                                     ? t.applicationNotSet
                                                                     : ((applicationPackagesSnapshot.data ?? {}).length == 1
                                                                         ? (labelSnapshot.data ?? "")
-                                                                        : sprintf(multipleApplicationSelected, [
+                                                                        : sprintf(t.multipleApplicationSelected, [
                                                                           (applicationPackagesSnapshot.data ?? {}).length,
                                                                         ])))
                                                                 .toUpperCase(),

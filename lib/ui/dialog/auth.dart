@@ -11,7 +11,6 @@ import '../../../global.dart';
 import '../../../type/git_provider.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
 import 'import_priv_key.dart' as ImportPrivKeyDialog;
-import 'package:GitSync/global.dart';
 import 'confirm_priv_key_copy.dart' as ConfirmPrivKeyCopyDialog;
 
 final GlobalKey authDialogKey = GlobalKey();
@@ -262,7 +261,7 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                   children: [
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: spaceSM),
-                      child: Text("passphrase".toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold)),
+                      child: Text(t.passphrase.toUpperCase(), style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold)),
                     ),
                     SizedBox(height: spaceMD),
                     Padding(
@@ -295,7 +294,7 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                           fillColor: secondaryDark,
                           filled: true,
                           border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusSM), borderSide: BorderSide.none),
-                          hintText: "(optional)".toUpperCase(),
+                          hintText: t.optionalLabel.toUpperCase(),
                           hintStyle: TextStyle(fontSize: textSM, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis, color: tertiaryLight),
                           isCollapsed: true,
                           floatingLabelBehavior: FloatingLabelBehavior.always,

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:GitSync/gitsync_service.dart';
 import 'package:GitSync/global.dart';
 import 'package:GitSync/api/manager/storage.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ class AccessibilityServiceHelper {
       if (call.method == 'onIntentAction') {
         String action = call.arguments;
         switch (action) {
-          case "MANUAL_SYNC":
+          case GitsyncService.MANUAL_SYNC:
             {
               await repoManager.setInt(StorageKey.repoman_repoIndex, await repoManager.getInt(StorageKey.repoman_tileManualSyncIndex));
               await uiSettingsManager.reinit();

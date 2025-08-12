@@ -18,7 +18,6 @@ import '../../../ui/dialog/cloning_repository.dart' as CloningRepositoryDialog;
 import '../../../ui/dialog/repo_url_invalid.dart' as RepoUrlInvalid;
 import '../../../ui/dialog/clone_failed.dart' as CloneFailedDialog;
 import '../../../ui/dialog/confirm_clone_overwrite.dart' as ConfirmCloneOverwriteDialog;
-import 'package:GitSync/global.dart';
 
 class CloneRepoMain extends StatefulWidget {
   const CloneRepoMain({super.key});

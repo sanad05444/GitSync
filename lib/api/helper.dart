@@ -148,7 +148,7 @@ Future<T?> useDirectory<T>(String bookmarkPath, Future<void> Function(String) se
 
   final hasAccess = await iosDocumentPickerPlugin.startAccessing(path);
   if (!hasAccess) {
-    print("//// No folder access");
+    Logger.logError(LogType.SelectDirectory, "No folder access", StackTrace.fromString(""));
     return null;
   }
 

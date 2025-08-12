@@ -14,7 +14,7 @@ Future<void> showDialog(BuildContext context, Function(String text) callback) {
           backgroundColor: secondaryDark,
           title: SizedBox(
             width: MediaQuery.of(context).size.width,
-            child: Text("Create a directory", style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold)),
+            child: Text(t.createADir, style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold)),
           ),
           content: SingleChildScrollView(
             child: ListBody(
@@ -34,7 +34,7 @@ Future<void> showDialog(BuildContext context, Function(String text) callback) {
                     fillColor: tertiaryDark,
                     filled: true,
                     border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusSM), borderSide: BorderSide.none),
-                    label: Text("Folder Name".toUpperCase(), style: TextStyle(color: secondaryLight, fontSize: textSM, fontWeight: FontWeight.bold)),
+                    label: Text(t.dirName.toUpperCase(), style: TextStyle(color: secondaryLight, fontSize: textSM, fontWeight: FontWeight.bold)),
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                     isCollapsed: true,
                     contentPadding: const EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),

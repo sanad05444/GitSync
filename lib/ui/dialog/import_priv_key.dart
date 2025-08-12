@@ -29,7 +29,7 @@ Future<void> showDialog(BuildContext context, Function((String, String) sshCrede
                         Padding(
                           padding: EdgeInsets.symmetric(vertical: spaceSM),
                           child: Text(
-                            "passphrase".toUpperCase(),
+                            t.passphrase.toUpperCase(),
                             style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -59,7 +59,7 @@ Future<void> showDialog(BuildContext context, Function((String, String) sshCrede
                               fillColor: secondaryDark,
                               filled: true,
                               border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusSM), borderSide: BorderSide.none),
-                              hintText: "(optional)".toUpperCase(),
+                              hintText: t.optionalLabel.toUpperCase(),
                               hintStyle: TextStyle(
                                 fontSize: textSM,
                                 fontWeight: FontWeight.bold,

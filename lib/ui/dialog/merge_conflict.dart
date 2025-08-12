@@ -19,7 +19,6 @@ import '../../../constant/dimens.dart';
 import '../../../global.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
 import 'package:anchor_scroll_controller/anchor_scroll_controller.dart';
-import 'package:GitSync/global.dart';
 
 final demoConflictSections = [
   (

@@ -1,5 +1,6 @@
 import 'package:GitSync/constant/colors.dart';
 import 'package:GitSync/constant/dimens.dart';
+import 'package:GitSync/global.dart';
 import 'package:flutter/material.dart';
 import 'package:showcaseview/showcaseview.dart';
 
@@ -40,7 +41,7 @@ class CustomShowcase extends StatelessWidget {
               type: TooltipDefaultActionType.previous,
               backgroundColor: primaryLight,
               textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: textSM, color: primaryDark),
-              name: "Previous".toUpperCase(),
+              name: t.previous.toUpperCase(),
             ),
           ]
           : [],
@@ -50,7 +51,7 @@ class CustomShowcase extends StatelessWidget {
               type: TooltipDefaultActionType.next,
               backgroundColor: primaryLight,
               textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: textSM, color: primaryDark),
-              name: "Next".toUpperCase(),
+              name: t.next.toUpperCase(),
             ),
           ]
           : [
@@ -58,7 +59,7 @@ class CustomShowcase extends StatelessWidget {
               type: TooltipDefaultActionType.next,
               backgroundColor: primaryLight,
               textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: textSM, color: primaryDark),
-              name: "Finish".toUpperCase(),
+              name: t.finish.toUpperCase(),
             ),
           ],
     ],

@@ -8,7 +8,6 @@ import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../src/rust/api/git_manager.dart' as GitManagerRs;
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:GitSync/global.dart';
 
 class ItemCommit extends StatefulWidget {
   const ItemCommit(this.commit, {super.key});
@@ -85,12 +84,12 @@ class _ItemCommit extends State<ItemCommit> {
                 Row(
                   children: [
                     Text(
-                      sprintf(additions, [widget.commit.additions]),
+                      sprintf(t.additions, [widget.commit.additions]),
                       style: TextStyle(color: tertiaryPositive, fontSize: textXS, fontWeight: FontWeight.w900),
                     ),
                     SizedBox(width: spaceSM),
                     Text(
-                      sprintf(deletions, [widget.commit.deletions]),
+                      sprintf(t.deletions, [widget.commit.deletions]),
                       style: TextStyle(color: tertiaryNegative, fontSize: textXS, fontWeight: FontWeight.w900),
                     ),
                   ],

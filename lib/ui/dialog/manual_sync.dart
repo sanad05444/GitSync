@@ -11,7 +11,6 @@ import 'package:GitSync/global.dart';
 import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
-import 'package:GitSync/global.dart';
 import 'package:GitSync/ui/dialog/confirm_discard_changes.dart' as ConfirmDiscardChangesDialog;
 
 Future<void> showDialog(BuildContext context) {

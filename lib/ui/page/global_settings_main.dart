@@ -18,13 +18,13 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:GitSync/ui/dialog/unlock_premium.dart' as UnlockPremiumDialog;
+import 'package:sprintf/sprintf.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../api/helper.dart';
 import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../constant/strings.dart';
 import '../../../global.dart';
-import 'package:GitSync/global.dart';
 
 import '../dialog/change_language.dart' as ChangeLanguageDialog;
 import '../dialog/enter_backup_restore_password.dart' as EnterBackupRestorePasswordDialog;
@@ -107,7 +107,7 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain> with WidgetsBindingO
                 ),
                 SizedBox(height: spaceMD),
                 ButtonSetting(
-                  text: "Browse & Edit Directory",
+                  text: t.browseEditDir,
                   icon: FontAwesomeIcons.folderTree,
                   onPressed: () async {
                     String? selectedDirectory;
@@ -151,8 +151,8 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain> with WidgetsBindingO
                       final Map<String, dynamic> settingsMap = {"repoManager": repoManagerSettings, "settingsManager": settingsManagerSettings};
 
                       await FilePicker.platform.saveFile(
-                        dialogTitle: 'Select location to save backup',
-                        fileName: "backup_${DateTime.now().toLocal().toString().replaceAll(":", "-")}.gsbak",
+                        dialogTitle: t.selectBackupLocation,
+                        fileName: sprintf(t.backupFileTemplate, [DateTime.now().toLocal().toString().replaceAll(":", "-")]),
                         bytes: utf8.encode(await encryptMap(settingsMap, text)),
                       );
                     });
@@ -198,7 +198,7 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain> with WidgetsBindingO
                   child: Row(
                     children: [
                       Expanded(child: Container(color: tertiaryLight, height: spaceXXXXS, margin: EdgeInsets.only(right: spaceSM))),
-                      Text("community".toUpperCase(), style: TextStyle(fontSize: textSM, color: primaryLight, fontWeight: FontWeight.bold)),
+                      Text(t.community.toUpperCase(), style: TextStyle(fontSize: textSM, color: primaryLight, fontWeight: FontWeight.bold)),
                       Expanded(child: Container(color: tertiaryLight, height: spaceXXXXS, margin: EdgeInsets.only(left: spaceSM))),
                     ],
                   ),
@@ -225,7 +225,7 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain> with WidgetsBindingO
                     final files = !logsDir.existsSync() ? [] : logsDir.listSync().whereType<File>().where((f) => f.path.endsWith('.log')).toList();
 
                     if (files.isEmpty || !logsDir.existsSync()) {
-                      Fluttertoast.showToast(msg: "No log files found!", toastLength: Toast.LENGTH_SHORT, gravity: null);
+                      Fluttertoast.showToast(msg: t.noLogFilesFound, toastLength: Toast.LENGTH_SHORT, gravity: null);
                       return;
                     }
 
@@ -260,14 +260,11 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain> with WidgetsBindingO
                     final Email email = Email(
                       body: """
 
-Platform: ${Platform.isIOS ? "iOS" : "Android"}
-Device Model: $deviceModel
-OS Version: $osVersion
-App Version: $appVersion
+${await Logger.generateDeviceInfo()}
 
 """,
-                      subject: 'GitSync Logs (${Platform.isIOS ? "iOS" : "Android"})',
-                      recipients: ['bugsviscouspotential@gmail.com'],
+                      subject: sprintf(t.logsEmailSubjectTemplate, [Platform.isIOS ? t.ios : t.android]),
+                      recipients: [t.logsEmailRecipient],
                       attachmentPaths: [zipFile.path],
                       isHTML: false,
                     );
@@ -307,7 +304,7 @@ App Version: $appVersion
                   child: Row(
                     children: [
                       Expanded(child: Container(color: tertiaryLight, height: spaceXXXXS, margin: EdgeInsets.only(right: spaceSM))),
-                      Text("guides".toUpperCase(), style: TextStyle(fontSize: textSM, color: primaryLight, fontWeight: FontWeight.bold)),
+                      Text(t.guides.toUpperCase(), style: TextStyle(fontSize: textSM, color: primaryLight, fontWeight: FontWeight.bold)),
                       Expanded(child: Container(color: tertiaryLight, height: spaceXXXXS, margin: EdgeInsets.only(left: spaceSM))),
                     ],
                   ),
@@ -399,7 +396,7 @@ App Version: $appVersion
 
 Route createGlobalSettingsMainRoute({bool onboarding = false}) {
   return PageRouteBuilder(
-    settings: const RouteSettings(name: settings_main),
+    settings: const RouteSettings(name: global_settings_main),
     pageBuilder: (context, animation, secondaryAnimation) => ShowCaseWidget(builder: (context) => GlobalSettingsMain(onboarding: onboarding)),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(0.0, 1.0);

@@ -13,24 +13,82 @@ import '../constant/strings.dart';
 
 ServiceInstance? serviceInstance;
 
+class ServiceStrings {
+  final String syncStartPull;
+  final String syncStartPush;
+  final String syncNotRequired;
+  final String syncComplete;
+  final String syncInProgress;
+  final String syncScheduled;
+  final String detectingChanges;
+  final String ongoingMergeConflict;
+
+  const ServiceStrings({
+    required this.syncStartPull,
+    required this.syncStartPush,
+    required this.syncNotRequired,
+    required this.syncComplete,
+    required this.syncInProgress,
+    required this.syncScheduled,
+    required this.detectingChanges,
+    required this.ongoingMergeConflict,
+  });
+
+  factory ServiceStrings.fromMap(Map<String, dynamic> map) {
+    return ServiceStrings(
+      syncStartPull: map['syncStartPull'] ?? '',
+      syncStartPush: map['syncStartPush'] ?? '',
+      syncNotRequired: map['syncNotRequired'] ?? '',
+      syncComplete: map['syncComplete'] ?? '',
+      syncInProgress: map['syncInProgress'] ?? '',
+      syncScheduled: map['syncScheduled'] ?? '',
+      detectingChanges: map['detectingChanges'] ?? '',
+      ongoingMergeConflict: map['ongoingMergeConflict'] ?? '',
+    );
+  }
+
+  Map<String, String> toMap() {
+    return {
+      'syncStartPull': syncStartPull,
+      'syncStartPush': syncStartPush,
+      'syncNotRequired': syncNotRequired,
+      'syncComplete': syncComplete,
+      'syncInProgress': syncInProgress,
+      'syncScheduled': syncScheduled,
+      'detectingChanges': detectingChanges,
+      'ongoingMergeConflict': ongoingMergeConflict,
+    };
+  }
+}
+
 class GitsyncService {
   static const ACCESSIBILITY_EVENT = "ACCESSIBILITY_EVENT";
   static const FORCE_SYNC = "FORCE_SYNC";
+  static const MANUAL_SYNC = "MANUAL_SYNC";
   static const INTENT_SYNC = "INTENT_SYNC";
   static const TILE_SYNC = "TILE_SYNC";
-  static const MERGE = "MERGE";
+  static const UPDATE_SERVICE_STRINGS = "UPDATE_SERVICE_STRINGS";
   static const REFRESH = "REFRESH";
+  static const MERGE = "MERGE";
   static const MERGE_COMPLETE = "MERGE_COMPLETE";
+  static const repoIndex = "repoIndex";
 
   static RepoManager repoManager = RepoManager();
 
+  late ServiceStrings s;
   bool isScheduled = false;
   bool isSyncing = false;
 
-  Future<void> initialise(Function(ServiceInstance) onServiceStart, Function() callbackDispatcher) async {
+  Future<void> initialise(
+    Function(ServiceInstance) onServiceStart,
+    Function() callbackDispatcher,
+    // Map<String, String> stringMap,
+  ) async {
     final service = FlutterBackgroundService();
 
     Workmanager().initialize(callbackDispatcher, isInDebugMode: kDebugMode);
+
+    // final serviceStrings = ServiceStrings.fromMap(stringMap);
 
     await service.configure(
       androidConfiguration: AndroidConfiguration(autoStart: true, isForegroundMode: false, onStart: onServiceStart),
@@ -45,12 +103,16 @@ class GitsyncService {
     );
   }
 
+  void initialiseStrings(Map<String, dynamic> stringMap) {
+    s = ServiceStrings.fromMap(stringMap);
+  }
+
   Future<void> debouncedSync(int repomanRepoindex, [bool forced = false, bool immediate = false]) async {
     if (!await hasNetworkConnection()) {
       Workmanager().registerOneOffTask(
         "$networkScheduledSyncKey$repomanRepoindex",
         networkScheduledSyncKey,
-        inputData: {"repoIndex": repomanRepoindex},
+        inputData: {repoIndex: repomanRepoindex},
         constraints: Constraints(networkType: NetworkType.connected),
       );
       return;
@@ -59,13 +121,13 @@ class GitsyncService {
     await settingsManager.reinit(repoIndex: repomanRepoindex);
 
     if (isScheduled) {
-      _displaySyncMessage(settingsManager, "Sync In Progress");
+      _displaySyncMessage(settingsManager, s.syncInProgress);
       return;
     } else {
       if (isSyncing) {
         isScheduled = true;
         Logger.gmLog(type: LogType.Sync, "Sync Scheduled");
-        _displaySyncMessage(settingsManager, "Sync Scheduled");
+        _displaySyncMessage(settingsManager, s.syncScheduled);
         return;
       } else {
         if (immediate) {
@@ -98,12 +160,12 @@ class GitsyncService {
     }
 
     if ((await GitManager.getConflicting(repomanRepoindex)).isNotEmpty) {
-      Fluttertoast.showToast(msg: ongoingMergeConflict, toastLength: Toast.LENGTH_SHORT, gravity: null);
+      Fluttertoast.showToast(msg: s.ongoingMergeConflict, toastLength: Toast.LENGTH_SHORT, gravity: null);
       return;
     }
 
     if (forced) {
-      _displaySyncMessage(settingsManager, "Detecting Changes…");
+      _displaySyncMessage(settingsManager, s.detectingChanges);
     }
     Logger.gmLog(type: LogType.Sync, "Start Sync");
     isSyncing = true;
@@ -123,7 +185,7 @@ class GitsyncService {
         Workmanager().registerOneOffTask(
           "$networkScheduledSyncKey$repomanRepoindex",
           networkScheduledSyncKey,
-          inputData: {"repoIndex": repomanRepoindex},
+          inputData: {repoIndex: repomanRepoindex},
           constraints: Constraints(networkType: NetworkType.connected),
         );
         return;
@@ -132,7 +194,7 @@ class GitsyncService {
       Logger.gmLog(type: LogType.Sync, "Start Pull Repo");
       final pullResult = await GitManager.downloadChanges(repomanRepoindex, settingsManager, () {
         synced = true;
-        _displaySyncMessage(settingsManager, syncStartPull);
+        _displaySyncMessage(settingsManager, s.syncStartPull);
       });
 
       switch (pullResult) {
@@ -143,7 +205,7 @@ class GitsyncService {
               Workmanager().registerOneOffTask(
                 "$networkScheduledSyncKey$repomanRepoindex",
                 networkScheduledSyncKey,
-                inputData: {"repoIndex": repomanRepoindex},
+                inputData: {repoIndex: repomanRepoindex},
                 constraints: Constraints(networkType: NetworkType.connected),
               );
               return;
@@ -164,7 +226,7 @@ class GitsyncService {
         Workmanager().registerOneOffTask(
           "$networkScheduledSyncKey$repomanRepoindex",
           networkScheduledSyncKey,
-          inputData: {"repoIndex": repomanRepoindex},
+          inputData: {repoIndex: repomanRepoindex},
           constraints: Constraints(networkType: NetworkType.connected),
         );
         return;
@@ -173,7 +235,7 @@ class GitsyncService {
       Logger.gmLog(type: LogType.Sync, "Start Push Repo");
       final pushResult = await GitManager.uploadChanges(repomanRepoindex, settingsManager, () {
         if (!synced) {
-          _displaySyncMessage(settingsManager, syncStartPush);
+          _displaySyncMessage(settingsManager, s.syncStartPush);
         }
       });
 
@@ -185,7 +247,7 @@ class GitsyncService {
               Workmanager().registerOneOffTask(
                 "$networkScheduledSyncKey$repomanRepoindex",
                 networkScheduledSyncKey,
-                inputData: {"repoIndex": repomanRepoindex},
+                inputData: {repoIndex: repomanRepoindex},
                 constraints: Constraints(networkType: NetworkType.connected),
               );
               return;
@@ -204,11 +266,11 @@ class GitsyncService {
 
       if (!(pushResult == true || pullResult == true)) {
         if (forced) {
-          _displaySyncMessage(settingsManager, syncNotRequired);
+          _displaySyncMessage(settingsManager, s.syncNotRequired);
         }
         return;
       } else {
-        _displaySyncMessage(settingsManager, syncComplete);
+        _displaySyncMessage(settingsManager, s.syncComplete);
       }
     }();
 
@@ -260,8 +322,9 @@ class GitsyncService {
     serviceInstance?.invoke(MERGE_COMPLETE);
   }
 
-  String lastOpenPackageName = "-----";
-  String lastOpenPackageNameExcludingInputs = "-----";
+  static const String lastInitialValue = "-----";
+  String lastOpenPackageName = lastInitialValue;
+  String lastOpenPackageNameExcludingInputs = lastInitialValue;
 
   void accessibilityEvent(String packageName, List<String> enabledInputMethods) async {
     for (var index = 0; index < (await repoManager.getStringList(StorageKey.repoman_repoNames)).length; index++) {

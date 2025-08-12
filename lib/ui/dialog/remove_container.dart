@@ -7,7 +7,6 @@ import 'package:GitSync/api/manager/storage.dart';
 import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
-import 'package:GitSync/global.dart';
 
 import 'confirm_remove_container.dart' as ConfirmRemoveContainer;
 

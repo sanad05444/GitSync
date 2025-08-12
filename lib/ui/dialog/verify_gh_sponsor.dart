@@ -4,7 +4,6 @@ import 'package:GitSync/global.dart';
 import 'package:flutter/material.dart' as mat;
 import 'package:GitSync/constant/colors.dart';
 import 'package:GitSync/constant/dimens.dart';
-import 'package:GitSync/global.dart';
 import 'package:GitSync/ui/dialog/base_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

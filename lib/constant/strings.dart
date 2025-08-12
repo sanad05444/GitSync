@@ -4,6 +4,7 @@ const String appName = "Git Sync";
 // Routes
 const String settings_main = "/settings_main";
 const String clone_repo_main = "/clone_repo_main";
+const String global_settings_main = "/global_settings_main";
 
 // Paths
 const String gitIgnorePath = ".gitignore";
@@ -15,14 +16,6 @@ const String gitFetchHeadPath = ".git/FETCH_HEAD";
 const String gitMergeHeadPath = ".git/MERGE_HEAD";
 const String gitMergeMsgPath = ".git/MERGE_MSG";
 const String gitInfoExcludePath = ".git/info/exclude";
-
-// Toast Messages
-const String syncStartPull = "Syncing changes…";
-const String syncStartPush = "Syncing local changes…";
-const String syncNotRequired = "Sync not required!";
-const String syncComplete = "Repository synced!";
-
-const String ongoingMergeConflict = "Ongoing merge conflict";
 
 // Bug Notification
 const String reportABug = "Report a Bug";
@@ -51,14 +44,6 @@ const String rejectionWithReasonException = "Remote ref update was rejected beca
 const String remoteChangedException =
     "Remote ref update was rejected, because old object id on remote repository wasn't the same as defined expected old object.";
 const String mergingExceptionMessage = "MERGING";
-
-// Home Screen
-const String additions = "%s ++";
-const String deletions = "%s --";
-
-const String multipleApplicationSelected = "Selected (%s)";
-
-// Clone Screen
 const String repositoryNotFound = "Repository not found!";
 
 // Sync Dialogs

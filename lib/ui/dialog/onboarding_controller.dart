@@ -13,7 +13,6 @@ import 'package:GitSync/ui/dialog/base_alert_dialog.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:GitSync/global.dart';
 
 class OnboardingController {
   final BuildContext context;

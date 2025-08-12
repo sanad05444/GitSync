@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:isolate';
 import 'dart:math';
 import 'dart:ui';
 
@@ -164,6 +165,11 @@ void onServiceStart(ServiceInstance service) async {
     );
   });
 
+  service.on(GitsyncService.UPDATE_SERVICE_STRINGS).listen((event) {
+    if (event == null) return;
+    gitSyncService.initialiseStrings(event);
+  });
+
   service.on("stop").listen((event) async {
     await repoManager.setStringList(StorageKey.repoman_locks, []);
     gitSyncService.refreshUi();
@@ -219,6 +225,19 @@ class _MyAppState extends State<MyApp> {
               blurValue: 3,
               builder: (context) {
                 t = AppLocalizations.of(context);
+                FlutterBackgroundService().invoke(
+                  GitsyncService.UPDATE_SERVICE_STRINGS,
+                  ServiceStrings(
+                    syncStartPull: t.syncStartPull,
+                    syncStartPush: t.syncStartPush,
+                    syncNotRequired: t.syncNotRequired,
+                    syncComplete: t.syncComplete,
+                    syncInProgress: t.syncInProgress,
+                    syncScheduled: t.syncScheduled,
+                    detectingChanges: t.detectingChanges,
+                    ongoingMergeConflict: t.ongoingMergeConflict,
+                  ).toMap(),
+                );
                 return MyHomePage(title: appName, setState: setState);
               },
             ),
@@ -1648,7 +1667,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                   label: Padding(
                                     padding: EdgeInsets.only(left: spaceXS),
                                     child: Text(
-                                      "Browse & Edit".toUpperCase(),
+                                      t.openFileExplorer.toUpperCase(),
                                       style: TextStyle(
                                         color: gitDirPathSnapshot.data == null ? secondaryLight : tertiaryInfo,
                                         fontSize: textMD,

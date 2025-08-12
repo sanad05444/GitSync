@@ -1,5 +1,7 @@
+import 'package:GitSync/global.dart';
 import 'package:flutter/material.dart' as mat;
 import 'package:flutter/material.dart';
+import 'package:sprintf/sprintf.dart';
 import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
@@ -16,7 +18,7 @@ Future<void> showDialog(BuildContext context, String originalName, bool fileDir,
           title: SizedBox(
             width: MediaQuery.of(context).size.width,
             child: Text(
-              "Rename ${fileDir ? "Folder" : "File"}",
+              sprintf(t.renameFileDir, [fileDir ? t.folder : t.file]),
               style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
             ),
           ),
@@ -39,7 +41,7 @@ Future<void> showDialog(BuildContext context, String originalName, bool fileDir,
                     filled: true,
                     border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusSM), borderSide: BorderSide.none),
                     isCollapsed: true,
-                    label: Text("File Name".toUpperCase(), style: TextStyle(color: secondaryLight, fontSize: textSM, fontWeight: FontWeight.bold)),
+                    label: Text(t.fileName.toUpperCase(), style: TextStyle(color: secondaryLight, fontSize: textSM, fontWeight: FontWeight.bold)),
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                     contentPadding: const EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
                     isDense: true,

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:GitSync/global.dart';
 import 'package:flutter/material.dart' as mat;
 import 'package:flutter/material.dart';
 import 'package:sprintf/sprintf.dart';
@@ -15,12 +16,11 @@ Future<void> showDialog(BuildContext context, List<String> selectedPaths, Future
   if (entity == FileSystemEntityType.notFound) {
     throw Exception('Path does not exist.');
   }
-  String text = "Are you sure you want to delete the ${entity == FileSystemEntityType.directory ? "directory" : "file"} \"${p.basename(oldPath)}\" ";
-  if (selectedPaths.length > 1) {
-    text += "and ${selectedPaths.length - 1} more and their contents";
-  } else {
-    text += "and it's contents";
-  }
+  String text = sprintf(t.confirmFileDirDeleteMsg, [
+    entity == FileSystemEntityType.directory ? t.directory.toLowerCase() : t.file.toLowerCase(),
+    p.basename(oldPath),
+    sprintf(selectedPaths.length > 1 ? t.deleteMultipleSuffix : t.deleteSingularSuffix, [selectedPaths.length - 1]),
+  ]);
 
   return mat.showDialog(
     context: context,
@@ -29,7 +29,7 @@ Future<void> showDialog(BuildContext context, List<String> selectedPaths, Future
           title: SizedBox(
             width: MediaQuery.of(context).size.width,
             child: Text(
-              AppLocalizations.of(context).confirmRepositoryDeleteTitle,
+              AppLocalizations.of(context).confirmFileDirDeleteMsg,
               style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
             ),
           ),
