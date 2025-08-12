@@ -140,7 +140,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let env_vars = env::get_env_vars();
 
     match args.get(1).map(|s| s.as_str()) {
-        Some("build-adr") => {
+        Some("build") => {
             let file = File::create("../android/keystore.properties")?;
             let mut writer = BufWriter::new(file);
 
@@ -155,6 +155,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 
             std::env::set_current_dir("..")?;
+
+            let output = Command::new("flutter")
+                .arg("pub")
+                .arg("get")
+                .stdout(Stdio::inherit())
+                .stderr(Stdio::inherit())
+                .status()
+                .expect("Failed to execute command");
 
             let output = Command::new("flutter_rust_bridge_codegen")
                 .arg("generate")
