@@ -101,18 +101,23 @@ Future<T?> returnWhenOffline<T>(Future<T> Function() callback) async {
 }
 
 Future<String?> pickDirectory() async {
-  if (Platform.isAndroid) {
-    final path = await FilePicker.platform.getDirectoryPath();
-    return path;
-  }
+  try {
+    if (Platform.isAndroid) {
+      final path = await FilePicker.platform.getDirectoryPath();
+      return path;
+    }
 
-  final iosDocumentPickerPlugin = IosDocumentPicker();
-  var result = await iosDocumentPickerPlugin.pick(IosDocumentPickerType.directory, multiple: false);
-  if (result == null) {
-    return null;
-  }
+    final iosDocumentPickerPlugin = IosDocumentPicker();
+    var result = await iosDocumentPickerPlugin.pick(IosDocumentPickerType.directory, multiple: false);
+    if (result == null) {
+      return null;
+    }
 
-  return result[0].bookmark;
+    return result[0].bookmark;
+  } catch (e, st) {
+    Logger.logError(LogType.SelectDirectory, e, st);
+  }
+  return null;
 }
 
 Future<T?> useDirectory<T>(String bookmarkPath, Future<void> Function(String) setBookmarkPath, Future<T?> Function(String path) useAccess) async {

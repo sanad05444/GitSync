@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:GitSync/api/logger.dart';
+
 import '../../manager/auth/git_provider_manager.dart';
 import '../../../constant/secrets.dart';
 import 'package:http/http.dart' as http;
@@ -54,26 +56,30 @@ class GiteaManager extends GitProviderManager {
     Function(List<(String, String)>) updateCallback,
     Function(Function()?) nextPageCallback,
   ) async {
-    final response = await http.get(Uri.parse(url), headers: {"Accept": "application/json", "Authorization": "token $accessToken"});
+    try {
+      final response = await http.get(Uri.parse(url), headers: {"Accept": "application/json", "Authorization": "token $accessToken"});
 
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonArray = json.decode(response.body);
-      final List<(String, String)> repoList = jsonArray.map((repo) => ("${repo["name"]}", "${repo["clone_url"]}")).toList();
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonArray = json.decode(response.body);
+        final List<(String, String)> repoList = jsonArray.map((repo) => ("${repo["name"]}", "${repo["clone_url"]}")).toList();
 
-      updateCallback(repoList);
+        updateCallback(repoList);
 
-      final String? linkHeader = response.headers["link"];
-      if (linkHeader != null) {
-        final match = RegExp(r'<([^>]+)>; rel="next"').firstMatch(linkHeader);
-        final String? nextLink = match?.group(1);
-        if (nextLink != null) {
-          nextPageCallback(() => _getReposRequest(accessToken, nextLink, updateCallback, nextPageCallback));
+        final String? linkHeader = response.headers["link"];
+        if (linkHeader != null) {
+          final match = RegExp(r'<([^>]+)>; rel="next"').firstMatch(linkHeader);
+          final String? nextLink = match?.group(1);
+          if (nextLink != null) {
+            nextPageCallback(() => _getReposRequest(accessToken, nextLink, updateCallback, nextPageCallback));
+          } else {
+            nextPageCallback(null);
+          }
         } else {
           nextPageCallback(null);
         }
-      } else {
-        nextPageCallback(null);
       }
+    } catch (e, st) {
+      Logger.logError(LogType.GetRepos, e, st);
     }
   }
 }

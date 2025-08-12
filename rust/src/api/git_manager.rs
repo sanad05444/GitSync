@@ -20,16 +20,21 @@ pub struct Commit {
 
 // Also add to lib/api/logger.dart:21
 pub enum LogType {
-  Global,
-  AccessibilityService,
-  Sync,
-  Status,
-  AbortMerge,
-  CloneRepo,
-  PullFromRepo,
-  PushToRepo,
-  RecentCommits,
-  Commit,
+    Global,
+    AccessibilityService,
+    Sync,
+    GitStatus,
+    AbortMerge,
+    Commit,
+    GetRepos,
+    CloneRepo,
+    SelectDirectory,
+    PullFromRepo,
+    PushToRepo,
+    ForcePull,
+    ForcePush,
+    RecentCommits,
+    SyncException,
 }
 
 pub fn init(homepath: Option<String>) {
@@ -857,7 +862,7 @@ pub async fn force_push(
 
     _log(
         Arc::clone(&log_callback),
-        LogType::PushToRepo,
+        LogType::ForcePush,
         "Getting local directory".to_string(),
     );
     let repo = Repository::open(&path_string)?;
@@ -876,7 +881,7 @@ pub async fn force_push(
 
         _log(
             Arc::clone(&log_callback),
-            LogType::PushToRepo,
+            LogType::ForcePush,
             "Adding Files to Stage".to_string(),
         );
 
@@ -893,7 +898,7 @@ pub async fn force_push(
 
         _log(
             Arc::clone(&log_callback),
-            LogType::PushToRepo,
+            LogType::ForcePush,
             "Committing changes".to_string(),
         );
         commit(
@@ -945,7 +950,7 @@ pub async fn force_push(
 
     _log(
         Arc::clone(&log_callback),
-        LogType::PushToRepo,
+        LogType::ForcePush,
         "Force pushing changes".to_string(),
     );
 
@@ -953,7 +958,7 @@ pub async fn force_push(
 
     _log(
         Arc::clone(&log_callback),
-        LogType::PushToRepo,
+        LogType::ForcePush,
         "Force push successful".to_string(),
     );
 
@@ -973,7 +978,7 @@ pub async fn force_pull(
 
     _log(
         Arc::clone(&log_callback),
-        LogType::PullFromRepo,
+        LogType::ForcePull,
         "Getting local directory".to_string(),
     );
     let repo = Repository::open(&path_string)?;
@@ -995,7 +1000,7 @@ pub async fn force_pull(
 
     _log(
         Arc::clone(&log_callback),
-        LogType::PullFromRepo,
+        LogType::ForcePull,
         "Force fetching changes".to_string(),
     );
 
@@ -1036,7 +1041,7 @@ pub async fn force_pull(
 
     _log(
         Arc::clone(&log_callback),
-        LogType::PullFromRepo,
+        LogType::ForcePull,
         "Force pull successful".to_string(),
     );
 
@@ -1068,7 +1073,7 @@ pub async fn get_conflicting(
 
     _log(
         Arc::clone(&log_callback),
-        LogType::Status,
+        LogType::GitStatus,
         "Getting local directory".to_string(),
     );
     let repo = match Repository::open(path_string) {
@@ -1102,7 +1107,7 @@ pub async fn get_uncommitted_file_paths(
 
     _log(
         Arc::clone(&log_callback),
-        LogType::Status,
+        LogType::GitStatus,
         "Getting local directory".to_string(),
     );
     let repo = match Repository::open(path_string) {
@@ -1112,7 +1117,7 @@ pub async fn get_uncommitted_file_paths(
 
     _log(
         Arc::clone(&log_callback),
-        LogType::Status,
+        LogType::GitStatus,
         "Getting local directory".to_string(),
     );
     

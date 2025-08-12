@@ -29,25 +29,18 @@ enum LogType {
   Global,
   AccessibilityService,
   Sync,
-  Status,
+  GitStatus,
   AbortMerge,
   Commit,
-  // GetRepos,
+  GetRepos,
   CloneRepo,
   SelectDirectory,
-  // ForcePull,
   PullFromRepo,
   PushToRepo,
-  // ForcePush,
-  // GitStatus,
+  ForcePull,
+  ForcePush,
   RecentCommits,
-
-  // SyncException,
-
-  // GithubOAuthFlow,
-  // GithubAuthCredentials,
-  // GiteaOAuthFlow,
-  // GiteaAuthCredentials,
+  SyncException,
 }
 
 void notificationClicked(NotificationResponse _) {

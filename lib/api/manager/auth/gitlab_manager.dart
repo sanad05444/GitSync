@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:GitSync/api/logger.dart';
+
 import '../../manager/auth/git_provider_manager.dart';
 import '../../../constant/secrets.dart';
 import 'package:http/http.dart' as http;
@@ -55,21 +57,25 @@ class GitlabManager extends GitProviderManager {
     Function(List<(String, String)>) updateCallback,
     Function(Function()?) nextPageCallback,
   ) async {
-    final response = await http.get(Uri.parse(url), headers: {"Authorization": "Bearer $accessToken"});
+    try {
+      final response = await http.get(Uri.parse(url), headers: {"Authorization": "Bearer $accessToken"});
 
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonArray = json.decode(response.body);
-      final List<(String, String)> repoList = jsonArray.map((repo) => ("${repo["name"]}", "${repo["http_url_to_repo"]}")).toList();
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonArray = json.decode(response.body);
+        final List<(String, String)> repoList = jsonArray.map((repo) => ("${repo["name"]}", "${repo["http_url_to_repo"]}")).toList();
 
-      updateCallback(repoList);
+        updateCallback(repoList);
 
-      final String? nextLink = response.headers["x-next-page"];
-      if (nextLink != null && nextLink.isNotEmpty) {
-        final nextUrl = Uri.parse(url).replace(queryParameters: {...Uri.parse(url).queryParameters, "page": nextLink}).toString();
-        nextPageCallback(() => _getReposRequest(accessToken, nextUrl, updateCallback, nextPageCallback));
-      } else {
-        nextPageCallback(null);
+        final String? nextLink = response.headers["x-next-page"];
+        if (nextLink != null && nextLink.isNotEmpty) {
+          final nextUrl = Uri.parse(url).replace(queryParameters: {...Uri.parse(url).queryParameters, "page": nextLink}).toString();
+          nextPageCallback(() => _getReposRequest(accessToken, nextUrl, updateCallback, nextPageCallback));
+        } else {
+          nextPageCallback(null);
+        }
       }
+    } catch (e, st) {
+      Logger.logError(LogType.GetRepos, e, st);
     }
   }
 }

@@ -146,144 +146,148 @@ class GitsyncService {
   }
 
   Future<void> _sync(int repomanRepoindex, [bool forced = false]) async {
-    final settingsManager = SettingsManager();
-    await settingsManager.reinit(repoIndex: repomanRepoindex);
+    try {
+      final settingsManager = SettingsManager();
+      await settingsManager.reinit(repoIndex: repomanRepoindex);
 
-    final provider = await settingsManager.getGitProvider();
+      final provider = await settingsManager.getGitProvider();
 
-    if (provider == GitProvider.SSH
-        ? (await settingsManager.getGitSshAuthCredentials()).$2.isEmpty
-        : (await settingsManager.getGitHttpAuthCredentials()).$2.isEmpty) {
-      Logger.gmLog(type: LogType.Sync, "Credentials Not Found");
-      Fluttertoast.showToast(msg: repositoryNotFound, toastLength: Toast.LENGTH_LONG, gravity: null);
-      return;
-    }
-
-    if ((await GitManager.getConflicting(repomanRepoindex)).isNotEmpty) {
-      Fluttertoast.showToast(msg: s.ongoingMergeConflict, toastLength: Toast.LENGTH_SHORT, gravity: null);
-      return;
-    }
-
-    if (forced) {
-      _displaySyncMessage(settingsManager, s.detectingChanges);
-    }
-    Logger.gmLog(type: LogType.Sync, "Start Sync");
-    isSyncing = true;
-
-    await () async {
-      final gitDirPath = await settingsManager.getGitDirPath();
-
-      if (gitDirPath == null) {
-        Logger.gmLog(type: LogType.Sync, "Repository Not Found");
+      if (provider == GitProvider.SSH
+          ? (await settingsManager.getGitSshAuthCredentials()).$2.isEmpty
+          : (await settingsManager.getGitHttpAuthCredentials()).$2.isEmpty) {
+        Logger.gmLog(type: LogType.Sync, "Credentials Not Found");
         Fluttertoast.showToast(msg: repositoryNotFound, toastLength: Toast.LENGTH_LONG, gravity: null);
         return;
       }
 
-      bool synced = false;
-
-      if (!await hasNetworkConnection()) {
-        Workmanager().registerOneOffTask(
-          "$networkScheduledSyncKey$repomanRepoindex",
-          networkScheduledSyncKey,
-          inputData: {repoIndex: repomanRepoindex},
-          constraints: Constraints(networkType: NetworkType.connected),
-        );
+      if ((await GitManager.getConflicting(repomanRepoindex)).isNotEmpty) {
+        Fluttertoast.showToast(msg: s.ongoingMergeConflict, toastLength: Toast.LENGTH_SHORT, gravity: null);
         return;
       }
 
-      Logger.gmLog(type: LogType.Sync, "Start Pull Repo");
-      final pullResult = await GitManager.downloadChanges(repomanRepoindex, settingsManager, () {
-        synced = true;
-        _displaySyncMessage(settingsManager, s.syncStartPull);
-      });
+      if (forced) {
+        _displaySyncMessage(settingsManager, s.detectingChanges);
+      }
+      Logger.gmLog(type: LogType.Sync, "Start Sync");
+      isSyncing = true;
 
-      switch (pullResult) {
-        case null:
-          {
-            Logger.gmLog(type: LogType.Sync, "Pull Repo Failed");
-            if (!await hasNetworkConnection()) {
-              Workmanager().registerOneOffTask(
-                "$networkScheduledSyncKey$repomanRepoindex",
-                networkScheduledSyncKey,
-                inputData: {repoIndex: repomanRepoindex},
-                constraints: Constraints(networkType: NetworkType.connected),
-              );
+      await () async {
+        final gitDirPath = await settingsManager.getGitDirPath();
+
+        if (gitDirPath == null) {
+          Logger.gmLog(type: LogType.Sync, "Repository Not Found");
+          Fluttertoast.showToast(msg: repositoryNotFound, toastLength: Toast.LENGTH_LONG, gravity: null);
+          return;
+        }
+
+        bool synced = false;
+
+        if (!await hasNetworkConnection()) {
+          Workmanager().registerOneOffTask(
+            "$networkScheduledSyncKey$repomanRepoindex",
+            networkScheduledSyncKey,
+            inputData: {repoIndex: repomanRepoindex},
+            constraints: Constraints(networkType: NetworkType.connected),
+          );
+          return;
+        }
+
+        Logger.gmLog(type: LogType.Sync, "Start Pull Repo");
+        final pullResult = await GitManager.downloadChanges(repomanRepoindex, settingsManager, () {
+          synced = true;
+          _displaySyncMessage(settingsManager, s.syncStartPull);
+        });
+
+        switch (pullResult) {
+          case null:
+            {
+              Logger.gmLog(type: LogType.Sync, "Pull Repo Failed");
+              if (!await hasNetworkConnection()) {
+                Workmanager().registerOneOffTask(
+                  "$networkScheduledSyncKey$repomanRepoindex",
+                  networkScheduledSyncKey,
+                  inputData: {repoIndex: repomanRepoindex},
+                  constraints: Constraints(networkType: NetworkType.connected),
+                );
+                return;
+              }
               return;
             }
-            return;
-          }
-        case true:
-          {
-            Logger.gmLog(type: LogType.Sync, "Pull Complete");
-          }
-        case false:
-          {
-            Logger.gmLog(type: LogType.Sync, "Pull Not Required");
-          }
-      }
-
-      if (!await hasNetworkConnection()) {
-        Workmanager().registerOneOffTask(
-          "$networkScheduledSyncKey$repomanRepoindex",
-          networkScheduledSyncKey,
-          inputData: {repoIndex: repomanRepoindex},
-          constraints: Constraints(networkType: NetworkType.connected),
-        );
-        return;
-      }
-
-      Logger.gmLog(type: LogType.Sync, "Start Push Repo");
-      final pushResult = await GitManager.uploadChanges(repomanRepoindex, settingsManager, () {
-        if (!synced) {
-          _displaySyncMessage(settingsManager, s.syncStartPush);
+          case true:
+            {
+              Logger.gmLog(type: LogType.Sync, "Pull Complete");
+            }
+          case false:
+            {
+              Logger.gmLog(type: LogType.Sync, "Pull Not Required");
+            }
         }
-      });
 
-      switch (pushResult) {
-        case null:
-          {
-            Logger.gmLog(type: LogType.Sync, "Push Repo Failed");
-            if (!await hasNetworkConnection()) {
-              Workmanager().registerOneOffTask(
-                "$networkScheduledSyncKey$repomanRepoindex",
-                networkScheduledSyncKey,
-                inputData: {repoIndex: repomanRepoindex},
-                constraints: Constraints(networkType: NetworkType.connected),
-              );
+        if (!await hasNetworkConnection()) {
+          Workmanager().registerOneOffTask(
+            "$networkScheduledSyncKey$repomanRepoindex",
+            networkScheduledSyncKey,
+            inputData: {repoIndex: repomanRepoindex},
+            constraints: Constraints(networkType: NetworkType.connected),
+          );
+          return;
+        }
+
+        Logger.gmLog(type: LogType.Sync, "Start Push Repo");
+        final pushResult = await GitManager.uploadChanges(repomanRepoindex, settingsManager, () {
+          if (!synced) {
+            _displaySyncMessage(settingsManager, s.syncStartPush);
+          }
+        });
+
+        switch (pushResult) {
+          case null:
+            {
+              Logger.gmLog(type: LogType.Sync, "Push Repo Failed");
+              if (!await hasNetworkConnection()) {
+                Workmanager().registerOneOffTask(
+                  "$networkScheduledSyncKey$repomanRepoindex",
+                  networkScheduledSyncKey,
+                  inputData: {repoIndex: repomanRepoindex},
+                  constraints: Constraints(networkType: NetworkType.connected),
+                );
+                return;
+              }
               return;
             }
-            return;
-          }
-        case true:
-          {
-            Logger.gmLog(type: LogType.Sync, "Push Complete");
-          }
-        case false:
-          {
-            Logger.gmLog(type: LogType.Sync, "Push Not Required");
-          }
-      }
-
-      if (!(pushResult == true || pullResult == true)) {
-        if (forced) {
-          _displaySyncMessage(settingsManager, s.syncNotRequired);
+          case true:
+            {
+              Logger.gmLog(type: LogType.Sync, "Push Complete");
+            }
+          case false:
+            {
+              Logger.gmLog(type: LogType.Sync, "Push Not Required");
+            }
         }
-        return;
-      } else {
-        _displaySyncMessage(settingsManager, s.syncComplete);
+
+        if (!(pushResult == true || pullResult == true)) {
+          if (forced) {
+            _displaySyncMessage(settingsManager, s.syncNotRequired);
+          }
+          return;
+        } else {
+          _displaySyncMessage(settingsManager, s.syncComplete);
+        }
+      }();
+
+      Logger.gmLog(type: LogType.Sync, "Sync Complete!");
+      isSyncing = false;
+
+      Logger.dismissError(null);
+      serviceInstance?.invoke(REFRESH);
+
+      if (isScheduled) {
+        Logger.gmLog(type: LogType.Sync, "Scheduled Sync Starting");
+        isScheduled = false;
+        debouncedSync(repomanRepoindex);
       }
-    }();
-
-    Logger.gmLog(type: LogType.Sync, "Sync Complete!");
-    isSyncing = false;
-
-    Logger.dismissError(null);
-    serviceInstance?.invoke(REFRESH);
-
-    if (isScheduled) {
-      Logger.gmLog(type: LogType.Sync, "Scheduled Sync Starting");
-      isScheduled = false;
-      debouncedSync(repomanRepoindex);
+    } catch (e, st) {
+      Logger.logError(LogType.SyncException, e, st);
     }
   }
 

@@ -140,7 +140,7 @@ class GitManager {
       await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
         if (!Directory("$dirPath/.git").existsSync()) return;
 
-        Logger.gmLog(type: LogType.PullFromRepo, ".git folder found");
+        Logger.gmLog(type: LogType.ForcePull, ".git folder found");
 
         try {
           return await GitManagerRs.forcePull(
@@ -156,7 +156,7 @@ class GitManager {
           );
         } catch (e, stackTrace) {
           if (!await hasNetworkConnection()) return;
-          Logger.logError(LogType.PullFromRepo, e, stackTrace);
+          Logger.logError(LogType.ForcePull, e, stackTrace);
           return;
         }
       });
@@ -180,7 +180,7 @@ class GitManager {
       await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
         if (!Directory("$dirPath/.git").existsSync()) return;
 
-        Logger.gmLog(type: LogType.PushToRepo, ".git folder found");
+        Logger.gmLog(type: LogType.ForcePush, ".git folder found");
 
         try {
           return await GitManagerRs.forcePush(
@@ -200,7 +200,7 @@ class GitManager {
           );
         } catch (e, stackTrace) {
           if (!await hasNetworkConnection()) return;
-          Logger.logError(LogType.PushToRepo, e, stackTrace);
+          Logger.logError(LogType.ForcePush, e, stackTrace);
           return;
         }
       });
