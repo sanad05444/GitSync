@@ -301,6 +301,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     initAsync(() async {
       if (premiumManager.hasPremiumNotifier.value == false) {
         await premiumManager.cullNonPremium();
+        setState(() {});
       }
     });
 
