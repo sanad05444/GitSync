@@ -105,22 +105,22 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain> with WidgetsBindingO
                     });
                   },
                 ),
-                SizedBox(height: spaceMD),
-                ButtonSetting(
-                  text: t.browseEditDir,
-                  icon: FontAwesomeIcons.folderTree,
-                  onPressed: () async {
-                    String? selectedDirectory;
-                    if (await requestStoragePerm()) {
-                      selectedDirectory = await pickDirectory();
-                    }
-                    if (selectedDirectory == null) return;
+                // SizedBox(height: spaceMD),
+                // ButtonSetting(
+                //   text: t.browseEditDir,
+                //   icon: FontAwesomeIcons.folderTree,
+                //   onPressed: () async {
+                //     String? selectedDirectory;
+                //     if (await requestStoragePerm()) {
+                //       selectedDirectory = await pickDirectory();
+                //     }
+                //     if (selectedDirectory == null) return;
 
-                    await useDirectory(selectedDirectory, (_) async {}, (path) async {
-                      await Navigator.of(context).push(createFileExplorerRoute(path));
-                    });
-                  },
-                ),
+                //     await useDirectory(selectedDirectory, (_) async {}, (path) async {
+                //       await Navigator.of(context).push(createFileExplorerRoute(path));
+                //     });
+                //   },
+                // ),
                 SizedBox(height: spaceLG),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: spaceMD),
