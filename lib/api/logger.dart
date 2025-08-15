@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:GitSync/api/accessibility_service_helper.dart';
 import 'package:GitSync/api/helper.dart';
 import 'package:GitSync/api/manager/auth/github_manager.dart';
 import 'package:GitSync/api/manager/git_manager.dart';
@@ -143,9 +144,17 @@ $description
 $minimalRepro
 
 ### Exception or Error
+
+<details>
+<summary>Click to expand logs</summary>
+
 $deviceInfo
 
+```
 $logs
+```
+
+</details>
 ''';
 
       final response = await http.post(
@@ -195,7 +204,20 @@ $logs
 
 **Git Provider:** ${await uiSettingsManager.getStringNullable(StorageKey.setman_gitProvider)}
 **Repo URL:** ${(await GitManager.getRemoteUrlLink())?.$1}
-    """.trim();
+
+${await AccessibilityServiceHelper.isAccessibilityServiceEnabled() ? """
+**Auto Sync**
+**Package Names:** [${(await uiSettingsManager.getApplicationPackages()).join(", ")}]
+**Sync on app opened:** ${(await uiSettingsManager.getBool(StorageKey.setman_syncOnAppOpened)) ? "🟢" : "⭕"}
+**Sync on app closed&nbsp;&nbsp;:** ${(await uiSettingsManager.getBool(StorageKey.setman_syncOnAppClosed)) ? "🟢" : "⭕"}
+
+""".trim() : ""}
+${(await uiSettingsManager.getString(StorageKey.setman_schedule)).isNotEmpty ? """
+**Scheduled Sync:** ${await uiSettingsManager.getString(StorageKey.setman_schedule)}
+
+""".trim() : ""}
+
+""".trim();
   }
 
   static Future<String> _generateLogs() async {
