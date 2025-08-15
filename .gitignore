@@ -59,7 +59,6 @@ secrets.dart
 .maestro/src/env.rs
 .maestro/target/
 
-untranslated.txt
 .maestro/generate_screenshots/*.png
 .maestro/generate_screenshots/raw/*.png
 ios/Runner/GoogleService-Info.plist

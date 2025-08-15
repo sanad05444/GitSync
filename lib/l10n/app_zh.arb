@@ -14,24 +14,24 @@
     "cancel": "取消",
     "learnMore": "了解更多",
     "loadingElipsis": "加载中…",
-    "previous": "",
-    "next": "",
-    "finish": "",
+    
+    
+    
     "rename": "重命名",
     "add": "添加",
     "delete": "删除",
-    "optionalLabel": "",
-    "ios": "",
-    "android": "",
+    
+    
+    
 
     "syncStarting": "检测更改中…",
     "syncStartPull": "同步更改中…",
     "syncStartPush": "同步本地更改中…",
     "syncNotRequired": "无需同步！",
     "syncComplete": "仓库同步完成！",
-    "syncInProgress": "",
-    "syncScheduled": "",
-    "detectingChanges": "",
+    
+    
+    
     "thisActionCannotBeUndone": "此操作无法撤销。",
     
 
@@ -120,7 +120,7 @@
     "authDialogMessage": "请使用您选择的 Git 提供商进行身份验证，然后继续克隆您的仓库！",
     "authorDetailsPromptTitle": "需要作者详细信息",
     "authorDetailsPromptMessage": "您的作者姓名或邮箱缺失。请在同步前在仓库设置中更新它们。",
-    "authorDetailsShowcasePrompt": "",
+    
     "goToSettings": "前往设置",
     "enableAutosyncTitle": "启用自动同步",
     "enableAutosyncMessage": "轻松保持数据最新。开启自动同步，在应用打开或关闭时自动在后台同步。",
@@ -142,7 +142,7 @@
     "deletions": "%s --",
     "auth": "认证",
     "gitDirPathHint": "/storage/emulated/0/…",
-    "openFileExplorer": "",
+    
     "enableApplicationObserver": "自动同步设置",
     "accessibilityServiceDisclosureTitle": "无障碍服务披露",
     "accessibilityServiceDisclosureMessage": "为了增强您的体验，\nGitSync 使用 Android 的无障碍服务来检测应用的打开或关闭。\n\n这帮助我们提供定制功能，而不存储或共享任何数据。\n\n请在下一个屏幕上启用 GitSync",
@@ -181,7 +181,7 @@
     "login": "登录",
     "pubKey": "公钥",
     "privKey": "私钥",
-    "passphrase": "",
+    
     "privateKey": "私钥",
     "sshPubKeyExample": "ssh-ed25519 AABBCCDDEEFF112233445566",
     "sshPrivKeyExample": "-----BEGIN OPENSSH PRIVATE KEY----- AABBCCDDEEFF112233445566",
@@ -216,11 +216,11 @@
 
     "@@x-SETTINGS_PAGE": "",
     "settings": "设置",
-    "signedCommitsLabel": "",
-    "signedCommitsDescription": "",
-    "importCommitKey": "",
-    "commitKeyImported": "",
-    "useSshKey": "",
+    
+    
+    
+    
+    
     "syncMessageLabel": "同步消息",
     "syncMessageDescription": "使用 %s 表示日期和时间",
     "syncMessageTimeFormatLabel": "同步消息时间格式",
@@ -238,9 +238,9 @@
     "gitInfoExcludeDescription": "列出在此设备上要忽略的文件或文件夹",
     "gitInfoExcludeHint": ".trash/\n./…",
     "disableSsl": "禁用 SSL",
-    "disableSslPromptTitle": "",
-    "disableSslPromptMsg": "",
-    "proceedAnyway": "",
+    
+    
+    
     "moreOptions": "更多选项",
 
 
@@ -248,45 +248,45 @@
     "@@x-GLOBAL_SETTINGS_PAGE": "",
     "globalSettings": "全局设置",
     "language": "语言",
-    "browseEditDir": "",
+    
     "backupRestoreTitle": "加密配置恢复",
     "backup": "备份",
     "restore": "恢复",
-    "selectBackupLocation": "",
-    "backupFileTemplate": "",
+    
+    
     "enterPassword": "输入密码",
     "invalidPassword": "无效密码",
-    "community": "",
-    "guides": "",
+    
+    
     "documentation": "指南和文档",
     "viewDocumentation": "查看指南和文档",
     "requestAFeature": "请求功能",
     "contributeTitle": "支持我们的工作",
     "joinTheDiscussion": "加入讨论",
-    "noLogFilesFound": "",
+    
     "guidedSetup": "引导设置",
     "uiGuide": "界面指南",
     "viewPrivacyPolicy": "隐私政策",
     "viewEula": "使用条款 (EULA)",
     "shareLogs": "分享日志",
-    "logsEmailSubjectTemplate": "",
-    "logsEmailRecipient": "",
+    
+    
 
 
 
     "@@x-FILE_MANAGEMENT": "",
-    "file": "",
-    "folder": "",
-    "directory": "",
-    "confirmFileDirDeleteTitle": "",
-    "confirmFileDirDeleteMsg": "",
-    "deleteMultipleSuffix": "",
-    "deleteSingularSuffix": "",
-    "createAFile": "",
-    "fileName": "",
-    "createADir": "",
-    "dirName": "",
-    "renameFileDir": "",
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 
     "@@x-REPO_MANAGEMENT": "",

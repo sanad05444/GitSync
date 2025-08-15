@@ -4,7 +4,7 @@
 
 
 
-    "@@x-GENERAL": "",
+    
     "dismiss": "Schließen",
     "skip": "Überspringen",
     "done": "Fertig",
@@ -14,28 +14,28 @@
     "cancel": "Abbrechen",
     "learnMore": "Mehr erfahren",
     "loadingElipsis": "Lädt…",
-    "previous": "",
-    "next": "",
-    "finish": "",
+    
+    
+    
     "rename": "Umbenennen",
     "add": "Hinzufügen",
     "delete": "Löschen",
-    "optionalLabel": "",
-    "ios": "",
-    "android": "",
+    
+    
+    
 
     "syncStarting": "Änderungen werden erkannt…",
     "syncStartPull": "Änderungen werden synchronisiert…",
     "syncStartPush": "Lokale Änderungen werden synchronisiert…",
     "syncNotRequired": "Synchronisation nicht erforderlich!",
     "syncComplete": "Repository synchronisiert!",
-    "syncInProgress": "",
-    "syncScheduled": "",
-    "detectingChanges": "",
+    
+    
+    
     "thisActionCannotBeUndone": "Diese Aktion kann nicht rückgängig gemacht werden.",
     
 
-    "@@x-ACCESSIBILITY_LABELS": "",
+    
     "cloneProgressLabel": "Klon-Fortschritt",
     "forcePushProgressLabel": "Erzwungener Push-Fortschritt",
     "forcePullProgressLabel": "Erzwungener Pull-Fortschritt",
@@ -49,7 +49,7 @@
     "authDropdownLabel": "Auth-Dropdown",
 
 
-    "@@x-PAID_FEATURES": "",
+    
     "premiumDialogTitle": "Premium freischalten",
     "premiumDialogMessage": "Diese Funktion ist Teil der Premium-Erfahrung.\nTätigen Sie eine einmalige Zahlung von %s, um sie freizuschalten und leistungsfähigere Tools zu genießen.\n\nPremium-Funktionen:\n • Multi-Repo-Unterstützung\n\nAlternativ verbinden Sie Ihr GitHub-Konto, um zu prüfen, ob Sie ein berechtigter GitHub-Sponsor sind.",
     "premiumDialogButtonText": "Für %s freischalten",
@@ -61,7 +61,7 @@
     
     
 
-    "@@x-SYNC_OPTIONS": "",
+    
     "syncNow": "Änderungen synchronisieren",
     "pullChanges": "Änderungen abrufen",
     "pushChanges": "Änderungen hochladen",
@@ -98,7 +98,7 @@
 
 
 
-    "@@x-ONBOARDING": "",
+    
     "legacyAppUserDialogTitle": "Willkommen zur neuen Version!",
     "legacyAppUserDialogMessagePart1": "Wir haben die App von Grund auf neu entwickelt für bessere Leistung und zukünftiges Wachstum.",
     "legacyAppUserDialogMessagePart2": "Leider können Ihre alten Einstellungen nicht übernommen werden, sodass Sie alles neu einrichten müssen.\n\nAlle Ihre Lieblingsfunktionen sind noch da. Multi-Repo-Unterstützung ist jetzt Teil eines kleinen einmaligen Upgrades, das die laufende Entwicklung unterstützt.",
@@ -120,7 +120,7 @@
     "authDialogMessage": "Bitte authentifizieren Sie sich mit Ihrem gewählten Git-Anbieter und fahren Sie mit dem Klonen Ihres Repos fort!",
     "authorDetailsPromptTitle": "Autor-Details erforderlich",
     "authorDetailsPromptMessage": "Ihr Autorenname oder Ihre E-Mail fehlen. Bitte aktualisieren Sie diese in den Repository-Einstellungen vor der Synchronisation.",
-    "authorDetailsShowcasePrompt": "",
+    
     "goToSettings": "Zu den Einstellungen",
     "enableAutosyncTitle": "Auto-Sync aktivieren",
     "enableAutosyncMessage": "Halten Sie Ihre Daten mühelos auf dem neuesten Stand. Aktivieren Sie Auto-Sync, um automatisch im Hintergrund zu synchronisieren, wenn Apps geöffnet oder geschlossen werden.",
@@ -133,7 +133,7 @@
     "guidedSetupHint": "Klicken Sie hier, um die Einrichtung oder UI-Führung neu zu starten, wenn Sie eine Anleitung benötigen oder die Benutzeroberfläche erneut überprüfen möchten",
 
 
-    "@@x-HOME_PAGE": "",
+    
     "detachedHead": "Detached Head",
     "commitsNotFound": "Keine Commits gefunden…",
     "repoNotFound": "Keine Commits gefunden…",
@@ -142,7 +142,7 @@
     "deletions": "%s --",
     "auth": "AUTH",
     "gitDirPathHint": "/storage/emulated/0/…",
-    "openFileExplorer": "",
+    
     "enableApplicationObserver": "Auto-Sync-Einstellungen",
     "accessibilityServiceDisclosureTitle": "Offenlegung Barrierefreiheitsdienst",
     "accessibilityServiceDisclosureMessage": "Um Ihre Erfahrung zu verbessern,\nverwendet GitSync Androids Barrierefreiheitsdienst, um zu erkennen, wann Apps geöffnet oder geschlossen werden.\n\nDies hilft uns, maßgeschneiderte Funktionen bereitzustellen, ohne Daten zu speichern oder zu teilen.\n\nʙɪᴛᴛᴇ ᴀᴋᴛɪᴠɪᴇʀᴇɴ sɪᴇ ɢɪᴛsʏɴᴄ ᴀᴜғ ᴅᴇᴍ ɴäᴄʜsᴛᴇɴ ʙɪʟᴅsᴄʜɪʀᴍ",
@@ -169,7 +169,7 @@
     "useForTileManualSync": "Für manuelle Kachel-Sync verwenden",
 
 
-    "@@x-AUTH": "",
+    
     "selectYourGitProviderAndAuthenticate": "Wählen Sie Ihren Git-Anbieter aus und authentifizieren Sie sich",
     "oauthNoAffiliation": "Authentifizierung über Drittanbieter;\nkeine Zugehörigkeit oder Befürwortung impliziert.",
     "oauth": "oauth",
@@ -181,7 +181,7 @@
     "login": "Anmelden",
     "pubKey": "Öffentlicher Schlüssel",
     "privKey": "Privater Schlüssel",
-    "passphrase": "",
+    
     "privateKey": "Privater Schlüssel",
     "sshPubKeyExample": "ssh-ed25519 AABBCCDDEEFF112233445566",
     "sshPrivKeyExample": "-----BEGIN OPENSSH PRIVATE KEY----- AABBCCDDEEFF112233445566",
@@ -196,7 +196,7 @@
     "importKey": "importieren",
 
 
-    "@@x-CLONE_REPO_PAGE": "",
+    
     "cloneRepo": "Remote-Repository klonen",
     "clone": "klonen",
     "gitRepoUrlHint": "https://git.abc/xyz.git",
@@ -214,13 +214,13 @@
     "confirmCloneOverwriteAction": "Überschreiben",
 
 
-    "@@x-SETTINGS_PAGE": "",
+    
     "settings": "Einstellungen",
-    "signedCommitsLabel": "",
-    "signedCommitsDescription": "",
-    "importCommitKey": "",
-    "commitKeyImported": "",
-    "useSshKey": "",
+    
+    
+    
+    
+    
     "syncMessageLabel": "Sync-Nachricht",
     "syncMessageDescription": "Verwenden Sie %s für Datum und Uhrzeit",
     "syncMessageTimeFormatLabel": "Zeitformat für Sync-Nachricht",
@@ -238,58 +238,58 @@
     "gitInfoExcludeDescription": "Dateien oder Ordner auflisten, die auf diesem Gerät ignoriert werden sollen",
     "gitInfoExcludeHint": ".trash/\n./…",
     "disableSsl": "SSL deaktivieren",
-    "disableSslPromptTitle": "",
-    "disableSslPromptMsg": "",
-    "proceedAnyway": "",
+    
+    
+    
     "moreOptions": "Weitere Optionen",
 
 
 
-    "@@x-GLOBAL_SETTINGS_PAGE": "",
+    
     "globalSettings": "Globale Einstellungen",
     "language": "Sprache",
-    "browseEditDir": "",
+    
     "backupRestoreTitle": "Verschlüsselte Konfigurationswiederherstellung",
     "backup": "Sicherung",
     "restore": "Wiederherstellen",
-    "selectBackupLocation": "",
-    "backupFileTemplate": "",
+    
+    
     "enterPassword": "Passwort eingeben",
     "invalidPassword": "Ungültiges Passwort",
-    "community": "",
-    "guides": "",
+    
+    
     "documentation": "Anleitungen & Wiki",
     "viewDocumentation": "Anleitungen & Wiki anzeigen",
     "requestAFeature": "Feature anfordern",
     "contributeTitle": "Unterstützen Sie unsere Arbeit",
     "joinTheDiscussion": "An der Diskussion teilnehmen",
-    "noLogFilesFound": "",
+    
     "guidedSetup": "Geführte Einrichtung",
     "uiGuide": "UI-Anleitung",
     "viewPrivacyPolicy": "Datenschutzerklärung",
     "viewEula": "Nutzungsbedingungen (EULA)",
     "shareLogs": "Logs teilen",
-    "logsEmailSubjectTemplate": "",
-    "logsEmailRecipient": "",
+    
+    
 
 
 
-    "@@x-FILE_MANAGEMENT": "",
-    "file": "",
-    "folder": "",
-    "directory": "",
-    "confirmFileDirDeleteTitle": "",
-    "confirmFileDirDeleteMsg": "",
-    "deleteMultipleSuffix": "",
-    "deleteSingularSuffix": "",
-    "createAFile": "",
-    "fileName": "",
-    "createADir": "",
-    "dirName": "",
-    "renameFileDir": "",
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 
-    "@@x-REPO_MANAGEMENT": "",
+    
     "defaultContainerName": "Alias",
     "renameRepository": "Repository umbenennen",
     "renameRepositoryMsg": "Geben Sie einen neuen Alias für den Repository-Container ein",
@@ -303,7 +303,7 @@
     "confirmRepositoryDeleteMessage": "Sind Sie sicher, dass Sie das Repository \"%s\" und seine Inhalte löschen möchten?",
 
 
-    "@@x-BRANCH_MANAGEMENT": "",
+    
     "confirmBranchCheckoutTitle": "Branch auschecken?",
     "confirmBranchCheckoutMsgPart1": "Sind Sie sicher, dass Sie den Branch ",
     "confirmBranchCheckoutMsgPart2": " auschecken möchten?",
@@ -316,7 +316,7 @@
 
 
 
-    "@@x-ERRORS": "",
+    
     "attemptAutoFix": "Auto-Korrektur versuchen?",
     "youreOffline": "Sie sind offline.",
     "someFeaturesMayNotWork": "Einige Funktionen funktionieren möglicherweise nicht.",
@@ -350,7 +350,7 @@
     "fieldCannotBeEmpty": "Feld darf nicht leer sein",
 
 
-    "@@x-ISSUE_REPORTING": "",
+    
     "githubIssueOauthTitle": "GitHub verbinden, um automatisch zu melden",
     "githubIssueOauthMsg": "Sie müssen Ihr GitHub-Konto verbinden, um Fehler zu melden und deren Fortschritt zu verfolgen.\nSie können diese Verbindung jederzeit in den globalen Einstellungen zurücksetzen.",
     "issueReportMessage": "Logs werden automatisch mit Berichten eingefügt",

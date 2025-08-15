@@ -14,24 +14,24 @@
     "cancel": "Cancelar",
     "learnMore": "Saber Más",
     "loadingElipsis": "Cargando…",
-    "previous": "",
-    "next": "",
-    "finish": "",
+    
+    
+    
     "rename": "Renombrar",
     "add": "Agregar",
     "delete": "Eliminar",
-    "optionalLabel": "",
-    "ios": "",
-    "android": "",
+    
+    
+    
 
     "syncStarting": "Detectando cambios…",
     "syncStartPull": "Sync cambios…",
     "syncStartPush": "Sync cambios locales…",
     "syncNotRequired": "¡Sync no requerida!",
     "syncComplete": "¡Repositorio sync!",
-    "syncInProgress": "",
-    "syncScheduled": "",
-    "detectingChanges": "",
+    
+    
+    
     "thisActionCannotBeUndone": "Esta acción no se puede deshacer.",
     
 
@@ -120,7 +120,7 @@
     "authDialogMessage": "¡Por favor, auténticate con tu proveedor git elegido y continúa para clonar tu repositorio!",
     "authorDetailsPromptTitle": "Detalles del Autor Requeridos",
     "authorDetailsPromptMessage": "Faltan tu nombre de autor o email. Por favor, actualízalos en la configuración del repositorio antes de sync.",
-    "authorDetailsShowcasePrompt": "",
+    
     "goToSettings": "Ir a Configuración",
     "enableAutosyncTitle": "Habilitar Sync Automática",
     "enableAutosyncMessage": "Mantén tus datos actualizados sin esfuerzo. Activa la Sync Automática para sync automáticamente en segundo plano cuando se abran o cierren aplicaciones.",
@@ -142,7 +142,7 @@
     "deletions": "%s --",
     "auth": "AUTENTICACIÓN",
     "gitDirPathHint": "/storage/emulated/0/…",
-    "openFileExplorer": "",
+    
     "enableApplicationObserver": "Configuración de Sync Automática",
     "accessibilityServiceDisclosureTitle": "Divulgación del Servicio de Accesibilidad",
     "accessibilityServiceDisclosureMessage": "Para mejorar tu experiencia,\nGitSync usa el Servicio de Accesibilidad de Android para detectar cuándo se abren o cierran aplicaciones.\n\nEsto nos ayuda a proporcionar funciones personalizadas sin almacenar o compartir ningún dato.\n\nᴘᴏʀ ғᴀᴠᴏʀ ʜᴀʙɪʟɪᴛᴀ ɢɪᴛsʏɴᴄ ᴇɴ ʟᴀ sɪɢᴜɪᴇɴᴛᴇ ᴘᴀɴᴛᴀʟʟᴀ",
@@ -181,7 +181,7 @@
     "login": "iniciar sesión",
     "pubKey": "clave pública",
     "privKey": "clave privada",
-    "passphrase": "",
+    
     "privateKey": "Clave Privada",
     "sshPubKeyExample": "ssh-ed25519 AABBCCDDEEFF112233445566",
     "sshPrivKeyExample": "-----BEGIN OPENSSH PRIVATE KEY----- AABBCCDDEEFF112233445566",
@@ -216,11 +216,11 @@
 
     "@@x-SETTINGS_PAGE": "",
     "settings": "Configuración",
-    "signedCommitsLabel": "",
-    "signedCommitsDescription": "",
-    "importCommitKey": "",
-    "commitKeyImported": "",
-    "useSshKey": "",
+    
+    
+    
+    
+    
     "syncMessageLabel": "Mensaje de Sync",
     "syncMessageDescription": "usa %s para la fecha y hora",
     "syncMessageTimeFormatLabel": "Formato de Hora del Mensaje de Sync",
@@ -238,9 +238,9 @@
     "gitInfoExcludeDescription": "lista archivos o carpetas a ignorar en este dispositivo",
     "gitInfoExcludeHint": ".trash/\n./…",
     "disableSsl": "Deshabilitar SSL",
-    "disableSslPromptTitle": "",
-    "disableSslPromptMsg": "",
-    "proceedAnyway": "",
+    
+    
+    
     "moreOptions": "Más Opciones",
 
 
@@ -248,45 +248,45 @@
     "@@x-GLOBAL_SETTINGS_PAGE": "",
     "globalSettings": "Configuración Global",
     "language": "Idioma",
-    "browseEditDir": "",
+    
     "backupRestoreTitle": "Recuperación de Configuración Encriptada",
     "backup": "Respaldo",
     "restore": "Restaurar",
-    "selectBackupLocation": "",
-    "backupFileTemplate": "",
+    
+    
     "enterPassword": "Ingresa Contraseña",
     "invalidPassword": "Contraseña Inválida",
-    "community": "",
-    "guides": "",
+    
+    
     "documentation": "Guías y Wiki",
     "viewDocumentation": "Ver Guías y Wiki",
     "requestAFeature": "Solicitar una Función",
     "contributeTitle": "Apoya Nuestro Trabajo",
     "joinTheDiscussion": "Únete a la Discusión",
-    "noLogFilesFound": "",
+    
     "guidedSetup": "Configuración Guiada",
     "uiGuide": "Guía de Interfaz",
     "viewPrivacyPolicy": "Política de Privacidad",
     "viewEula": "Términos de Uso (EULA)",
     "shareLogs": "Compartir Registros",
-    "logsEmailSubjectTemplate": "",
-    "logsEmailRecipient": "",
+    
+    
 
 
 
     "@@x-FILE_MANAGEMENT": "",
-    "file": "",
-    "folder": "",
-    "directory": "",
-    "confirmFileDirDeleteTitle": "",
-    "confirmFileDirDeleteMsg": "",
-    "deleteMultipleSuffix": "",
-    "deleteSingularSuffix": "",
-    "createAFile": "",
-    "fileName": "",
-    "createADir": "",
-    "dirName": "",
-    "renameFileDir": "",
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 
     "@@x-REPO_MANAGEMENT": "",

@@ -47,9 +47,13 @@ for file in *.arb; do
             output_lines[$idx]="${indent}\"$key\": \"$last_modified_val\""
         elif [[ -v file_kv[$key] ]]; then
             val="${file_kv[$key]}"
-            output_lines[$idx]="${indent}\"$key\": $val"
+            if [[ "$key" != "@@x-"* && "$val" == "\"\"," ]]; then
+                output_lines[$idx]="${indent}"
+            else
+                output_lines[$idx]="${indent}\"$key\": $val"
+            fi
         else
-            output_lines[$idx]="${indent}\"$key\": \"\""
+            output_lines[$idx]="${indent}"
         fi
     done
 
