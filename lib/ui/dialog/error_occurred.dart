@@ -10,7 +10,8 @@ import 'package:GitSync/global.dart';
 
 final Map<String, Future<void> Function([int? repomanRepoindex])> autoFixCallbackMap = {
   invalidIndexHeaderError: GitManager.deleteGitIndex,
-  invalidDataInIndex: GitManager.deleteGitIndex,
+  invalidDataInIndexInvalidEntry: GitManager.deleteGitIndex,
+  invalidDataInIndexExtensionIsTruncated: GitManager.deleteGitIndex,
   corruptedLooseFetchHead: GitManager.deleteFetchHead,
   theIndexIsLocked: GitManager.deleteGitIndex,
 };
