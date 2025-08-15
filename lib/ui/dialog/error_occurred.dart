@@ -12,6 +12,7 @@ final Map<String, Future<void> Function([int? repomanRepoindex])> autoFixCallbac
   invalidIndexHeaderError: GitManager.deleteGitIndex,
   invalidDataInIndex: GitManager.deleteGitIndex,
   corruptedLooseFetchHead: GitManager.deleteFetchHead,
+  theIndexIsLocked: GitManager.deleteGitIndex,
 };
 final GlobalKey errorDialogKey = GlobalKey();
 

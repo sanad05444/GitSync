@@ -26,6 +26,7 @@ const String operationInProgressError = "Background operation in progress. Pleas
 const String networkUnavailable = "Network unavailable!";
 const String invalidIndexHeaderError = "Invalid index data! Incorrect header signature detected.";
 const String invalidDataInIndex = "invalid data in index - invalid entry";
+const String theIndexIsLocked = "the index is locked";
 const String corruptedLooseFetchHead = "corrupted loose reference file: FETCH_HEAD";
 const String missingAuthorDetailsError = "Missing repository author details. Please set your name and email in the repository settings.";
 const String authMethodMismatchError = "Authentication method mismatch. Use SSH for SSH repositories and HTTPS for HTTP repositories.";
