@@ -220,7 +220,7 @@
     "signedCommitsDescription": "sign commits to verify your identity",
     "importCommitKey": "Import Key",
     "commitKeyImported": "Key Imported",
-    "useSshKey": "Use SSH Key for Commit Signing",
+    "useSshKey": "Use AUTH Key for Commit Signing",
     "syncMessageLabel": "Sync Message",
     "syncMessageDescription": "use %s for the date and time",
     "syncMessageTimeFormatLabel": "Sync Message Time Format",
