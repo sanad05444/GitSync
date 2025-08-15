@@ -942,8 +942,33 @@ pub async fn force_push(
     } else {
         let head = repo.head()?;
         let resolved_head = head.resolve()?;
-        let branch_name = resolved_head.shorthand()
-            .ok_or_else(|| git2::Error::from_str("Could not determine branch name"))?;
+        let mut branch_name = resolved_head.shorthand()
+            .ok_or_else(|| git2::Error::from_str("Could not determine branch name"))?
+            .to_string();
+
+        let orig_head_path = git_dir.join("ORIG_HEAD");
+        if (branch_name == "HEAD" && orig_head_path.exists()) {
+            let content = fs::read_to_string(&orig_head_path)
+                .map_err(|err| git2::Error::from_str(&format!(
+                    "Failed to read orig_head file: {}", err
+                )))?;
+            let orig_commit_id = content.trim();
+            let orig_commit = repo.find_commit(git2::Oid::from_str(orig_commit_id)?)?;
+            let branches = repo.branches(None)?;
+
+            for branch in branches {
+                let (branch_ref, _) = branch?;
+                let branch_commit = repo.reference_to_annotated_commit(&branch_ref.get())?;
+                
+                if orig_commit.id() == branch_commit.id() {
+                    branch_name = match branch_ref.name() {
+                        Ok(Some(name)) => name.to_string(),
+                        Ok(None) | Err(_) => return Err(git2::Error::from_str("Unable to determine branch name"))
+                    };
+                    break;
+                }
+            }
+        }
         
         format!("+refs/heads/{}", branch_name)
     };
@@ -1023,8 +1048,33 @@ pub async fn force_pull(
     } else {
         let head = repo.head()?;
         let resolved_head = head.resolve()?;
-        let branch_name = resolved_head.shorthand()
-            .ok_or_else(|| git2::Error::from_str("Could not determine branch name"))?;
+        let mut branch_name = resolved_head.shorthand()
+            .ok_or_else(|| git2::Error::from_str("Could not determine branch name"))?
+            .to_string();
+
+        let orig_head_path = git_dir.join("ORIG_HEAD");
+        if (branch_name == "HEAD" && orig_head_path.exists()) {
+            let content = fs::read_to_string(&orig_head_path)
+                .map_err(|err| git2::Error::from_str(&format!(
+                    "Failed to read orig_head file: {}", err
+                )))?;
+            let orig_commit_id = content.trim();
+            let orig_commit = repo.find_commit(git2::Oid::from_str(orig_commit_id)?)?;
+            let branches = repo.branches(None)?;
+
+            for branch in branches {
+                let (branch_ref, _) = branch?;
+                let branch_commit = repo.reference_to_annotated_commit(&branch_ref.get())?;
+                
+                if orig_commit.id() == branch_commit.id() {
+                    branch_name = match branch_ref.name() {
+                        Ok(Some(name)) => name.to_string(),
+                        Ok(None) | Err(_) => return Err(git2::Error::from_str("Unable to determine branch name"))
+                    };
+                    break;
+                }
+            }
+        }
         
         format!("refs/heads/{}", branch_name)
     };
