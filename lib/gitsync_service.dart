@@ -75,7 +75,16 @@ class GitsyncService {
 
   static RepoManager repoManager = RepoManager();
 
-  late ServiceStrings s;
+  ServiceStrings s = ServiceStrings(
+    syncStartPull: "Syncing changes…",
+    syncStartPush: "Syncing local changes…",
+    syncNotRequired: "Sync not required!",
+    syncComplete: "Repository synced!",
+    syncInProgress: "Sync In Progress",
+    syncScheduled: "Sync Scheduled",
+    detectingChanges: "Detecting Changes…",
+    ongoingMergeConflict: "Ongoing merge conflict",
+  );
   bool isScheduled = false;
   bool isSyncing = false;
 
