@@ -64,7 +64,6 @@ Future<void> showDialog(BuildContext parentContext, List<String> conflictingPath
   }
 
   final syncMessage = await uiSettingsManager.getString(StorageKey.setman_syncMessage);
-  final dirPath = (await uiSettingsManager.getGitDirPath());
   final scrollController = AnchorScrollController();
   final commitMessageController = TextEditingController();
 
@@ -82,62 +81,63 @@ Future<void> showDialog(BuildContext parentContext, List<String> conflictingPath
   print(conflictingPaths);
 
   Future<void> updateConflictSections(void Function(void Function())? setState) async {
-    if (demo) {
-      conflictSections = demoConflictSections;
-      return;
-    }
-
-    if (setState != null && updating) return;
-
-    updating = true;
-    if (setState != null) setState(() {});
-
-    final file = File("$dirPath/${conflictingPaths[conflictIndex]}");
-
-    List<String> conflictStringSections = [];
-    List<String> lines = await file.readAsLines();
-    StringBuffer conflictBuffer = StringBuffer();
-    bool inConflict = false;
-
-    for (var line in lines) {
-      if (line.trim().startsWith(conflictStart)) {
-        inConflict = true;
-        conflictBuffer.writeln(line);
-      } else if (line.trim().startsWith(conflictEnd)) {
-        conflictBuffer.writeln(line);
-        conflictStringSections.add(conflictBuffer.toString());
-        conflictBuffer.clear();
-        inConflict = false;
-      } else if (inConflict) {
-        conflictBuffer.writeln(line);
-      } else {
-        conflictStringSections.add(line);
+    try {
+      if (demo) {
+        conflictSections = demoConflictSections;
+        return;
       }
-    }
-    if (conflictBuffer.isNotEmpty) {
-      conflictStringSections.add(conflictBuffer.toString());
-    }
 
-    // if (conflictIndex != conflictingPaths.length - 1 && conflictStringSections.indexWhere((section) => section.contains(conflictStart)) == -1) {
-    //   conflictingPaths.removeAt(conflictIndex);
-    //   conflictIndex = conflictIndex.clamp(0, conflictingPaths.length - 1);
-    //   await updateConflictSections(null);
+      if (setState != null && updating) return;
 
-    //   if (setState != null) setState(() {});
-    //   return;
-    // }
-
-    conflictSections = conflictStringSections.indexed.toList();
-    if (setState != null) setState(() {});
-
-    await Future.delayed(Duration(milliseconds: 500), () {
-      updating = false;
+      updating = true;
       if (setState != null) setState(() {});
-    });
+
+      final bookmarkPath = await uiSettingsManager.getString(StorageKey.setman_gitDirPath);
+      if (bookmarkPath.isEmpty) return;
+
+      await useDirectory(bookmarkPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (path) async {
+        final file = File("$path/${conflictingPaths[conflictIndex]}");
+
+        List<String> conflictStringSections = [];
+        List<String> lines = await file.readAsLines();
+        StringBuffer conflictBuffer = StringBuffer();
+        bool inConflict = false;
+
+        for (var line in lines) {
+          if (line.trim().startsWith(conflictStart)) {
+            inConflict = true;
+            conflictBuffer.writeln(line);
+          } else if (line.trim().startsWith(conflictEnd)) {
+            conflictBuffer.writeln(line);
+            conflictStringSections.add(conflictBuffer.toString());
+            conflictBuffer.clear();
+            inConflict = false;
+          } else if (inConflict) {
+            conflictBuffer.writeln(line);
+          } else {
+            conflictStringSections.add(line);
+          }
+        }
+        if (conflictBuffer.isNotEmpty) {
+          conflictStringSections.add(conflictBuffer.toString());
+        }
+
+        conflictSections = conflictStringSections.indexed.toList();
+        if (setState != null) setState(() {});
+
+        await Future.delayed(Duration(milliseconds: 500), () {
+          updating = false;
+          if (setState != null) setState(() {});
+        });
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   await updateConflictSections(null);
 
+  print(conflictingPaths);
   String padNumber(int num1) {
     String num1Str = num1.toString();
     int targetLength = conflictSections.length.toString().length;
@@ -145,12 +145,17 @@ Future<void> showDialog(BuildContext parentContext, List<String> conflictingPath
   }
 
   Future<void> refreshConflictSectionIndices() async {
-    final file = File("$dirPath/${conflictingPaths[conflictIndex]}");
-    await file.writeAsString(conflictSections.map((section) => section.$2).join('\n'));
+    final bookmarkPath = await uiSettingsManager.getString(StorageKey.setman_gitDirPath);
+    if (bookmarkPath.isEmpty) return;
 
-    for (var indexedSection in conflictSections.indexed) {
-      conflictSections[indexedSection.$1] = (indexedSection.$1, indexedSection.$2.$2);
-    }
+    await useDirectory(bookmarkPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (path) async {
+      final file = File("$path/${conflictingPaths[conflictIndex]}");
+      await file.writeAsString(conflictSections.map((section) => section.$2).join('\n'));
+
+      for (var indexedSection in conflictSections.indexed) {
+        conflictSections[indexedSection.$1] = (indexedSection.$1, indexedSection.$2.$2);
+      }
+    });
   }
 
   return await mat.showDialog(
@@ -238,7 +243,9 @@ Future<void> showDialog(BuildContext parentContext, List<String> conflictingPath
                                 children: [
                                   Expanded(
                                     child: TextButton.icon(
-                                      onPressed: () => OpenFile.open("$dirPath/${conflictingPaths[conflictIndex]}"),
+                                      onPressed:
+                                          () async =>
+                                              OpenFile.open("${await uiSettingsManager.getGitDirPath(true)}/${conflictingPaths[conflictIndex]}"),
                                       style: ButtonStyle(
                                         alignment: Alignment.centerLeft,
                                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
