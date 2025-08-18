@@ -189,9 +189,17 @@ pub async fn get_recent_commits(
 
     let mut commits = Vec::new();
 
-    for oid in revwalk.take(50) {
-        let oid = oid?;
-        let commit = repo.find_commit(oid)?;
+    for oid_result in revwalk.take(50) {
+        let oid = match oid_result {
+            Ok(id) => id,
+            Err(_) => continue,
+        };
+
+        let commit = match repo.find_commit(oid) {
+            Ok(commit) => commit,
+            Err(_) => continue,
+        };
+
         let author = commit.author().name().unwrap_or("<unknown>").to_string();
         let time = commit.time().seconds();
         let message = commit
@@ -203,19 +211,34 @@ pub async fn get_recent_commits(
 
         let parent = commit.parent(0).ok();
         let mut diff_opts = DiffOptions::new();
-        let diff = if let Some(parent) = parent {
-            repo.diff_tree_to_tree(
-                Some(&parent.tree()?),
-                Some(&commit.tree()?),
-                Some(&mut diff_opts),
-            )?
-        } else {
-            repo.diff_tree_to_tree(None, Some(&commit.tree()?), Some(&mut diff_opts))?
+        
+        let diff = match parent {
+            Some(parent_commit) => {
+                match repo.diff_tree_to_tree(
+                    Some(&parent_commit.tree()?),
+                    Some(&commit.tree()?),
+                    Some(&mut diff_opts),
+                ) {
+                    Ok(diff) => diff,
+                    Err(_) => continue,
+                }
+            },
+            None => {
+                match repo.diff_tree_to_tree(
+                    None, 
+                    Some(&commit.tree()?), 
+                    Some(&mut diff_opts)
+                ) {
+                    Ok(diff) => diff,
+                    Err(_) => continue,
+                }
+            }
         };
 
-        let stats = diff.stats()?;
-        let additions = stats.insertions() as i32;
-        let deletions = stats.deletions() as i32;
+        let (additions, deletions) = match diff.stats() {
+            Ok(stats) => (stats.insertions() as i32, stats.deletions() as i32),
+            Err(_) => (0, 0)
+        };
 
         commits.push(Commit {
             timestamp: time,
@@ -230,7 +253,7 @@ pub async fn get_recent_commits(
     _log(
         Arc::clone(&log_callback),
         LogType::RecentCommits,
-        "Recent commits retrieved".to_string(),
+        format!("Retrieved {} recent commits", commits.len()),
     );
 
     Ok(commits)
