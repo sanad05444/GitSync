@@ -111,7 +111,7 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
           clipBehavior: Clip.hardEdge,
           child: CodeField(
             expands: true,
-            readOnly: false,
+            readOnly: widget.logs,
             controller: controller,
             textStyle: TextStyle(fontSize: textMD),
             background: Colors.transparent,
