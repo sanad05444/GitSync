@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:isolate';
 import 'dart:math';
 import 'dart:ui';
 
@@ -11,14 +10,12 @@ import 'package:GitSync/api/manager/storage.dart';
 import 'package:GitSync/ui/dialog/create_branch.dart' as CreateBranchDialog;
 import 'package:GitSync/ui/dialog/merge_conflict.dart' as MergeConflictDialog;
 import 'package:GitSync/ui/page/code_editor.dart';
-import 'package:GitSync/ui/page/file_explorer.dart';
 import 'package:GitSync/ui/page/global_settings_main.dart';
 import 'package:animated_reorderable_list/animated_reorderable_list.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:extended_text/extended_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_localized_locales/flutter_localized_locales.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -30,6 +27,7 @@ import 'package:GitSync/ui/component/tile_sync_settings.dart';
 import 'package:GitSync/ui/dialog/onboarding_controller.dart';
 import 'package:mixin_logger/mixin_logger.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:workmanager/workmanager.dart';
@@ -60,6 +58,8 @@ import '../ui/page/clone_repo_main.dart';
 import '../ui/page/settings_main.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'ui/dialog/confirm_reinstall_clear_data.dart' as ConfirmReinstallClearDataDialog;
 
 const SET_AS_FOREGROUND = "setAsForeground";
 const SET_AS_BACKGROUND = "setAsBackground";
@@ -329,6 +329,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
       // TODO: Commented for release
       // await repoManager.setInt(StorageKey.repoman_onboardingStep, 0);
 
+      await promptClearKeychainValues();
+
       if (await repoManager.hasLegacySettings()) {
         if (!mounted) return;
         await LegacyAppUserDialog.showDialog(context, () => onboardingController?.show());
@@ -341,6 +343,20 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     });
 
     super.initState();
+  }
+
+  Future<void> promptClearKeychainValues() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    if (Platform.isIOS && (prefs.getBool('is_first_app_launch') ?? true)) {
+      await ConfirmReinstallClearDataDialog.showDialog(context, () async {
+        uiSettingsManager.storage.deleteAll();
+        repoManager.storage.deleteAll();
+      });
+
+      await repoManager.setStringList(StorageKey.repoman_locks, []);
+      await prefs.setBool('is_first_app_launch', false);
+    }
   }
 
   @override

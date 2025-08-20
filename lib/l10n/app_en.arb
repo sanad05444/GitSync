@@ -99,6 +99,9 @@
 
 
     "@@x-ONBOARDING": "",
+    "iosClearDataTitle": "Is this a fresh install?",
+    "iosClearDataMsg": "We detected that this might be a reinstallation, but it could also be a false alarm. On iOS, your Keychain isn’t cleared when you delete and reinstall the app, so some data may still be stored securely.\n\nIf this isn’t a fresh install, or you don’t want to reset, you can safely skip this step.",
+    "iosClearDataAction": "Clear Keychain",
     "legacyAppUserDialogTitle": "Welcome to the New Version!",
     "legacyAppUserDialogMessagePart1": "We've rebuilt the app from the ground up for better performance and future growth.",
     "legacyAppUserDialogMessagePart2": "Regrettably, your old settings can't be carried over, so you'll need to set things up again.\n\nAll your favorite features are still here. Multi-repo support is now part of a small one-time upgrade that helps support ongoing development.",
