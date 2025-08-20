@@ -350,8 +350,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
     if (Platform.isIOS && (prefs.getBool('is_first_app_launch') ?? true)) {
       await ConfirmReinstallClearDataDialog.showDialog(context, () async {
-        uiSettingsManager.storage.deleteAll();
-        repoManager.storage.deleteAll();
+        await uiSettingsManager.storage.deleteAll();
+        await repoManager.storage.deleteAll();
       });
 
       await repoManager.setStringList(StorageKey.repoman_locks, []);

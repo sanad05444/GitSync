@@ -48,7 +48,6 @@ Future<void> showDialog(BuildContext context, Future<void> Function() deleteCont
                         setState(() {});
 
                         Navigator.of(context).canPop() ? Navigator.pop(context) : null;
-                        await deleteContentsCallback();
                       },
                     ),
               ),
