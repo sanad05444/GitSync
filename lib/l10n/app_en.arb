@@ -101,6 +101,8 @@
     "@@x-ONBOARDING": "",
     "iosClearDataTitle": "Is this a fresh install?",
     "iosClearDataMsg": "We detected that this might be a reinstallation, but it could also be a false alarm. On iOS, your Keychain isn’t cleared when you delete and reinstall the app, so some data may still be stored securely.\n\nIf this isn’t a fresh install, or you don’t want to reset, you can safely skip this step.",
+    "clearDataConfirmTitle": "Confirm App Data Reset",
+    "clearDataConfirmMsg": "This will permanently delete all app data, including Keychain entries. Are you sure you want to proceed?",
     "iosClearDataAction": "Clear All Data",
     "legacyAppUserDialogTitle": "Welcome to the New Version!",
     "legacyAppUserDialogMessagePart1": "We've rebuilt the app from the ground up for better performance and future growth.",

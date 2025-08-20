@@ -27,6 +27,7 @@ import '../../../constant/strings.dart';
 import '../../../global.dart';
 
 import '../dialog/change_language.dart' as ChangeLanguageDialog;
+import '../dialog/confirm_clear_data.dart' as ConfirmClearDataDialog;
 import '../dialog/enter_backup_restore_password.dart' as EnterBackupRestorePasswordDialog;
 
 class GlobalSettingsMain extends StatefulWidget {
@@ -383,7 +384,20 @@ ${await Logger.generateDeviceInfo()}
                     launchUrl(Uri.parse(eulaLink));
                   },
                 ),
+                SizedBox(height: spaceLG),
+                ButtonSetting(
+                  text: t.iosClearDataAction,
+                  icon: FontAwesomeIcons.dumpsterFire,
+                  onPressed: () async {
+                    await ConfirmClearDataDialog.showDialog(context, () async {
+                      await uiSettingsManager.storage.deleteAll();
+                      await repoManager.storage.deleteAll();
 
+                      Navigator.of(context).canPop() ? Navigator.pop(context) : null;
+                    });
+                  },
+                  buttonColor: secondaryNegative,
+                ),
                 SizedBox(height: spaceLG),
               ],
             ),

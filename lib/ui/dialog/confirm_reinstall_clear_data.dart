@@ -1,3 +1,4 @@
+import 'package:GitSync/ui/dialog/confirm_clear_data.dart' as ConfirmClearDataDialog;
 import 'package:flutter/material.dart' as mat;
 import 'package:flutter/material.dart';
 import '../../../constant/colors.dart';
@@ -41,13 +42,15 @@ Future<void> showDialog(BuildContext context, Future<void> Function() deleteCont
                               ? SizedBox(height: spaceMD, width: spaceMD, child: CircularProgressIndicator(color: tertiaryNegative))
                               : SizedBox.shrink(),
                       onPressed: () async {
-                        overwriting = true;
-                        setState(() {});
-                        await deleteContentsCallback();
-                        overwriting = false;
-                        setState(() {});
+                        await ConfirmClearDataDialog.showDialog(context, () async {
+                          overwriting = true;
+                          setState(() {});
+                          await deleteContentsCallback();
+                          overwriting = false;
+                          setState(() {});
 
-                        Navigator.of(context).canPop() ? Navigator.pop(context) : null;
+                          Navigator.of(context).canPop() ? Navigator.pop(context) : null;
+                        });
                       },
                     ),
               ),
