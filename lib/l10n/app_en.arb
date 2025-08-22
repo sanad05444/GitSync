@@ -306,6 +306,9 @@
     "deleteRepoDirectoryCheckbox": "Also delete the repository’s directory and all its contents",
     "confirmRepositoryDeleteTitle": "Confirm Container Deletion",
     "confirmRepositoryDeleteMessage": "Are you sure you want to delete the repository \"%s\" and it's contents?",
+    "submodulesFoundTitle": "Submodules Found",
+    "submodulesFoundMessage": "The repository you added contains submodules. Would you like to automatically add them as separate repositories in the app?\n\nThis is a premium feature.",
+    "submodulesFoundAction": "Add Submodules",
 
 
     "@@x-BRANCH_MANAGEMENT": "",

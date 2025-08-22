@@ -1628,7 +1628,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                       }
                                                       if (selectedDirectory == null) return;
 
-                                                      await setGitDirPathGetSubmodules(selectedDirectory);
+                                                      if (!mounted) return;
+                                                      await setGitDirPathGetSubmodules(context, selectedDirectory);
                                                       await repoManager.setOnboardingStep(4);
 
                                                       await onboardingController?.show();
