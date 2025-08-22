@@ -296,15 +296,15 @@
 
     "@@x-REPO_MANAGEMENT": "",
     "defaultContainerName": "alias",
-    "renameRepository": "Rename Repository",
+    "renameRepository": "Rename Container",
     "renameRepositoryMsg": "Enter a new alias for the repository container",
     "addMore": "Add More",
-    "addRepository": "Add Repository",
+    "addRepository": "Add Container",
     "addRepositoryMsg": "Give your new repository container a unique alias. This will help you identify it later.",
-    "confirmRepositoryDelete": "Confirm Repository Deletion",
+    "confirmRepositoryDelete": "Confirm Container Deletion",
     "confirmRepositoryDeleteMsg": "Are you sure you want to delete the repository container \"%s\"?",
     "deleteRepoDirectoryCheckbox": "Also delete the repository’s directory and all its contents",
-    "confirmRepositoryDeleteTitle": "Confirm Repository Deletion",
+    "confirmRepositoryDeleteTitle": "Confirm Container Deletion",
     "confirmRepositoryDeleteMessage": "Are you sure you want to delete the repository \"%s\" and it's contents?",
 
 

@@ -663,8 +663,9 @@ pub async fn download_changes(
                     LogType::PullFromRepo,
                     "OK fast forward".to_string(),
                 );
-                if get_uncommitted_file_paths_priv(&repo, false).is_empty() {
+                if get_uncommitted_file_paths_priv(&repo, false, &log_callback).is_empty() {
                     fast_forward(&repo, &mut r, &fetch_commit, &log_callback)?;
+                    update_submodules(&repo, &provider, &credentials, &log_callback)?;
                 } else {
                     _log(
                         Arc::clone(&log_callback),
@@ -694,6 +695,7 @@ pub async fn download_changes(
                         .conflict_style_merge(true)
                         .force(),
                 ))?;
+                update_submodules(&repo, &provider, &credentials, &log_callback)?;
                 return Ok(Some(true));
             }
         };
@@ -750,6 +752,48 @@ pub async fn download_changes(
     Ok(None)
 }
 
+
+
+fn update_submodules(
+    repo: &Repository,
+    provider: &String,
+    credentials: &(String, String),
+    log_callback: &Arc<impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static>,
+) -> Result<(), git2::Error> {
+    for mut submodule in repo.submodules()? {
+        let name = submodule.name().unwrap_or("unknown").to_string();
+
+        _log(
+            Arc::clone(&log_callback),
+            LogType::PullFromRepo,
+            format!("Updating submodule: {}", name),
+        );
+
+        let callbacks = get_default_callbacks(Some(&provider), Some(&credentials));
+        let mut fetch_options = FetchOptions::new();
+        fetch_options.prune(git2::FetchPrune::On);
+        fetch_options.update_fetchhead(true);
+        fetch_options.remote_callbacks(callbacks);
+        fetch_options.download_tags(git2::AutotagOption::All);
+
+
+        let mut submodule_opts = git2::SubmoduleUpdateOptions::new();
+        submodule_opts.fetch(fetch_options);
+
+        submodule.update(true, Some(&mut submodule_opts))?;
+
+        if let Ok(sub_repo) = submodule.open() {
+            sub_repo.checkout_head(Some(
+                git2::build::CheckoutBuilder::default()
+                    .allow_conflicts(true)
+                    .conflict_style_merge(true)
+                    .force(),
+            ))?;
+        }
+    }
+    Ok(())
+}
+
 pub async fn upload_changes(
     path_string: String,
     remote_name: String,
@@ -781,7 +825,7 @@ pub async fn upload_changes(
         "Retrieved Statuses".to_string(),
     );
 
-    let uncommitted_file_paths = get_uncommitted_file_paths_priv(&repo, true);
+    let uncommitted_file_paths = get_uncommitted_file_paths_priv(&repo, true, &log_callback);
 
     // TODO: Removing this has fixed stuck merge conflicts
     // if !uncommitted_file_paths.is_empty() {
@@ -807,17 +851,22 @@ pub async fn upload_changes(
             "Adding Files to Stage".to_string(),
         );
 
-        if let Some(paths) = file_paths {
-            match index.add_all(paths.iter(), git2::IndexAddOption::DEFAULT, None) {
-                Ok(_) => {}
-                Err(e) => {index.update_all(paths.iter(), None)?;}
-            }
+        let paths: Vec<String> = if let Some(paths) = file_paths {
+            paths
         } else {
-            let untracked_paths: Vec<String> = uncommitted_file_paths.into_iter().map(|(path, _)| path).collect();
+            uncommitted_file_paths.into_iter().map(|(p, _)| p).collect()
+        };
 
-            match index.add_all(untracked_paths.iter(), git2::IndexAddOption::DEFAULT, None) {
-                Ok(_) => {}
-                Err(e) => {index.update_all(untracked_paths.iter(), None)?;}
+        match index.add_all(paths.iter(), git2::IndexAddOption::DEFAULT, None) {
+            Ok(_) => {}
+            Err(_) => { index.update_all(paths.iter(), None)?; }
+        }
+
+        for path in &paths {
+            if let Ok(mut sm) = repo.find_submodule(path) {
+                let sm_repo = sm.open()?;
+                sm_repo.index()?.write()?;
+                sm.add_to_index(false)?;
             }
         }
 
@@ -1091,7 +1140,7 @@ pub async fn force_push(
         rebase.abort()?;
     }
 
-    if !get_uncommitted_file_paths_priv(&repo, true).is_empty() {
+    if !get_uncommitted_file_paths_priv(&repo, true, &log_callback).is_empty() {
         let mut index = repo.index()?;
 
         _log(
@@ -1386,12 +1435,13 @@ pub async fn get_uncommitted_file_paths(
         "Getting local directory".to_string(),
     );
     
-    get_uncommitted_file_paths_priv(&repo, true)
+    get_uncommitted_file_paths_priv(&repo, true, &log_callback)
 }
 
 fn get_uncommitted_file_paths_priv(
     repo: &Repository,
     include_untracked: bool, 
+    log_callback: &Arc<impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static>,
 ) -> Vec<(String, i32)> {
     let mut opts = StatusOptions::new();
     opts.include_untracked(include_untracked);
@@ -1402,16 +1452,34 @@ fn get_uncommitted_file_paths_priv(
     let mut file_paths = Vec::new();
 
     for entry in statuses.iter() {
+        let path = entry.path().unwrap_or_default();
         let status = entry.status();
+
+        if path.ends_with('/') && repo.find_submodule(&path[..path.len()-1]).is_ok() {
+            continue;
+        }
+
+        if let Ok(mut submodule) = repo.find_submodule(path) {
+            submodule.reload(true).ok();
+            let head_oid = submodule.head_id();
+            let index_oid = submodule.index_id();
+            let workdir_oid = submodule.workdir_id();
+
+            if head_oid != index_oid || head_oid != workdir_oid {
+                file_paths.push((path.to_string(), 1)); // Submodule ref changed
+            }
+            continue;
+        }
+
         match status {
             Status::WT_MODIFIED => {
-                file_paths.push((entry.path().unwrap_or_default().to_string(), 1)); // Change
-            },
-            Status::WT_NEW => {
-                file_paths.push((entry.path().unwrap_or_default().to_string(), 3)); // Addition
+                file_paths.push((path.to_string(), 1)); // Change
             },
             Status::WT_DELETED => {
-                file_paths.push((entry.path().unwrap_or_default().to_string(), 2)); // Deletion
+                file_paths.push((path.to_string(), 2)); // Deletion
+            },
+            Status::WT_NEW => {
+                file_paths.push((path.to_string(), 3)); // Addition
             },
             _ => {}
         }
