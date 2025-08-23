@@ -45,6 +45,8 @@
     "createADir",
     "dirName",
     "renameFileDir",
+    "fileTooLarge",
+    "readOnly",
     "submodulesFoundTitle",
     "submodulesFoundMessage",
     "submodulesFoundAction"
@@ -96,6 +98,8 @@
     "createADir",
     "dirName",
     "renameFileDir",
+    "fileTooLarge",
+    "readOnly",
     "submodulesFoundTitle",
     "submodulesFoundMessage",
     "submodulesFoundAction"
@@ -147,6 +151,8 @@
     "createADir",
     "dirName",
     "renameFileDir",
+    "fileTooLarge",
+    "readOnly",
     "submodulesFoundTitle",
     "submodulesFoundMessage",
     "submodulesFoundAction"
@@ -198,6 +204,8 @@
     "createADir",
     "dirName",
     "renameFileDir",
+    "fileTooLarge",
+    "readOnly",
     "submodulesFoundTitle",
     "submodulesFoundMessage",
     "submodulesFoundAction"

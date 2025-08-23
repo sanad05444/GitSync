@@ -2,8 +2,10 @@ import 'package:GitSync/api/helper.dart';
 import 'package:GitSync/constant/colors.dart';
 import 'package:GitSync/constant/dimens.dart';
 import 'package:GitSync/constant/values.dart';
+import 'package:GitSync/global.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_code_editor/flutter_code_editor.dart';
+import 'package:sprintf/sprintf.dart';
 import '../../../constant/strings.dart';
 import 'package:path/path.dart' as p;
 
@@ -18,7 +20,7 @@ class CodeEditor extends StatefulWidget {
 }
 
 class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
-  final CodeController controller = CodeController(chunkConfig: ChunkConfig(chunkSize: 800, chunkLineOverlap: 100));
+  final CodeController controller = CodeController(chunkConfig: ChunkConfig(chunkSize: 1000, chunkLineOverlap: 100));
 
   @override
   void initState() {
@@ -104,27 +106,59 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
             'strong': TextStyle(fontWeight: FontWeight.bold),
           },
         ),
-        child: Container(
-          decoration: BoxDecoration(borderRadius: BorderRadius.all(cornerRadiusMD), color: tertiaryDark),
-          margin: EdgeInsets.only(left: spaceSM, right: spaceSM, bottom: spaceLG),
-          padding: EdgeInsets.only(right: spaceXS),
-          clipBehavior: Clip.hardEdge,
-          child: CodeField(
-            expands: true,
-            readOnly: widget.logs,
-            controller: controller,
-            textStyle: TextStyle(fontSize: textMD),
-            background: Colors.transparent,
-            onChanged: (_) => setState(() {}),
-            gutterStyle: GutterStyle(
-              showErrors: true,
-              showFoldingHandles: true,
-              showLineNumbers: !widget.logs,
-              textStyle: TextStyle(height: 1.5, fontSize: textMD),
-              margin: widget.logs ? 0 : spaceXS,
-              textAlign: TextAlign.right,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Container(
+              decoration: BoxDecoration(borderRadius: BorderRadius.all(cornerRadiusMD), color: tertiaryDark),
+              margin: EdgeInsets.only(left: spaceSM, right: spaceSM, bottom: spaceLG),
+              padding: EdgeInsets.only(right: spaceXS),
+              clipBehavior: Clip.hardEdge,
+              child: CodeField(
+                expands: true,
+                readOnly: widget.logs,
+                controller: controller,
+                textStyle: TextStyle(fontSize: textMD),
+                background: Colors.transparent,
+                onChanged: (_) => setState(() {}),
+                gutterStyle: GutterStyle(
+                  showErrors: true,
+                  showFoldingHandles: true,
+                  showLineNumbers: !widget.logs,
+                  textStyle: TextStyle(height: 1.5, fontSize: textMD),
+                  margin: widget.logs ? 0 : spaceXS,
+                  textAlign: TextAlign.right,
+                ),
+              ),
             ),
-          ),
+            ValueListenableBuilder(
+              valueListenable: controller.fileTooLarge,
+              builder:
+                  (context, isFileTooLarge, _) =>
+                      !isFileTooLarge
+                          ? const SizedBox.shrink()
+                          : Positioned(
+                            bottom: spaceXXL,
+                            child: Container(
+                              decoration: BoxDecoration(color: primaryDark, borderRadius: BorderRadius.all(cornerRadiusSM)),
+                              padding: EdgeInsets.symmetric(horizontal: spaceSM, vertical: spaceXS),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    t.readOnly.toUpperCase(),
+                                    style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(height: spaceXXXS),
+                                  Text(
+                                    sprintf(t.fileTooLarge, [controller.chunkConfig.chunkSize]),
+                                    style: TextStyle(color: secondaryLight, fontSize: textSM),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+            ),
+          ],
         ),
       ),
     );

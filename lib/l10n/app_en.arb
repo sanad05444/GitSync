@@ -292,6 +292,8 @@
     "createADir": "Create a Directory",
     "dirName": "Folder Name",
     "renameFileDir": "Rename %s",
+    "fileTooLarge": "File larger than %s lines",
+    "readOnly": "Read-Only",
 
 
     "@@x-REPO_MANAGEMENT": "",
