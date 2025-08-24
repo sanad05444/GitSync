@@ -372,6 +372,6 @@
     "issueReportMinimalReproDesc": "Minimal steps to reproduce the issue",
     "report": "Report",
     "issueReportSuccessTitle": "Issue Reported Successfully",
-    "issueReportSuccessMsg": "Your issue has been reported. You can track its progress and respond to messages using the link below. \n\nIssues with no activity for 7 days are automatically closed.",
-    "trackIssue": "Track Issue"
+    "issueReportSuccessMsg": "Your issue has been reported. Bookmark this page to track progress and respond to messages. \n\nPlease avoid creating duplicate issues, as that makes resolution harder. \n\nIssues with no activity for 7 days are automatically closed.",
+    "trackIssue": "Track Issue & Respond to Messages"
 }
