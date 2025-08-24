@@ -23,6 +23,8 @@
   <a href="#" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Download_on_the_App_Store_RGB_blk.svg" alt="Get it on Google Play" style="height: 48px" ></a>
   &nbsp;&nbsp;
   <a href="https://apt.izzysoft.de/fdroid/index/apk/com.viscouspot.gitsync" target="_blank"><img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroidButtonGreyBorder_nofont.png" alt="Get it on Izzy On Droid" style="height: 48px" ></a>
+  <!-- &nbsp;&nbsp; -->
+  <!-- <a href="#" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Get_it_on_F-Droid_%28material_design%29.svg" alt="Get it on F-Droid" style="height: 48px" ></a> -->
   </p>
 
   <p align="center">
@@ -36,33 +38,42 @@ GitSync is a cross-platform git client for Android and iOS that aims to simplify
 
 - **Supports Android 6+ & iOS 12+**
 - Authenticate with
-  - **GitHub**
-  - **Gitea**
-  - **Gitlab**
   - **HTTP/S**
   - **SSH**
+  - **OAuth**
+    - **GitHub**
+    - **Gitea**
+    - **Gitlab**
 - Clone a remote repository
 - Sync repository
   - Fetch changes
   - Pull changes
-  - Commit new changes
+  - Stage & commit changes
   - Push changes
   - Resolve merge conflicts
-- Sync mechanisms
+- Setup automated sync mechanisms
+  - Automatically, when an app is opened or closed
+  - Automatically, on a schedule
   - From a quick tile
-  - When an app is opened or closed
   - From a custom intent (advanced)
-- Settings
-  - Customise sync message
-  - Edit .gitignore file
+- Repository Settings
+  - Signed commits
+  - Customisable sync commit messages
+  - Author details
+  - Edit .gitignore & .git/info/exclude files
+  - Disable SSL
 
+More information can be found at the [wiki](https://gitsync.viscouspotenti.al/wiki)
+<br>
 Give us a ⭐ if you like our work. Much appreciated!
 
 ## Build Instructions
 
 If you just want to try the app out, feel free to download a release from an official platform!
 
-### 1. Setup
+_Coming Soon..._
+
+<!-- ### 1. Setup
 
 - Clone the project
 
@@ -75,6 +86,20 @@ If you just want to try the app out, feel free to download a release from an off
 ```bash
   cd GitSync
 ```
+ -->
+
+<!-- Check Your Entitlements File
+
+Ensure that the .entitlements file contains the correct APS environment string:
+
+<key>aps-environment</key>
+<string>development</string>
+
+    Use "development" for development builds.
+
+    Use "production" for App Store or TestFlight builds.
+
+If the file doesn’t exist, create one manually or let Xcode generate it when adding the capability. -->
 
 <!-- - Open the project in Android Studio
 - Sync the gradle project
@@ -99,9 +124,37 @@ For support, email bugs.viscouspotential@gmail.com.
 
 Consider [sponsoring](https://github.com/sponsors/ViscousPot)! Any help is hugely appreciated!
 
-## Authors
+## Contributing
 
-- [@ViscousPot](https://github.com/ViscousPot)
+Your support means a lot! If you find GitSync useful, please:
+
+- Star the repo to help others discover it
+- Share it with friends or communities that might benefit
+- Consider becoming a [GitHub Sponsor](https://github.com/sponsors/ViscousPot)
+
+At this time, code contributions aren’t required anywhere in particular, but I’d love your help improving [**localization**](#localization-contributions)
+
+<details>
+<summary><h3 style="display:inline-block;">Localization Contributions</h3></summary>
+
+If you’d like to contribute translations:
+
+1. Locate the **English strings** in `lib/l10n/app_en.arb`
+2. Find the corresponding language file (e.g. `lib/l10n/app_es.arb` for Spanish)
+3. Add or refine translations in the appropriate file
+4. Submit a pull request or open an issue with your suggestions
+
+Currently supported languages:
+
+- English (`app_en.arb`)
+- Spanish (`app_es.arb`)
+- Chinese (`app_zh.arb`)
+- Russian (`app_ru.arb`)
+- German (`app_de.arb`)
+
+Even small improvements to wording or grammar are welcome.
+
+</details>
 
 ## Acknowledgements
 
@@ -115,7 +168,7 @@ include
 ui/
 -->
 
-### Building Binaries
+<!-- ### Building Binaries
 
 `flutter run -v`
 
@@ -125,19 +178,6 @@ ui/
 [+65599 ms] INFO: Building rust_lib_GitSync for i686-linux-android
 [+35800 ms] INFO: Building rust_lib_GitSync for x86_64-linux-android
 
-Check Your Entitlements File
-
-Ensure that the .entitlements file contains the correct APS environment string:
-
-<key>aps-environment</key>
-<string>development</string>
-
-    Use "development" for development builds.
-
-    Use "production" for App Store or TestFlight builds.
-
-If the file doesn’t exist, create one manually or let Xcode generate it when adding the capability.
-
 for android builds??
 export LIBGIT2_SYS_USE_PKG_CONFIG=0
-export ZLIB_SRC=1
+export ZLIB_SRC=1 -->
