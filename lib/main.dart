@@ -10,6 +10,7 @@ import 'package:GitSync/api/manager/storage.dart';
 import 'package:GitSync/ui/dialog/create_branch.dart' as CreateBranchDialog;
 import 'package:GitSync/ui/dialog/merge_conflict.dart' as MergeConflictDialog;
 import 'package:GitSync/ui/page/code_editor.dart';
+import 'package:GitSync/ui/page/file_explorer.dart';
 import 'package:GitSync/ui/page/global_settings_main.dart';
 import 'package:animated_reorderable_list/animated_reorderable_list.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -849,27 +850,32 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                               dropdownColor: secondaryDark,
                                               onChanged: (value) async {
                                                 if (value == null) return;
-
                                                 await repoManager.setInt(StorageKey.repoman_repoIndex, value);
                                                 await uiSettingsManager.reinit();
-
                                                 setState(() {});
                                               },
-                                              items:
-                                                  List.generate(
-                                                    (repoNamesSnapshot.data!.length),
-                                                    (index) => DropdownMenuItem(
-                                                      value: index,
-                                                      child: Row(
-                                                        children: [
-                                                          Text(
-                                                            repoNamesSnapshot.data![index].toUpperCase(),
-                                                            style: TextStyle(fontSize: textXS, color: primaryLight),
-                                                          ),
-                                                        ],
+                                              selectedItemBuilder:
+                                                  (context) => List.generate(
+                                                    repoNamesSnapshot.data!.length,
+                                                    (index) => ConstrainedBox(
+                                                      constraints: BoxConstraints(maxWidth: spaceXXL + spaceLG),
+                                                      child: Text(
+                                                        repoNamesSnapshot.data![index].toUpperCase(),
+                                                        style: TextStyle(fontSize: textXS, color: primaryLight),
+                                                        overflow: TextOverflow.ellipsis,
                                                       ),
                                                     ),
-                                                  ).toList(),
+                                                  ),
+                                              items: List.generate(
+                                                repoNamesSnapshot.data!.length,
+                                                (index) => DropdownMenuItem(
+                                                  value: index,
+                                                  child: Text(
+                                                    repoNamesSnapshot.data![index].toUpperCase(),
+                                                    style: TextStyle(fontSize: textXS, color: primaryLight),
+                                                  ),
+                                                ),
+                                              ),
                                             ),
                                           ]
                                           : [SizedBox.shrink()],
@@ -1584,7 +1590,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                       ? SizedBox.shrink()
                                                       : IconButton(
                                                         onPressed: () async {
-                                                          await uiSettingsManager.setString(StorageKey.setman_gitDirPath, "");
+                                                          await uiSettingsManager.setGitDirPath("");
                                                           setState(() {});
                                                         },
                                                         constraints: BoxConstraints(),
@@ -1622,7 +1628,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                       }
                                                       if (selectedDirectory == null) return;
 
-                                                      await uiSettingsManager.setString(StorageKey.setman_gitDirPath, selectedDirectory);
+                                                      if (!mounted) return;
+                                                      await setGitDirPathGetSubmodules(context, selectedDirectory);
                                                       await repoManager.setOnboardingStep(4);
 
                                                       await onboardingController?.show();
@@ -1658,48 +1665,48 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                   ],
                                 ),
                               ),
-                              // SizedBox(height: spaceMD),
-                              // SizedBox(
-                              //   width: double.infinity,
-                              //   child: TextButton.icon(
-                              //     onPressed:
-                              //         gitDirPathSnapshot.data == null
-                              //             ? null
-                              //             : () async {
-                              //               await useDirectory(
-                              //                 await uiSettingsManager.getString(StorageKey.setman_gitDirPath),
-                              //                 (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath),
-                              //                 (path) async {
-                              //                   await Navigator.of(context).push(createFileExplorerRoute(path));
-                              //                 },
-                              //               );
-                              //             },
-                              //     style: ButtonStyle(
-                              //       alignment: Alignment.center,
-                              //       backgroundColor: WidgetStatePropertyAll(secondaryDark),
-                              //       padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
-                              //       shape: WidgetStatePropertyAll(
-                              //         RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
-                              //       ),
-                              //     ),
-                              //     icon: FaIcon(
-                              //       FontAwesomeIcons.filePen,
-                              //       color: gitDirPathSnapshot.data == null ? secondaryLight : tertiaryInfo,
-                              //       size: textLG,
-                              //     ),
-                              //     label: Padding(
-                              //       padding: EdgeInsets.only(left: spaceXS),
-                              //       child: Text(
-                              //         t.openFileExplorer.toUpperCase(),
-                              //         style: TextStyle(
-                              //           color: gitDirPathSnapshot.data == null ? secondaryLight : tertiaryInfo,
-                              //           fontSize: textMD,
-                              //           fontWeight: FontWeight.bold,
-                              //         ),
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
+                              SizedBox(height: spaceMD),
+                              SizedBox(
+                                width: double.infinity,
+                                child: TextButton.icon(
+                                  onPressed:
+                                      gitDirPathSnapshot.data == null
+                                          ? null
+                                          : () async {
+                                            await useDirectory(
+                                              await uiSettingsManager.getString(StorageKey.setman_gitDirPath),
+                                              (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath),
+                                              (path) async {
+                                                await Navigator.of(context).push(createFileExplorerRoute(path));
+                                              },
+                                            );
+                                          },
+                                  style: ButtonStyle(
+                                    alignment: Alignment.center,
+                                    backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                                    padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
+                                    shape: WidgetStatePropertyAll(
+                                      RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
+                                    ),
+                                  ),
+                                  icon: FaIcon(
+                                    FontAwesomeIcons.filePen,
+                                    color: gitDirPathSnapshot.data == null ? secondaryLight : tertiaryInfo,
+                                    size: textLG,
+                                  ),
+                                  label: Padding(
+                                    padding: EdgeInsets.only(left: spaceXS),
+                                    child: Text(
+                                      t.openFileExplorer.toUpperCase(),
+                                      style: TextStyle(
+                                        color: gitDirPathSnapshot.data == null ? secondaryLight : tertiaryInfo,
+                                        fontSize: textMD,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                     ),

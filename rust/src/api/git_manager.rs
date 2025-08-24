@@ -5,7 +5,7 @@ use osshkeys::{KeyPair, KeyType};
 use git2::{
     opts::set_verify_owner_validation, CertificateCheckStatus, Cred,  Diff, DiffOptions, DiffDelta, Delta, ErrorCode,
     FetchOptions, PushOptions, RemoteCallbacks, Repository, RepositoryState, ResetType, Signature,
-    StatusOptions, Status, BranchType, Tree,
+    StatusOptions, Status, BranchType, Tree, SubmoduleUpdateOptions
 };
 use ssh_key::{HashAlg, LineEnding, PrivateKey};
 
@@ -100,6 +100,20 @@ fn _log(
     });
 }
 
+pub async fn get_submodule_paths(path_string: String,) -> Result<Vec<String>, git2::Error> {
+    let repo = Repository::open(path_string)?;
+    let mut paths = Vec::new();
+
+    for mut submodule in repo.submodules()? {
+        submodule.reload(false)?; 
+        if let Some(path) = submodule.path().to_str() {
+            paths.push(path.to_string());
+        }
+    }
+
+    Ok(paths)
+}
+
 pub async fn clone_repository(
     url: String,
     path_string: String,
@@ -160,7 +174,6 @@ pub async fn clone_repository(
     let repo = builder.clone(url.as_str(), path)?;
 
     set_author(&repo, &author);
-
     repo.cleanup_state();
 
     _log(
@@ -168,7 +181,186 @@ pub async fn clone_repository(
         LogType::CloneRepo,
         "Repository cloned successfully".to_string(),
     );
-
+    
+    repo.submodules()?.iter_mut().try_for_each(|mut sm| {
+        let sm_name = sm.name().unwrap_or("unknown").to_string();
+        
+        _log(
+            Arc::clone(&log_callback),
+            LogType::CloneRepo,
+            format!("Processing submodule: {}", sm_name),
+        );
+        
+        let mut options = SubmoduleUpdateOptions::new();
+        let mut fetch_opts = FetchOptions::new();
+        fetch_opts.remote_callbacks(get_default_callbacks(Some(&provider), Some(&credentials)));
+        fetch_opts.prune(git2::FetchPrune::On);
+        options.fetch(fetch_opts);
+        options.allow_fetch(true);
+        
+        sm.init(true)?;
+        sm.update(true, Some(&mut options))?;
+        
+        let sm_repo_result = sm.open();
+        if let Ok(sm_repo) = sm_repo_result {
+            if let Ok(head) = sm_repo.head() {
+                if let Some(target_commit_id) = head.target() {
+                    _log(
+                        Arc::clone(&log_callback),
+                        LogType::CloneRepo,
+                        format!("Submodule {} is at commit: {}", sm_name, target_commit_id),
+                    );
+                    
+                    let mut found_branch = false;
+                    
+                    // Try to find a local branch that contains this commit
+                    if let Ok(branches) = sm_repo.branches(Some(BranchType::Local)) {
+                        for branch_result in branches {
+                            if let Ok((branch, _)) = branch_result {
+                                let branch_name_opt = branch.name().ok().flatten().map(|s| s.to_string());
+                                if let Some(branch_name) = branch_name_opt {
+                                    let branch_ref = branch.into_reference();
+                                    
+                                    if let Ok(branch_commit) = branch_ref.peel_to_commit() {
+                                        if branch_commit.id() == target_commit_id {
+                                            // Checkout the branch
+                                            let branch_ref_name = format!("refs/heads/{}", branch_name);
+                                            if let Ok(branch_ref) = sm_repo.find_reference(&branch_ref_name) {
+                                                if let Ok(tree) = branch_ref.peel_to_tree() {
+                                                    let _ = sm_repo.checkout_tree(
+                                                        tree.as_object(),
+                                                        Some(git2::build::CheckoutBuilder::new().force())
+                                                    );
+                                                    let _ = sm_repo.set_head(&branch_ref_name);
+                                                    
+                                                    _log(
+                                                        Arc::clone(&log_callback),
+                                                        LogType::CloneRepo,
+                                                        format!("Successfully checked out branch '{}' in submodule {}", branch_name, sm_name),
+                                                    );
+                                                    found_branch = true;
+                                                    break;
+                                                }
+                                            }
+                                        } else {
+                                            // Check if target commit is reachable from this branch
+                                            if let Ok(mut revwalk) = sm_repo.revwalk() {
+                                                revwalk.push(branch_commit.id()).ok();
+                                                revwalk.set_sorting(git2::Sort::TIME).ok();
+                                                
+                                                for commit_id in revwalk.take(100) { 
+                                                    if let Ok(commit_id) = commit_id {
+                                                        if commit_id == target_commit_id {
+                                                            let branch_ref_name = format!("refs/heads/{}", branch_name);
+                                                            if let Ok(branch_ref) = sm_repo.find_reference(&branch_ref_name) {
+                                                                if let Ok(tree) = branch_ref.peel_to_tree() {
+                                                                    let _ = sm_repo.checkout_tree(
+                                                                        tree.as_object(),
+                                                                        Some(git2::build::CheckoutBuilder::new().force())
+                                                                    );
+                                                                    let _ = sm_repo.set_head(&branch_ref_name);
+                                                                    
+                                                                    _log(
+                                                                        Arc::clone(&log_callback),
+                                                                        LogType::CloneRepo,
+                                                                        format!("Found branch '{}' containing commit, checked out in submodule {}", branch_name, sm_name),
+                                                                    );
+                                                                    found_branch = true;
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                if found_branch { break; }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    if !found_branch {
+                        if let Ok(branches) = sm_repo.branches(Some(BranchType::Remote)) {
+                            for branch_result in branches {
+                                if let Ok((branch, _)) = branch_result {
+                                    let branch_name_opt = branch.name().ok().flatten().map(|s| s.to_string());
+                                    if let Some(remote_branch_name) = branch_name_opt {
+                                        let branch_ref = branch.into_reference();
+                                        
+                                        // Check if this remote branch contains our target commit
+                                        if let Ok(branch_commit) = branch_ref.peel_to_commit() {
+                                            if branch_commit.id() == target_commit_id {
+                                                let local_branch_name = if let Some(slash_pos) = remote_branch_name.find('/') {
+                                                    &remote_branch_name[slash_pos + 1..]
+                                                } else {
+                                                    &remote_branch_name
+                                                };
+                                                
+                                                if let Ok(target_commit) = sm_repo.find_commit(target_commit_id) {
+                                                    if let Ok(_local_branch) = sm_repo.branch(local_branch_name, &target_commit, false) {
+                                                        if let Ok(mut config) = sm_repo.config() {
+                                                            let _ = config.set_str(
+                                                                &format!("branch.{}.remote", local_branch_name),
+                                                                "origin"
+                                                            );
+                                                            let _ = config.set_str(
+                                                                &format!("branch.{}.merge", local_branch_name),
+                                                                &format!("refs/heads/{}", local_branch_name)
+                                                            );
+                                                        }
+                                                        
+                                                        // Checkout the new local branch
+                                                        let branch_ref_name = format!("refs/heads/{}", local_branch_name);
+                                                        if let Ok(tree) = target_commit.tree() {
+                                                            let _ = sm_repo.checkout_tree(
+                                                                tree.as_object(),
+                                                                Some(git2::build::CheckoutBuilder::new().force())
+                                                            );
+                                                            let _ = sm_repo.set_head(&branch_ref_name);
+                                                            
+                                                            _log(
+                                                                Arc::clone(&log_callback),
+                                                                LogType::CloneRepo,
+                                                                format!("Created and checked out local branch '{}' from '{}' in submodule {}", local_branch_name, remote_branch_name, sm_name),
+                                                            );
+                                                            found_branch = true;
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    if !found_branch {
+                        _log(
+                            Arc::clone(&log_callback),
+                            LogType::CloneRepo,
+                            format!("No branch found containing commit in submodule {}, staying in detached HEAD", sm_name),
+                        );
+                    }
+                }
+            }
+        }
+        
+        Ok::<(), git2::Error>(())
+    })?;
+    
+    set_author(&repo, &author);
+    repo.cleanup_state();
+    
+    _log(
+        Arc::clone(&log_callback),
+        LogType::CloneRepo,
+        "Submodules updated successfully".to_string(),
+    );
+    
     Ok(())
 }
 
@@ -471,8 +663,9 @@ pub async fn download_changes(
                     LogType::PullFromRepo,
                     "OK fast forward".to_string(),
                 );
-                if get_uncommitted_file_paths_priv(&repo, false).is_empty() {
+                if get_uncommitted_file_paths_priv(&repo, false, &log_callback).is_empty() {
                     fast_forward(&repo, &mut r, &fetch_commit, &log_callback)?;
+                    update_submodules(&repo, &provider, &credentials, &log_callback)?;
                 } else {
                     _log(
                         Arc::clone(&log_callback),
@@ -502,6 +695,7 @@ pub async fn download_changes(
                         .conflict_style_merge(true)
                         .force(),
                 ))?;
+                update_submodules(&repo, &provider, &credentials, &log_callback)?;
                 return Ok(Some(true));
             }
         };
@@ -558,6 +752,48 @@ pub async fn download_changes(
     Ok(None)
 }
 
+
+
+fn update_submodules(
+    repo: &Repository,
+    provider: &String,
+    credentials: &(String, String),
+    log_callback: &Arc<impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static>,
+) -> Result<(), git2::Error> {
+    for mut submodule in repo.submodules()? {
+        let name = submodule.name().unwrap_or("unknown").to_string();
+
+        _log(
+            Arc::clone(&log_callback),
+            LogType::PullFromRepo,
+            format!("Updating submodule: {}", name),
+        );
+
+        let callbacks = get_default_callbacks(Some(&provider), Some(&credentials));
+        let mut fetch_options = FetchOptions::new();
+        fetch_options.prune(git2::FetchPrune::On);
+        fetch_options.update_fetchhead(true);
+        fetch_options.remote_callbacks(callbacks);
+        fetch_options.download_tags(git2::AutotagOption::All);
+
+
+        let mut submodule_opts = git2::SubmoduleUpdateOptions::new();
+        submodule_opts.fetch(fetch_options);
+
+        submodule.update(true, Some(&mut submodule_opts))?;
+
+        if let Ok(sub_repo) = submodule.open() {
+            sub_repo.checkout_head(Some(
+                git2::build::CheckoutBuilder::default()
+                    .allow_conflicts(true)
+                    .conflict_style_merge(true)
+                    .force(),
+            ))?;
+        }
+    }
+    Ok(())
+}
+
 pub async fn upload_changes(
     path_string: String,
     remote_name: String,
@@ -589,7 +825,7 @@ pub async fn upload_changes(
         "Retrieved Statuses".to_string(),
     );
 
-    let uncommitted_file_paths = get_uncommitted_file_paths_priv(&repo, true);
+    let uncommitted_file_paths = get_uncommitted_file_paths_priv(&repo, true, &log_callback);
 
     // TODO: Removing this has fixed stuck merge conflicts
     // if !uncommitted_file_paths.is_empty() {
@@ -615,17 +851,22 @@ pub async fn upload_changes(
             "Adding Files to Stage".to_string(),
         );
 
-        if let Some(paths) = file_paths {
-            match index.add_all(paths.iter(), git2::IndexAddOption::DEFAULT, None) {
-                Ok(_) => {}
-                Err(e) => {index.update_all(paths.iter(), None)?;}
-            }
+        let paths: Vec<String> = if let Some(paths) = file_paths {
+            paths
         } else {
-            let untracked_paths: Vec<String> = uncommitted_file_paths.into_iter().map(|(path, _)| path).collect();
+            uncommitted_file_paths.into_iter().map(|(p, _)| p).collect()
+        };
 
-            match index.add_all(untracked_paths.iter(), git2::IndexAddOption::DEFAULT, None) {
-                Ok(_) => {}
-                Err(e) => {index.update_all(untracked_paths.iter(), None)?;}
+        match index.add_all(paths.iter(), git2::IndexAddOption::DEFAULT, None) {
+            Ok(_) => {}
+            Err(_) => { index.update_all(paths.iter(), None)?; }
+        }
+
+        for path in &paths {
+            if let Ok(mut sm) = repo.find_submodule(path) {
+                let sm_repo = sm.open()?;
+                sm_repo.index()?.write()?;
+                sm.add_to_index(false)?;
             }
         }
 
@@ -899,7 +1140,7 @@ pub async fn force_push(
         rebase.abort()?;
     }
 
-    if !get_uncommitted_file_paths_priv(&repo, true).is_empty() {
+    if !get_uncommitted_file_paths_priv(&repo, true, &log_callback).is_empty() {
         let mut index = repo.index()?;
 
         _log(
@@ -1194,12 +1435,13 @@ pub async fn get_uncommitted_file_paths(
         "Getting local directory".to_string(),
     );
     
-    get_uncommitted_file_paths_priv(&repo, true)
+    get_uncommitted_file_paths_priv(&repo, true, &log_callback)
 }
 
 fn get_uncommitted_file_paths_priv(
     repo: &Repository,
     include_untracked: bool, 
+    log_callback: &Arc<impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static>,
 ) -> Vec<(String, i32)> {
     let mut opts = StatusOptions::new();
     opts.include_untracked(include_untracked);
@@ -1210,16 +1452,34 @@ fn get_uncommitted_file_paths_priv(
     let mut file_paths = Vec::new();
 
     for entry in statuses.iter() {
+        let path = entry.path().unwrap_or_default();
         let status = entry.status();
+
+        if path.ends_with('/') && repo.find_submodule(&path[..path.len()-1]).is_ok() {
+            continue;
+        }
+
+        if let Ok(mut submodule) = repo.find_submodule(path) {
+            submodule.reload(true).ok();
+            let head_oid = submodule.head_id();
+            let index_oid = submodule.index_id();
+            let workdir_oid = submodule.workdir_id();
+
+            if head_oid != index_oid || head_oid != workdir_oid {
+                file_paths.push((path.to_string(), 1)); // Submodule ref changed
+            }
+            continue;
+        }
+
         match status {
             Status::WT_MODIFIED => {
-                file_paths.push((entry.path().unwrap_or_default().to_string(), 1)); // Change
-            },
-            Status::WT_NEW => {
-                file_paths.push((entry.path().unwrap_or_default().to_string(), 3)); // Addition
+                file_paths.push((path.to_string(), 1)); // Change
             },
             Status::WT_DELETED => {
-                file_paths.push((entry.path().unwrap_or_default().to_string(), 2)); // Deletion
+                file_paths.push((path.to_string(), 2)); // Deletion
+            },
+            Status::WT_NEW => {
+                file_paths.push((path.to_string(), 3)); // Addition
             },
             _ => {}
         }

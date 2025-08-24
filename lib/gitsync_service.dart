@@ -335,9 +335,8 @@ class GitsyncService {
     serviceInstance?.invoke(MERGE_COMPLETE);
   }
 
-  static const String lastInitialValue = "-----";
-  String lastOpenPackageName = lastInitialValue;
-  String lastOpenPackageNameExcludingInputs = lastInitialValue;
+  String lastOpenPackageName = conflictSeparator;
+  String lastOpenPackageNameExcludingInputs = conflictSeparator;
 
   void accessibilityEvent(String packageName, List<String> enabledInputMethods) async {
     for (var index = 0; index < (await repoManager.getStringList(StorageKey.repoman_repoNames)).length; index++) {

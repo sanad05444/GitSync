@@ -44,7 +44,12 @@
     "fileName",
     "createADir",
     "dirName",
-    "renameFileDir"
+    "renameFileDir",
+    "fileTooLarge",
+    "readOnly",
+    "submodulesFoundTitle",
+    "submodulesFoundMessage",
+    "submodulesFoundAction"
   ],
 
   "es": [
@@ -92,7 +97,12 @@
     "fileName",
     "createADir",
     "dirName",
-    "renameFileDir"
+    "renameFileDir",
+    "fileTooLarge",
+    "readOnly",
+    "submodulesFoundTitle",
+    "submodulesFoundMessage",
+    "submodulesFoundAction"
   ],
 
   "ru": [
@@ -140,7 +150,12 @@
     "fileName",
     "createADir",
     "dirName",
-    "renameFileDir"
+    "renameFileDir",
+    "fileTooLarge",
+    "readOnly",
+    "submodulesFoundTitle",
+    "submodulesFoundMessage",
+    "submodulesFoundAction"
   ],
 
   "zh": [
@@ -188,6 +203,11 @@
     "fileName",
     "createADir",
     "dirName",
-    "renameFileDir"
+    "renameFileDir",
+    "fileTooLarge",
+    "readOnly",
+    "submodulesFoundTitle",
+    "submodulesFoundMessage",
+    "submodulesFoundAction"
   ]
 }

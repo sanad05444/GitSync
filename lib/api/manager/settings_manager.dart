@@ -54,8 +54,7 @@ class SettingsManager extends Storage {
     if (bookmarkPath.isEmpty) return null;
 
     return await useDirectory(bookmarkPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (path) async {
-      final gitConfigFile = Directory('$path/$gitPath');
-      if (!await requestStoragePerm(false) || !await gitConfigFile.exists()) {
+      if (!await requestStoragePerm(false) || (!await Directory('$path/$gitPath').exists() && !await File('$path/$gitPath').exists())) {
         await setString(StorageKey.setman_gitDirPath, "");
         return null;
       }

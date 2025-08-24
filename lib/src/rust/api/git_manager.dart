@@ -6,10 +6,15 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `_log`, `commit`, `fast_forward`, `get_branch_name_priv`, `get_default_callbacks`, `get_uncommitted_file_paths_priv`, `set_author`
+// These functions are ignored because they are not marked as `pub`: `_log`, `commit`, `fast_forward`, `get_branch_name_priv`, `get_default_callbacks`, `get_uncommitted_file_paths_priv`, `set_author`, `update_submodules`
 
 Future<void> init({String? homepath}) =>
     RustLib.instance.api.crateApiGitManagerInit(homepath: homepath);
+
+Future<List<String>> getSubmodulePaths({required String pathString}) => RustLib
+    .instance
+    .api
+    .crateApiGitManagerGetSubmodulePaths(pathString: pathString);
 
 Future<void> cloneRepository({
   required String url,
