@@ -30,6 +30,7 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
       controller.openFile(widget.path);
       controller.fileAutoSave = true;
       controller.reversed = widget.logs;
+      controller.readOnly = widget.logs;
     } catch (e) {
       print(e);
       controller.text = "";
@@ -114,28 +115,33 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
               margin: EdgeInsets.only(left: spaceSM, right: spaceSM, bottom: spaceLG),
               padding: EdgeInsets.only(right: spaceXS),
               clipBehavior: Clip.hardEdge,
-              child: CodeField(
-                expands: true,
-                readOnly: widget.logs,
-                controller: controller,
-                textStyle: TextStyle(fontSize: textMD),
-                background: Colors.transparent,
-                onChanged: (_) => setState(() {}),
-                gutterStyle: GutterStyle(
-                  showErrors: true,
-                  showFoldingHandles: true,
-                  showLineNumbers: !widget.logs,
-                  textStyle: TextStyle(height: 1.5, fontSize: textMD),
-                  margin: widget.logs ? 0 : spaceXS,
-                  textAlign: TextAlign.right,
-                ),
+              child: ValueListenableBuilder(
+                valueListenable: controller,
+                builder:
+                    (context, _, _) => CodeField(
+                      expands: true,
+                      readOnly: controller.readOnly,
+                      controller: controller,
+                      textStyle: TextStyle(fontSize: textMD),
+                      background: Colors.transparent,
+                      onChanged: (_) => setState(() {}),
+                      gutterStyle: GutterStyle(
+                        showErrors: true,
+                        showFoldingHandles: true,
+                        showLineNumbers: !widget.logs,
+                        textStyle: TextStyle(height: 1.5, fontSize: textMD),
+                        margin: widget.logs ? 0 : spaceXS,
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
               ),
             ),
+
             ValueListenableBuilder(
-              valueListenable: controller.fileTooLarge,
+              valueListenable: controller,
               builder:
-                  (context, isFileTooLarge, _) =>
-                      !isFileTooLarge
+                  (context, _, _) =>
+                      !controller.readOnly
                           ? const SizedBox.shrink()
                           : Positioned(
                             bottom: spaceXXL,
@@ -148,16 +154,47 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
                                     t.readOnly.toUpperCase(),
                                     style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
                                   ),
-                                  SizedBox(height: spaceXXXS),
-                                  Text(
-                                    sprintf(t.fileTooLarge, [controller.chunkConfig.chunkSize]),
-                                    style: TextStyle(color: secondaryLight, fontSize: textSM),
-                                  ),
+                                  ...!controller.fileTooLarge.value
+                                      ? []
+                                      : [
+                                        SizedBox(height: spaceXXXS),
+                                        Text(
+                                          sprintf(t.fileTooLarge, [controller.chunkConfig.chunkSize]),
+                                          style: TextStyle(color: secondaryLight, fontSize: textSM),
+                                        ),
+                                      ],
                                 ],
                               ),
                             ),
                           ),
             ),
+            // ValueListenableBuilder(
+            //   valueListenable: controller.fileTooLarge,
+            //   builder:
+            //       (context, isFileTooLarge, _) =>
+            //           !isFileTooLarge
+            //               ? const SizedBox.shrink()
+            //               : Positioned(
+            //                 bottom: spaceXXL,
+            //                 child: Container(
+            //                   decoration: BoxDecoration(color: primaryDark, borderRadius: BorderRadius.all(cornerRadiusSM)),
+            //                   padding: EdgeInsets.symmetric(horizontal: spaceSM, vertical: spaceXS),
+            //                   child: Column(
+            //                     children: [
+            //                       Text(
+            //                         t.readOnly.toUpperCase(),
+            //                         style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
+            //                       ),
+            //                       SizedBox(height: spaceXXXS),
+            //                       Text(
+            //                         sprintf(t.fileTooLarge, [controller.chunkConfig.chunkSize]),
+            //                         style: TextStyle(color: secondaryLight, fontSize: textSM),
+            //                       ),
+            //                     ],
+            //                   ),
+            //                 ),
+            //               ),
+            // ),
           ],
         ),
       ),
