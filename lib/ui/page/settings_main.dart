@@ -23,11 +23,17 @@ class SettingsMain extends StatefulWidget {
   State<SettingsMain> createState() => _SettingsMain();
 }
 
-class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver {
+class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver, SingleTickerProviderStateMixin {
+  late AnimationController _pulseController;
+  bool _borderVisible = false;
   final _controller = ScrollController();
   final _authorDetailsKey = GlobalKey();
   bool atTop = true;
+  bool unstaging = false;
+  bool ignoreChanged = false;
   String? gitDirPath;
+
+  static const duration = Duration(seconds: 1);
 
   @override
   void initState() {
@@ -35,6 +41,14 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver {
     _controller.addListener(() {
       atTop = _controller.offset <= 0;
       setState(() {});
+    });
+
+    _pulseController = AnimationController(duration: duration, vsync: this)..repeat(reverse: true);
+
+    _pulseController.addListener(() {
+      setState(() {
+        _borderVisible = _pulseController.value > 0.5;
+      });
     });
 
     if (widget.showcaseAuthorDetails) {
@@ -48,6 +62,28 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver {
       if (gitDirPath == "") gitDirPath = null;
       setState(() {});
     });
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    super.dispose();
+  }
+
+  void writeGitignore(String gitignoreString) {
+    if (!ignoreChanged) {
+      ignoreChanged = true;
+      setState(() {});
+    }
+    GitManager.writeGitignore(gitignoreString);
+  }
+
+  void writeGitInfoExclude(String gitInfoExcludeString) {
+    if (!ignoreChanged) {
+      ignoreChanged = true;
+      setState(() {});
+    }
+    GitManager.writeGitInfoExclude(gitInfoExcludeString);
   }
 
   @override
@@ -282,8 +318,55 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver {
                 ...gitDirPath == null
                     ? []
                     : [
+                      TextButton(
+                        onPressed: () async {
+                          unstaging = true;
+                          setState(() {});
+
+                          await GitManager.unstageAll();
+
+                          unstaging = false;
+                          ignoreChanged = false;
+                          setState(() {});
+                        },
+                        style: ButtonStyle(
+                          alignment: Alignment.center,
+                          backgroundColor: WidgetStatePropertyAll(tertiaryDark),
+                          padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
+                          animationDuration: duration,
+                          shape: WidgetStatePropertyAll(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(cornerRadiusMD),
+                              side:
+                                  (ignoreChanged && _borderVisible) || unstaging
+                                      ? BorderSide(color: secondaryLight, width: spaceXXXS)
+                                      : BorderSide.none,
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              height: textMD,
+                              width: textMD,
+                              child: CircularProgressIndicator(color: !unstaging ? Colors.transparent : primaryLight),
+                            ),
+                            SizedBox(width: spaceSM),
+                            Padding(
+                              padding: EdgeInsets.only(left: spaceXS),
+                              child: Text(
+                                "Unstage All Changes".toUpperCase(),
+                                style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            SizedBox(width: textMD + spaceSM),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: spaceMD),
                       ItemSetting(
-                        setFn: GitManager.writeGitignore,
+                        setFn: writeGitignore,
                         getFn: demo ? () async => "" : GitManager.readGitignore,
                         title: t.gitIgnore,
                         description: t.gitIgnoreDescription,
@@ -294,7 +377,7 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver {
                       ),
                       SizedBox(height: spaceMD),
                       ItemSetting(
-                        setFn: GitManager.writeGitInfoExclude,
+                        setFn: writeGitInfoExclude,
                         getFn: demo ? () async => "" : GitManager.readGitInfoExclude,
                         title: t.gitInfoExclude,
                         description: t.gitInfoExcludeDescription,

@@ -36,6 +36,14 @@ Future<void> cloneRepository({
   log: log,
 );
 
+Future<void> unstageAll({
+  required String pathString,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerUnstageAll(
+  pathString: pathString,
+  log: log,
+);
+
 Future<List<Commit>> getRecentCommits({
   required String pathString,
   required FutureOr<void> Function(LogType, String) log,
@@ -281,5 +289,6 @@ enum LogType {
   forcePull,
   forcePush,
   recentCommits,
+  stage,
   syncException,
 }

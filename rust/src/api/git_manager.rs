@@ -1,4 +1,4 @@
-use std::{env, fs, path::Path, sync::Arc};
+use std::{env, fs, path::Path, path::PathBuf, sync::Arc};
 use regex::Regex;
 use flutter_rust_bridge::DartFnFuture;
 use osshkeys::{KeyPair, KeyType};
@@ -34,6 +34,7 @@ pub enum LogType {
     ForcePull,
     ForcePush,
     RecentCommits,
+    Stage,
     SyncException,
 }
 
@@ -364,6 +365,43 @@ pub async fn clone_repository(
     Ok(())
 }
 
+pub async fn unstage_all(
+    path_string: &String,
+    log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
+) -> Result<(), git2::Error> {
+    let log_callback = Arc::new(log);
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::Stage,
+        "Getting local directory".to_string(),
+    );
+    let repo = Repository::open(path_string)?;
+    let mut index = repo.index()?;
+
+    let paths: Vec<PathBuf> = index
+        .iter()
+        .map(|entry| {
+            let s = String::from_utf8_lossy(entry.path.as_slice()).into_owned();
+            PathBuf::from(s)
+        })
+        .collect();
+
+    for path in paths {
+        index.remove_path(&path)?;
+    }
+
+    index.write()?;
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::Stage,
+        "Unstaged all!".to_string(),
+    );
+    
+    Ok(())
+}
+
 pub async fn get_recent_commits(
     path_string: &String,
     log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
@@ -371,6 +409,11 @@ pub async fn get_recent_commits(
     init(None);
     let log_callback = Arc::new(log);
 
+    _log(
+        Arc::clone(&log_callback),
+        LogType::RecentCommits,
+        "Getting local directory".to_string(),
+    );
     let repo = Repository::open(path_string)?;
     let mut revwalk = repo.revwalk()?;
     // revwalk.push_head()?;

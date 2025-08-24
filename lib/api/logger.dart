@@ -41,6 +41,7 @@ enum LogType {
   ForcePull,
   ForcePush,
   RecentCommits,
+  Stage,
   SyncException,
 }
 

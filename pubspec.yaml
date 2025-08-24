@@ -76,7 +76,7 @@ dependencies:
   flutter_code_editor:
     git:
       url: https://github.com/ViscousPot/flutter-code-editor
-      ref: feat/file-editor
+      ref: faa92be04d37d2914f65c9b46598c3e488595239
 
 dependency_overrides:
   flutter_background_service_platform_interface:

@@ -334,8 +334,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "feat/file-editor"
-      resolved-ref: c2f0ef0d7fe613e5c5aabf0a531dcbe2ccbe9c11
+      ref: faa92be04d37d2914f65c9b46598c3e488595239
+      resolved-ref: faa92be04d37d2914f65c9b46598c3e488595239
       url: "https://github.com/ViscousPot/flutter-code-editor"
     source: git
     version: "0.3.4"

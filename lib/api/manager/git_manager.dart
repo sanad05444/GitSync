@@ -229,6 +229,28 @@ class GitManager {
     });
   }
 
+  static Future<void> unstageAll() async {
+    final repoIndex = await repoManager.getInt(StorageKey.repoman_repoIndex);
+
+    return await _runWithLock(repoIndex, () async {
+      final dirPath = (await uiSettingsManager.getGitDirPath());
+      if (dirPath == null) return;
+
+      await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
+        if (!Directory("$dirPath/.git").existsSync()) return;
+
+        Logger.gmLog(type: LogType.PushToRepo, ".git folder found");
+
+        try {
+          return await GitManagerRs.unstageAll(pathString: dirPath, log: _logWrapper);
+        } catch (e, stackTrace) {
+          Logger.logError(LogType.PushToRepo, e, stackTrace);
+          return;
+        }
+      });
+    });
+  }
+
   static List<GitManagerRs.Commit> _lastRecentCommits = [];
   static Future<List<GitManagerRs.Commit>> getRecentCommits() async {
     if (await isLocked()) {
