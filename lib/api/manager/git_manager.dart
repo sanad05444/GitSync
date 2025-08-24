@@ -272,8 +272,11 @@ class GitManager {
     if (dirPath == null || dirPath.isEmpty) return [];
     final result =
         await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
-          if (!Directory("$dirPath/$gitPath").existsSync()) return <String>[];
-          if (!File("$dirPath/$gitIndexPath").existsSync() && !File("$dirPath/$gitPath").existsSync()) return <String>[];
+          if (!Directory("$dirPath/$gitPath").existsSync() &&
+              !File("$dirPath/$gitIndexPath").existsSync() &&
+              !File("$dirPath/$gitPath").existsSync()) {
+            return <String>[];
+          }
 
           Logger.gmLog(type: LogType.RecentCommits, ".git folder found");
 
