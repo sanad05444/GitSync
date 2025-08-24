@@ -28,7 +28,7 @@ dependencies:
       path: flutter_secure_storage
   oauth2_client: ^4.1.0
 
-  file_picker: ^9.0.2
+  file_picker: ^10.3.2
   extended_text: ^15.0.0
   url_launcher: ^6.3.1
   rust_lib_GitSync:

@@ -104,6 +104,8 @@ Future<String?> pickDirectory() async {
   try {
     if (Platform.isAndroid) {
       final path = await FilePicker.platform.getDirectoryPath();
+      if (path?.startsWith("/storage/home") == true) return path!.replaceFirst("/storage/home", "/storage/emulated/0/Documents");
+      if (path == "/") return null;
       return path;
     }
 
