@@ -67,11 +67,17 @@ More information can be found at the [wiki](https://gitsync.viscouspotenti.al/wi
 <br>
 Give us a ⭐ if you like our work. Much appreciated!
 
+## Support
+
+For support, email bugs.viscouspotential@gmail.com.
+
+Consider [sponsoring](https://github.com/sponsors/ViscousPot)! Any help is hugely appreciated!
+
 ## Build Instructions
 
 If you just want to try the app out, feel free to download a release from an official platform!
 
-_Coming Soon..._
+_Build instructions coming soon..._
 
 <!-- ### 1. Setup
 
@@ -118,12 +124,6 @@ If the file doesn’t exist, create one manually or let Xcode generate it when a
 ### 3. Build & Run
 - Build from within Android Studio -->
 
-## Support
-
-For support, email bugs.viscouspotential@gmail.com.
-
-Consider [sponsoring](https://github.com/sponsors/ViscousPot)! Any help is hugely appreciated!
-
 ## Contributing
 
 Your support means a lot! If you find GitSync useful, please:
@@ -132,7 +132,8 @@ Your support means a lot! If you find GitSync useful, please:
 - Share it with friends or communities that might benefit
 - Consider becoming a [GitHub Sponsor](https://github.com/sponsors/ViscousPot)
 
-At this time, code contributions aren’t required anywhere in particular, but I’d love your help improving [**localization**](#localization-contributions)
+<br>
+At this time, code contributions aren’t needed anywhere in particular, but I’d love your help improving [**localization**](#localization-contributions)
 
 <details>
 <summary><h3 style="display:inline-block;">Localization Contributions</h3></summary>
