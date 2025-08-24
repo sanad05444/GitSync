@@ -248,7 +248,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     match args.get(1).map(|s| s.as_str()) {
         Some("generate_screenshots") => {
-            generate_screenshots::main();
+            generate_screenshots::main(&args[2..]);
             return Ok(());
         }
         Some("cleanup") => run_maestro("common/cleanup.yaml")?,

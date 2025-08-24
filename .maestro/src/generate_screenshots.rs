@@ -15,7 +15,7 @@ use std::{
 // ipad air 13 inch 
 // Medium phone api 35
 
-const adjust: bool = false;
+// const adjust: bool = false;
 
 enum PlatformConstraint {
     AndroidOnly,
@@ -135,7 +135,9 @@ fn add_triangles_to_image(img: DynamicImage, triangle_width: u32) -> DynamicImag
     image::DynamicImage::ImageRgba8(cropped)
 }
 
-pub fn main() {
+pub fn main(args: &[String]) {
+    let adjust = args.iter().any(|arg| arg == "--adjust");
+
     let is_android = is_android();
 
     if (is_android == None) {
@@ -337,6 +339,16 @@ pub fn main() {
         adjust: adjust,
         is_android: is_android,
     });
+ 
+    generate_screenshot(ScreenshotConfig {
+        platform: PlatformConstraint::AndroidOnly,
+        yaml_name: "select_apps",
+        crop_ios: None,
+        crop_android: Some((79, 554, 922, 1292)),
+        triangle_size: None,
+        adjust: adjust,
+        is_android: is_android,
+    });
 
     generate_screenshot(ScreenshotConfig {
         platform: PlatformConstraint::AndroidOnly,
@@ -389,7 +401,7 @@ pub fn main() {
             .unwrap();
 
         let mut img = image::open("generate_screenshots/screenshot_settings_top.png").unwrap();
-        let cropped_top = img.crop(0, 50, 1080, 1511);
+        let cropped_top = img.crop(0, 50, 1080, 1631);
 
         cropped_top
             .save("generate_screenshots/screenshot_settings_top.png")
@@ -424,7 +436,7 @@ pub fn main() {
             .unwrap();
 
         let mut img = image::open("generate_screenshots/screenshot_settings_bottom.png").unwrap();
-        let cropped_bottom = img.crop(0, 813, 1080, 1550);
+        let cropped_bottom = img.crop(0, 777, 1080, 1583);
 
         cropped_bottom
             .save("generate_screenshots/screenshot_settings_bottom.png")

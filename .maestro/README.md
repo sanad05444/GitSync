@@ -5,6 +5,18 @@
 
 This test suite requires some preparation before running. Follow these steps to configure the environment variables correctly:
 
+### Generate Screenshots Prerequisites
+
+Setup Android
+
+- Medium Phone API 35
+- Medium Tablet API 35
+
+Setup iOS
+
+- iPhone 16 Pro Max
+- iPad Air 13-inch
+
 ### Environment Variables
 
 You need to set up the following environment variables to enable the tests for HTTPS and clone operations for GitHub and Gitea repositories.
@@ -12,6 +24,7 @@ You need to set up the following environment variables to enable the tests for H
 #### Steps to Set Up:
 
 1. **Copy the Template**:
+
    - Navigate to the `src` folder.
    - Locate the file named `env.rs.template`.
    - Make a copy of this file and rename it to `env.rs`.
@@ -40,11 +53,9 @@ cargo run
 
 This command will set and use the environment variables you configured.
 
-
 ### Notes
 
 - Ensure the repositories specified in the environment variables exist and you have the necessary permissions.
 - The `repo` scope is required for the OAuth token to ensure proper access.
 
 By following the above steps, you can successfully configure the environment and run the test suite. If you encounter any issues, verify that all variables are correctly set in the `env.rs` file.
-
