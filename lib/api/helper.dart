@@ -182,7 +182,7 @@ Future<void> setGitDirPathGetSubmodules(BuildContext context, String dir) async 
       if (Platform.isIOS) {
         final bookmarkParts = currentDirPath.split(conflictSeparator);
         final bookmark = bookmarkParts.first;
-        final pathSuffix = bookmarkParts.last;
+        final pathSuffix = currentDirPath.contains(conflictSeparator) ? bookmarkParts.last : "";
         await tempSettingsManager.setGitDirPath("$bookmark$conflictSeparator${pathSuffix.isEmpty ? path : "$pathSuffix/$path"}");
       } else {
         await tempSettingsManager.setGitDirPath("$currentDirPath/$path");
@@ -225,7 +225,7 @@ Future<T?> useDirectory<T>(String bookmarkPath, Future<void> Function(String) se
 
   final bookmarkParts = bookmarkPath.split(conflictSeparator);
   final bookmark = bookmarkParts.first;
-  final pathSuffix = bookmarkParts.last;
+  final pathSuffix = bookmarkPath.contains(conflictSeparator) ? bookmarkParts.last : "";
 
   try {
     final bookmarkAndPath = await iosDocumentPickerPlugin.resolveBookmark(bookmark, isDirectory: true);
