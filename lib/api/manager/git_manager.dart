@@ -123,6 +123,44 @@ class GitManager {
     });
   }
 
+  static Future<List<String>> getSubmodulePaths(String repoPath) async {
+    if (await isLocked()) {
+      Fluttertoast.showToast(msg: operationInProgressError, toastLength: Toast.LENGTH_SHORT, gravity: null);
+      return [];
+    }
+
+    final repoIndex = await repoManager.getInt(StorageKey.repoman_repoIndex);
+
+    return await _runWithLock(repoIndex, () async {
+          if (!await hasNetworkConnection()) return;
+
+          await useDirectory(repoPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
+            if (!Directory("$dirPath/.git").existsSync()) return;
+
+            Logger.gmLog(type: LogType.ForcePull, ".git folder found");
+
+            try {
+              return await GitManagerRs.forcePull(
+                pathString: dirPath,
+                remoteName: await uiSettingsManager.getString(StorageKey.setman_remote),
+                provider: (await uiSettingsManager.getGitProvider()).name,
+                author: (
+                  await uiSettingsManager.getString(StorageKey.setman_authorName),
+                  await uiSettingsManager.getString(StorageKey.setman_authorEmail),
+                ),
+                credentials: await _getCredentials(uiSettingsManager),
+                log: _logWrapper,
+              );
+            } catch (e, stackTrace) {
+              if (!await hasNetworkConnection()) return;
+              Logger.logError(LogType.ForcePull, e, stackTrace);
+              return;
+            }
+          });
+        }) ??
+        [];
+  }
+
   static Future<void> forcePull() async {
     if (await isLocked()) {
       Fluttertoast.showToast(msg: operationInProgressError, toastLength: Toast.LENGTH_SHORT, gravity: null);

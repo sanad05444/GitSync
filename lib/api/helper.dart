@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
+import 'package:GitSync/api/manager/git_manager.dart';
 import 'package:GitSync/api/manager/settings_manager.dart';
 import 'package:GitSync/api/manager/storage.dart';
 import 'package:GitSync/type/git_provider.dart';
@@ -129,7 +130,7 @@ Future<String?> pickDirectory() async {
 
 Future<void> setGitDirPathGetSubmodules(BuildContext context, String dir) async {
   await uiSettingsManager.setGitDirPath(dir);
-  final submodulePaths = await GitManagerRs.getSubmodulePaths(pathString: dir);
+  final submodulePaths = await GitManager.getSubmodulePaths(dir);
 
   Future<void> addSubmodules() async {
     List<String> repomanReponames = List.from(await repoManager.getStringList(StorageKey.repoman_repoNames));
