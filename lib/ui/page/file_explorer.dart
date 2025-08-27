@@ -184,7 +184,7 @@ class _FileExplorer extends State<FileExplorer> with WidgetsBindingObserver {
                                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                     padding: WidgetStatePropertyAll(EdgeInsets.all(spaceXXS)),
                                   ),
-                                  icon: FaIcon(FontAwesomeIcons.pencil, color: tertiaryInfo, size: textLG),
+                                  icon: FaIcon(FontAwesomeIcons.pen, color: tertiaryInfo, size: textLG),
                                 ),
                               SizedBox(width: spaceMD),
                             ]
