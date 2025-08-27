@@ -31,6 +31,15 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
       controller.fileAutoSave = true;
       controller.reversed = widget.logs;
       controller.readOnly = widget.logs;
+
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (widget.logs) {
+          await Future.delayed(Duration(milliseconds: 500));
+          controller.horizontalCodeScroll?.jumpTo(80);
+          await Future.delayed(Duration(milliseconds: 500));
+          controller.horizontalCodeScroll?.jumpTo(80);
+        }
+      });
     } catch (e) {
       print(e);
       controller.text = "";
