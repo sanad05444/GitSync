@@ -221,8 +221,8 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver, Sin
                                       future: uiSettingsManager.getGitProvider(),
                                       builder:
                                           (context, snapshot) =>
-                                              (gitCommitSigningKeySnapshot.data == null || gitCommitSigningKeySnapshot.data?.isEmpty == true) &&
-                                                      snapshot.data == GitProvider.SSH
+                                              snapshot.data == GitProvider.SSH &&
+                                                      (gitCommitSigningKeySnapshot.data == null || gitCommitSigningKeySnapshot.data == "")
                                                   ? TextButton.icon(
                                                     onPressed: () async {
                                                       await uiSettingsManager.setStringNullable(
