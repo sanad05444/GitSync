@@ -67,8 +67,9 @@ class SettingsManager extends Storage {
     return GitProvider.values.firstWhere((p) => p.name == gitProviderName, orElse: () => GitProvider.GITHUB);
   }
 
-  Future<void> setGitHttpAuthCredentials(String username, String accessToken) async {
+  Future<void> setGitHttpAuthCredentials(String username, String email, String accessToken) async {
     await setString(StorageKey.setman_authorName, username.trim());
+    await setString(StorageKey.setman_authorEmail, email.trim());
     await setString(StorageKey.setman_gitAuthUsername, username.trim());
     await setString(StorageKey.setman_gitAuthToken, accessToken.trim());
   }

@@ -14,7 +14,7 @@ class GitlabManager extends GitProviderManager {
   bool get oAuthSupport => true;
 
   @override
-  Future<(String, String)?> launchOAuthFlow() async {
+  Future<(String, String, String)?> launchOAuthFlow() async {
     OAuth2Client gitlabClient = OAuth2Client(
       authorizeUrl: 'https://gitlab.com/oauth/authorize',
       tokenUrl: 'https://gitlab.com/oauth/token',
@@ -28,19 +28,19 @@ class GitlabManager extends GitProviderManager {
     );
     if (response.accessToken == null) return null;
 
-    final username = await getUsername(response.accessToken!);
-    if (username == null) return null;
+    final usernameAndEmail = await getUsernameAndEmail(response.accessToken!);
+    if (usernameAndEmail == null) return null;
 
-    return (username, response.accessToken!);
+    return (usernameAndEmail.$1, usernameAndEmail.$2, response.accessToken!);
   }
 
   @override
-  Future<String?> getUsername(String accessToken) async {
+  Future<(String, String)?> getUsernameAndEmail(String accessToken) async {
     final response = await http.get(Uri.parse("https://$_domain/api/v4/user"), headers: {"Authorization": "Bearer $accessToken"});
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = json.decode(response.body);
-      return jsonData["username"];
+      return (jsonData["username"] as String, jsonData["email"] as String);
     }
 
     return null;

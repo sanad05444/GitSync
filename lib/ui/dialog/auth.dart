@@ -37,8 +37,8 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
     callback();
   }
 
-  Future<void> setHttpAuth(BuildContext context, (String, String) authCredentials, GitProvider selectedGitProvider) async {
-    await uiSettingsManager.setGitHttpAuthCredentials(authCredentials.$1, authCredentials.$2);
+  Future<void> setHttpAuth(BuildContext context, (String, String, String) authCredentials, GitProvider selectedGitProvider) async {
+    await uiSettingsManager.setGitHttpAuthCredentials(authCredentials.$1, authCredentials.$2, authCredentials.$3);
     await finish(context, selectedGitProvider);
   }
 
@@ -76,7 +76,7 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
           onPressed:
               getHttpsCanLogin()
                   ? () async {
-                    await setHttpAuth(context, (httpsUsernameController.text.trim(), httpsTokenController.text.trim()), selectedGitProvider);
+                    await setHttpAuth(context, (httpsUsernameController.text.trim(), "", httpsTokenController.text.trim()), selectedGitProvider);
                   }
                   : null,
           style: ButtonStyle(

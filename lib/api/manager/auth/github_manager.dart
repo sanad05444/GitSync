@@ -15,23 +15,23 @@ class GithubManager extends GitProviderManager {
   bool get oAuthSupport => true;
 
   @override
-  Future<(String, String)?> launchOAuthFlow() async {
+  Future<(String, String, String)?> launchOAuthFlow() async {
     OAuth2Client ghClient = GitHubOAuth2Client(redirectUri: 'gitsync://auth', customUriScheme: 'gitsync');
     final response = await ghClient.getTokenWithAuthCodeFlow(
       clientId: gitHubClientId,
       clientSecret: gitHubClientSecret,
-      scopes: ["repo", "workflow"],
+      scopes: ["user", "user:email", "repo", "workflow"],
     );
     if (response.accessToken == null) return null;
 
-    final username = await getUsername(response.accessToken!);
-    if (username == null) return null;
+    final usernameAndEmail = await getUsernameAndEmail(response.accessToken!);
+    if (usernameAndEmail == null) return null;
 
-    return (username, response.accessToken!);
+    return (usernameAndEmail.$1, usernameAndEmail.$2, response.accessToken!);
   }
 
   @override
-  Future<String?> getUsername(String accessToken) async {
+  Future<(String, String)?> getUsernameAndEmail(String accessToken) async {
     final response = await http.get(
       Uri.parse("https://api.$_domain/user"),
       headers: {"Accept": "application/json", "Authorization": "token $accessToken"},
@@ -39,7 +39,20 @@ class GithubManager extends GitProviderManager {
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = json.decode(response.body);
-      return jsonData["login"];
+      String? email = jsonData["email"];
+      if (email == null) {
+        final emailResp = await http.get(
+          Uri.parse("https://api.$_domain/user/emails"),
+          headers: {"Accept": "application/json", "Authorization": "token $accessToken"},
+        );
+        if (emailResp.statusCode == 200) {
+          final emails = json.decode(emailResp.body) as List;
+          final primary = emails.firstWhere((e) => e["primary"] == true, orElse: () => null);
+          email = primary?["email"];
+        }
+      }
+
+      return ((jsonData["login"] as String?) ?? "", email ?? "");
     }
 
     return null;

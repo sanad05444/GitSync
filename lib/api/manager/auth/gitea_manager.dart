@@ -14,7 +14,7 @@ class GiteaManager extends GitProviderManager {
   bool get oAuthSupport => true;
 
   @override
-  Future<(String, String)?> launchOAuthFlow() async {
+  Future<(String, String, String)?> launchOAuthFlow() async {
     OAuth2Client giteaClient = OAuth2Client(
       authorizeUrl: 'https://gitea.com/login/oauth/authorize',
       tokenUrl: 'https://gitea.com/login/oauth/access_token',
@@ -24,14 +24,14 @@ class GiteaManager extends GitProviderManager {
     final response = await giteaClient.getTokenWithAuthCodeFlow(clientId: giteaClientId, clientSecret: giteaClientSecret);
     if (response.accessToken == null) return null;
 
-    final username = await getUsername(response.accessToken!);
-    if (username == null) return null;
+    final usernameAndEmail = await getUsernameAndEmail(response.accessToken!);
+    if (usernameAndEmail == null) return null;
 
-    return (username, response.accessToken!);
+    return (usernameAndEmail.$1, usernameAndEmail.$2, response.accessToken!);
   }
 
   @override
-  Future<String?> getUsername(String accessToken) async {
+  Future<(String, String)?> getUsernameAndEmail(String accessToken) async {
     final response = await http.get(
       Uri.parse("https://$_domain/api/v1/user"),
       headers: {"Accept": "application/json", "Authorization": "token $accessToken"},
@@ -39,7 +39,7 @@ class GiteaManager extends GitProviderManager {
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = json.decode(response.body);
-      return jsonData["login"];
+      return (jsonData["login"] as String, jsonData["email"] as String);
     }
 
     return null;
