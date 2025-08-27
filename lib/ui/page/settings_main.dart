@@ -43,7 +43,8 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver, Sin
       setState(() {});
     });
 
-    _pulseController = AnimationController(duration: duration, vsync: this)..repeat(reverse: true);
+    _pulseController = AnimationController(duration: duration, vsync: this);
+    _pulseController.stop();
 
     _pulseController.addListener(() {
       setState(() {
@@ -73,6 +74,7 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver, Sin
   void writeGitignore(String gitignoreString) {
     if (!ignoreChanged) {
       ignoreChanged = true;
+      _pulseController.repeat(reverse: true);
       setState(() {});
     }
     GitManager.writeGitignore(gitignoreString);
@@ -81,6 +83,7 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver, Sin
   void writeGitInfoExclude(String gitInfoExcludeString) {
     if (!ignoreChanged) {
       ignoreChanged = true;
+      _pulseController.repeat(reverse: true);
       setState(() {});
     }
     GitManager.writeGitInfoExclude(gitInfoExcludeString);
@@ -327,6 +330,7 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver, Sin
 
                           unstaging = false;
                           ignoreChanged = false;
+                          _pulseController.stop();
                           setState(() {});
                         },
                         style: ButtonStyle(
