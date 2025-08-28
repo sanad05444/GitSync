@@ -1,7 +1,10 @@
 import 'dart:ui';
 
+import 'package:GitSync/api/helper.dart';
+import 'package:GitSync/api/manager/storage.dart';
 import 'package:GitSync/constant/colors.dart';
 import 'package:GitSync/constant/dimens.dart';
+import 'package:GitSync/global.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -76,6 +79,15 @@ class _BaseAlertDialogState extends State<BaseAlertDialog> {
   bool expanded = false;
 
   @override
+  void initState() {
+    initAsync(() async {
+      expanded = widget.expandable && await uiSettingsManager.getBool(StorageKey.setman_clientModeEnabled);
+      setState(() {});
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final titlePadding =
         widget.titlePadding ??
@@ -86,7 +98,6 @@ class _BaseAlertDialogState extends State<BaseAlertDialog> {
         );
 
     return Stack(
-      // clipBehavior: Clip.none,
       children: [
         widget.expandable
             ? Positioned.fill(
