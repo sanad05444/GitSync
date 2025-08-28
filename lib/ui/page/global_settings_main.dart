@@ -375,6 +375,7 @@ ${await Logger.generateDeviceInfo()}
                 CustomShowcase(
                   globalKey: _uiSetupGuideKey,
                   description: t.guidedSetupHint,
+                  cornerRadius: cornerRadiusMD,
                   last: true,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
