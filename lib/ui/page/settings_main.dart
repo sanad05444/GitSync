@@ -122,6 +122,91 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver, Sin
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
+                FutureBuilder(
+                  future: uiSettingsManager.getBool(StorageKey.setman_clientModeEnabled),
+                  builder: (context, clientModeEnabledSnapshot) => Row(
+                    children: [
+                      Expanded(
+                        child: TextButton.icon(
+                          onPressed: () async {
+                            await uiSettingsManager.setBool(StorageKey.setman_clientModeEnabled, false);
+                            setState(() {});
+                          },
+                          style: ButtonStyle(
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            padding: WidgetStatePropertyAll(EdgeInsets.zero),
+                            backgroundColor: WidgetStatePropertyAll(clientModeEnabledSnapshot.data != true ? primaryPositive : tertiaryDark),
+                            shape: WidgetStatePropertyAll(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: cornerRadiusMD,
+                                  topRight: Radius.zero,
+                                  bottomLeft: cornerRadiusMD,
+                                  bottomRight: Radius.zero,
+                                ),
+
+                                side: clientModeEnabledSnapshot.data != true ? BorderSide.none : BorderSide(width: 3, color: primaryPositive),
+                              ),
+                            ),
+                            animationDuration: Duration.zero,
+                          ),
+                          icon: FaIcon(
+                            FontAwesomeIcons.arrowsRotate,
+                            color: clientModeEnabledSnapshot.data != true ? tertiaryDark : primaryLight,
+                            size: textMD,
+                          ),
+                          label: Text(
+                            t.syncMode,
+                            style: TextStyle(
+                              color: clientModeEnabledSnapshot.data != true ? tertiaryDark : primaryLight,
+                              fontSize: textMD,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: TextButton.icon(
+                          onPressed: () async {
+                            await uiSettingsManager.setBool(StorageKey.setman_clientModeEnabled, true);
+                            setState(() {});
+                          },
+                          style: ButtonStyle(
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            padding: WidgetStatePropertyAll(EdgeInsets.zero),
+                            backgroundColor: WidgetStatePropertyAll(clientModeEnabledSnapshot.data == true ? primaryPositive : tertiaryDark),
+                            shape: WidgetStatePropertyAll(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.zero,
+                                  topRight: cornerRadiusMD,
+                                  bottomLeft: Radius.zero,
+                                  bottomRight: cornerRadiusMD,
+                                ),
+                                side: clientModeEnabledSnapshot.data == true ? BorderSide.none : BorderSide(width: 3, color: primaryPositive),
+                              ),
+                            ),
+                            animationDuration: Duration.zero,
+                          ),
+                          iconAlignment: IconAlignment.end,
+                          icon: FaIcon(
+                            FontAwesomeIcons.codeCompare,
+                            color: clientModeEnabledSnapshot.data == true ? tertiaryDark : primaryLight,
+                            size: textMD,
+                          ),
+                          label: Text(
+                            t.clientMode,
+                            style: TextStyle(
+                              color: clientModeEnabledSnapshot.data == true ? tertiaryDark : primaryLight,
+                              fontSize: textMD,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 gitDirPath == null
                     ? SizedBox.shrink()
                     : Column(
@@ -129,6 +214,7 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver, Sin
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         mainAxisSize: MainAxisSize.max,
                         children: [
+                          SizedBox(height: spaceLG),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: spaceMD),
                             child: Text(
