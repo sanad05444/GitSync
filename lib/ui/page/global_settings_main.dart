@@ -104,7 +104,7 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain> with WidgetsBindingO
                     await ChangeLanguageDialog.showDialog(context, (locale) async {
                       await repoManager.setStringNullable(StorageKey.repoman_appLocale, locale);
                       Navigator.of(context).canPop() ? Navigator.pop(context) : null;
-                      setState(() {});
+                      if (mounted) setState(() {});
                       Navigator.of(context).canPop() ? Navigator.pop(context) : null;
                     });
                   },
@@ -386,6 +386,7 @@ ${await Logger.generateDeviceInfo()}
                           await repoManager.setInt(StorageKey.repoman_onboardingStep, 0);
                           Navigator.of(context).canPop() ? Navigator.pop(context) : null;
                           await onboardingController?.show();
+                          if (mounted) setState(() {});
                         },
                       ),
                       SizedBox(height: spaceMD),
@@ -396,6 +397,7 @@ ${await Logger.generateDeviceInfo()}
                           await repoManager.setInt(StorageKey.repoman_onboardingStep, 4);
                           Navigator.of(context).canPop() ? Navigator.pop(context) : null;
                           await onboardingController?.show();
+                          if (mounted) setState(() {});
                         },
                       ),
                     ],
@@ -414,8 +416,8 @@ ${await Logger.generateDeviceInfo()}
                       if (hasPremium == true) {
                         await launchUrl(Uri.parse(contributeLink));
                       } else {
-                        await UnlockPremiumDialog.showDialog(context, () => setState(() {}));
-                        setState(() {});
+                        await UnlockPremiumDialog.showDialog(context, () => mounted ? setState(() {}) : null);
+                        if (mounted) setState(() {});
                       }
                     },
                   ),
