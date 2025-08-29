@@ -262,8 +262,10 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   bool? previousLocked;
   bool showCheck = false;
   double opacity = 0.0;
+
   Timer? hideCheckTimer;
   StreamSubscription<List<ConnectivityResult>>? networkSubscription;
+  ScrollController recentCommitsController = ScrollController();
 
   final syncMethodsDropdownKey = GlobalKey();
   final syncMethodMainButtonKey = GlobalKey();
@@ -1125,56 +1127,66 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                             children: [
                                               SizedBox(
                                                 height: 220,
-                                                child: ShaderMask(
-                                                  shaderCallback: (Rect rect) {
-                                                    return LinearGradient(
-                                                      begin: Alignment.topCenter,
-                                                      end: Alignment.bottomCenter,
-                                                      colors: [Colors.black, Colors.transparent, Colors.transparent, Colors.transparent],
-                                                      stops: [0.0, 0.1, 0.9, 1.0],
-                                                    ).createShader(rect);
-                                                  },
-                                                  blendMode: BlendMode.dstOut,
-                                                  child:
-                                                      ((recentCommitsSnapshot.data ?? []).isEmpty &&
-                                                                  recentCommitsSnapshot.connectionState == ConnectionState.waiting) ||
-                                                              conflictingSnapshot.data == null
-                                                          ? Center(child: CircularProgressIndicator(color: tertiaryLight))
-                                                          : (recentCommitsSnapshot.data!.isEmpty && conflictingSnapshot.data!.isEmpty
-                                                              ? Center(
-                                                                child: Text(
-                                                                  t.commitsNotFound.toUpperCase(),
-                                                                  style: TextStyle(
-                                                                    color: secondaryLight,
-                                                                    fontWeight: FontWeight.bold,
-                                                                    fontSize: textLG,
-                                                                  ),
-                                                                ),
-                                                              )
-                                                              : Column(
-                                                                children: [
-                                                                  Expanded(
-                                                                    child: AnimatedListView(
-                                                                      items: items,
-                                                                      reverse: true,
-                                                                      isSameItem: (a, b) => a.reference == b.reference,
-                                                                      itemBuilder: (BuildContext context, int index) {
-                                                                        final reference = items[index].reference;
+                                                child: AnimatedBuilder(
+                                                  animation: recentCommitsController,
+                                                  builder:
+                                                      (context, _) => ShaderMask(
+                                                        shaderCallback: (Rect rect) {
+                                                          return LinearGradient(
+                                                            begin: Alignment.topCenter,
+                                                            end: Alignment.bottomCenter,
+                                                            colors: [
+                                                              Colors.black,
+                                                              Colors.transparent,
+                                                              Colors.transparent,
+                                                              recentCommitsController.offset == 0 ? Colors.transparent : Colors.black,
+                                                            ],
+                                                            stops: [0.0, 0.1, 0.9, 1.0],
+                                                          ).createShader(rect);
+                                                        },
+                                                        blendMode: BlendMode.dstOut,
+                                                        child:
+                                                            ((recentCommitsSnapshot.data ?? []).isEmpty &&
+                                                                        recentCommitsSnapshot.connectionState == ConnectionState.waiting) ||
+                                                                    conflictingSnapshot.data == null
+                                                                ? Center(child: CircularProgressIndicator(color: tertiaryLight))
+                                                                : (recentCommitsSnapshot.data!.isEmpty && conflictingSnapshot.data!.isEmpty
+                                                                    ? Center(
+                                                                      child: Text(
+                                                                        t.commitsNotFound.toUpperCase(),
+                                                                        style: TextStyle(
+                                                                          color: secondaryLight,
+                                                                          fontWeight: FontWeight.bold,
+                                                                          fontSize: textLG,
+                                                                        ),
+                                                                      ),
+                                                                    )
+                                                                    : Column(
+                                                                      children: [
+                                                                        Expanded(
+                                                                          child: AnimatedListView(
+                                                                            controller: recentCommitsController,
+                                                                            items: items,
+                                                                            reverse: true,
+                                                                            isSameItem: (a, b) => a.reference == b.reference,
+                                                                            itemBuilder: (BuildContext context, int index) {
+                                                                              final reference = items[index].reference;
 
-                                                                        if (reference == mergeConflictReference) {
-                                                                          return ItemMergeConflict(
-                                                                            key: Key(reference),
-                                                                            conflictingSnapshot.data!,
-                                                                            () => setState(() {}),
-                                                                          );
-                                                                        }
+                                                                              if (reference == mergeConflictReference) {
+                                                                                return ItemMergeConflict(
+                                                                                  key: Key(reference),
+                                                                                  conflictingSnapshot.data!,
+                                                                                  () => setState(() {}),
+                                                                                );
+                                                                              }
 
-                                                                        return ItemCommit(key: Key(reference), items[index]);
-                                                                      },
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              )),
+                                                                              return ItemCommit(key: Key(reference), items[index]);
+                                                                            },
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    )),
+                                                      ),
                                                 ),
                                               ),
                                               ...(recentCommitsSnapshot.data?.isNotEmpty == true &&
