@@ -1353,7 +1353,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                                         topLeft: cornerRadiusSM,
                                                                         topRight: cornerRadiusSM,
                                                                         bottomLeft: cornerRadiusMD,
-                                                                        bottomRight: cornerRadiusSM,
+                                                                        bottomRight:
+                                                                            clientModeEnabledSnapshot.data == true ? cornerRadiusMD : cornerRadiusSM,
                                                                       ),
                                                                       side: BorderSide.none,
                                                                     ),
@@ -1510,7 +1511,15 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                                   ),
                                                                   shape: WidgetStatePropertyAll(
                                                                     RoundedRectangleBorder(
-                                                                      borderRadius: BorderRadius.all(cornerRadiusSM),
+                                                                      borderRadius:
+                                                                          clientModeEnabledSnapshot.data == true
+                                                                              ? BorderRadius.only(
+                                                                                topLeft: cornerRadiusSM,
+                                                                                topRight: cornerRadiusSM,
+                                                                                bottomLeft: cornerRadiusSM,
+                                                                                bottomRight: cornerRadiusMD,
+                                                                              )
+                                                                              : BorderRadius.all(cornerRadiusSM),
                                                                       side: BorderSide.none,
                                                                     ),
                                                                   ),
