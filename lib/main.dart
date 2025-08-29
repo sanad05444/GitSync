@@ -762,12 +762,13 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
               previousLocked = locked;
 
               return GestureDetector(
-                onTap: () async {
+                onLongPress: () async {
                   final locks = await repoManager.getStringList(StorageKey.repoman_locks);
                   final index = await repoManager.getInt(StorageKey.repoman_repoIndex);
                   await repoManager.setStringList(StorageKey.repoman_locks, locks.where((lock) => lock != index.toString()).toList());
                   setState(() {});
-
+                },
+                onTap: () async {
                   final Directory dir = await getTemporaryDirectory();
                   print(Directory("${dir.path}/logs").listSync().map((e) => e.path));
                   File logFile = File("${dir.path}/logs/log_1.log");
