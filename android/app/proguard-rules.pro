@@ -7,6 +7,7 @@
 -keep class com.android.vending.billing.**
 -dontwarn com.amazon.**
 -keepattributes *Annotation*
+-keep class dev.hyo.** { *; }
 
 # Reflection
 -keepattributes *Annotation*
