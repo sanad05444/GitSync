@@ -36,7 +36,10 @@ class GitlabManager extends GitProviderManager {
 
   @override
   Future<(String, String)?> getUsernameAndEmail(String accessToken) async {
-    final response = await http.get(Uri.parse("https://$_domain/api/v4/user"), headers: {"Authorization": "Bearer $accessToken"});
+    final response = await http.get(
+      Uri.parse("https://$_domain/api/v4/user"),
+      headers: {"Authorization": "Bearer $accessToken"},
+    );
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = json.decode(response.body);
@@ -47,8 +50,17 @@ class GitlabManager extends GitProviderManager {
   }
 
   @override
-  Future<void> getRepos(String accessToken, Function(List<(String, String)>) updateCallback, Function(Function()?) nextPageCallback) async {
-    await _getReposRequest(accessToken, "https://$_domain/api/v4/projects?membership=true&per_page=100", updateCallback, nextPageCallback);
+  Future<void> getRepos(
+    String accessToken,
+    Function(List<(String, String)>) updateCallback,
+    Function(Function()?) nextPageCallback,
+  ) async {
+    await _getReposRequest(
+      accessToken,
+      "https://$_domain/api/v4/projects?membership=true&per_page=100",
+      updateCallback,
+      nextPageCallback,
+    );
   }
 
   Future<void> _getReposRequest(
@@ -58,18 +70,37 @@ class GitlabManager extends GitProviderManager {
     Function(Function()?) nextPageCallback,
   ) async {
     try {
-      final response = await http.get(Uri.parse(url), headers: {"Authorization": "Bearer $accessToken"});
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {"Authorization": "Bearer $accessToken"},
+      );
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonArray = json.decode(response.body);
-        final List<(String, String)> repoList = jsonArray.map((repo) => ("${repo["name"]}", "${repo["http_url_to_repo"]}")).toList();
+        final List<(String, String)> repoList = jsonArray
+            .map((repo) => ("${repo["name"]}", "${repo["http_url_to_repo"]}"))
+            .toList();
 
         updateCallback(repoList);
 
         final String? nextLink = response.headers["x-next-page"];
         if (nextLink != null && nextLink.isNotEmpty) {
-          final nextUrl = Uri.parse(url).replace(queryParameters: {...Uri.parse(url).queryParameters, "page": nextLink}).toString();
-          nextPageCallback(() => _getReposRequest(accessToken, nextUrl, updateCallback, nextPageCallback));
+          final nextUrl = Uri.parse(url)
+              .replace(
+                queryParameters: {
+                  ...Uri.parse(url).queryParameters,
+                  "page": nextLink,
+                },
+              )
+              .toString();
+          nextPageCallback(
+            () => _getReposRequest(
+              accessToken,
+              nextUrl,
+              updateCallback,
+              nextPageCallback,
+            ),
+          );
         } else {
           nextPageCallback(null);
         }

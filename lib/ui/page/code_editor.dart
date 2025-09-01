@@ -20,13 +20,19 @@ class CodeEditor extends StatefulWidget {
 }
 
 class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
-  final CodeController controller = CodeController(chunkConfig: ChunkConfig(chunkSize: 1000, chunkLineOverlap: 100));
+  final CodeController controller = CodeController(
+    chunkConfig: ChunkConfig(chunkSize: 1000, chunkLineOverlap: 100),
+  );
 
   @override
   void initState() {
     super.initState();
     try {
-      controller.language = extensionToLanguageMap[p.extension(widget.path).replaceFirst('.', '')] ?? extensionToLanguageMap["txt"];
+      controller.language =
+          extensionToLanguageMap[p
+              .extension(widget.path)
+              .replaceFirst('.', '')] ??
+          extensionToLanguageMap["txt"];
       controller.openFile(widget.path);
       controller.fileAutoSave = true;
       controller.reversed = widget.logs;
@@ -54,7 +60,8 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
     }
   }
 
-  String getPathLeadingText() => widget.path.replaceFirst(RegExp(r'/[^/]+$'), '/');
+  String getPathLeadingText() =>
+      widget.path.replaceFirst(RegExp(r'/[^/]+$'), '/');
 
   @override
   Widget build(BuildContext context) {
@@ -64,22 +71,37 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
-        leading: getBackButton(context, () => (Navigator.of(context).canPop() ? Navigator.pop(context) : null)) ?? SizedBox.shrink(),
-        title: Text(p.basename(widget.path), style: TextStyle(fontSize: textLG, color: primaryLight, fontWeight: FontWeight.bold)),
+        leading:
+            getBackButton(
+              context,
+              () => (Navigator.of(context).canPop()
+                  ? Navigator.pop(context)
+                  : null),
+            ) ??
+            SizedBox.shrink(),
+        title: Text(
+          p.basename(widget.path),
+          style: TextStyle(
+            fontSize: textLG,
+            color: primaryLight,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       floatingActionButton: ValueListenableBuilder(
         valueListenable: controller.fileSaving,
-        builder:
-            (context, saving, _) =>
-                saving
-                    ? Container(
-                      height: spaceMD + spaceXXS,
-                      width: spaceMD + spaceXXS,
-                      margin: EdgeInsets.only(right: spaceXXXS, top: spaceLG + spaceXXS),
-                      child: CircularProgressIndicator(color: primaryLight),
-                    )
-                    : SizedBox.shrink(),
+        builder: (context, saving, _) => saving
+            ? Container(
+                height: spaceMD + spaceXXS,
+                width: spaceMD + spaceXXS,
+                margin: EdgeInsets.only(
+                  right: spaceXXXS,
+                  top: spaceLG + spaceXXS,
+                ),
+                child: CircularProgressIndicator(color: primaryLight),
+              )
+            : SizedBox.shrink(),
       ),
       body: CodeTheme(
         data: CodeThemeData(
@@ -111,7 +133,10 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
             'section': TextStyle(color: Color(0xff00e0e0)),
             'keyword': TextStyle(color: Color(0xffdcc6e0)),
             'selector-tag': TextStyle(color: Color(0xffdcc6e0)),
-            'root': TextStyle(backgroundColor: Color(0xff2b2b2b), color: Color(0xfff8f8f2)),
+            'root': TextStyle(
+              backgroundColor: Color(0xff2b2b2b),
+              color: Color(0xfff8f8f2),
+            ),
             'emphasis': TextStyle(fontStyle: FontStyle.italic),
             'strong': TextStyle(fontWeight: FontWeight.bold),
           },
@@ -120,62 +145,81 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
           alignment: Alignment.center,
           children: [
             Container(
-              decoration: BoxDecoration(borderRadius: BorderRadius.all(cornerRadiusMD), color: tertiaryDark),
-              margin: EdgeInsets.only(left: spaceSM, right: spaceSM, bottom: spaceLG),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(cornerRadiusMD),
+                color: tertiaryDark,
+              ),
+              margin: EdgeInsets.only(
+                left: spaceSM,
+                right: spaceSM,
+                bottom: spaceLG,
+              ),
               padding: EdgeInsets.only(right: spaceXS),
               clipBehavior: Clip.hardEdge,
               child: ValueListenableBuilder(
                 valueListenable: controller,
-                builder:
-                    (context, _, _) => CodeField(
-                      expands: true,
-                      readOnly: controller.readOnly,
-                      controller: controller,
-                      textStyle: TextStyle(fontSize: textMD),
-                      background: Colors.transparent,
-                      onChanged: (_) => setState(() {}),
-                      gutterStyle: GutterStyle(
-                        showErrors: true,
-                        showFoldingHandles: true,
-                        showLineNumbers: !widget.logs,
-                        textStyle: TextStyle(height: 1.5, fontSize: textMD),
-                        margin: widget.logs ? 0 : spaceXS,
-                        textAlign: TextAlign.right,
-                      ),
-                    ),
+                builder: (context, _, _) => CodeField(
+                  expands: true,
+                  readOnly: controller.readOnly,
+                  controller: controller,
+                  textStyle: TextStyle(fontSize: textMD),
+                  background: Colors.transparent,
+                  onChanged: (_) => setState(() {}),
+                  gutterStyle: GutterStyle(
+                    showErrors: true,
+                    showFoldingHandles: true,
+                    showLineNumbers: !widget.logs,
+                    textStyle: TextStyle(height: 1.5, fontSize: textMD),
+                    margin: widget.logs ? 0 : spaceXS,
+                    textAlign: TextAlign.right,
+                  ),
+                ),
               ),
             ),
 
             ValueListenableBuilder(
               valueListenable: controller,
-              builder:
-                  (context, _, _) =>
-                      !controller.readOnly
-                          ? const SizedBox.shrink()
-                          : Positioned(
-                            bottom: spaceXXL,
-                            child: Container(
-                              decoration: BoxDecoration(color: primaryDark, borderRadius: BorderRadius.all(cornerRadiusSM)),
-                              padding: EdgeInsets.symmetric(horizontal: spaceSM, vertical: spaceXS),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    t.readOnly.toUpperCase(),
-                                    style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
-                                  ),
-                                  ...!controller.fileTooLarge.value
-                                      ? []
-                                      : [
-                                        SizedBox(height: spaceXXXS),
-                                        Text(
-                                          sprintf(t.fileTooLarge, [controller.chunkConfig.chunkSize]),
-                                          style: TextStyle(color: secondaryLight, fontSize: textSM),
-                                        ),
-                                      ],
-                                ],
+              builder: (context, _, _) => !controller.readOnly
+                  ? const SizedBox.shrink()
+                  : Positioned(
+                      bottom: spaceXXL,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: primaryDark,
+                          borderRadius: BorderRadius.all(cornerRadiusSM),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: spaceSM,
+                          vertical: spaceXS,
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              t.readOnly.toUpperCase(),
+                              style: TextStyle(
+                                color: primaryLight,
+                                fontSize: textMD,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                          ),
+                            ...!controller.fileTooLarge.value
+                                ? []
+                                : [
+                                    SizedBox(height: spaceXXXS),
+                                    Text(
+                                      sprintf(t.fileTooLarge, [
+                                        controller.chunkConfig.chunkSize,
+                                      ]),
+                                      style: TextStyle(
+                                        color: secondaryLight,
+                                        fontSize: textSM,
+                                      ),
+                                    ),
+                                  ],
+                          ],
+                        ),
+                      ),
+                    ),
             ),
             // ValueListenableBuilder(
             //   valueListenable: controller.fileTooLarge,
@@ -214,7 +258,8 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
 Route createCodeEditorRoute(String path, {bool logs = false}) {
   return PageRouteBuilder(
     settings: const RouteSettings(name: settings_main),
-    pageBuilder: (context, animation, secondaryAnimation) => CodeEditor(path: path, logs: logs),
+    pageBuilder: (context, animation, secondaryAnimation) =>
+        CodeEditor(path: path, logs: logs),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(0.0, 1.0);
       const end = Offset.zero;

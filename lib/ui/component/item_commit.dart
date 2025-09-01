@@ -25,14 +25,23 @@ class _ItemCommit extends State<ItemCommit> {
   void initState() {
     super.initState();
     _updateTime();
-    _timer = Timer.periodic(const Duration(minutes: 1), (timer) => _updateTime());
+    _timer = Timer.periodic(
+      const Duration(minutes: 1),
+      (timer) => _updateTime(),
+    );
   }
 
   void _updateTime() {
     setState(() {
       _relativeCommitDate = timeago
-          .format(DateTime.fromMillisecondsSinceEpoch(widget.commit.timestamp * 1000), locale: 'en')
-          .replaceFirstMapped(RegExp(r'^[A-Z]'), (match) => match.group(0)!.toLowerCase());
+          .format(
+            DateTime.fromMillisecondsSinceEpoch(widget.commit.timestamp * 1000),
+            locale: 'en',
+          )
+          .replaceFirstMapped(
+            RegExp(r'^[A-Z]'),
+            (match) => match.group(0)!.toLowerCase(),
+          );
     });
   }
 
@@ -45,7 +54,10 @@ class _ItemCommit extends State<ItemCommit> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(color: tertiaryDark, borderRadius: BorderRadius.all(cornerRadiusSM)),
+      decoration: BoxDecoration(
+        color: tertiaryDark,
+        borderRadius: BorderRadius.all(cornerRadiusSM),
+      ),
       padding: EdgeInsets.all(spaceSM),
       margin: EdgeInsets.only(top: spaceSM),
       width: double.infinity,
@@ -59,10 +71,21 @@ class _ItemCommit extends State<ItemCommit> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Text(widget.commit.commitMessage, style: TextStyle(color: primaryLight, fontSize: textMD, overflow: TextOverflow.ellipsis)),
+                  Text(
+                    widget.commit.commitMessage,
+                    style: TextStyle(
+                      color: primaryLight,
+                      fontSize: textMD,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                   Text(
                     "${demo ? "ViscousTests" : widget.commit.author} ${t.committed} $_relativeCommitDate",
-                    style: TextStyle(color: secondaryLight, fontSize: textSM, overflow: TextOverflow.ellipsis),
+                    style: TextStyle(
+                      color: secondaryLight,
+                      fontSize: textSM,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ],
               ),
@@ -72,11 +95,21 @@ class _ItemCommit extends State<ItemCommit> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  decoration: BoxDecoration(color: secondaryLight, borderRadius: BorderRadius.all(cornerRadiusXS)),
-                  padding: EdgeInsets.symmetric(horizontal: spaceXS, vertical: spaceXXXS),
+                  decoration: BoxDecoration(
+                    color: secondaryLight,
+                    borderRadius: BorderRadius.all(cornerRadiusXS),
+                  ),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: spaceXS,
+                    vertical: spaceXXXS,
+                  ),
                   child: Text(
                     (widget.commit.reference).substring(0, 7).toUpperCase(),
-                    style: TextStyle(color: tertiaryDark, fontSize: textXS, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      color: tertiaryDark,
+                      fontSize: textXS,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 SizedBox(height: spaceXXXS),
@@ -84,12 +117,20 @@ class _ItemCommit extends State<ItemCommit> {
                   children: [
                     Text(
                       sprintf(t.additions, [widget.commit.additions]),
-                      style: TextStyle(color: tertiaryPositive, fontSize: textXS, fontWeight: FontWeight.w900),
+                      style: TextStyle(
+                        color: tertiaryPositive,
+                        fontSize: textXS,
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
                     SizedBox(width: spaceSM),
                     Text(
                       sprintf(t.deletions, [widget.commit.deletions]),
-                      style: TextStyle(color: tertiaryNegative, fontSize: textXS, fontWeight: FontWeight.w900),
+                      style: TextStyle(
+                        color: tertiaryNegative,
+                        fontSize: textXS,
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
                   ],
                 ),
