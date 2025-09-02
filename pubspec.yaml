@@ -73,12 +73,15 @@ dependencies:
   showcaseview: ^4.0.1
   file_manager: ^1.0.2
   shared_preferences: ^2.5.3
+  re_editor: ^0.7.0
+  mmap2: ^0.1.0
+  mmap2_flutter: ^0.2.1
+  re_highlight: ^0.0.3
   flutter_code_editor:
     git:
       url: https://github.com/ViscousPot/flutter-code-editor
       ref: faa92be04d37d2914f65c9b46598c3e488595239
 
-  highlight: any
   async: any
   collection: any
 dependency_overrides:

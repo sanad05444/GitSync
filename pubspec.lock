@@ -526,7 +526,7 @@ packages:
     source: sdk
     version: "0.0.0"
   highlight:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: highlight
       sha256: "5353a83ffe3e3eca7df0abfb72dcf3fa66cc56b953728e7113ad4ad88497cf21"
@@ -695,10 +695,18 @@ packages:
     dependency: "direct main"
     description:
       name: mmap2
-      sha256: e8a0f26381b28604fe48f0a532c983025bd282defd227051f55c4403a0eecb70
+      sha256: "396cd64ecb3d1648ce0739dc37f4ebe6e628011d0011fcabc493a828947ad694"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.3"
+    version: "0.1.0"
+  mmap2_flutter:
+    dependency: "direct main"
+    description:
+      name: mmap2_flutter
+      sha256: "9e43959f232f516791a5b49b2d5ec59a226c83955e9ff6c66ad961462c998f37"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.1"
   mocktail:
     dependency: transitive
     description:
@@ -972,7 +980,7 @@ packages:
     source: hosted
     version: "0.7.0"
   re_highlight:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: re_highlight
       sha256: "6c4ac3f76f939fb7ca9df013df98526634e17d8f7460e028bd23a035870024f2"

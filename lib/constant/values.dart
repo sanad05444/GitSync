@@ -1,97 +1,97 @@
-import 'package:highlight/languages/dart.dart';
-import 'package:highlight/languages/javascript.dart';
-import 'package:highlight/languages/typescript.dart';
-import 'package:highlight/languages/json.dart';
-import 'package:highlight/languages/python.dart';
-import 'package:highlight/languages/java.dart';
-import 'package:highlight/languages/cpp.dart';
-import 'package:highlight/languages/cs.dart';
-import 'package:highlight/languages/go.dart';
-import 'package:highlight/languages/ruby.dart';
-import 'package:highlight/languages/php.dart';
-import 'package:highlight/languages/xml.dart';
-import 'package:highlight/languages/css.dart';
-import 'package:highlight/languages/markdown.dart';
-import 'package:highlight/languages/yaml.dart';
-import 'package:highlight/languages/sql.dart';
-import 'package:highlight/languages/bash.dart';
-import 'package:highlight/languages/swift.dart';
-import 'package:highlight/languages/kotlin.dart';
-import 'package:highlight/languages/objectivec.dart';
-import 'package:highlight/languages/scss.dart';
-import 'package:highlight/languages/less.dart';
-import 'package:highlight/languages/perl.dart';
-import 'package:highlight/languages/rust.dart';
-import 'package:highlight/languages/lua.dart';
-import 'package:highlight/languages/shell.dart';
-import 'package:highlight/languages/scala.dart';
-import 'package:highlight/languages/haskell.dart';
-import 'package:highlight/languages/clojure.dart';
-import 'package:highlight/languages/elixir.dart';
-import 'package:highlight/languages/erlang.dart';
-import 'package:highlight/languages/powershell.dart';
-import 'package:highlight/languages/makefile.dart';
-import 'package:highlight/languages/prolog.dart';
-import 'package:highlight/languages/r.dart';
-import 'package:highlight/languages/tcl.dart';
-import 'package:highlight/languages/vbnet.dart';
-import 'package:highlight/languages/plaintext.dart';
+import 'package:re_highlight/languages/dart.dart';
+import 'package:re_highlight/languages/javascript.dart';
+import 'package:re_highlight/languages/typescript.dart';
+import 'package:re_highlight/languages/json.dart';
+import 'package:re_highlight/languages/python.dart';
+import 'package:re_highlight/languages/java.dart';
+import 'package:re_highlight/languages/cpp.dart';
+import 'package:re_highlight/languages/csharp.dart';
+import 'package:re_highlight/languages/go.dart';
+import 'package:re_highlight/languages/ruby.dart';
+import 'package:re_highlight/languages/php.dart';
+import 'package:re_highlight/languages/xml.dart';
+import 'package:re_highlight/languages/css.dart';
+import 'package:re_highlight/languages/markdown.dart';
+import 'package:re_highlight/languages/yaml.dart';
+import 'package:re_highlight/languages/sql.dart';
+import 'package:re_highlight/languages/bash.dart';
+import 'package:re_highlight/languages/swift.dart';
+import 'package:re_highlight/languages/kotlin.dart';
+import 'package:re_highlight/languages/objectivec.dart';
+import 'package:re_highlight/languages/scss.dart';
+import 'package:re_highlight/languages/less.dart';
+import 'package:re_highlight/languages/perl.dart';
+import 'package:re_highlight/languages/rust.dart';
+import 'package:re_highlight/languages/lua.dart';
+import 'package:re_highlight/languages/shell.dart';
+import 'package:re_highlight/languages/scala.dart';
+import 'package:re_highlight/languages/haskell.dart';
+import 'package:re_highlight/languages/clojure.dart';
+import 'package:re_highlight/languages/elixir.dart';
+import 'package:re_highlight/languages/erlang.dart';
+import 'package:re_highlight/languages/powershell.dart';
+import 'package:re_highlight/languages/makefile.dart';
+import 'package:re_highlight/languages/prolog.dart';
+import 'package:re_highlight/languages/r.dart';
+import 'package:re_highlight/languages/tcl.dart';
+import 'package:re_highlight/languages/vbnet.dart';
+import 'package:re_highlight/languages/plaintext.dart';
 
 final extensionToLanguageMap = {
-  'dart': dart,
-  'js': javascript,
-  'mjs': javascript,
-  'ts': typescript,
-  'json': json,
-  'py': python,
-  'java': java,
-  'cpp': cpp,
-  'cc': cpp,
-  'cxx': cpp,
-  'cs': cs,
-  'go': go,
-  'rb': ruby,
-  'php': php,
-  'html': xml,
-  'htm': xml,
-  'xml': xml,
-  'css': css,
-  'md': markdown,
-  'markdown': markdown,
-  'yml': yaml,
-  'yaml': yaml,
-  'sql': sql,
-  'sh': bash,
-  'bash': bash,
-  'swift': swift,
-  'kt': kotlin,
-  'kts': kotlin,
-  'm': objectivec,
-  'mm': objectivec,
-  'scss': scss,
-  'less': less,
-  'pl': perl,
-  'pm': perl,
-  'rs': rust,
-  'lua': lua,
-  'zsh': shell,
-  'c': cpp,
-  'h': cpp,
-  'scala': scala,
-  'hs': haskell,
-  'lhs': haskell,
-  'clj': clojure,
-  'cljs': clojure,
-  'ex': elixir,
-  'exs': elixir,
-  'erl': erlang,
-  'ps1': powershell,
-  'psm1': powershell,
-  'makefile': makefile,
-  'mk': makefile,
-  'pro': prolog,
-  'r': r,
-  'tcl': tcl,
-  'vb': vbnet,
-  'txt': plaintext,
+  'dart': langDart,
+  'js': langJavascript,
+  'mjs': langJavascript,
+  'ts': langTypescript,
+  'json': langJson,
+  'py': langPython,
+  'java': langJava,
+  'cpp': langCpp,
+  'cc': langCpp,
+  'cxx': langCpp,
+  'cs': langCsharp,
+  'go': langGo,
+  'rb': langRuby,
+  'php': langPhp,
+  'html': langXml,
+  'htm': langXml,
+  'xml': langXml,
+  'css': langCss,
+  'md': langMarkdown,
+  'markdown': langMarkdown,
+  'yml': langYaml,
+  'yaml': langYaml,
+  'sql': langSql,
+  'sh': langBash,
+  'bash': langBash,
+  'swift': langSwift,
+  'kt': langKotlin,
+  'kts': langKotlin,
+  'm': langObjectivec,
+  'mm': langObjectivec,
+  'scss': langScss,
+  'less': langLess,
+  'pl': langPerl,
+  'pm': langPerl,
+  'rs': langRust,
+  'lua': langLua,
+  'zsh': langShell,
+  'c': langCpp,
+  'h': langCpp,
+  'scala': langScala,
+  'hs': langHaskell,
+  'lhs': langHaskell,
+  'clj': langClojure,
+  'cljs': langClojure,
+  'ex': langElixir,
+  'exs': langElixir,
+  'erl': langErlang,
+  'ps1': langPowershell,
+  'psm1': langPowershell,
+  'makefile': langMakefile,
+  'mk': langMakefile,
+  'pro': langProlog,
+  'r': langR,
+  'tcl': langTcl,
+  'vb': langVbnet,
+  'txt': langPlaintext,
 };
