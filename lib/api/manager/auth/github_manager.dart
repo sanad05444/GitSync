@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:GitSync/api/logger.dart';
+import 'package:GitSync/constant/strings.dart';
 
 import '../../manager/auth/git_provider_manager.dart';
 import '../../../constant/secrets.dart';
@@ -15,8 +16,11 @@ class GithubManager extends GitProviderManager {
   bool get oAuthSupport => true;
 
   @override
+  OAuth2Client getOauthClient() => GitHubOAuth2Client(redirectUri: 'gitsync://auth', customUriScheme: 'gitsync');
+
+  @override
   Future<(String, String, String)?> launchOAuthFlow() async {
-    OAuth2Client ghClient = GitHubOAuth2Client(redirectUri: 'gitsync://auth', customUriScheme: 'gitsync');
+    OAuth2Client ghClient = getOauthClient();
     final response = await ghClient.getTokenWithAuthCodeFlow(
       clientId: gitHubClientId,
       clientSecret: gitHubClientSecret,
@@ -55,6 +59,29 @@ class GithubManager extends GitProviderManager {
       return ((jsonData["login"] as String?) ?? "", email ?? "");
     }
 
+    return null;
+  }
+
+  @override
+  Future<String?> getToken(String token, Future<void> Function(String p1, String p2) setAccessRefreshToken) async {
+    final tokenParts = token.split(conflictSeparator);
+    final accessToken = tokenParts.first;
+    final refreshToken = tokenParts.last;
+
+    if (!token.contains(conflictSeparator) || refreshToken.isEmpty) {
+      return accessToken;
+    }
+
+    if (accessToken.isEmpty || refreshToken.isEmpty) return null;
+
+    final client = getOauthClient();
+    final refreshed = await client.refreshToken(refreshToken, clientId: gitHubClientId, clientSecret: gitHubClientSecret);
+
+    if (refreshed.accessToken != null) {
+      if (refreshed.accessToken == null || refreshed.refreshToken == null) return null;
+      await setAccessRefreshToken(refreshed.accessToken!, refreshed.refreshToken!);
+      return refreshed.accessToken;
+    }
     return null;
   }
 

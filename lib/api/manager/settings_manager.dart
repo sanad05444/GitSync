@@ -1,5 +1,8 @@
 import 'dart:io';
 import 'package:GitSync/api/helper.dart';
+import 'package:GitSync/api/manager/auth/gitea_manager.dart';
+import 'package:GitSync/api/manager/auth/github_manager.dart';
+import 'package:GitSync/api/manager/auth/gitlab_manager.dart';
 
 import '../../../constant/strings.dart';
 import 'package:GitSync/api/manager/storage.dart';
@@ -74,20 +77,37 @@ class SettingsManager extends Storage {
     await setString(StorageKey.setman_gitAuthToken, accessToken.trim());
   }
 
-  Future<(String, String)> getGitHttpAuthCredentials() async => (
-    await getString(StorageKey.setman_gitAuthUsername),
-    await getString(StorageKey.setman_gitAuthToken),
-  );
+  Future<(String, String)> getGitHttpAuthCredentials() async {
+    final username = await getString(StorageKey.setman_gitAuthUsername);
+    final token = await getString(StorageKey.setman_gitAuthToken);
+
+    Future<void> setAccessRefreshToken(String accessToken, String refreshToken) async {
+      await setString(StorageKey.setman_gitAuthToken, "$accessToken$conflictSeparator$refreshToken");
+    }
+
+    String? oauthToken;
+
+    switch (await getGitProvider()) {
+      case GitProvider.GITHUB:
+        oauthToken = await GithubManager().getToken(token, setAccessRefreshToken);
+      case GitProvider.GITEA:
+        oauthToken = await GiteaManager().getToken(token, setAccessRefreshToken);
+      case GitProvider.GITLAB:
+        oauthToken = await GitlabManager().getToken(token, setAccessRefreshToken);
+      default:
+        oauthToken = null;
+    }
+
+    return (username, oauthToken ?? token);
+  }
 
   Future<void> setGitSshAuthCredentials(String passphrase, String sshKey) async {
     await setString(StorageKey.setman_gitSshKey, sshKey.trim());
     await setString(StorageKey.setman_gitSshPassphrase, passphrase);
   }
 
-  Future<(String, String)> getGitSshAuthCredentials() async => (
-    await getString(StorageKey.setman_gitSshPassphrase),
-    await getString(StorageKey.setman_gitSshKey),
-  );
+  Future<(String, String)> getGitSshAuthCredentials() async =>
+      (await getString(StorageKey.setman_gitSshPassphrase), await getString(StorageKey.setman_gitSshKey));
 
   Future<(String, String)?> getGitCommitSigningCredentials() async {
     final passphrase = await getStringNullable(StorageKey.setman_gitCommitSigningPassphrase);
