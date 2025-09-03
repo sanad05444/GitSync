@@ -446,7 +446,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
           t.updateSubmodules: (
             FontAwesomeIcons.solidSquareCaretDown,
             () async {
-              GitManager.updateSubmodules();
+              await GitManager.updateSubmodules();
             },
           ),
         if (clientModeEnabled)
@@ -666,7 +666,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
           ),
           SizedBox(width: spaceSM),
           FutureBuilder(
-            future: GitManager.isLocked(),
+            future: GitManager.isLocked(false),
             builder: (context, snapshot) {
               final locked = snapshot.data ?? false;
 
@@ -1250,11 +1250,17 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                 onPressed: () async {
                                                   if (syncOptionsSnapshot.data == null || lastSyncMethodSnapshot.data == null) return;
 
+                                                  WidgetsBinding.instance.addPostFrameCallback((_) async {
+                                                    setState(() {});
+                                                  });
                                                   if (syncOptionsSnapshot.data?.containsKey(lastSyncMethodSnapshot.data) == true) {
-                                                    syncOptionsSnapshot.data![lastSyncMethodSnapshot.data]!.$2();
+                                                    await syncOptionsSnapshot.data![lastSyncMethodSnapshot.data]!.$2();
                                                   } else {
-                                                    syncOptionsSnapshot.data?.values.first.$2();
+                                                    await syncOptionsSnapshot.data?.values.first.$2();
                                                   }
+                                                  WidgetsBinding.instance.addPostFrameCallback((_) async {
+                                                    setState(() {});
+                                                  });
                                                 },
                                                 style: ButtonStyle(
                                                   alignment: Alignment.centerLeft,

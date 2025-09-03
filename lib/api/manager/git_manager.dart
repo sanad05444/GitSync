@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:GitSync/gitsync_service.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:GitSync/api/helper.dart';
 import 'package:GitSync/type/git_provider.dart';
@@ -31,6 +33,7 @@ class GitManager {
     T? result;
     await repoManager.setStringList(StorageKey.repoman_locks, [...locks, index.toString()]);
     gitSyncService.refreshUi();
+    FlutterBackgroundService().invoke(GitsyncService.REFRESH);
 
     try {
       result = await fn();
@@ -39,17 +42,25 @@ class GitManager {
     } finally {
       await repoManager.setStringList(StorageKey.repoman_locks, locks.where((lock) => lock != index.toString()).toList());
       gitSyncService.refreshUi();
+      FlutterBackgroundService().invoke(GitsyncService.REFRESH);
     }
 
     return result;
   }
 
-  static Future<bool> isLocked() async {
+  static Future<bool> isLocked([waitForUnlock = true]) async {
+    Future<bool> internal() async {
+      final locks = await repoManager.getStringList(StorageKey.repoman_locks);
+      final locked = locks.contains((await repoManager.getInt(StorageKey.repoman_repoIndex)).toString());
+      return locked;
+    }
+
+    if (!waitForUnlock) return await internal();
+
     final end = DateTime.now().add(const Duration(seconds: 5));
     while (DateTime.now().isBefore(end)) {
       try {
-        final locks = await repoManager.getStringList(StorageKey.repoman_locks);
-        final locked = locks.contains((await repoManager.getInt(StorageKey.repoman_repoIndex)).toString());
+        final locked = await internal();
         if (!locked) return false;
       } catch (_) {}
       await Future.delayed(const Duration(milliseconds: 100));
