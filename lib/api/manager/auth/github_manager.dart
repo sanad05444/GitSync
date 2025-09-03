@@ -16,7 +16,10 @@ class GithubManager extends GitProviderManager {
 
   @override
   Future<(String, String, String)?> launchOAuthFlow() async {
-    OAuth2Client ghClient = GitHubOAuth2Client(redirectUri: 'gitsync://auth', customUriScheme: 'gitsync');
+    OAuth2Client ghClient = GitHubOAuth2Client(
+      redirectUri: 'gitsync://auth',
+      customUriScheme: 'gitsync',
+    );
     final response = await ghClient.getTokenWithAuthCodeFlow(
       clientId: gitHubClientId,
       clientSecret: gitHubClientSecret,
@@ -34,7 +37,10 @@ class GithubManager extends GitProviderManager {
   Future<(String, String)?> getUsernameAndEmail(String accessToken) async {
     final response = await http.get(
       Uri.parse("https://api.$_domain/user"),
-      headers: {"Accept": "application/json", "Authorization": "token $accessToken"},
+      headers: {
+        "Accept": "application/json",
+        "Authorization": "token $accessToken",
+      },
     );
 
     if (response.statusCode == 200) {
@@ -43,11 +49,17 @@ class GithubManager extends GitProviderManager {
       if (email == null) {
         final emailResp = await http.get(
           Uri.parse("https://api.$_domain/user/emails"),
-          headers: {"Accept": "application/json", "Authorization": "token $accessToken"},
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "token $accessToken",
+          },
         );
         if (emailResp.statusCode == 200) {
           final emails = json.decode(emailResp.body) as List;
-          final primary = emails.firstWhere((e) => e["primary"] == true, orElse: () => null);
+          final primary = emails.firstWhere(
+            (e) => e["primary"] == true,
+            orElse: () => null,
+          );
           email = primary?["email"];
         }
       }
@@ -59,8 +71,17 @@ class GithubManager extends GitProviderManager {
   }
 
   @override
-  Future<void> getRepos(String accessToken, Function(List<(String, String)>) updateCallback, Function(Function()?) nextPageCallback) async {
-    await _getReposRequest(accessToken, "https://api.$_domain/user/repos", updateCallback, nextPageCallback);
+  Future<void> getRepos(
+    String accessToken,
+    Function(List<(String, String)>) updateCallback,
+    Function(Function()?) nextPageCallback,
+  ) async {
+    await _getReposRequest(
+      accessToken,
+      "https://api.$_domain/user/repos",
+      updateCallback,
+      nextPageCallback,
+    );
   }
 
   Future<void> _getReposRequest(
@@ -70,11 +91,19 @@ class GithubManager extends GitProviderManager {
     Function(Function()?) nextPageCallback,
   ) async {
     try {
-      final response = await http.get(Uri.parse(url), headers: {"Accept": "application/json", "Authorization": "token $accessToken"});
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          "Accept": "application/json",
+          "Authorization": "token $accessToken",
+        },
+      );
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonArray = json.decode(response.body);
-        final List<(String, String)> repoList = jsonArray.map((repo) => ("${repo["name"]}", "${repo["clone_url"]}")).toList();
+        final List<(String, String)> repoList = jsonArray
+            .map((repo) => ("${repo["name"]}", "${repo["clone_url"]}"))
+            .toList();
 
         updateCallback(repoList);
 
@@ -83,7 +112,14 @@ class GithubManager extends GitProviderManager {
           final match = RegExp(r'<([^>]+)>; rel="next"').firstMatch(linkHeader);
           final String? nextLink = match?.group(1);
           if (nextLink != null) {
-            nextPageCallback(() => _getReposRequest(accessToken, nextLink, updateCallback, nextPageCallback));
+            nextPageCallback(
+              () => _getReposRequest(
+                accessToken,
+                nextLink,
+                updateCallback,
+                nextPageCallback,
+              ),
+            );
           } else {
             nextPageCallback(null);
           }

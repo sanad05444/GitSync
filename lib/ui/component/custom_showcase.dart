@@ -29,39 +29,57 @@ class CustomShowcase extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Showcase(
     key: globalKey,
-    targetBorderRadius: cornerRadius == null ? null : BorderRadius.all(cornerRadius!),
+    targetBorderRadius: cornerRadius == null
+        ? null
+        : BorderRadius.all(cornerRadius!),
     description: description,
-    descTextStyle: TextStyle(fontSize: textMD, fontWeight: FontWeight.w500, color: primaryDark),
+    descTextStyle: TextStyle(
+      fontSize: textMD,
+      fontWeight: FontWeight.w500,
+      color: primaryDark,
+    ),
     targetPadding: targetPadding ?? EdgeInsets.all(spaceSM),
     tooltipActions: [
       ...customTooltipActions ?? [],
       ...!first
           ? [
-            TooltipActionButton(
-              type: TooltipDefaultActionType.previous,
-              backgroundColor: primaryLight,
-              textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: textSM, color: primaryDark),
-              name: t.previous.toUpperCase(),
-            ),
-          ]
+              TooltipActionButton(
+                type: TooltipDefaultActionType.previous,
+                backgroundColor: primaryLight,
+                textStyle: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: textSM,
+                  color: primaryDark,
+                ),
+                name: t.previous.toUpperCase(),
+              ),
+            ]
           : [],
       ...!last
           ? [
-            TooltipActionButton(
-              type: TooltipDefaultActionType.next,
-              backgroundColor: primaryLight,
-              textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: textSM, color: primaryDark),
-              name: t.next.toUpperCase(),
-            ),
-          ]
+              TooltipActionButton(
+                type: TooltipDefaultActionType.next,
+                backgroundColor: primaryLight,
+                textStyle: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: textSM,
+                  color: primaryDark,
+                ),
+                name: t.next.toUpperCase(),
+              ),
+            ]
           : [
-            TooltipActionButton(
-              type: TooltipDefaultActionType.next,
-              backgroundColor: primaryLight,
-              textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: textSM, color: primaryDark),
-              name: t.finish.toUpperCase(),
-            ),
-          ],
+              TooltipActionButton(
+                type: TooltipDefaultActionType.next,
+                backgroundColor: primaryLight,
+                textStyle: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: textSM,
+                  color: primaryDark,
+                ),
+                name: t.finish.toUpperCase(),
+              ),
+            ],
     ],
     tooltipBackgroundColor: tertiaryInfo,
     textColor: secondaryDark,

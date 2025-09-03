@@ -22,10 +22,19 @@ class OnboardingController {
   bool hasSkipped = false;
   final GlobalKey _currentDialog = GlobalKey();
 
-  OnboardingController(this.context, this.showAuthDialog, this.showCloneRepoPage, this.showCaseKeys);
+  OnboardingController(
+    this.context,
+    this.showAuthDialog,
+    this.showCloneRepoPage,
+    this.showCaseKeys,
+  );
 
   void _showDialog(BaseAlertDialog dialog, {bool cancelable = true}) {
-    mat.showDialog(context: context, builder: (BuildContext context) => dialog, barrierDismissible: cancelable);
+    mat.showDialog(
+      context: context,
+      builder: (BuildContext context) => dialog,
+      barrierDismissible: cancelable,
+    );
   }
 
   Future<void> show() async {
@@ -44,7 +53,9 @@ class OnboardingController {
         while (!ShowCaseWidget.of(context).isShowCaseCompleted) {
           await Future.delayed(Duration(milliseconds: 100));
         }
-        await Navigator.of(context).push(createGlobalSettingsMainRoute(onboarding: true));
+        await Navigator.of(
+          context,
+        ).push(createGlobalSettingsMainRoute(onboarding: true));
         await repoManager.setOnboardingStep(-1);
     }
   }
@@ -61,11 +72,27 @@ class OnboardingController {
         key: _currentDialog,
         title: SizedBox(
           width: MediaQuery.of(context).size.width,
-          child: Text(t.authDialogTitle, style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold)),
+          child: Text(
+            t.authDialogTitle,
+            style: TextStyle(
+              color: primaryLight,
+              fontSize: textXL,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
         content: SingleChildScrollView(
           child: ListBody(
-            children: [Text(t.authDialogMessage, style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM))],
+            children: [
+              Text(
+                t.authDialogMessage,
+                style: const TextStyle(
+                  color: primaryLight,
+                  fontWeight: FontWeight.bold,
+                  fontSize: textSM,
+                ),
+              ),
+            ],
           ),
         ),
         actionsAlignment: MainAxisAlignment.end,
@@ -73,9 +100,14 @@ class OnboardingController {
           TextButton(
             style: ButtonStyle(
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceXS)),
+              padding: WidgetStatePropertyAll(
+                EdgeInsets.symmetric(horizontal: spaceXS),
+              ),
             ),
-            child: Text(t.skip.toUpperCase(), style: TextStyle(color: secondaryLight, fontSize: textSM)),
+            child: Text(
+              t.skip.toUpperCase(),
+              style: TextStyle(color: secondaryLight, fontSize: textSM),
+            ),
             onPressed: () async {
               Navigator.of(context).canPop() ? Navigator.pop(context) : null;
             },
@@ -83,9 +115,14 @@ class OnboardingController {
           TextButton(
             style: ButtonStyle(
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceXS)),
+              padding: WidgetStatePropertyAll(
+                EdgeInsets.symmetric(horizontal: spaceXS),
+              ),
             ),
-            child: Text(t.ok.toUpperCase(), style: TextStyle(color: primaryPositive, fontSize: textSM)),
+            child: Text(
+              t.ok.toUpperCase(),
+              style: TextStyle(color: primaryPositive, fontSize: textSM),
+            ),
             onPressed: () async {
               Navigator.of(context).canPop() ? Navigator.pop(context) : null;
               await showAuthDialog();
@@ -103,14 +140,27 @@ class OnboardingController {
         key: _currentDialog,
         title: SizedBox(
           width: MediaQuery.of(context).size.width,
-          child: Text(t.almostThereDialogTitle, style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold)),
+          child: Text(
+            t.almostThereDialogTitle,
+            style: TextStyle(
+              color: primaryLight,
+              fontSize: textXL,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
         content: SingleChildScrollView(
           child: ListBody(
             children: [
               Text(
-                Platform.isAndroid ? t.almostThereDialogMessageAndroid : t.almostThereDialogMessageIos,
-                style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
+                Platform.isAndroid
+                    ? t.almostThereDialogMessageAndroid
+                    : t.almostThereDialogMessageIos,
+                style: const TextStyle(
+                  color: primaryLight,
+                  fontWeight: FontWeight.bold,
+                  fontSize: textSM,
+                ),
               ),
               SizedBox(height: spaceMD),
               Row(
@@ -125,11 +175,27 @@ class OnboardingController {
                       backgroundColor: WidgetStatePropertyAll(tertiaryInfo),
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       visualDensity: VisualDensity.compact,
-                      shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusSM), side: BorderSide.none)),
+                      shape: WidgetStatePropertyAll(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(cornerRadiusSM),
+                          side: BorderSide.none,
+                        ),
+                      ),
                     ),
-                    icon: FaIcon(FontAwesomeIcons.solidFileLines, color: secondaryDark, size: textSM),
+                    icon: FaIcon(
+                      FontAwesomeIcons.solidFileLines,
+                      color: secondaryDark,
+                      size: textSM,
+                    ),
                     // icon:
-                    label: Text(t.documentation.toUpperCase(), style: TextStyle(color: primaryDark, fontSize: textSM, fontWeight: FontWeight.bold)),
+                    label: Text(
+                      t.documentation.toUpperCase(),
+                      style: TextStyle(
+                        color: primaryDark,
+                        fontSize: textSM,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -141,9 +207,14 @@ class OnboardingController {
           TextButton(
             style: ButtonStyle(
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceXS)),
+              padding: WidgetStatePropertyAll(
+                EdgeInsets.symmetric(horizontal: spaceXS),
+              ),
             ),
-            child: Text(t.cancel.toUpperCase(), style: TextStyle(color: secondaryLight, fontSize: textSM)),
+            child: Text(
+              t.cancel.toUpperCase(),
+              style: TextStyle(color: secondaryLight, fontSize: textSM),
+            ),
             onPressed: () async {
               Navigator.of(context).canPop() ? Navigator.pop(context) : null;
             },
@@ -151,9 +222,14 @@ class OnboardingController {
           TextButton(
             style: ButtonStyle(
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceXS)),
+              padding: WidgetStatePropertyAll(
+                EdgeInsets.symmetric(horizontal: spaceXS),
+              ),
             ),
-            child: Text(t.ok.toUpperCase(), style: TextStyle(color: primaryPositive, fontSize: textSM)),
+            child: Text(
+              t.ok.toUpperCase(),
+              style: TextStyle(color: primaryPositive, fontSize: textSM),
+            ),
             onPressed: () async {
               await repoManager.setOnboardingStep(2);
               Navigator.of(context).canPop() ? Navigator.pop(context) : null;
@@ -177,12 +253,26 @@ class OnboardingController {
         key: _currentDialog,
         title: SizedBox(
           width: MediaQuery.of(context).size.width,
-          child: Text(t.allFilesAccessDialogTitle, style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold)),
+          child: Text(
+            t.allFilesAccessDialogTitle,
+            style: TextStyle(
+              color: primaryLight,
+              fontSize: textXL,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
         content: SingleChildScrollView(
           child: ListBody(
             children: [
-              Text(t.allFilesAccessDialogMessage, style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM)),
+              Text(
+                t.allFilesAccessDialogMessage,
+                style: const TextStyle(
+                  color: primaryLight,
+                  fontWeight: FontWeight.bold,
+                  fontSize: textSM,
+                ),
+              ),
             ],
           ),
         ),
@@ -190,20 +280,26 @@ class OnboardingController {
         actions: <Widget>[
           FutureBuilder(
             future: requestStoragePerm(false),
-            builder:
-                (context, snapshot) => TextButton(
-                  style: ButtonStyle(
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceXS)),
-                  ),
-                  child: Text((snapshot.data == true ? t.done : t.ok).toUpperCase(), style: TextStyle(color: primaryPositive, fontSize: textSM)),
-                  onPressed: () async {
-                    if (await requestStoragePerm()) {
-                      Navigator.of(context).canPop() ? Navigator.pop(context) : null;
-                      await showAlmostThereOrSkip();
-                    }
-                  },
+            builder: (context, snapshot) => TextButton(
+              style: ButtonStyle(
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                padding: WidgetStatePropertyAll(
+                  EdgeInsets.symmetric(horizontal: spaceXS),
                 ),
+              ),
+              child: Text(
+                (snapshot.data == true ? t.done : t.ok).toUpperCase(),
+                style: TextStyle(color: primaryPositive, fontSize: textSM),
+              ),
+              onPressed: () async {
+                if (await requestStoragePerm()) {
+                  Navigator.of(context).canPop()
+                      ? Navigator.pop(context)
+                      : null;
+                  await showAlmostThereOrSkip();
+                }
+              },
+            ),
           ),
         ],
       ),
@@ -228,11 +324,27 @@ class OnboardingController {
         key: _currentDialog,
         title: SizedBox(
           width: MediaQuery.of(context).size.width,
-          child: Text(t.notificationDialogTitle, style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold)),
+          child: Text(
+            t.notificationDialogTitle,
+            style: TextStyle(
+              color: primaryLight,
+              fontSize: textXL,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
         content: SingleChildScrollView(
           child: ListBody(
-            children: [Text(t.notificationDialogMessage, style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM))],
+            children: [
+              Text(
+                t.notificationDialogMessage,
+                style: const TextStyle(
+                  color: primaryLight,
+                  fontWeight: FontWeight.bold,
+                  fontSize: textSM,
+                ),
+              ),
+            ],
           ),
         ),
         actionsAlignment: MainAxisAlignment.end,
@@ -240,9 +352,14 @@ class OnboardingController {
           TextButton(
             style: ButtonStyle(
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceXS)),
+              padding: WidgetStatePropertyAll(
+                EdgeInsets.symmetric(horizontal: spaceXS),
+              ),
             ),
-            child: Text(t.skip.toUpperCase(), style: TextStyle(color: secondaryLight, fontSize: textSM)),
+            child: Text(
+              t.skip.toUpperCase(),
+              style: TextStyle(color: secondaryLight, fontSize: textSM),
+            ),
             onPressed: () async {
               Navigator.of(context).canPop() ? Navigator.pop(context) : null;
               await showAllFilesAccessOrNext();
@@ -250,20 +367,26 @@ class OnboardingController {
           ),
           FutureBuilder(
             future: Permission.notification.isGranted,
-            builder:
-                (context, snapshot) => TextButton(
-                  style: ButtonStyle(
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceXS)),
-                  ),
-                  child: Text((snapshot.data == true ? t.done : t.ok).toUpperCase(), style: TextStyle(color: primaryPositive, fontSize: textSM)),
-                  onPressed: () async {
-                    if (await Permission.notification.request().isGranted) {
-                      Navigator.of(context).canPop() ? Navigator.pop(context) : null;
-                      await showAllFilesAccessOrNext();
-                    }
-                  },
+            builder: (context, snapshot) => TextButton(
+              style: ButtonStyle(
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                padding: WidgetStatePropertyAll(
+                  EdgeInsets.symmetric(horizontal: spaceXS),
                 ),
+              ),
+              child: Text(
+                (snapshot.data == true ? t.done : t.ok).toUpperCase(),
+                style: TextStyle(color: primaryPositive, fontSize: textSM),
+              ),
+              onPressed: () async {
+                if (await Permission.notification.request().isGranted) {
+                  Navigator.of(context).canPop()
+                      ? Navigator.pop(context)
+                      : null;
+                  await showAllFilesAccessOrNext();
+                }
+              },
+            ),
           ),
         ],
       ),
@@ -285,11 +408,27 @@ class OnboardingController {
         key: _currentDialog,
         title: SizedBox(
           width: MediaQuery.of(context).size.width,
-          child: Text(t.welcome, style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold)),
+          child: Text(
+            t.welcome,
+            style: TextStyle(
+              color: primaryLight,
+              fontSize: textXL,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
         content: SingleChildScrollView(
           child: ListBody(
-            children: [Text(t.welcomeMessage, style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM))],
+            children: [
+              Text(
+                t.welcomeMessage,
+                style: const TextStyle(
+                  color: primaryLight,
+                  fontWeight: FontWeight.bold,
+                  fontSize: textSM,
+                ),
+              ),
+            ],
           ),
         ),
         actionsAlignment: MainAxisAlignment.end,
@@ -297,9 +436,14 @@ class OnboardingController {
           TextButton(
             style: ButtonStyle(
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceXS)),
+              padding: WidgetStatePropertyAll(
+                EdgeInsets.symmetric(horizontal: spaceXS),
+              ),
             ),
-            child: Text(t.welcomeNeutral.toUpperCase(), style: TextStyle(color: secondaryLight, fontSize: textSM)),
+            child: Text(
+              t.welcomeNeutral.toUpperCase(),
+              style: TextStyle(color: secondaryLight, fontSize: textSM),
+            ),
             onPressed: () async {
               hasSkipped = true;
               Navigator.of(context).canPop() ? Navigator.pop(context) : null;
@@ -309,9 +453,14 @@ class OnboardingController {
           TextButton(
             style: ButtonStyle(
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceXS)),
+              padding: WidgetStatePropertyAll(
+                EdgeInsets.symmetric(horizontal: spaceXS),
+              ),
             ),
-            child: Text(t.welcomeNegative.toUpperCase(), style: TextStyle(color: secondaryLight, fontSize: textSM)),
+            child: Text(
+              t.welcomeNegative.toUpperCase(),
+              style: TextStyle(color: secondaryLight, fontSize: textSM),
+            ),
             onPressed: () async {
               hasSkipped = true;
               await repoManager.setOnboardingStep(-1);
@@ -322,9 +471,14 @@ class OnboardingController {
           TextButton(
             style: ButtonStyle(
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceXS)),
+              padding: WidgetStatePropertyAll(
+                EdgeInsets.symmetric(horizontal: spaceXS),
+              ),
             ),
-            child: Text(t.welcomePositive.toUpperCase(), style: TextStyle(color: primaryPositive, fontSize: textSM)),
+            child: Text(
+              t.welcomePositive.toUpperCase(),
+              style: TextStyle(color: primaryPositive, fontSize: textSM),
+            ),
             onPressed: () async {
               Navigator.of(context).canPop() ? Navigator.pop(context) : null;
               await showNotificationsOrNext();

@@ -49,84 +49,142 @@ class _ButtonSettingState extends State<ButtonSetting> {
     setState(() => loading = false);
   }
 
-  Widget getIcon() =>
-      widget.loads && loading
-          ? SizedBox.square(dimension: textXL, child: CircularProgressIndicator(padding: EdgeInsets.all(spaceXXXXS), color: widget.iconColor))
-          : FaIcon(widget.icon, color: widget.iconColor, size: textXL);
+  Widget getIcon() => widget.loads && loading
+      ? SizedBox.square(
+          dimension: textXL,
+          child: CircularProgressIndicator(
+            padding: EdgeInsets.all(spaceXXXXS),
+            color: widget.iconColor,
+          ),
+        )
+      : FaIcon(widget.icon, color: widget.iconColor, size: textXL);
 
   @override
   Widget build(BuildContext context) {
     return widget.subButtons == null || widget.subButtons!.isEmpty
         ? TextButton.icon(
-          onPressed: onPressed,
-          style: ButtonStyle(
-            alignment: Alignment.centerLeft,
-            backgroundColor: WidgetStatePropertyAll(widget.buttonColor),
-            padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
-            shape: WidgetStatePropertyAll(
-              RoundedRectangleBorder(borderRadius: widget.sub ? BorderRadius.zero : BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
-            ),
-          ),
-          icon: getIcon(),
-          label: Padding(
-            padding: EdgeInsets.only(left: spaceXS),
-            child: Text(widget.text.toUpperCase(), style: TextStyle(color: widget.textColor, fontSize: textMD, fontWeight: FontWeight.bold)),
-          ),
-        )
-        : Container(
-          width: double.infinity,
-          decoration: BoxDecoration(borderRadius: BorderRadius.all(cornerRadiusMD), color: widget.buttonColor),
-          clipBehavior: Clip.hardEdge,
-          child: Stack(
-            clipBehavior: Clip.hardEdge,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  TextButton.icon(
-                    onPressed: onPressed,
-                    style: ButtonStyle(
-                      alignment: Alignment.centerLeft,
-                      backgroundColor: WidgetStatePropertyAll(widget.buttonColor),
-                      padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
-                      shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none)),
-                    ),
-                    icon: getIcon(),
-                    label: Padding(
-                      padding: EdgeInsets.only(left: spaceXS),
-                      child: Text(
-                        widget.text.toUpperCase(),
-                        style: TextStyle(color: widget.textColor, fontSize: textMD, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                  AnimatedSize(
-                    duration: Duration(milliseconds: 200),
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: expanded ? widget.subButtons! : []),
-                  ),
-                ],
+            onPressed: onPressed,
+            style: ButtonStyle(
+              alignment: Alignment.centerLeft,
+              backgroundColor: WidgetStatePropertyAll(widget.buttonColor),
+              padding: WidgetStatePropertyAll(
+                EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD),
               ),
-              Positioned(
-                right: 0,
-                top: 0,
-                bottom: 0,
-                child: IconButton(
-                  onPressed:
-                      () => setState(() {
-                        expanded = !expanded;
-                      }),
-
-                  style: ButtonStyle(
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    backgroundColor: WidgetStatePropertyAll(widget.buttonColor),
-                    padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
-                    shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none)),
-                  ),
-                  icon: FaIcon(expanded ? FontAwesomeIcons.caretUp : FontAwesomeIcons.caretDown, color: widget.iconColor, size: textLG),
+              shape: WidgetStatePropertyAll(
+                RoundedRectangleBorder(
+                  borderRadius: widget.sub
+                      ? BorderRadius.zero
+                      : BorderRadius.all(cornerRadiusMD),
+                  side: BorderSide.none,
                 ),
               ),
-            ],
-          ),
-        );
+            ),
+            icon: getIcon(),
+            label: Padding(
+              padding: EdgeInsets.only(left: spaceXS),
+              child: Text(
+                widget.text.toUpperCase(),
+                style: TextStyle(
+                  color: widget.textColor,
+                  fontSize: textMD,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          )
+        : Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(cornerRadiusMD),
+              color: widget.buttonColor,
+            ),
+            clipBehavior: Clip.hardEdge,
+            child: Stack(
+              clipBehavior: Clip.hardEdge,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    TextButton.icon(
+                      onPressed: onPressed,
+                      style: ButtonStyle(
+                        alignment: Alignment.centerLeft,
+                        backgroundColor: WidgetStatePropertyAll(
+                          widget.buttonColor,
+                        ),
+                        padding: WidgetStatePropertyAll(
+                          EdgeInsets.symmetric(
+                            horizontal: spaceMD,
+                            vertical: spaceMD,
+                          ),
+                        ),
+                        shape: WidgetStatePropertyAll(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(cornerRadiusMD),
+                            side: BorderSide.none,
+                          ),
+                        ),
+                      ),
+                      icon: getIcon(),
+                      label: Padding(
+                        padding: EdgeInsets.only(left: spaceXS),
+                        child: Text(
+                          widget.text.toUpperCase(),
+                          style: TextStyle(
+                            color: widget.textColor,
+                            fontSize: textMD,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    AnimatedSize(
+                      duration: Duration(milliseconds: 200),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: expanded ? widget.subButtons! : [],
+                      ),
+                    ),
+                  ],
+                ),
+                Positioned(
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  child: IconButton(
+                    onPressed: () => setState(() {
+                      expanded = !expanded;
+                    }),
+
+                    style: ButtonStyle(
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      backgroundColor: WidgetStatePropertyAll(
+                        widget.buttonColor,
+                      ),
+                      padding: WidgetStatePropertyAll(
+                        EdgeInsets.symmetric(
+                          horizontal: spaceMD,
+                          vertical: spaceMD,
+                        ),
+                      ),
+                      shape: WidgetStatePropertyAll(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(cornerRadiusMD),
+                          side: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                    icon: FaIcon(
+                      expanded
+                          ? FontAwesomeIcons.caretUp
+                          : FontAwesomeIcons.caretDown,
+                      color: widget.iconColor,
+                      size: textLG,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
   }
 }

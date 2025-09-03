@@ -21,7 +21,10 @@ class GiteaManager extends GitProviderManager {
       redirectUri: 'gitsync://auth',
       customUriScheme: 'gitsync',
     );
-    final response = await giteaClient.getTokenWithAuthCodeFlow(clientId: giteaClientId, clientSecret: giteaClientSecret);
+    final response = await giteaClient.getTokenWithAuthCodeFlow(
+      clientId: giteaClientId,
+      clientSecret: giteaClientSecret,
+    );
     if (response.accessToken == null) return null;
 
     final usernameAndEmail = await getUsernameAndEmail(response.accessToken!);
@@ -34,7 +37,10 @@ class GiteaManager extends GitProviderManager {
   Future<(String, String)?> getUsernameAndEmail(String accessToken) async {
     final response = await http.get(
       Uri.parse("https://$_domain/api/v1/user"),
-      headers: {"Accept": "application/json", "Authorization": "token $accessToken"},
+      headers: {
+        "Accept": "application/json",
+        "Authorization": "token $accessToken",
+      },
     );
 
     if (response.statusCode == 200) {
@@ -46,8 +52,17 @@ class GiteaManager extends GitProviderManager {
   }
 
   @override
-  Future<void> getRepos(String accessToken, Function(List<(String, String)>) updateCallback, Function(Function()?) nextPageCallback) async {
-    await _getReposRequest(accessToken, "https://$_domain/api/v1/user/repos", updateCallback, nextPageCallback);
+  Future<void> getRepos(
+    String accessToken,
+    Function(List<(String, String)>) updateCallback,
+    Function(Function()?) nextPageCallback,
+  ) async {
+    await _getReposRequest(
+      accessToken,
+      "https://$_domain/api/v1/user/repos",
+      updateCallback,
+      nextPageCallback,
+    );
   }
 
   Future<void> _getReposRequest(
@@ -57,11 +72,19 @@ class GiteaManager extends GitProviderManager {
     Function(Function()?) nextPageCallback,
   ) async {
     try {
-      final response = await http.get(Uri.parse(url), headers: {"Accept": "application/json", "Authorization": "token $accessToken"});
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          "Accept": "application/json",
+          "Authorization": "token $accessToken",
+        },
+      );
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonArray = json.decode(response.body);
-        final List<(String, String)> repoList = jsonArray.map((repo) => ("${repo["name"]}", "${repo["clone_url"]}")).toList();
+        final List<(String, String)> repoList = jsonArray
+            .map((repo) => ("${repo["name"]}", "${repo["clone_url"]}"))
+            .toList();
 
         updateCallback(repoList);
 
@@ -70,7 +93,14 @@ class GiteaManager extends GitProviderManager {
           final match = RegExp(r'<([^>]+)>; rel="next"').firstMatch(linkHeader);
           final String? nextLink = match?.group(1);
           if (nextLink != null) {
-            nextPageCallback(() => _getReposRequest(accessToken, nextLink, updateCallback, nextPageCallback));
+            nextPageCallback(
+              () => _getReposRequest(
+                accessToken,
+                nextLink,
+                updateCallback,
+                nextPageCallback,
+              ),
+            );
           } else {
             nextPageCallback(null);
           }
