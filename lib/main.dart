@@ -1617,47 +1617,47 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                           ],
                         ),
                       ),
-                      SizedBox(height: spaceMD),
-                      SizedBox(
-                        width: double.infinity,
-                        child: TextButton.icon(
-                          onPressed: gitDirPathSnapshot.data == null
-                              ? null
-                              : () async {
-                                  await useDirectory(
-                                    await uiSettingsManager.getString(StorageKey.setman_gitDirPath),
-                                    (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath),
-                                    (path) async {
-                                      await Navigator.of(context).push(createFileExplorerRoute(path));
-                                    },
-                                  );
-                                },
-                          style: ButtonStyle(
-                            alignment: Alignment.center,
-                            backgroundColor: WidgetStatePropertyAll(secondaryDark),
-                            padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
-                            shape: WidgetStatePropertyAll(
-                              RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
-                            ),
-                          ),
-                          icon: FaIcon(
-                            FontAwesomeIcons.filePen,
-                            color: gitDirPathSnapshot.data == null ? secondaryLight : tertiaryInfo,
-                            size: textLG,
-                          ),
-                          label: Padding(
-                            padding: EdgeInsets.only(left: spaceXS),
-                            child: Text(
-                              t.openFileExplorer.toUpperCase(),
-                              style: TextStyle(
-                                color: gitDirPathSnapshot.data == null ? secondaryLight : tertiaryInfo,
-                                fontSize: textMD,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                      // SizedBox(height: spaceMD),
+                      // SizedBox(
+                      //   width: double.infinity,
+                      //   child: TextButton.icon(
+                      //     onPressed: gitDirPathSnapshot.data == null
+                      //         ? null
+                      //         : () async {
+                      //             await useDirectory(
+                      //               await uiSettingsManager.getString(StorageKey.setman_gitDirPath),
+                      //               (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath),
+                      //               (path) async {
+                      //                 await Navigator.of(context).push(createFileExplorerRoute(path));
+                      //               },
+                      //             );
+                      //           },
+                      //     style: ButtonStyle(
+                      //       alignment: Alignment.center,
+                      //       backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                      //       padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
+                      //       shape: WidgetStatePropertyAll(
+                      //         RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
+                      //       ),
+                      //     ),
+                      //     icon: FaIcon(
+                      //       FontAwesomeIcons.filePen,
+                      //       color: gitDirPathSnapshot.data == null ? secondaryLight : tertiaryInfo,
+                      //       size: textLG,
+                      //     ),
+                      //     label: Padding(
+                      //       padding: EdgeInsets.only(left: spaceXS),
+                      //       child: Text(
+                      //         t.openFileExplorer.toUpperCase(),
+                      //         style: TextStyle(
+                      //           color: gitDirPathSnapshot.data == null ? secondaryLight : tertiaryInfo,
+                      //           fontSize: textMD,
+                      //           fontWeight: FontWeight.bold,
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),

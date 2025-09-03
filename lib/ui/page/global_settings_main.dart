@@ -28,8 +28,7 @@ import '../../../global.dart';
 
 import '../dialog/change_language.dart' as ChangeLanguageDialog;
 import '../dialog/confirm_clear_data.dart' as ConfirmClearDataDialog;
-import '../dialog/enter_backup_restore_password.dart'
-    as EnterBackupRestorePasswordDialog;
+import '../dialog/enter_backup_restore_password.dart' as EnterBackupRestorePasswordDialog;
 
 class GlobalSettingsMain extends StatefulWidget {
   const GlobalSettingsMain({super.key, this.onboarding = false});
@@ -39,8 +38,7 @@ class GlobalSettingsMain extends StatefulWidget {
   State<GlobalSettingsMain> createState() => _GlobalSettingsMain();
 }
 
-class _GlobalSettingsMain extends State<GlobalSettingsMain>
-    with WidgetsBindingObserver {
+class _GlobalSettingsMain extends State<GlobalSettingsMain> with WidgetsBindingObserver {
   final _controller = ScrollController();
   bool atTop = true;
   final _uiSetupGuideKey = GlobalKey();
@@ -55,11 +53,7 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain>
 
     if (widget.onboarding) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        await _controller.animateTo(
-          _controller.position.maxScrollExtent,
-          duration: Duration(milliseconds: 500),
-          curve: Curves.easeInOut,
-        );
+        await _controller.animateTo(_controller.position.maxScrollExtent, duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
         await Future.delayed(Duration(milliseconds: 200));
         ShowCaseWidget.of(context).startShowCase([_uiSetupGuideKey]);
         while (!ShowCaseWidget.of(context).isShowCaseCompleted) {
@@ -78,10 +72,7 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain>
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
-        leading: getBackButton(
-          context,
-          () => Navigator.of(context).canPop() ? Navigator.pop(context) : null,
-        ),
+        leading: getBackButton(context, () => Navigator.of(context).canPop() ? Navigator.pop(context) : null),
         centerTitle: true,
         title: Text(
           t.globalSettings.toUpperCase(),
@@ -93,12 +84,7 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain>
           return LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              atTop ? Colors.transparent : Colors.black,
-              Colors.transparent,
-              Colors.transparent,
-              Colors.transparent,
-            ],
+            colors: [atTop ? Colors.transparent : Colors.black, Colors.transparent, Colors.transparent, Colors.transparent],
             stops: [0.0, 0.1, 0.9, 1.0],
           ).createShader(rect);
         },
@@ -115,43 +101,34 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain>
                   text: t.language,
                   icon: FontAwesomeIcons.earthOceania,
                   onPressed: () async {
-                    await ChangeLanguageDialog.showDialog(context, (
-                      locale,
-                    ) async {
-                      await repoManager.setStringNullable(
-                        StorageKey.repoman_appLocale,
-                        locale,
-                      );
-                      Navigator.of(context).canPop()
-                          ? Navigator.pop(context)
-                          : null;
+                    await ChangeLanguageDialog.showDialog(context, (locale) async {
+                      await repoManager.setStringNullable(StorageKey.repoman_appLocale, locale);
+                      Navigator.of(context).canPop() ? Navigator.pop(context) : null;
                       setState(() {});
-                      Navigator.of(context).canPop()
-                          ? Navigator.pop(context)
-                          : null;
+                      Navigator.of(context).canPop() ? Navigator.pop(context) : null;
                     });
                   },
                 ),
-                SizedBox(height: spaceMD),
-                ButtonSetting(
-                  text: t.browseEditDir,
-                  icon: FontAwesomeIcons.folderTree,
-                  onPressed: () async {
-                    String? selectedDirectory;
-                    if (await requestStoragePerm()) {
-                      selectedDirectory = await pickDirectory();
-                    }
-                    if (selectedDirectory == null) return;
+                // SizedBox(height: spaceMD),
+                // ButtonSetting(
+                //   text: t.browseEditDir,
+                //   icon: FontAwesomeIcons.folderTree,
+                //   onPressed: () async {
+                //     String? selectedDirectory;
+                //     if (await requestStoragePerm()) {
+                //       selectedDirectory = await pickDirectory();
+                //     }
+                //     if (selectedDirectory == null) return;
 
-                    await useDirectory(selectedDirectory, (_) async {}, (
-                      path,
-                    ) async {
-                      await Navigator.of(
-                        context,
-                      ).push(createFileExplorerRoute(path));
-                    });
-                  },
-                ),
+                //     await useDirectory(selectedDirectory, (_) async {}, (
+                //       path,
+                //     ) async {
+                //       await Navigator.of(
+                //         context,
+                //       ).push(createFileExplorerRoute(path));
+                //     });
+                //   },
+                // ),
                 SizedBox(height: spaceLG),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: spaceMD),
@@ -166,11 +143,7 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain>
                       ),
                       Text(
                         t.backupRestoreTitle.toUpperCase(),
-                        style: TextStyle(
-                          fontSize: textSM,
-                          color: primaryLight,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(fontSize: textSM, color: primaryLight, fontWeight: FontWeight.bold),
                       ),
                       Expanded(
                         child: Container(
@@ -187,43 +160,25 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain>
                   text: t.backup,
                   icon: FontAwesomeIcons.solidFloppyDisk,
                   onPressed: () async {
-                    await EnterBackupRestorePasswordDialog.showDialog(
-                      context,
-                      true,
-                      (text) async {
-                        final repoManagerSettings = await repoManager.getAll();
-                        final repoCount = (await repoManager.getStringList(
-                          StorageKey.repoman_repoNames,
-                        )).length;
-                        final settingsManagerSettings = <Map<String, String>>[];
+                    await EnterBackupRestorePasswordDialog.showDialog(context, true, (text) async {
+                      final repoManagerSettings = await repoManager.getAll();
+                      final repoCount = (await repoManager.getStringList(StorageKey.repoman_repoNames)).length;
+                      final settingsManagerSettings = <Map<String, String>>[];
 
-                        for (var i = 0; i < repoCount; i++) {
-                          final settingsManager = SettingsManager();
-                          settingsManager.reinit(repoIndex: i);
-                          settingsManagerSettings.add(
-                            await settingsManager.getAll(),
-                          );
-                        }
+                      for (var i = 0; i < repoCount; i++) {
+                        final settingsManager = SettingsManager();
+                        settingsManager.reinit(repoIndex: i);
+                        settingsManagerSettings.add(await settingsManager.getAll());
+                      }
 
-                        final Map<String, dynamic> settingsMap = {
-                          "repoManager": repoManagerSettings,
-                          "settingsManager": settingsManagerSettings,
-                        };
+                      final Map<String, dynamic> settingsMap = {"repoManager": repoManagerSettings, "settingsManager": settingsManagerSettings};
 
-                        await FilePicker.platform.saveFile(
-                          dialogTitle: t.selectBackupLocation,
-                          fileName: sprintf(t.backupFileTemplate, [
-                            DateTime.now().toLocal().toString().replaceAll(
-                              ":",
-                              "-",
-                            ),
-                          ]),
-                          bytes: utf8.encode(
-                            await encryptMap(settingsMap, text),
-                          ),
-                        );
-                      },
-                    );
+                      await FilePicker.platform.saveFile(
+                        dialogTitle: t.selectBackupLocation,
+                        fileName: sprintf(t.backupFileTemplate, [DateTime.now().toLocal().toString().replaceAll(":", "-")]),
+                        bytes: utf8.encode(await encryptMap(settingsMap, text)),
+                      );
+                    });
                   },
                 ),
                 SizedBox(height: spaceMD),
@@ -231,52 +186,31 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain>
                   text: t.restore,
                   icon: FontAwesomeIcons.arrowRotateLeft,
                   onPressed: () async {
-                    FilePickerResult? result = await FilePicker.platform
-                        .pickFiles();
+                    FilePickerResult? result = await FilePicker.platform.pickFiles();
                     if (result == null) return;
 
                     File file = File(result.files.single.path!);
 
-                    await EnterBackupRestorePasswordDialog.showDialog(
-                      context,
-                      false,
-                      (text) async {
-                        Map<String, dynamic> settingsMap = {};
-                        try {
-                          settingsMap = await decryptMap(
-                            file.readAsStringSync(),
-                            text,
-                          );
-                        } catch (e) {
-                          await Fluttertoast.showToast(
-                            msg: t.invalidPassword,
-                            toastLength: Toast.LENGTH_LONG,
-                            gravity: null,
-                          );
-                          return;
-                        }
+                    await EnterBackupRestorePasswordDialog.showDialog(context, false, (text) async {
+                      Map<String, dynamic> settingsMap = {};
+                      try {
+                        settingsMap = await decryptMap(file.readAsStringSync(), text);
+                      } catch (e) {
+                        await Fluttertoast.showToast(msg: t.invalidPassword, toastLength: Toast.LENGTH_LONG, gravity: null);
+                        return;
+                      }
 
-                        await repoManager.setAll(settingsMap["repoManager"]);
-                        List<dynamic> settingsManagerSettings =
-                            settingsMap["settingsManager"];
+                      await repoManager.setAll(settingsMap["repoManager"]);
+                      List<dynamic> settingsManagerSettings = settingsMap["settingsManager"];
 
-                        for (
-                          var i = 0;
-                          i < settingsManagerSettings.length;
-                          i++
-                        ) {
-                          final settingsManager = SettingsManager();
-                          settingsManager.reinit(repoIndex: i);
-                          await settingsManager.setAll(
-                            settingsManagerSettings[i],
-                          );
-                        }
+                      for (var i = 0; i < settingsManagerSettings.length; i++) {
+                        final settingsManager = SettingsManager();
+                        settingsManager.reinit(repoIndex: i);
+                        await settingsManager.setAll(settingsManagerSettings[i]);
+                      }
 
-                        Navigator.of(context).canPop()
-                            ? Navigator.pop(context)
-                            : null;
-                      },
-                    );
+                      Navigator.of(context).canPop() ? Navigator.pop(context) : null;
+                    });
                   },
                 ),
 
@@ -295,11 +229,7 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain>
                       ),
                       Text(
                         t.community.toUpperCase(),
-                        style: TextStyle(
-                          fontSize: textSM,
-                          color: primaryLight,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(fontSize: textSM, color: primaryLight, fontWeight: FontWeight.bold),
                       ),
                       Expanded(
                         child: Container(
@@ -330,20 +260,10 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain>
                   onPressed: () async {
                     final dir = await getTemporaryDirectory();
                     final logsDir = Directory('${dir.path}/logs');
-                    final files = !logsDir.existsSync()
-                        ? []
-                        : logsDir
-                              .listSync()
-                              .whereType<File>()
-                              .where((f) => f.path.endsWith('.log'))
-                              .toList();
+                    final files = !logsDir.existsSync() ? [] : logsDir.listSync().whereType<File>().where((f) => f.path.endsWith('.log')).toList();
 
                     if (files.isEmpty || !logsDir.existsSync()) {
-                      Fluttertoast.showToast(
-                        msg: t.noLogFilesFound,
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: null,
-                      );
+                      Fluttertoast.showToast(msg: t.noLogFilesFound, toastLength: Toast.LENGTH_SHORT, gravity: null);
                       return;
                     }
 
@@ -368,15 +288,12 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain>
                       osVersion = iosInfo.systemVersion;
                       deviceModel = iosInfo.utsname.machine;
                     } else {
-                      AndroidDeviceInfo androidInfo =
-                          await deviceInfo.androidInfo;
-                      osVersion =
-                          '${androidInfo.version.release} (SDK ${androidInfo.version.sdkInt})';
+                      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+                      osVersion = '${androidInfo.version.release} (SDK ${androidInfo.version.sdkInt})';
                       deviceModel = androidInfo.model;
                     }
 
-                    String appVersion =
-                        '${packageInfo.version}+${packageInfo.buildNumber}';
+                    String appVersion = '${packageInfo.version}+${packageInfo.buildNumber}';
 
                     final Email email = Email(
                       body:
@@ -385,9 +302,7 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain>
 ${await Logger.generateDeviceInfo()}
 
 """,
-                      subject: sprintf(t.logsEmailSubjectTemplate, [
-                        Platform.isIOS ? t.ios : t.android,
-                      ]),
+                      subject: sprintf(t.logsEmailSubjectTemplate, [Platform.isIOS ? t.ios : t.android]),
                       recipients: [t.logsEmailRecipient],
                       attachmentPaths: [zipFile.path],
                       isHTML: false,
@@ -436,11 +351,7 @@ ${await Logger.generateDeviceInfo()}
                       ),
                       Text(
                         t.guides.toUpperCase(),
-                        style: TextStyle(
-                          fontSize: textSM,
-                          color: primaryLight,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(fontSize: textSM, color: primaryLight, fontWeight: FontWeight.bold),
                       ),
                       Expanded(
                         child: Container(
@@ -472,13 +383,8 @@ ${await Logger.generateDeviceInfo()}
                         text: t.guidedSetup,
                         icon: FontAwesomeIcons.chalkboardUser,
                         onPressed: () async {
-                          await repoManager.setInt(
-                            StorageKey.repoman_onboardingStep,
-                            0,
-                          );
-                          Navigator.of(context).canPop()
-                              ? Navigator.pop(context)
-                              : null;
+                          await repoManager.setInt(StorageKey.repoman_onboardingStep, 0);
+                          Navigator.of(context).canPop() ? Navigator.pop(context) : null;
                           await onboardingController?.show();
                         },
                       ),
@@ -487,13 +393,8 @@ ${await Logger.generateDeviceInfo()}
                         text: t.uiGuide,
                         icon: FontAwesomeIcons.route,
                         onPressed: () async {
-                          await repoManager.setInt(
-                            StorageKey.repoman_onboardingStep,
-                            4,
-                          );
-                          Navigator.of(context).canPop()
-                              ? Navigator.pop(context)
-                              : null;
+                          await repoManager.setInt(StorageKey.repoman_onboardingStep, 4);
+                          Navigator.of(context).canPop() ? Navigator.pop(context) : null;
                           await onboardingController?.show();
                         },
                       ),
@@ -506,23 +407,14 @@ ${await Logger.generateDeviceInfo()}
                 ValueListenableBuilder(
                   valueListenable: premiumManager.hasPremiumNotifier,
                   builder: (context, hasPremium, child) => ButtonSetting(
-                    text:
-                        (hasPremium == true
-                                ? t.contributeTitle
-                                : t.premiumDialogTitle)
-                            .toUpperCase(),
-                    icon: hasPremium == true
-                        ? FontAwesomeIcons.circleDollarToSlot
-                        : FontAwesomeIcons.solidGem,
+                    text: (hasPremium == true ? t.contributeTitle : t.premiumDialogTitle).toUpperCase(),
+                    icon: hasPremium == true ? FontAwesomeIcons.circleDollarToSlot : FontAwesomeIcons.solidGem,
                     iconColor: tertiaryPositive,
                     onPressed: () async {
                       if (hasPremium == true) {
                         await launchUrl(Uri.parse(contributeLink));
                       } else {
-                        await UnlockPremiumDialog.showDialog(
-                          context,
-                          () => setState(() {}),
-                        );
+                        await UnlockPremiumDialog.showDialog(context, () => setState(() {}));
                         setState(() {});
                       }
                     },
@@ -553,9 +445,7 @@ ${await Logger.generateDeviceInfo()}
                       await uiSettingsManager.storage.deleteAll();
                       await repoManager.storage.deleteAll();
 
-                      Navigator.of(context).canPop()
-                          ? Navigator.pop(context)
-                          : null;
+                      Navigator.of(context).canPop() ? Navigator.pop(context) : null;
                     });
                   },
                   buttonColor: secondaryNegative,
@@ -573,9 +463,7 @@ ${await Logger.generateDeviceInfo()}
 Route createGlobalSettingsMainRoute({bool onboarding = false}) {
   return PageRouteBuilder(
     settings: const RouteSettings(name: global_settings_main),
-    pageBuilder: (context, animation, secondaryAnimation) => ShowCaseWidget(
-      builder: (context) => GlobalSettingsMain(onboarding: onboarding),
-    ),
+    pageBuilder: (context, animation, secondaryAnimation) => ShowCaseWidget(builder: (context) => GlobalSettingsMain(onboarding: onboarding)),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(0.0, 1.0);
       const end = Offset.zero;
