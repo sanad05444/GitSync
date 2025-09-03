@@ -1152,6 +1152,126 @@ fn push_changes_priv(
     Ok(Some(true))
 }
 
+pub async fn stage_file_paths(
+    path_string: &String,
+    paths: Vec<String>,
+    log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
+) -> Result<(), git2::Error> {
+    init(None);
+    let log_callback = Arc::new(log);
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::PushToRepo,
+        "Getting local directory".to_string(),
+    );
+    let repo = Repository::open(&path_string)?;
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::PushToRepo,
+        "Retrieved Statuses".to_string(),
+    );
+
+    let mut index = repo.index()?;
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::PushToRepo,
+        "Adding Files to Stage".to_string(),
+    );
+
+    match index.add_all(paths.iter(), git2::IndexAddOption::DEFAULT, None) {
+        Ok(_) => {}
+        Err(_) => { index.update_all(paths.iter(), None)?; }
+    }
+
+    for path in &paths {
+        if let Ok(mut sm) = repo.find_submodule(path) {
+            let sm_repo = sm.open()?;
+            sm_repo.index()?.write()?;
+            sm.add_to_index(false)?;
+        }
+    }
+
+    index.write()?;
+
+    if !index.has_conflicts() {
+        index.write_tree()?;
+    }
+
+    Ok(())
+}
+
+
+pub async fn commit_changes(
+    path_string: &String,
+    commit_signing_credentials: Option<(String, String)>,
+    author: &(String, String),
+    sync_message: &String,
+    log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
+) -> Result<(), git2::Error> {
+    init(None);
+    let log_callback = Arc::new(log);
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::PushToRepo,
+        "Getting local directory".to_string(),
+    );
+    let repo = Repository::open(&path_string)?;
+    set_author(&repo, &author);
+
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::PushToRepo,
+        "Retrieved Statuses".to_string(),
+    );
+
+    let mut index = repo.index()?;
+    let updated_tree_oid = if !index.has_conflicts() {
+        Some(index.write_tree()?)
+    } else {
+        None
+    };
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::PushToRepo,
+        "Committing changes".to_string(),
+    );
+    
+    let signature = repo
+        .signature()
+        .or_else(|_| Signature::now(&author.0, &author.1))?;
+
+    let parents = match repo.head()
+        .ok()
+        .and_then(|h| h.resolve().ok())
+        .and_then(|h| h.peel_to_commit().ok()) {
+            Some(commit) => vec![commit],
+            None => vec![],
+        };
+
+
+    let tree_oid = updated_tree_oid.unwrap_or_else(|| index.write_tree_to(&repo).unwrap());
+    let tree = repo.find_tree(tree_oid)?;
+
+    commit(
+        &repo,
+        Some("HEAD"),
+        &signature,
+        &sync_message,
+        &tree,
+        &parents.iter().collect::<Vec<_>>(),
+        commit_signing_credentials,
+        &log_callback,
+    )?;
+
+    Ok(())
+}
+
 pub async fn upload_changes(
     path_string: &String,
     remote_name: &String,
@@ -1769,6 +1889,74 @@ pub async fn get_conflicting(
     });
 
     conflicts
+}
+
+pub async fn get_staged_file_paths(
+    path_string: &str, 
+    log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
+) -> Vec<(String, i32)> {
+    init(None);
+    let log_callback = Arc::new(log);
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::GitStatus,
+        "Getting local directory".to_string(),
+    );
+    let repo = match Repository::open(path_string) {
+        Ok(repo) => repo,
+        Err(_) => return Vec::new(),
+    };
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::GitStatus,
+        "Getting staged files".to_string(),
+    );
+
+    let mut opts = StatusOptions::new();
+    opts.include_untracked(false);
+    opts.include_ignored(false);
+    opts.update_index(true);
+    opts.show(git2::StatusShow::Index);
+    let statuses = repo.statuses(Some(&mut opts)).unwrap();
+
+    let mut file_paths = Vec::new();
+
+    for entry in statuses.iter() {
+        let path = entry.path().unwrap_or_default();
+        let status = entry.status();
+
+        if path.ends_with('/') && repo.find_submodule(&path[..path.len()-1]).is_ok() {
+            continue;
+        }
+
+        if let Ok(mut submodule) = repo.find_submodule(path) {
+            submodule.reload(true).ok();
+            let head_oid = submodule.head_id();
+            let index_oid = submodule.index_id();
+
+            if head_oid != index_oid {
+                file_paths.push((path.to_string(), 1));
+            }
+            continue;
+        }
+
+        match status {
+            Status::INDEX_MODIFIED => {
+                file_paths.push((path.to_string(), 1));
+            },
+            Status::INDEX_DELETED => {
+                file_paths.push((path.to_string(), 2));
+            },
+            Status::INDEX_NEW => {
+                file_paths.push((path.to_string(), 3));
+            },
+            _ => {}
+        }
+    }
+
+    file_paths
 }
 
 pub async fn get_uncommitted_file_paths(

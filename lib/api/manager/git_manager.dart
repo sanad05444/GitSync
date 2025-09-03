@@ -87,6 +87,9 @@ class GitManager {
     return provider == GitProvider.SSH ? await settingsManager.getGitSshAuthCredentials() : await settingsManager.getGitHttpAuthCredentials();
   }
 
+  static bool isGitDir(String dirPath) =>
+      Directory("$dirPath/$gitPath").existsSync() || File("$dirPath/$gitIndexPath").existsSync() || File("$dirPath/$gitPath").existsSync();
+
   // UI Accessible Only
   static Future<String?> clone(String repoUrl, String repoPath, Function(String) cloneTaskCallback, Function(int) cloneProgressCallback) async {
     if (await isLocked()) return operationInProgressError;
@@ -151,7 +154,7 @@ class GitManager {
       if (!await hasNetworkConnection()) return;
 
       await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
-        if (!Directory("$dirPath/.git").existsSync()) return;
+        if (!isGitDir(dirPath)) return;
 
         Logger.gmLog(type: LogType.ForcePull, ".git folder found");
 
@@ -186,7 +189,7 @@ class GitManager {
       if (!await hasNetworkConnection()) return;
 
       await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
-        if (!Directory("$dirPath/.git").existsSync()) return;
+        if (!isGitDir(dirPath)) return;
 
         Logger.gmLog(type: LogType.ForcePull, ".git folder found");
 
@@ -222,7 +225,7 @@ class GitManager {
       if (!await hasNetworkConnection()) return;
 
       await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
-        if (!Directory("$dirPath/.git").existsSync()) return;
+        if (!isGitDir(dirPath)) return;
 
         Logger.gmLog(type: LogType.ForcePull, ".git folder found");
 
@@ -248,6 +251,77 @@ class GitManager {
     });
   }
 
+  static Future<void> stageFilePaths(List<String> paths) async {
+    if (await isLocked()) {
+      Fluttertoast.showToast(msg: operationInProgressError, toastLength: Toast.LENGTH_SHORT, gravity: null);
+      return;
+    }
+
+    final repoIndex = await repoManager.getInt(StorageKey.repoman_repoIndex);
+
+    return await _runWithLock(repoIndex, () async {
+      final dirPath = (await uiSettingsManager.getGitDirPath());
+      if (dirPath == null) return;
+
+      if (!await hasNetworkConnection()) return;
+
+      await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
+        if (!isGitDir(dirPath)) return;
+
+        Logger.gmLog(type: LogType.ForcePull, ".git folder found");
+
+        try {
+          await GitManagerRs.stageFilePaths(pathString: dirPath, paths: paths, log: _logWrapper);
+        } catch (e, stackTrace) {
+          if (!await hasNetworkConnection()) return;
+          Logger.logError(LogType.ForcePull, e, stackTrace);
+          return;
+        }
+      });
+    });
+  }
+
+  static Future<void> commitChanges(String? syncMessage) async {
+    if (await isLocked()) {
+      Fluttertoast.showToast(msg: operationInProgressError, toastLength: Toast.LENGTH_SHORT, gravity: null);
+      return;
+    }
+
+    final repoIndex = await repoManager.getInt(StorageKey.repoman_repoIndex);
+
+    return await _runWithLock(repoIndex, () async {
+      final dirPath = (await uiSettingsManager.getGitDirPath());
+      if (dirPath == null) return;
+
+      if (!await hasNetworkConnection()) return;
+
+      await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
+        if (!isGitDir(dirPath)) return;
+
+        Logger.gmLog(type: LogType.ForcePull, ".git folder found");
+
+        try {
+          await GitManagerRs.commitChanges(
+            pathString: dirPath,
+            author: (
+              await uiSettingsManager.getString(StorageKey.setman_authorName),
+              await uiSettingsManager.getString(StorageKey.setman_authorEmail),
+            ),
+            commitSigningCredentials: await uiSettingsManager.getGitCommitSigningCredentials(),
+            syncMessage: sprintf(syncMessage ?? await uiSettingsManager.getString(StorageKey.setman_syncMessage), [
+              (DateFormat(await uiSettingsManager.getString(StorageKey.setman_syncMessageTimeFormat))).format(DateTime.now()),
+            ]),
+            log: _logWrapper,
+          );
+        } catch (e, stackTrace) {
+          if (!await hasNetworkConnection()) return;
+          Logger.logError(LogType.ForcePull, e, stackTrace);
+          return;
+        }
+      });
+    });
+  }
+
   static Future<void> pushChanges() async {
     if (await isLocked()) {
       Fluttertoast.showToast(msg: operationInProgressError, toastLength: Toast.LENGTH_SHORT, gravity: null);
@@ -263,7 +337,7 @@ class GitManager {
       if (!await hasNetworkConnection()) return;
 
       await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
-        if (!Directory("$dirPath/.git").existsSync()) return;
+        if (!isGitDir(dirPath)) return;
 
         Logger.gmLog(type: LogType.ForcePull, ".git folder found");
 
@@ -300,7 +374,7 @@ class GitManager {
       if (!await hasNetworkConnection()) return;
 
       await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
-        if (!Directory("$dirPath/.git").existsSync()) return;
+        if (!isGitDir(dirPath)) return;
 
         Logger.gmLog(type: LogType.ForcePull, ".git folder found");
 
@@ -336,7 +410,7 @@ class GitManager {
       if (!await hasNetworkConnection()) return;
 
       await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
-        if (!Directory("$dirPath/.git").existsSync()) return;
+        if (!isGitDir(dirPath)) return;
 
         Logger.gmLog(type: LogType.ForcePush, ".git folder found");
 
@@ -372,7 +446,7 @@ class GitManager {
       if (!await hasNetworkConnection()) return;
 
       await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
-        if (!Directory("$dirPath/.git").existsSync()) return;
+        if (!isGitDir(dirPath)) return;
 
         Logger.gmLog(type: LogType.ForcePull, ".git folder found");
 
@@ -412,7 +486,7 @@ class GitManager {
       if (!await hasNetworkConnection()) return;
 
       await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
-        if (!Directory("$dirPath/.git").existsSync()) return;
+        if (!isGitDir(dirPath)) return;
 
         Logger.gmLog(type: LogType.ForcePush, ".git folder found");
 
@@ -449,7 +523,7 @@ class GitManager {
       if (dirPath == null) return;
 
       await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
-        if (!Directory("$dirPath/.git").existsSync()) return;
+        if (!isGitDir(dirPath)) return;
 
         Logger.gmLog(type: LogType.PushToRepo, ".git folder found");
 
@@ -471,7 +545,7 @@ class GitManager {
       if (dirPath == null) return;
 
       await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
-        if (!Directory("$dirPath/.git").existsSync()) return;
+        if (!isGitDir(dirPath)) return;
 
         Logger.gmLog(type: LogType.PushToRepo, ".git folder found");
 
@@ -496,9 +570,7 @@ class GitManager {
 
     final result =
         await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
-          if (!Directory("$dirPath/$gitPath").existsSync() &&
-              !File("$dirPath/$gitIndexPath").existsSync() &&
-              !File("$dirPath/$gitPath").existsSync()) {
+          if (!isGitDir(dirPath)) {
             return <GitManagerRs.Commit>[];
           }
 
@@ -528,9 +600,7 @@ class GitManager {
     if (dirPath == null || dirPath.isEmpty) return [];
     final result =
         await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
-          if (!Directory("$dirPath/$gitPath").existsSync() &&
-              !File("$dirPath/$gitIndexPath").existsSync() &&
-              !File("$dirPath/$gitPath").existsSync()) {
+          if (!isGitDir(dirPath)) {
             return <String>[];
           }
 
@@ -580,6 +650,36 @@ class GitManager {
         <(String, int)>[];
 
     _lastUncommittedFilePaths = result;
+    return result;
+  }
+
+  static List<(String, int)> _lastStagedFilePaths = [];
+  static Future<List<(String, int)>> getStagedFilePaths([int? repomanRepoindex]) async {
+    if (await isLocked()) {
+      return _lastStagedFilePaths;
+    }
+
+    if (demo) {
+      return [("storage/external/example/file_staged.md", 1)];
+    }
+
+    final settingsManager = repomanRepoindex == null ? uiSettingsManager : await SettingsManager().reinit(repoIndex: repomanRepoindex);
+    final dirPath = (await settingsManager.getGitDirPath());
+    if (dirPath == null) return [];
+    final result =
+        await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
+          Logger.gmLog(type: LogType.RecentCommits, ".git folder found");
+
+          try {
+            return (await GitManagerRs.getStagedFilePaths(pathString: dirPath, log: _logWrapper)).toSet().toList();
+          } catch (e, stackTrace) {
+            Logger.logError(LogType.RecentCommits, e, stackTrace);
+            return <(String, int)>[];
+          }
+        }) ??
+        <(String, int)>[];
+
+    _lastStagedFilePaths = result;
     return result;
   }
 
@@ -1016,7 +1116,7 @@ class GitManager {
     return await _runWithLock(repoIndex, () async {
           if (!await hasNetworkConnection()) return null;
           return await useDirectory(repoPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
-            if (!Directory("$dirPath/.git").existsSync()) return null;
+            if (!isGitDir(dirPath)) return null;
 
             Logger.gmLog(type: LogType.SelectDirectory, ".git folder found");
 

@@ -134,6 +134,30 @@ Future<bool?> pushChanges({
   log: log,
 );
 
+Future<void> stageFilePaths({
+  required String pathString,
+  required List<String> paths,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerStageFilePaths(
+  pathString: pathString,
+  paths: paths,
+  log: log,
+);
+
+Future<void> commitChanges({
+  required String pathString,
+  (String, String)? commitSigningCredentials,
+  required (String, String) author,
+  required String syncMessage,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerCommitChanges(
+  pathString: pathString,
+  commitSigningCredentials: commitSigningCredentials,
+  author: author,
+  syncMessage: syncMessage,
+  log: log,
+);
+
 Future<bool?> uploadChanges({
   required String pathString,
   required String remoteName,
@@ -238,6 +262,14 @@ Future<List<String>> getConflicting({
   required String pathString,
   required FutureOr<void> Function(LogType, String) log,
 }) => RustLib.instance.api.crateApiGitManagerGetConflicting(
+  pathString: pathString,
+  log: log,
+);
+
+Future<List<(String, int)>> getStagedFilePaths({
+  required String pathString,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerGetStagedFilePaths(
   pathString: pathString,
   log: log,
 );
