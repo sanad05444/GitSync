@@ -6,7 +6,12 @@ import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
 import 'package:GitSync/global.dart';
 
-Future<void> showDialog(BuildContext context, String repoUrl, String dir, Function(String?) callback) async {
+Future<void> showDialog(
+  BuildContext context,
+  String repoUrl,
+  String dir,
+  Function(String?) callback,
+) async {
   String task = "";
   double progress = 0.0;
   StateSetter? setState;
@@ -30,39 +35,66 @@ Future<void> showDialog(BuildContext context, String repoUrl, String dir, Functi
   return mat.showDialog(
     context: context,
     barrierDismissible: false,
-    builder:
-        (BuildContext context) => PopScope(
-          canPop: false,
-          child: BaseAlertDialog(
-            title: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Text(t.cloningRepository, style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold)),
+    builder: (BuildContext context) => PopScope(
+      canPop: false,
+      child: BaseAlertDialog(
+        title: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: Text(
+            t.cloningRepository,
+            style: TextStyle(
+              color: primaryLight,
+              fontSize: textXL,
+              fontWeight: FontWeight.bold,
             ),
-            content: StatefulBuilder(
-              builder: (context, internalSetState) {
-                setState = internalSetState;
-                return SingleChildScrollView(
-                  child: ListBody(
-                    children: [
-                      Text(t.cloneMessagePart1, style: const TextStyle(color: tertiaryNegative, fontWeight: FontWeight.bold, fontSize: textMD)),
-                      Text(t.cloneMessagePart2, style: const TextStyle(color: primaryLight, fontSize: textMD)),
-                      SizedBox(height: spaceMD),
-                      Text(task, maxLines: 1, style: const TextStyle(color: primaryLight, fontSize: textMD, overflow: TextOverflow.ellipsis)),
-                      SizedBox(height: spaceMD),
-                      LinearProgressIndicator(
-                        value: progress,
-                        backgroundColor: secondaryLight,
-                        color: primaryPositive,
-                        semanticsLabel: t.cloneProgressLabel,
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-            actions: null,
           ),
         ),
+        content: StatefulBuilder(
+          builder: (context, internalSetState) {
+            setState = internalSetState;
+            return SingleChildScrollView(
+              child: ListBody(
+                children: [
+                  Text(
+                    t.cloneMessagePart1,
+                    style: const TextStyle(
+                      color: tertiaryNegative,
+                      fontWeight: FontWeight.bold,
+                      fontSize: textMD,
+                    ),
+                  ),
+                  Text(
+                    t.cloneMessagePart2,
+                    style: const TextStyle(
+                      color: primaryLight,
+                      fontSize: textMD,
+                    ),
+                  ),
+                  SizedBox(height: spaceMD),
+                  Text(
+                    task,
+                    maxLines: 1,
+                    style: const TextStyle(
+                      color: primaryLight,
+                      fontSize: textMD,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  SizedBox(height: spaceMD),
+                  LinearProgressIndicator(
+                    value: progress,
+                    backgroundColor: secondaryLight,
+                    color: primaryPositive,
+                    semanticsLabel: t.cloneProgressLabel,
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+        actions: null,
+      ),
+    ),
   );
 
   // return (setTask, setProgress);

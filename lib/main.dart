@@ -58,7 +58,7 @@ import '../ui/component/item_commit.dart';
 import '../ui/page/clone_repo_main.dart';
 import '../ui/page/settings_main.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/l10n/app_localizations.dart';
 
 import 'ui/dialog/confirm_reinstall_clear_data.dart' as ConfirmReinstallClearDataDialog;
 
@@ -205,44 +205,43 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: repoManager.getStringNullable(StorageKey.repoman_appLocale),
-      builder:
-          (context, appLocaleSnapshot) => MaterialApp(
-            title: appName,
-            debugShowCheckedModeBanner: false,
-            localizationsDelegates: [LocaleNamesLocalizationsDelegate(), ...AppLocalizations.localizationsDelegates],
-            supportedLocales: AppLocalizations.supportedLocales,
-            locale: appLocaleSnapshot.data == null ? null : Locale(appLocaleSnapshot.data!),
-            initialRoute: "/",
-            localeResolutionCallback: (locale, supportedLocales) {
-              for (var supportedLocale in supportedLocales) {
-                if (supportedLocale.languageCode == locale?.languageCode) {
-                  return supportedLocale;
-                }
-              }
-              return const Locale('en');
-            },
-            theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: primaryDark), useMaterial3: true),
-            home: ShowCaseWidget(
-              blurValue: 3,
-              builder: (context) {
-                t = AppLocalizations.of(context);
-                FlutterBackgroundService().invoke(
-                  GitsyncService.UPDATE_SERVICE_STRINGS,
-                  ServiceStrings(
-                    syncStartPull: t.syncStartPull,
-                    syncStartPush: t.syncStartPush,
-                    syncNotRequired: t.syncNotRequired,
-                    syncComplete: t.syncComplete,
-                    syncInProgress: t.syncInProgress,
-                    syncScheduled: t.syncScheduled,
-                    detectingChanges: t.detectingChanges,
-                    ongoingMergeConflict: t.ongoingMergeConflict,
-                  ).toMap(),
-                );
-                return MyHomePage(title: appName, setState: setState);
-              },
-            ),
-          ),
+      builder: (context, appLocaleSnapshot) => MaterialApp(
+        title: appName,
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: [LocaleNamesLocalizationsDelegate(), ...AppLocalizations.localizationsDelegates],
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: appLocaleSnapshot.data == null ? null : Locale(appLocaleSnapshot.data!),
+        initialRoute: "/",
+        localeResolutionCallback: (locale, supportedLocales) {
+          for (var supportedLocale in supportedLocales) {
+            if (supportedLocale.languageCode == locale?.languageCode) {
+              return supportedLocale;
+            }
+          }
+          return const Locale('en');
+        },
+        theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: primaryDark), useMaterial3: true),
+        home: ShowCaseWidget(
+          blurValue: 3,
+          builder: (context) {
+            t = AppLocalizations.of(context);
+            FlutterBackgroundService().invoke(
+              GitsyncService.UPDATE_SERVICE_STRINGS,
+              ServiceStrings(
+                syncStartPull: t.syncStartPull,
+                syncStartPush: t.syncStartPush,
+                syncNotRequired: t.syncNotRequired,
+                syncComplete: t.syncComplete,
+                syncInProgress: t.syncInProgress,
+                syncScheduled: t.syncScheduled,
+                detectingChanges: t.detectingChanges,
+                ongoingMergeConflict: t.ongoingMergeConflict,
+              ).toMap(),
+            );
+            return MyHomePage(title: appName, setState: setState);
+          },
+        ),
+      ),
     );
   }
 }
@@ -633,7 +632,10 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                         child: Container(
                           width: spaceMD + spaceXS,
                           height: spaceMD + spaceXS,
-                          decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: tertiaryDark, width: 4)),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: tertiaryDark, width: 4),
+                          ),
                         ),
                       ),
                     ),
@@ -679,7 +681,9 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
               TooltipActionButton(
                 backgroundColor: secondaryInfo,
                 textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: textSM, color: primaryLight),
-                leadIcon: ActionButtonIcon(icon: Icon(FontAwesomeIcons.solidFileLines, color: primaryLight, size: textSM)),
+                leadIcon: ActionButtonIcon(
+                  icon: Icon(FontAwesomeIcons.solidFileLines, color: primaryLight, size: textSM),
+                ),
                 name: t.learnMore.toUpperCase(),
                 onTap: () => launchUrl(Uri.parse(multiRepoDocsLink)),
                 type: null,
@@ -687,209 +691,203 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
             ],
             child: FutureBuilder(
               future: repoManager.getStringList(StorageKey.repoman_repoNames),
-              builder:
-                  (context, repoNamesSnapshot) => Container(
-                    padding: EdgeInsets.zero,
-                    decoration: BoxDecoration(color: tertiaryDark, borderRadius: BorderRadius.all(cornerRadiusMax)),
-                    child: FutureBuilder(
-                      future: repoManager.getInt(StorageKey.repoman_repoIndex),
-                      builder:
-                          (context, repoIndexSnapshot) =>
-                              repoNamesSnapshot.data == null
-                                  ? SizedBox.shrink()
-                                  : Row(
-                                    children: [
-                                      SizedBox(width: spaceXXXS),
-                                      TextButton(
-                                        style: ButtonStyle(
-                                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                          minimumSize: WidgetStatePropertyAll(Size.zero),
-                                          padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceXS, vertical: spaceXS)),
+              builder: (context, repoNamesSnapshot) => Container(
+                padding: EdgeInsets.zero,
+                decoration: BoxDecoration(color: tertiaryDark, borderRadius: BorderRadius.all(cornerRadiusMax)),
+                child: FutureBuilder(
+                  future: repoManager.getInt(StorageKey.repoman_repoIndex),
+                  builder: (context, repoIndexSnapshot) => repoNamesSnapshot.data == null
+                      ? SizedBox.shrink()
+                      : Row(
+                          children: [
+                            SizedBox(width: spaceXXXS),
+                            TextButton(
+                              style: ButtonStyle(
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                minimumSize: WidgetStatePropertyAll(Size.zero),
+                                padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceXS, vertical: spaceXS)),
+                              ),
+                              onPressed: () async {
+                                if (premiumManager.hasPremiumNotifier.value != true) {
+                                  await UnlockPremiumDialog.showDialog(context, () {
+                                    setState(() {});
+                                    addRepo();
+                                  });
+                                  setState(() {});
+                                  return;
+                                }
+
+                                if (repoNamesSnapshot.data!.length == 1 || repoSettingsExpanded) {
+                                  addRepo();
+                                  return;
+                                }
+
+                                repoSettingsExpanded = !repoSettingsExpanded;
+                                setState(() {});
+
+                                if (repoSettingsExpanded) {
+                                  Future.delayed(
+                                    Duration(seconds: 5),
+                                    () => setState(() {
+                                      repoSettingsExpanded = false;
+                                    }),
+                                  );
+                                }
+                              },
+                              child: Row(
+                                children: [
+                                  ValueListenableBuilder(
+                                    valueListenable: premiumManager.hasPremiumNotifier,
+                                    builder: (context, hasPremium, child) => FaIcon(
+                                      hasPremium == true
+                                          ? (repoNamesSnapshot.data!.length == 1 || repoSettingsExpanded
+                                                ? FontAwesomeIcons.solidSquarePlus
+                                                : FontAwesomeIcons.ellipsis)
+                                          : FontAwesomeIcons.solidGem,
+                                      color: repoNamesSnapshot.data!.length == 1 || repoSettingsExpanded ? tertiaryPositive : secondaryLight,
+                                      size: textLG,
+                                    ),
+                                  ),
+                                  repoNamesSnapshot.data!.length != 1
+                                      ? SizedBox.shrink()
+                                      : Padding(
+                                          padding: EdgeInsets.only(left: spaceSM),
+                                          child: Text(
+                                            t.addMore.toUpperCase(),
+                                            style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.w900),
+                                          ),
                                         ),
-                                        onPressed: () async {
-                                          if (premiumManager.hasPremiumNotifier.value != true) {
-                                            await UnlockPremiumDialog.showDialog(context, () {
-                                              setState(() {});
-                                              addRepo();
-                                            });
-                                            setState(() {});
-                                            return;
-                                          }
-
-                                          if (repoNamesSnapshot.data!.length == 1 || repoSettingsExpanded) {
-                                            addRepo();
-                                            return;
-                                          }
-
-                                          repoSettingsExpanded = !repoSettingsExpanded;
+                                ],
+                              ),
+                            ),
+                            repoNamesSnapshot.data!.length > 1 && repoSettingsExpanded
+                                ? Row(
+                                    children: [
+                                      IconButton(
+                                        style: ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                                        constraints: BoxConstraints(),
+                                        onPressed: () {
+                                          repoSettingsExpanded = false;
                                           setState(() {});
 
-                                          if (repoSettingsExpanded) {
-                                            Future.delayed(
-                                              Duration(seconds: 5),
-                                              () => setState(() {
-                                                repoSettingsExpanded = false;
-                                              }),
-                                            );
-                                          }
+                                          RemoveContainerDialog.showDialog(context, (deleteContents) async {
+                                            if (deleteContents) {
+                                              await GitManager.deleteDirContents();
+                                            }
+
+                                            await uiSettingsManager.clearAll();
+
+                                            final repomanReponames = await repoManager.getStringList(StorageKey.repoman_repoNames);
+                                            repomanReponames.removeAt(await repoManager.getInt(StorageKey.repoman_repoIndex));
+
+                                            repoManager.setStringList(StorageKey.repoman_repoNames, repomanReponames);
+
+                                            if (await repoManager.getInt(StorageKey.repoman_repoIndex) >= repomanReponames.length) {
+                                              await repoManager.setInt(StorageKey.repoman_repoIndex, repomanReponames.length - 1);
+                                            }
+
+                                            if (await repoManager.getInt(StorageKey.repoman_tileSyncIndex) >= repomanReponames.length) {
+                                              await repoManager.setInt(StorageKey.repoman_tileSyncIndex, repomanReponames.length - 1);
+                                            }
+
+                                            if (await repoManager.getInt(StorageKey.repoman_tileManualSyncIndex) >= repomanReponames.length) {
+                                              await repoManager.setInt(StorageKey.repoman_tileManualSyncIndex, repomanReponames.length - 1);
+                                            }
+
+                                            await uiSettingsManager.reinit();
+                                            setState(() {});
+                                          });
                                         },
-                                        child: Row(
-                                          children: [
-                                            ValueListenableBuilder(
-                                              valueListenable: premiumManager.hasPremiumNotifier,
-                                              builder:
-                                                  (context, hasPremium, child) => FaIcon(
-                                                    hasPremium == true
-                                                        ? (repoNamesSnapshot.data!.length == 1 || repoSettingsExpanded
-                                                            ? FontAwesomeIcons.solidSquarePlus
-                                                            : FontAwesomeIcons.ellipsis)
-                                                        : FontAwesomeIcons.solidGem,
-                                                    color:
-                                                        repoNamesSnapshot.data!.length == 1 || repoSettingsExpanded
-                                                            ? tertiaryPositive
-                                                            : secondaryLight,
-                                                    size: textLG,
-                                                  ),
-                                            ),
-                                            repoNamesSnapshot.data!.length != 1
-                                                ? SizedBox.shrink()
-                                                : Padding(
-                                                  padding: EdgeInsets.only(left: spaceSM),
-                                                  child: Text(
-                                                    t.addMore.toUpperCase(),
-                                                    style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.w900),
-                                                  ),
-                                                ),
-                                          ],
+                                        icon: FaIcon(FontAwesomeIcons.solidSquareMinus, color: tertiaryNegative, size: textLG),
+                                      ),
+                                      IconButton(
+                                        style: ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                                        constraints: BoxConstraints(),
+                                        onPressed: () {
+                                          repoSettingsExpanded = false;
+                                          setState(() {});
+
+                                          if (repoNamesSnapshot.data == null || repoIndexSnapshot.data == null) return;
+
+                                          RenameContainerDialog.showDialog(context, repoNamesSnapshot.data![repoIndexSnapshot.data!].toLowerCase(), (
+                                            text,
+                                          ) async {
+                                            if (text.isEmpty) return;
+
+                                            final repomanReponames = await repoManager.getStringList(StorageKey.repoman_repoNames);
+                                            uiSettingsManager.renameNamespace(text);
+                                            repomanReponames[await repoManager.getInt(StorageKey.repoman_repoIndex)] = text;
+
+                                            await repoManager.setStringList(StorageKey.repoman_repoNames, repomanReponames);
+                                            setState(() {});
+                                          });
+                                        },
+                                        icon: FaIcon(FontAwesomeIcons.squarePen, color: tertiaryInfo, size: textLG),
+                                      ),
+                                    ],
+                                  )
+                                : SizedBox.shrink(),
+                            SizedBox(width: spaceXXXS),
+                            ...repoNamesSnapshot.data!.length > 1
+                                ? [
+                                    SizedBox(width: spaceXXXS),
+                                    DropdownButton(
+                                      borderRadius: BorderRadius.all(cornerRadiusMD),
+                                      padding: EdgeInsets.zero,
+                                      icon: Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: spaceSM),
+                                        child: FaIcon(FontAwesomeIcons.caretDown, color: secondaryLight, size: textSM),
+                                      ),
+                                      value: repoIndexSnapshot.data ?? 0,
+                                      style: const TextStyle(color: tertiaryLight, fontWeight: FontWeight.w900, fontSize: textMD),
+                                      isDense: true,
+                                      underline: const SizedBox.shrink(),
+                                      dropdownColor: secondaryDark,
+                                      onChanged: (value) async {
+                                        if (value == null) return;
+                                        await repoManager.setInt(StorageKey.repoman_repoIndex, value);
+                                        await uiSettingsManager.reinit();
+                                        setState(() {});
+                                      },
+                                      selectedItemBuilder: (context) => List.generate(
+                                        repoNamesSnapshot.data!.length,
+                                        (index) => ConstrainedBox(
+                                          constraints: BoxConstraints(maxWidth: spaceXXL + spaceLG),
+                                          child: Text(
+                                            repoNamesSnapshot.data![index].toUpperCase(),
+                                            style: TextStyle(fontSize: textXS, color: primaryLight),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
                                         ),
                                       ),
-                                      repoNamesSnapshot.data!.length > 1 && repoSettingsExpanded
-                                          ? Row(
-                                            children: [
-                                              IconButton(
-                                                style: ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-                                                constraints: BoxConstraints(),
-                                                onPressed: () {
-                                                  repoSettingsExpanded = false;
-                                                  setState(() {});
-
-                                                  RemoveContainerDialog.showDialog(context, (deleteContents) async {
-                                                    if (deleteContents) {
-                                                      await GitManager.deleteDirContents();
-                                                    }
-
-                                                    await uiSettingsManager.clearAll();
-
-                                                    final repomanReponames = await repoManager.getStringList(StorageKey.repoman_repoNames);
-                                                    repomanReponames.removeAt(await repoManager.getInt(StorageKey.repoman_repoIndex));
-
-                                                    repoManager.setStringList(StorageKey.repoman_repoNames, repomanReponames);
-
-                                                    if (await repoManager.getInt(StorageKey.repoman_repoIndex) >= repomanReponames.length) {
-                                                      await repoManager.setInt(StorageKey.repoman_repoIndex, repomanReponames.length - 1);
-                                                    }
-
-                                                    if (await repoManager.getInt(StorageKey.repoman_tileSyncIndex) >= repomanReponames.length) {
-                                                      await repoManager.setInt(StorageKey.repoman_tileSyncIndex, repomanReponames.length - 1);
-                                                    }
-
-                                                    if (await repoManager.getInt(StorageKey.repoman_tileManualSyncIndex) >= repomanReponames.length) {
-                                                      await repoManager.setInt(StorageKey.repoman_tileManualSyncIndex, repomanReponames.length - 1);
-                                                    }
-
-                                                    await uiSettingsManager.reinit();
-                                                    setState(() {});
-                                                  });
-                                                },
-                                                icon: FaIcon(FontAwesomeIcons.solidSquareMinus, color: tertiaryNegative, size: textLG),
-                                              ),
-                                              IconButton(
-                                                style: ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-                                                constraints: BoxConstraints(),
-                                                onPressed: () {
-                                                  repoSettingsExpanded = false;
-                                                  setState(() {});
-
-                                                  if (repoNamesSnapshot.data == null || repoIndexSnapshot.data == null) return;
-
-                                                  RenameContainerDialog.showDialog(
-                                                    context,
-                                                    repoNamesSnapshot.data![repoIndexSnapshot.data!].toLowerCase(),
-                                                    (text) async {
-                                                      if (text.isEmpty) return;
-
-                                                      final repomanReponames = await repoManager.getStringList(StorageKey.repoman_repoNames);
-                                                      uiSettingsManager.renameNamespace(text);
-                                                      repomanReponames[await repoManager.getInt(StorageKey.repoman_repoIndex)] = text;
-
-                                                      await repoManager.setStringList(StorageKey.repoman_repoNames, repomanReponames);
-                                                      setState(() {});
-                                                    },
-                                                  );
-                                                },
-                                                icon: FaIcon(FontAwesomeIcons.squarePen, color: tertiaryInfo, size: textLG),
-                                              ),
-                                            ],
-                                          )
-                                          : SizedBox.shrink(),
-                                      SizedBox(width: spaceXXXS),
-                                      ...repoNamesSnapshot.data!.length > 1
-                                          ? [
-                                            SizedBox(width: spaceXXXS),
-                                            DropdownButton(
-                                              borderRadius: BorderRadius.all(cornerRadiusMD),
-                                              padding: EdgeInsets.zero,
-                                              icon: Padding(
-                                                padding: EdgeInsets.symmetric(horizontal: spaceSM),
-                                                child: FaIcon(FontAwesomeIcons.caretDown, color: secondaryLight, size: textSM),
-                                              ),
-                                              value: repoIndexSnapshot.data ?? 0,
-                                              style: const TextStyle(color: tertiaryLight, fontWeight: FontWeight.w900, fontSize: textMD),
-                                              isDense: true,
-                                              underline: const SizedBox.shrink(),
-                                              dropdownColor: secondaryDark,
-                                              onChanged: (value) async {
-                                                if (value == null) return;
-                                                await repoManager.setInt(StorageKey.repoman_repoIndex, value);
-                                                await uiSettingsManager.reinit();
-                                                setState(() {});
-                                              },
-                                              selectedItemBuilder:
-                                                  (context) => List.generate(
-                                                    repoNamesSnapshot.data!.length,
-                                                    (index) => ConstrainedBox(
-                                                      constraints: BoxConstraints(maxWidth: spaceXXL + spaceLG),
-                                                      child: Text(
-                                                        repoNamesSnapshot.data![index].toUpperCase(),
-                                                        style: TextStyle(fontSize: textXS, color: primaryLight),
-                                                        overflow: TextOverflow.ellipsis,
-                                                      ),
-                                                    ),
-                                                  ),
-                                              items: List.generate(
-                                                repoNamesSnapshot.data!.length,
-                                                (index) => DropdownMenuItem(
-                                                  value: index,
-                                                  child: Text(
-                                                    repoNamesSnapshot.data![index].toUpperCase(),
-                                                    style: TextStyle(fontSize: textXS, color: primaryLight),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ]
-                                          : [SizedBox.shrink()],
-                                    ],
-                                  ),
-                    ),
-                  ),
+                                      items: List.generate(
+                                        repoNamesSnapshot.data!.length,
+                                        (index) => DropdownMenuItem(
+                                          value: index,
+                                          child: Text(
+                                            repoNamesSnapshot.data![index].toUpperCase(),
+                                            style: TextStyle(fontSize: textXS, color: primaryLight),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ]
+                                : [SizedBox.shrink()],
+                          ],
+                        ),
+                ),
+              ),
             ),
           ),
           SizedBox(width: spaceMD),
         ],
         title: Padding(
           padding: EdgeInsets.only(left: spaceMD, bottom: spaceXXS),
-          child: Text(widget.title, textAlign: TextAlign.right, style: TextStyle(color: primaryLight, fontWeight: FontWeight.bold)),
+          child: Text(
+            widget.title,
+            textAlign: TextAlign.right,
+            style: TextStyle(color: primaryLight, fontWeight: FontWeight.bold),
+          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -904,812 +902,765 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                 description: t.controlHint,
                 child: FutureBuilder(
                   future: GitManager.getRecentCommits(),
-                  builder:
-                      (context, recentCommitsSnapshot) => FutureBuilder(
-                        future: GitManager.getConflicting(),
-                        builder: (context, conflictingSnapshot) {
-                          final items = [
-                            ...((conflictingSnapshot.data == null || conflictingSnapshot.data!.isEmpty)
-                                ? <GitManagerRs.Commit>[]
-                                : [
-                                  GitManagerRs.Commit(
-                                    timestamp: 0,
-                                    author: "",
-                                    reference: mergeConflictReference,
-                                    commitMessage: "",
-                                    additions: 0,
-                                    deletions: 0,
-                                  ),
-                                ]),
-                            ...recentCommitsSnapshot.data ?? <GitManagerRs.Commit>[],
-                          ];
-
-                          if (demoConflicting) {
-                            while (items.length < 3) {
-                              items.add(
+                  builder: (context, recentCommitsSnapshot) => FutureBuilder(
+                    future: GitManager.getConflicting(),
+                    builder: (context, conflictingSnapshot) {
+                      final items = [
+                        ...((conflictingSnapshot.data == null || conflictingSnapshot.data!.isEmpty)
+                            ? <GitManagerRs.Commit>[]
+                            : [
                                 GitManagerRs.Commit(
                                   timestamp: 0,
                                   author: "",
-                                  reference: "REFERENCE${Random().nextInt(100)}",
+                                  reference: mergeConflictReference,
                                   commitMessage: "",
                                   additions: 0,
                                   deletions: 0,
                                 ),
-                              );
-                            }
-                            items[2] = GitManagerRs.Commit(
+                              ]),
+                        ...recentCommitsSnapshot.data ?? <GitManagerRs.Commit>[],
+                      ];
+
+                      if (demoConflicting) {
+                        while (items.length < 3) {
+                          items.add(
+                            GitManagerRs.Commit(
                               timestamp: 0,
                               author: "",
-                              reference: mergeConflictReference,
+                              reference: "REFERENCE${Random().nextInt(100)}",
                               commitMessage: "",
                               additions: 0,
                               deletions: 0,
-                            );
-                          }
+                            ),
+                          );
+                        }
+                        items[2] = GitManagerRs.Commit(
+                          timestamp: 0,
+                          author: "",
+                          reference: mergeConflictReference,
+                          commitMessage: "",
+                          additions: 0,
+                          deletions: 0,
+                        );
+                      }
 
-                          return Column(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: secondaryDark,
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: cornerRadiusMD,
-                                    bottomLeft: cornerRadiusSM,
-                                    topRight: cornerRadiusMD,
-                                    bottomRight: cornerRadiusSM,
+                      return Column(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: secondaryDark,
+                              borderRadius: BorderRadius.only(
+                                topLeft: cornerRadiusMD,
+                                bottomLeft: cornerRadiusSM,
+                                topRight: cornerRadiusMD,
+                                bottomRight: cornerRadiusSM,
+                              ),
+                            ),
+                            padding: EdgeInsets.only(left: spaceSM, bottom: spaceXS, right: spaceSM, top: spaceXS),
+                            child: Column(
+                              children: [
+                                Stack(
+                                  clipBehavior: Clip.none,
+                                  children: [
+                                    SizedBox(
+                                      height: 220,
+                                      child: ShaderMask(
+                                        shaderCallback: (Rect rect) {
+                                          return LinearGradient(
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                            colors: [Colors.black, Colors.transparent, Colors.transparent, Colors.transparent],
+                                            stops: [0.0, 0.1, 0.9, 1.0],
+                                          ).createShader(rect);
+                                        },
+                                        blendMode: BlendMode.dstOut,
+                                        child:
+                                            ((recentCommitsSnapshot.data ?? []).isEmpty &&
+                                                    recentCommitsSnapshot.connectionState == ConnectionState.waiting) ||
+                                                conflictingSnapshot.data == null
+                                            ? Center(child: CircularProgressIndicator(color: tertiaryLight))
+                                            : (recentCommitsSnapshot.data!.isEmpty && conflictingSnapshot.data!.isEmpty
+                                                  ? Center(
+                                                      child: Text(
+                                                        t.commitsNotFound.toUpperCase(),
+                                                        style: TextStyle(color: secondaryLight, fontWeight: FontWeight.bold, fontSize: textLG),
+                                                      ),
+                                                    )
+                                                  : Column(
+                                                      children: [
+                                                        Expanded(
+                                                          child: AnimatedListView(
+                                                            items: items,
+                                                            reverse: true,
+                                                            isSameItem: (a, b) => a.reference == b.reference,
+                                                            itemBuilder: (BuildContext context, int index) {
+                                                              final reference = items[index].reference;
+
+                                                              if (reference == mergeConflictReference) {
+                                                                return ItemMergeConflict(
+                                                                  key: Key(reference),
+                                                                  conflictingSnapshot.data!,
+                                                                  () => setState(() {}),
+                                                                );
+                                                              }
+
+                                                              return ItemCommit(key: Key(reference), items[index]);
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    )),
+                                      ),
+                                    ),
+                                    ...(recentCommitsSnapshot.data?.isNotEmpty == true &&
+                                            recentCommitsSnapshot.connectionState == ConnectionState.waiting)
+                                        ? [
+                                            Positioned(
+                                              top: -(spaceXS / 2),
+                                              left: 0,
+                                              right: 0,
+                                              child: LinearProgressIndicator(
+                                                value: null,
+                                                backgroundColor: secondaryDark,
+                                                color: tertiaryDark,
+                                                borderRadius: BorderRadius.all(cornerRadiusMD),
+                                              ),
+                                            ),
+                                          ]
+                                        : [],
+                                  ],
+                                ),
+                                SizedBox(height: spaceXS),
+                                FutureBuilder(
+                                  future: GitManager.getBranchName(),
+                                  builder: (context, branchNameSnapshot) => FutureBuilder(
+                                    future: GitManager.getBranchNames(),
+                                    builder: (context, branchNamesSnapshot) => Row(
+                                      children: [
+                                        Expanded(
+                                          child: DropdownButton(
+                                            isDense: true,
+                                            isExpanded: true,
+                                            hint: Text(
+                                              t.detachedHead.toUpperCase(),
+                                              style: TextStyle(fontSize: textMD, fontWeight: FontWeight.bold, color: secondaryLight),
+                                            ),
+                                            padding: EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceXS),
+                                            value: branchNamesSnapshot.data?.contains(branchNameSnapshot.data) == true
+                                                ? branchNameSnapshot.data
+                                                : null,
+                                            menuMaxHeight: 250,
+                                            dropdownColor: secondaryDark,
+                                            borderRadius: BorderRadius.all(cornerRadiusSM),
+                                            selectedItemBuilder: (context) => List.generate(
+                                              (branchNamesSnapshot.data ?? []).length,
+                                              (index) => Row(
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    (branchNamesSnapshot.data ?? [])[index].toUpperCase(),
+                                                    style: TextStyle(
+                                                      fontSize: textMD,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: !(conflictingSnapshot.data == null || conflictingSnapshot.data!.isEmpty)
+                                                          ? tertiaryLight
+                                                          : primaryLight,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            underline: const SizedBox.shrink(),
+                                            onChanged: !(conflictingSnapshot.data == null || conflictingSnapshot.data!.isEmpty)
+                                                ? null
+                                                : <String>(value) async {
+                                                    if (value == branchNameSnapshot.data) return;
+
+                                                    await ConfirmBranchCheckoutDialog.showDialog(context, value, () async {
+                                                      await GitManager.checkoutBranch(value);
+                                                    });
+                                                    setState(() {});
+                                                  },
+                                            items: (branchNamesSnapshot.data ?? [])
+                                                .map(
+                                                  (item) => DropdownMenuItem(
+                                                    value: item,
+                                                    child: Text(
+                                                      item.toUpperCase(),
+                                                      style: TextStyle(
+                                                        fontSize: textSM,
+                                                        color: primaryLight,
+                                                        fontWeight: FontWeight.bold,
+                                                        overflow: TextOverflow.ellipsis,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                                .toList(),
+                                          ),
+                                        ),
+                                        IconButton(
+                                          onPressed: branchNamesSnapshot.data?.contains(branchNameSnapshot.data) == true
+                                              ? () {
+                                                  CreateBranchDialog.showDialog(context, (branchName, basedOn) async {
+                                                    await GitManager.createBranch(branchName, basedOn);
+                                                    setState(() {});
+                                                  });
+                                                }
+                                              : null,
+                                          style: ButtonStyle(
+                                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                            backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                                            padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceXS)),
+                                            shape: WidgetStatePropertyAll(
+                                              RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusSM), side: BorderSide.none),
+                                            ),
+                                          ),
+                                          constraints: BoxConstraints(),
+                                          icon: FaIcon(
+                                            FontAwesomeIcons.solidSquarePlus,
+                                            color: branchNamesSnapshot.data?.contains(branchNameSnapshot.data) == true
+                                                ? primaryLight
+                                                : secondaryLight,
+                                            size: textXL,
+                                            semanticLabel: t.addBranchLabel,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                                padding: EdgeInsets.only(left: spaceSM, bottom: spaceXS, right: spaceSM, top: spaceXS),
-                                child: Column(
-                                  children: [
-                                    Stack(
-                                      clipBehavior: Clip.none,
-                                      children: [
-                                        SizedBox(
-                                          height: 220,
-                                          child: ShaderMask(
-                                            shaderCallback: (Rect rect) {
-                                              return LinearGradient(
-                                                begin: Alignment.topCenter,
-                                                end: Alignment.bottomCenter,
-                                                colors: [Colors.black, Colors.transparent, Colors.transparent, Colors.transparent],
-                                                stops: [0.0, 0.1, 0.9, 1.0],
-                                              ).createShader(rect);
-                                            },
-                                            blendMode: BlendMode.dstOut,
-                                            child:
-                                                ((recentCommitsSnapshot.data ?? []).isEmpty &&
-                                                            recentCommitsSnapshot.connectionState == ConnectionState.waiting) ||
-                                                        conflictingSnapshot.data == null
-                                                    ? Center(child: CircularProgressIndicator(color: tertiaryLight))
-                                                    : (recentCommitsSnapshot.data!.isEmpty && conflictingSnapshot.data!.isEmpty
-                                                        ? Center(
-                                                          child: Text(
-                                                            t.commitsNotFound.toUpperCase(),
-                                                            style: TextStyle(color: secondaryLight, fontWeight: FontWeight.bold, fontSize: textLG),
-                                                          ),
-                                                        )
-                                                        : Column(
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: spaceSM),
+                          IntrinsicHeight(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Expanded(
+                                  child: FutureBuilder(
+                                    future: getSyncOptions(),
+                                    builder: (context, syncOptionsSnapshot) => FutureBuilder(
+                                      future: uiSettingsManager.getString(StorageKey.setman_lastSyncMethod),
+                                      builder: (context, lastSyncMethodSnapshot) => Stack(
+                                        children: [
+                                          Positioned.fill(
+                                            child: TextButton.icon(
+                                              key: syncMethodMainButtonKey,
+                                              onPressed: () async {
+                                                if (syncOptionsSnapshot.data == null || lastSyncMethodSnapshot.data == null) return;
+
+                                                if (syncOptionsSnapshot.data?.containsKey(lastSyncMethodSnapshot.data) == true) {
+                                                  syncOptionsSnapshot.data![lastSyncMethodSnapshot.data]!.$2();
+                                                } else {
+                                                  syncOptionsSnapshot.data?.values.first.$2();
+                                                }
+                                              },
+                                              style: ButtonStyle(
+                                                alignment: Alignment.centerLeft,
+                                                backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                                                padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD)),
+                                                shape: WidgetStatePropertyAll(
+                                                  RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.only(
+                                                      topLeft: cornerRadiusSM,
+                                                      topRight: cornerRadiusSM,
+                                                      bottomLeft: cornerRadiusMD,
+                                                      bottomRight: cornerRadiusSM,
+                                                    ),
+                                                    side: BorderSide.none,
+                                                  ),
+                                                ),
+                                              ),
+                                              icon: FaIcon(
+                                                syncOptionsSnapshot.data?[lastSyncMethodSnapshot.data]?.$1 ??
+                                                    syncOptionsSnapshot.data?.values.first.$1 ??
+                                                    FontAwesomeIcons.solidCircleDown,
+                                                color: primaryLight,
+                                                size: textLG,
+                                              ),
+                                              label: Padding(
+                                                padding: EdgeInsets.only(left: spaceXS),
+                                                child: Text(
+                                                  ((syncOptionsSnapshot.data?.containsKey(lastSyncMethodSnapshot.data) == true
+                                                              ? lastSyncMethodSnapshot.data
+                                                              : syncOptionsSnapshot.data?.keys.first) ??
+                                                          t.syncNow)
+                                                      .toUpperCase(),
+                                                  style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Positioned(
+                                            left: 0,
+                                            right: 0,
+                                            top: spaceMD * 4,
+                                            child: Container(
+                                              decoration: BoxDecoration(borderRadius: BorderRadius.all(cornerRadiusSM)),
+                                              margin: EdgeInsets.only(left: spaceMD),
+                                              child: DropdownButton(
+                                                key: syncMethodsDropdownKey,
+                                                borderRadius: BorderRadius.all(cornerRadiusSM),
+                                                selectedItemBuilder: (context) =>
+                                                    List.generate(syncOptionsSnapshot.data?.length ?? 0, (_) => SizedBox.shrink()),
+                                                icon: SizedBox.shrink(),
+                                                underline: const SizedBox.shrink(),
+                                                dropdownColor: secondaryDark,
+                                                padding: EdgeInsets.zero,
+                                                onChanged: (value) {},
+                                                items: (syncOptionsSnapshot.data ?? {}).entries
+                                                    .where(
+                                                      (item) =>
+                                                          item.key !=
+                                                          (syncOptionsSnapshot.data?.containsKey(lastSyncMethodSnapshot.data) == true
+                                                              ? lastSyncMethodSnapshot.data
+                                                              : syncOptionsSnapshot.data?.keys.first),
+                                                    )
+                                                    .map(
+                                                      (item) => DropdownMenuItem(
+                                                        onTap: () async {
+                                                          await uiSettingsManager.setString(StorageKey.setman_lastSyncMethod, item.key);
+                                                          await item.value.$2();
+                                                          setState(() {});
+                                                        },
+                                                        value: item.key,
+                                                        child: Row(
+                                                          crossAxisAlignment: CrossAxisAlignment.center,
                                                           children: [
-                                                            Expanded(
-                                                              child: AnimatedListView(
-                                                                items: items,
-                                                                reverse: true,
-                                                                isSameItem: (a, b) => a.reference == b.reference,
-                                                                itemBuilder: (BuildContext context, int index) {
-                                                                  final reference = items[index].reference;
-
-                                                                  if (reference == mergeConflictReference) {
-                                                                    return ItemMergeConflict(
-                                                                      key: Key(reference),
-                                                                      conflictingSnapshot.data!,
-                                                                      () => setState(() {}),
-                                                                    );
-                                                                  }
-
-                                                                  return ItemCommit(key: Key(reference), items[index]);
-                                                                },
+                                                            FaIcon(item.value.$1, color: primaryLight, size: textLG),
+                                                            SizedBox(width: spaceMD),
+                                                            Text(
+                                                              item.key.toUpperCase(),
+                                                              style: TextStyle(
+                                                                fontSize: textMD,
+                                                                color: primaryLight,
+                                                                fontWeight: FontWeight.bold,
+                                                                overflow: TextOverflow.ellipsis,
                                                               ),
                                                             ),
                                                           ],
-                                                        )),
+                                                        ),
+                                                      ),
+                                                    )
+                                                    .toList(),
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                        ...(recentCommitsSnapshot.data?.isNotEmpty == true &&
-                                                recentCommitsSnapshot.connectionState == ConnectionState.waiting)
-                                            ? [
-                                              Positioned(
-                                                top: -(spaceXS / 2),
-                                                left: 0,
-                                                right: 0,
-                                                child: LinearProgressIndicator(
-                                                  value: null,
-                                                  backgroundColor: secondaryDark,
-                                                  color: tertiaryDark,
-                                                  borderRadius: BorderRadius.all(cornerRadiusMD),
+                                          Positioned(
+                                            right: 0,
+                                            top: 0,
+                                            bottom: 0,
+                                            child: IconButton(
+                                              onPressed: () {
+                                                if (demo) {
+                                                  demoConflicting = true;
+                                                  setState(() {});
+                                                  MergeConflictDialog.showDialog(context, ["Readme.md"])
+                                                      .then((_) {
+                                                        demoConflicting = false;
+                                                        setState(() {});
+                                                      })
+                                                      .then((_) => setState(() {}));
+
+                                                  return;
+                                                }
+
+                                                GestureDetector? detector;
+
+                                                void searchForGestureDetector(BuildContext? element) {
+                                                  element?.visitChildElements((element) {
+                                                    if (element.widget is GestureDetector) {
+                                                      detector = element.widget as GestureDetector;
+                                                      return;
+                                                    } else {
+                                                      searchForGestureDetector(element);
+                                                    }
+
+                                                    return;
+                                                  });
+                                                }
+
+                                                searchForGestureDetector(syncMethodsDropdownKey.currentContext);
+
+                                                detector?.onTap!();
+                                              },
+                                              style: ButtonStyle(
+                                                backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                                                padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
+                                                shape: WidgetStatePropertyAll(
+                                                  RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusSM), side: BorderSide.none),
                                                 ),
                                               ),
-                                            ]
-                                            : [],
+                                              icon: FaIcon(
+                                                FontAwesomeIcons.ellipsis,
+                                                color: primaryLight,
+                                                size: textLG,
+                                                semanticLabel: t.moreSyncOptionsLabel,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: spaceSM),
+                                IconButton(
+                                  onPressed: () {
+                                    Navigator.of(context).push(createSettingsMainRoute()).then((_) => setState(() {}));
+                                  },
+                                  style: ButtonStyle(
+                                    backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                                    padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
+                                    shape: WidgetStatePropertyAll(
+                                      RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusSM), side: BorderSide.none),
+                                    ),
+                                  ),
+                                  icon: FaIcon(FontAwesomeIcons.gear, color: primaryLight, size: textLG, semanticLabel: t.repositorySettingsLabel),
+                                ),
+                                SizedBox(width: spaceSM),
+                                FutureBuilder(
+                                  future: uiSettingsManager.getBool(StorageKey.setman_syncMessageEnabled),
+                                  builder: (context, snapshot) => IconButton(
+                                    onPressed: () async {
+                                      if (!(snapshot.data ?? false)) {
+                                        if (!(await Permission.notification.request().isGranted)) return;
+                                      }
+
+                                      uiSettingsManager.setBool(StorageKey.setman_syncMessageEnabled, !(snapshot.data ?? false));
+                                      setState(() {});
+                                    },
+                                    style: ButtonStyle(
+                                      backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                                      padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
+                                      shape: WidgetStatePropertyAll(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: cornerRadiusSM,
+                                            topRight: cornerRadiusSM,
+                                            bottomLeft: cornerRadiusSM,
+                                            bottomRight: cornerRadiusMD,
+                                          ),
+                                          side: BorderSide.none,
+                                        ),
+                                      ),
+                                    ),
+                                    icon: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        FaIcon(FontAwesomeIcons.solidBellSlash, color: Colors.transparent, size: textLG - 2),
+                                        FaIcon(
+                                          demo || snapshot.data == true ? FontAwesomeIcons.solidBell : FontAwesomeIcons.solidBellSlash,
+                                          color: demo || snapshot.data == true ? primaryPositive : primaryLight,
+                                          size: textLG - 2,
+                                          semanticLabel: t.syncMessagesLabel,
+                                        ),
                                       ],
                                     ),
-                                    SizedBox(height: spaceXS),
-                                    FutureBuilder(
-                                      future: GitManager.getBranchName(),
-                                      builder:
-                                          (context, branchNameSnapshot) => FutureBuilder(
-                                            future: GitManager.getBranchNames(),
-                                            builder:
-                                                (context, branchNamesSnapshot) => Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: DropdownButton(
-                                                        isDense: true,
-                                                        isExpanded: true,
-                                                        hint: Text(
-                                                          t.detachedHead.toUpperCase(),
-                                                          style: TextStyle(fontSize: textMD, fontWeight: FontWeight.bold, color: secondaryLight),
-                                                        ),
-                                                        padding: EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceXS),
-                                                        value:
-                                                            branchNamesSnapshot.data?.contains(branchNameSnapshot.data) == true
-                                                                ? branchNameSnapshot.data
-                                                                : null,
-                                                        menuMaxHeight: 250,
-                                                        dropdownColor: secondaryDark,
-                                                        borderRadius: BorderRadius.all(cornerRadiusSM),
-                                                        selectedItemBuilder:
-                                                            (context) => List.generate(
-                                                              (branchNamesSnapshot.data ?? []).length,
-                                                              (index) => Row(
-                                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                                children: [
-                                                                  Text(
-                                                                    (branchNamesSnapshot.data ?? [])[index].toUpperCase(),
-                                                                    style: TextStyle(
-                                                                      fontSize: textMD,
-                                                                      fontWeight: FontWeight.bold,
-                                                                      color:
-                                                                          !(conflictingSnapshot.data == null || conflictingSnapshot.data!.isEmpty)
-                                                                              ? tertiaryLight
-                                                                              : primaryLight,
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                        underline: const SizedBox.shrink(),
-                                                        onChanged:
-                                                            !(conflictingSnapshot.data == null || conflictingSnapshot.data!.isEmpty)
-                                                                ? null
-                                                                : <String>(value) async {
-                                                                  if (value == branchNameSnapshot.data) return;
-
-                                                                  await ConfirmBranchCheckoutDialog.showDialog(context, value, () async {
-                                                                    await GitManager.checkoutBranch(value);
-                                                                  });
-                                                                  setState(() {});
-                                                                },
-                                                        items:
-                                                            (branchNamesSnapshot.data ?? [])
-                                                                .map(
-                                                                  (item) => DropdownMenuItem(
-                                                                    value: item,
-                                                                    child: Text(
-                                                                      item.toUpperCase(),
-                                                                      style: TextStyle(
-                                                                        fontSize: textSM,
-                                                                        color: primaryLight,
-                                                                        fontWeight: FontWeight.bold,
-                                                                        overflow: TextOverflow.ellipsis,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                )
-                                                                .toList(),
-                                                      ),
-                                                    ),
-                                                    IconButton(
-                                                      onPressed:
-                                                          branchNamesSnapshot.data?.contains(branchNameSnapshot.data) == true
-                                                              ? () {
-                                                                CreateBranchDialog.showDialog(context, (branchName, basedOn) async {
-                                                                  await GitManager.createBranch(branchName, basedOn);
-                                                                  setState(() {});
-                                                                });
-                                                              }
-                                                              : null,
-                                                      style: ButtonStyle(
-                                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                        backgroundColor: WidgetStatePropertyAll(secondaryDark),
-                                                        padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceXS)),
-                                                        shape: WidgetStatePropertyAll(
-                                                          RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.all(cornerRadiusSM),
-                                                            side: BorderSide.none,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      constraints: BoxConstraints(),
-                                                      icon: FaIcon(
-                                                        FontAwesomeIcons.solidSquarePlus,
-                                                        color:
-                                                            branchNamesSnapshot.data?.contains(branchNameSnapshot.data) == true
-                                                                ? primaryLight
-                                                                : secondaryLight,
-                                                        size: textXL,
-                                                        semanticLabel: t.addBranchLabel,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                          ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                              SizedBox(height: spaceSM),
-                              IntrinsicHeight(
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                                  children: [
-                                    Expanded(
-                                      child: FutureBuilder(
-                                        future: getSyncOptions(),
-                                        builder:
-                                            (context, syncOptionsSnapshot) => FutureBuilder(
-                                              future: uiSettingsManager.getString(StorageKey.setman_lastSyncMethod),
-                                              builder:
-                                                  (context, lastSyncMethodSnapshot) => Stack(
-                                                    children: [
-                                                      Positioned.fill(
-                                                        child: TextButton.icon(
-                                                          key: syncMethodMainButtonKey,
-                                                          onPressed: () async {
-                                                            if (syncOptionsSnapshot.data == null || lastSyncMethodSnapshot.data == null) return;
-
-                                                            if (syncOptionsSnapshot.data?.containsKey(lastSyncMethodSnapshot.data) == true) {
-                                                              syncOptionsSnapshot.data![lastSyncMethodSnapshot.data]!.$2();
-                                                            } else {
-                                                              syncOptionsSnapshot.data?.values.first.$2();
-                                                            }
-                                                          },
-                                                          style: ButtonStyle(
-                                                            alignment: Alignment.centerLeft,
-                                                            backgroundColor: WidgetStatePropertyAll(secondaryDark),
-                                                            padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD)),
-                                                            shape: WidgetStatePropertyAll(
-                                                              RoundedRectangleBorder(
-                                                                borderRadius: BorderRadius.only(
-                                                                  topLeft: cornerRadiusSM,
-                                                                  topRight: cornerRadiusSM,
-                                                                  bottomLeft: cornerRadiusMD,
-                                                                  bottomRight: cornerRadiusSM,
-                                                                ),
-                                                                side: BorderSide.none,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          icon: FaIcon(
-                                                            syncOptionsSnapshot.data?[lastSyncMethodSnapshot.data]?.$1 ??
-                                                                syncOptionsSnapshot.data?.values.first.$1 ??
-                                                                FontAwesomeIcons.solidCircleDown,
-                                                            color: primaryLight,
-                                                            size: textLG,
-                                                          ),
-                                                          label: Padding(
-                                                            padding: EdgeInsets.only(left: spaceXS),
-                                                            child: Text(
-                                                              ((syncOptionsSnapshot.data?.containsKey(lastSyncMethodSnapshot.data) == true
-                                                                          ? lastSyncMethodSnapshot.data
-                                                                          : syncOptionsSnapshot.data?.keys.first) ??
-                                                                      t.syncNow)
-                                                                  .toUpperCase(),
-                                                              style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Positioned(
-                                                        left: 0,
-                                                        right: 0,
-                                                        top: spaceMD * 4,
-                                                        child: Container(
-                                                          decoration: BoxDecoration(borderRadius: BorderRadius.all(cornerRadiusSM)),
-                                                          margin: EdgeInsets.only(left: spaceMD),
-                                                          child: DropdownButton(
-                                                            key: syncMethodsDropdownKey,
-                                                            borderRadius: BorderRadius.all(cornerRadiusSM),
-                                                            selectedItemBuilder:
-                                                                (context) =>
-                                                                    List.generate(syncOptionsSnapshot.data?.length ?? 0, (_) => SizedBox.shrink()),
-                                                            icon: SizedBox.shrink(),
-                                                            underline: const SizedBox.shrink(),
-                                                            dropdownColor: secondaryDark,
-                                                            padding: EdgeInsets.zero,
-                                                            onChanged: (value) {},
-                                                            items:
-                                                                (syncOptionsSnapshot.data ?? {}).entries
-                                                                    .where(
-                                                                      (item) =>
-                                                                          item.key !=
-                                                                          (syncOptionsSnapshot.data?.containsKey(lastSyncMethodSnapshot.data) == true
-                                                                              ? lastSyncMethodSnapshot.data
-                                                                              : syncOptionsSnapshot.data?.keys.first),
-                                                                    )
-                                                                    .map(
-                                                                      (item) => DropdownMenuItem(
-                                                                        onTap: () async {
-                                                                          await uiSettingsManager.setString(
-                                                                            StorageKey.setman_lastSyncMethod,
-                                                                            item.key,
-                                                                          );
-                                                                          await item.value.$2();
-                                                                          setState(() {});
-                                                                        },
-                                                                        value: item.key,
-                                                                        child: Row(
-                                                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                                                          children: [
-                                                                            FaIcon(item.value.$1, color: primaryLight, size: textLG),
-                                                                            SizedBox(width: spaceMD),
-                                                                            Text(
-                                                                              item.key.toUpperCase(),
-                                                                              style: TextStyle(
-                                                                                fontSize: textMD,
-                                                                                color: primaryLight,
-                                                                                fontWeight: FontWeight.bold,
-                                                                                overflow: TextOverflow.ellipsis,
-                                                                              ),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                    )
-                                                                    .toList(),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Positioned(
-                                                        right: 0,
-                                                        top: 0,
-                                                        bottom: 0,
-                                                        child: IconButton(
-                                                          onPressed: () {
-                                                            if (demo) {
-                                                              demoConflicting = true;
-                                                              setState(() {});
-                                                              MergeConflictDialog.showDialog(context, ["Readme.md"])
-                                                                  .then((_) {
-                                                                    demoConflicting = false;
-                                                                    setState(() {});
-                                                                  })
-                                                                  .then((_) => setState(() {}));
-
-                                                              return;
-                                                            }
-
-                                                            GestureDetector? detector;
-
-                                                            void searchForGestureDetector(BuildContext? element) {
-                                                              element?.visitChildElements((element) {
-                                                                if (element.widget is GestureDetector) {
-                                                                  detector = element.widget as GestureDetector;
-                                                                  return;
-                                                                } else {
-                                                                  searchForGestureDetector(element);
-                                                                }
-
-                                                                return;
-                                                              });
-                                                            }
-
-                                                            searchForGestureDetector(syncMethodsDropdownKey.currentContext);
-
-                                                            detector?.onTap!();
-                                                          },
-                                                          style: ButtonStyle(
-                                                            backgroundColor: WidgetStatePropertyAll(secondaryDark),
-                                                            padding: WidgetStatePropertyAll(
-                                                              EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD),
-                                                            ),
-                                                            shape: WidgetStatePropertyAll(
-                                                              RoundedRectangleBorder(
-                                                                borderRadius: BorderRadius.all(cornerRadiusSM),
-                                                                side: BorderSide.none,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          icon: FaIcon(
-                                                            FontAwesomeIcons.ellipsis,
-                                                            color: primaryLight,
-                                                            size: textLG,
-                                                            semanticLabel: t.moreSyncOptionsLabel,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                            ),
-                                      ),
-                                    ),
-                                    SizedBox(width: spaceSM),
-                                    IconButton(
-                                      onPressed: () {
-                                        Navigator.of(context).push(createSettingsMainRoute()).then((_) => setState(() {}));
-                                      },
-                                      style: ButtonStyle(
-                                        backgroundColor: WidgetStatePropertyAll(secondaryDark),
-                                        padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
-                                        shape: WidgetStatePropertyAll(
-                                          RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusSM), side: BorderSide.none),
-                                        ),
-                                      ),
-                                      icon: FaIcon(
-                                        FontAwesomeIcons.gear,
-                                        color: primaryLight,
-                                        size: textLG,
-                                        semanticLabel: t.repositorySettingsLabel,
-                                      ),
-                                    ),
-                                    SizedBox(width: spaceSM),
-                                    FutureBuilder(
-                                      future: uiSettingsManager.getBool(StorageKey.setman_syncMessageEnabled),
-                                      builder:
-                                          (context, snapshot) => IconButton(
-                                            onPressed: () async {
-                                              if (!(snapshot.data ?? false)) {
-                                                if (!(await Permission.notification.request().isGranted)) return;
-                                              }
-
-                                              uiSettingsManager.setBool(StorageKey.setman_syncMessageEnabled, !(snapshot.data ?? false));
-                                              setState(() {});
-                                            },
-                                            style: ButtonStyle(
-                                              backgroundColor: WidgetStatePropertyAll(secondaryDark),
-                                              padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
-                                              shape: WidgetStatePropertyAll(
-                                                RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.only(
-                                                    topLeft: cornerRadiusSM,
-                                                    topRight: cornerRadiusSM,
-                                                    bottomLeft: cornerRadiusSM,
-                                                    bottomRight: cornerRadiusMD,
-                                                  ),
-                                                  side: BorderSide.none,
-                                                ),
-                                              ),
-                                            ),
-                                            icon: Stack(
-                                              alignment: Alignment.center,
-                                              children: [
-                                                FaIcon(FontAwesomeIcons.solidBellSlash, color: Colors.transparent, size: textLG - 2),
-                                                FaIcon(
-                                                  demo || snapshot.data == true ? FontAwesomeIcons.solidBell : FontAwesomeIcons.solidBellSlash,
-                                                  color: demo || snapshot.data == true ? primaryPositive : primaryLight,
-                                                  size: textLG - 2,
-                                                  semanticLabel: t.syncMessagesLabel,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
                 ),
               ),
               SizedBox(height: spaceLG),
               FutureBuilder(
                 future: uiSettingsManager.getGitDirPath(true),
-                builder:
-                    (context, gitDirPathSnapshot) => FutureBuilder(
-                      future: isAuthenticated(),
-                      builder:
-                          (context, isAuthenticatedSnapshot) => Column(
-                            children: [
-                              CustomShowcase(
-                                cornerRadius: cornerRadiusMD,
-                                globalKey: _configKey,
-                                description: t.configHint,
-                                child: Column(
-                                  children: [
-                                    IntrinsicHeight(
-                                      child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                                        children: [
-                                          FutureBuilder(
-                                            future: GitManager.getRemoteUrlLink(),
-                                            builder:
-                                                (context, snapshot) => Expanded(
-                                                  child: TextButton.icon(
-                                                    onPressed:
-                                                        demo
-                                                            ? () {
-                                                              ManualSyncDialog.showDialog(context);
-                                                            }
-                                                            : (snapshot.data == null ? null : () => launchUrl(Uri.parse(snapshot.data!.$2))),
-                                                    style: ButtonStyle(
-                                                      alignment: Alignment.centerLeft,
-                                                      backgroundColor: WidgetStatePropertyAll(secondaryDark),
-                                                      padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
-                                                      shape: WidgetStatePropertyAll(
-                                                        RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
-                                                      ),
-                                                    ),
-                                                    icon: Padding(
-                                                      padding: EdgeInsets.only(left: spaceMD),
-                                                      child: FaIcon(
-                                                        snapshot.data != null
-                                                            ? FontAwesomeIcons.squareArrowUpRight
-                                                            : FontAwesomeIcons.solidCircleXmark,
-                                                        color: snapshot.data != null ? primaryPositive : primaryNegative,
-                                                        size: textLG,
-                                                      ),
-                                                    ),
-                                                    iconAlignment: IconAlignment.end,
-                                                    label: SizedBox.expand(
-                                                      child: ExtendedText(
-                                                        demo
-                                                            ? "https://github.com/ViscousTests/TestObsidianVault.git"
-                                                            : (snapshot.data == null ? t.repoNotFound : snapshot.data!.$1),
-                                                        maxLines: 1,
-                                                        textAlign: TextAlign.left,
-                                                        softWrap: false,
-                                                        overflowWidget: TextOverflowWidget(
-                                                          position: TextOverflowPosition.start,
-                                                          child: Text(
-                                                            "…",
-                                                            style: TextStyle(color: tertiaryLight, fontSize: textMD, fontWeight: FontWeight.w400),
-                                                          ),
-                                                        ),
-                                                        style: TextStyle(
-                                                          color: snapshot.data != null ? primaryLight : secondaryLight,
-                                                          fontSize: textMD,
-                                                          fontWeight: FontWeight.w400,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
+                builder: (context, gitDirPathSnapshot) => FutureBuilder(
+                  future: isAuthenticated(),
+                  builder: (context, isAuthenticatedSnapshot) => Column(
+                    children: [
+                      CustomShowcase(
+                        cornerRadius: cornerRadiusMD,
+                        globalKey: _configKey,
+                        description: t.configHint,
+                        child: Column(
+                          children: [
+                            IntrinsicHeight(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  FutureBuilder(
+                                    future: GitManager.getRemoteUrlLink(),
+                                    builder: (context, snapshot) => Expanded(
+                                      child: TextButton.icon(
+                                        onPressed: demo
+                                            ? () {
+                                                ManualSyncDialog.showDialog(context);
+                                              }
+                                            : (snapshot.data == null ? null : () => launchUrl(Uri.parse(snapshot.data!.$2))),
+                                        style: ButtonStyle(
+                                          alignment: Alignment.centerLeft,
+                                          backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                                          padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
+                                          shape: WidgetStatePropertyAll(
+                                            RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
                                           ),
-                                          SizedBox(width: gitDirPathSnapshot.data == null ? spaceSM : 0),
-                                          Visibility(
-                                            visible: gitDirPathSnapshot.data == null,
-                                            child: IconButton(
-                                              onPressed:
-                                                  isAuthenticatedSnapshot.data == true
-                                                      ? () async {
-                                                        await showCloneRepoPage();
-                                                      }
-                                                      : null,
-                                              style: ButtonStyle(
-                                                backgroundColor: WidgetStatePropertyAll(secondaryDark),
-                                                padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
-                                                shape: WidgetStatePropertyAll(
-                                                  RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
-                                                ),
-                                              ),
-                                              icon: FaIcon(
-                                                FontAwesomeIcons.cloudArrowDown,
-                                                color: isAuthenticatedSnapshot.data == true ? primaryLight : tertiaryLight,
-                                                size: textLG - 2,
-                                              ),
-                                            ),
+                                        ),
+                                        icon: Padding(
+                                          padding: EdgeInsets.only(left: spaceMD),
+                                          child: FaIcon(
+                                            snapshot.data != null ? FontAwesomeIcons.squareArrowUpRight : FontAwesomeIcons.solidCircleXmark,
+                                            color: snapshot.data != null ? primaryPositive : primaryNegative,
+                                            size: textLG,
                                           ),
-                                          SizedBox(width: spaceSM),
-                                          TextButton.icon(
-                                            onPressed: () async {
-                                              await showAuthDialog();
-                                            },
-                                            style: ButtonStyle(
-                                              alignment: Alignment.centerLeft,
-                                              backgroundColor: WidgetStatePropertyAll(secondaryDark),
-                                              padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
-                                              shape: WidgetStatePropertyAll(
-                                                RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
-                                              ),
-                                            ),
-                                            icon: FaIcon(
-                                              isAuthenticatedSnapshot.data == true
-                                                  ? FontAwesomeIcons.solidCircleCheck
-                                                  : FontAwesomeIcons.solidCircleXmark,
-                                              color: isAuthenticatedSnapshot.data == true ? primaryPositive : primaryNegative,
-                                              size: textLG,
-                                            ),
-                                            label: Padding(
-                                              padding: EdgeInsets.only(left: spaceXS),
+                                        ),
+                                        iconAlignment: IconAlignment.end,
+                                        label: SizedBox.expand(
+                                          child: ExtendedText(
+                                            demo
+                                                ? "https://github.com/ViscousTests/TestObsidianVault.git"
+                                                : (snapshot.data == null ? t.repoNotFound : snapshot.data!.$1),
+                                            maxLines: 1,
+                                            textAlign: TextAlign.left,
+                                            softWrap: false,
+                                            overflowWidget: TextOverflowWidget(
+                                              position: TextOverflowPosition.start,
                                               child: Text(
-                                                t.auth.toUpperCase(),
-                                                style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
+                                                "…",
+                                                style: TextStyle(color: tertiaryLight, fontSize: textMD, fontWeight: FontWeight.w400),
                                               ),
                                             ),
+                                            style: TextStyle(
+                                              color: snapshot.data != null ? primaryLight : secondaryLight,
+                                              fontSize: textMD,
+                                              fontWeight: FontWeight.w400,
+                                            ),
                                           ),
-                                        ],
+                                        ),
                                       ),
                                     ),
-                                    SizedBox(height: spaceMD),
-                                    IntrinsicHeight(
+                                  ),
+                                  SizedBox(width: gitDirPathSnapshot.data == null ? spaceSM : 0),
+                                  Visibility(
+                                    visible: gitDirPathSnapshot.data == null,
+                                    child: IconButton(
+                                      onPressed: isAuthenticatedSnapshot.data == true
+                                          ? () async {
+                                              await showCloneRepoPage();
+                                            }
+                                          : null,
+                                      style: ButtonStyle(
+                                        backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                                        padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
+                                        shape: WidgetStatePropertyAll(
+                                          RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
+                                        ),
+                                      ),
+                                      icon: FaIcon(
+                                        FontAwesomeIcons.cloudArrowDown,
+                                        color: isAuthenticatedSnapshot.data == true ? primaryLight : tertiaryLight,
+                                        size: textLG - 2,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: spaceSM),
+                                  TextButton.icon(
+                                    onPressed: () async {
+                                      await showAuthDialog();
+                                    },
+                                    style: ButtonStyle(
+                                      alignment: Alignment.centerLeft,
+                                      backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                                      padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
+                                      shape: WidgetStatePropertyAll(
+                                        RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
+                                      ),
+                                    ),
+                                    icon: FaIcon(
+                                      isAuthenticatedSnapshot.data == true ? FontAwesomeIcons.solidCircleCheck : FontAwesomeIcons.solidCircleXmark,
+                                      color: isAuthenticatedSnapshot.data == true ? primaryPositive : primaryNegative,
+                                      size: textLG,
+                                    ),
+                                    label: Padding(
+                                      padding: EdgeInsets.only(left: spaceXS),
+                                      child: Text(
+                                        t.auth.toUpperCase(),
+                                        style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: spaceMD),
+                            IntrinsicHeight(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: secondaryDark,
+                                        borderRadius: BorderRadius.only(
+                                          bottomLeft: cornerRadiusMD,
+                                          bottomRight: cornerRadiusSM,
+                                          topLeft: cornerRadiusMD,
+                                          topRight: cornerRadiusSM,
+                                        ),
+                                      ),
                                       child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Expanded(
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                color: secondaryDark,
-                                                borderRadius: BorderRadius.only(
-                                                  bottomLeft: cornerRadiusMD,
-                                                  bottomRight: cornerRadiusSM,
-                                                  topLeft: cornerRadiusMD,
-                                                  topRight: cornerRadiusSM,
-                                                ),
-                                              ),
-                                              child: Row(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  Flexible(
-                                                    child: Padding(
-                                                      padding: EdgeInsets.all(spaceMD),
-                                                      child: ExtendedText(
-                                                        demo
-                                                            ? (Platform.isIOS
-                                                                ? "TestObsidianVault"
-                                                                : "/storage/emulated/0/github/ViscousTests/TestObsidianVault")
-                                                            : (gitDirPathSnapshot.data == null
-                                                                ? t.repoNotFound
-                                                                : (Platform.isIOS
-                                                                        ? gitDirPathSnapshot.data?.split("/").last
-                                                                        : gitDirPathSnapshot.data) ??
-                                                                    ""),
-                                                        maxLines: 1,
-                                                        textAlign: TextAlign.left,
-                                                        softWrap: false,
-                                                        overflowWidget: TextOverflowWidget(
-                                                          position: TextOverflowPosition.start,
-                                                          child: Text(
-                                                            "…",
-                                                            style: TextStyle(
-                                                              color: gitDirPathSnapshot.data == null ? secondaryLight : primaryLight,
-                                                              fontSize: textMD,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        style: TextStyle(
-                                                          color: gitDirPathSnapshot.data == null ? secondaryLight : primaryLight,
-                                                          fontSize: textMD,
-                                                        ),
-                                                      ),
+                                          Flexible(
+                                            child: Padding(
+                                              padding: EdgeInsets.all(spaceMD),
+                                              child: ExtendedText(
+                                                demo
+                                                    ? (Platform.isIOS
+                                                          ? "TestObsidianVault"
+                                                          : "/storage/emulated/0/github/ViscousTests/TestObsidianVault")
+                                                    : (gitDirPathSnapshot.data == null
+                                                          ? t.repoNotFound
+                                                          : (Platform.isIOS ? gitDirPathSnapshot.data?.split("/").last : gitDirPathSnapshot.data) ??
+                                                                ""),
+                                                maxLines: 1,
+                                                textAlign: TextAlign.left,
+                                                softWrap: false,
+                                                overflowWidget: TextOverflowWidget(
+                                                  position: TextOverflowPosition.start,
+                                                  child: Text(
+                                                    "…",
+                                                    style: TextStyle(
+                                                      color: gitDirPathSnapshot.data == null ? secondaryLight : primaryLight,
+                                                      fontSize: textMD,
                                                     ),
                                                   ),
-                                                  gitDirPathSnapshot.data == null
-                                                      ? SizedBox.shrink()
-                                                      : IconButton(
-                                                        onPressed: () async {
-                                                          await uiSettingsManager.setGitDirPath("");
-                                                          setState(() {});
-                                                        },
-                                                        constraints: BoxConstraints(),
-                                                        style: ButtonStyle(
-                                                          backgroundColor: WidgetStatePropertyAll(secondaryDark),
-                                                          padding: WidgetStatePropertyAll(EdgeInsets.all(spaceMD)),
-                                                          visualDensity: VisualDensity.compact,
-                                                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                          shape: WidgetStatePropertyAll(
-                                                            RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.all(cornerRadiusSM),
-                                                              side: BorderSide.none,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        icon: FaIcon(
-                                                          FontAwesomeIcons.solidCircleXmark,
-                                                          size: textLG,
-                                                          color: primaryLight,
-                                                          semanticLabel: t.deselectDirLabel,
-                                                        ),
-                                                      ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(width: spaceSM),
-                                          IconButton(
-                                            onPressed:
-                                                isAuthenticatedSnapshot.data == true
-                                                    ? () async {
-                                                      String? selectedDirectory;
-                                                      if (await requestStoragePerm()) {
-                                                        selectedDirectory = await pickDirectory();
-                                                      }
-                                                      if (selectedDirectory == null) return;
-
-                                                      if (!mounted) return;
-                                                      await setGitDirPathGetSubmodules(context, selectedDirectory);
-                                                      await repoManager.setOnboardingStep(4);
-
-                                                      await onboardingController?.show();
-
-                                                      setState(() {});
-                                                    }
-                                                    : null,
-                                            style: ButtonStyle(
-                                              backgroundColor: WidgetStatePropertyAll(secondaryDark),
-                                              padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
-                                              shape: WidgetStatePropertyAll(
-                                                RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.only(
-                                                    bottomLeft: cornerRadiusSM,
-                                                    bottomRight: cornerRadiusMD,
-                                                    topLeft: cornerRadiusSM,
-                                                    topRight: cornerRadiusMD,
-                                                  ),
-                                                  side: BorderSide.none,
+                                                ),
+                                                style: TextStyle(
+                                                  color: gitDirPathSnapshot.data == null ? secondaryLight : primaryLight,
+                                                  fontSize: textMD,
                                                 ),
                                               ),
                                             ),
-                                            icon: FaIcon(
-                                              FontAwesomeIcons.solidFolderOpen,
-                                              color: isAuthenticatedSnapshot.data == true ? primaryLight : tertiaryLight,
-                                              size: textLG - 2,
-                                              semanticLabel: t.selectDirLabel,
-                                            ),
                                           ),
+                                          gitDirPathSnapshot.data == null
+                                              ? SizedBox.shrink()
+                                              : IconButton(
+                                                  onPressed: () async {
+                                                    await uiSettingsManager.setGitDirPath("");
+                                                    setState(() {});
+                                                  },
+                                                  constraints: BoxConstraints(),
+                                                  style: ButtonStyle(
+                                                    backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                                                    padding: WidgetStatePropertyAll(EdgeInsets.all(spaceMD)),
+                                                    visualDensity: VisualDensity.compact,
+                                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                    shape: WidgetStatePropertyAll(
+                                                      RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusSM), side: BorderSide.none),
+                                                    ),
+                                                  ),
+                                                  icon: FaIcon(
+                                                    FontAwesomeIcons.solidCircleXmark,
+                                                    size: textLG,
+                                                    color: primaryLight,
+                                                    semanticLabel: t.deselectDirLabel,
+                                                  ),
+                                                ),
                                         ],
                                       ),
                                     ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: spaceMD),
-                              SizedBox(
-                                width: double.infinity,
-                                child: TextButton.icon(
-                                  onPressed:
-                                      gitDirPathSnapshot.data == null
-                                          ? null
-                                          : () async {
-                                            await useDirectory(
-                                              await uiSettingsManager.getString(StorageKey.setman_gitDirPath),
-                                              (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath),
-                                              (path) async {
-                                                await Navigator.of(context).push(createFileExplorerRoute(path));
-                                              },
-                                            );
-                                          },
-                                  style: ButtonStyle(
-                                    alignment: Alignment.center,
-                                    backgroundColor: WidgetStatePropertyAll(secondaryDark),
-                                    padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
-                                    shape: WidgetStatePropertyAll(
-                                      RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
-                                    ),
                                   ),
-                                  icon: FaIcon(
-                                    FontAwesomeIcons.filePen,
-                                    color: gitDirPathSnapshot.data == null ? secondaryLight : tertiaryInfo,
-                                    size: textLG,
-                                  ),
-                                  label: Padding(
-                                    padding: EdgeInsets.only(left: spaceXS),
-                                    child: Text(
-                                      t.openFileExplorer.toUpperCase(),
-                                      style: TextStyle(
-                                        color: gitDirPathSnapshot.data == null ? secondaryLight : tertiaryInfo,
-                                        fontSize: textMD,
-                                        fontWeight: FontWeight.bold,
+                                  SizedBox(width: spaceSM),
+                                  IconButton(
+                                    onPressed: isAuthenticatedSnapshot.data == true
+                                        ? () async {
+                                            String? selectedDirectory;
+                                            if (await requestStoragePerm()) {
+                                              selectedDirectory = await pickDirectory();
+                                            }
+                                            if (selectedDirectory == null) return;
+
+                                            if (!mounted) return;
+                                            await setGitDirPathGetSubmodules(context, selectedDirectory);
+                                            await repoManager.setOnboardingStep(4);
+
+                                            await onboardingController?.show();
+
+                                            setState(() {});
+                                          }
+                                        : null,
+                                    style: ButtonStyle(
+                                      backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                                      padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
+                                      shape: WidgetStatePropertyAll(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                            bottomLeft: cornerRadiusSM,
+                                            bottomRight: cornerRadiusMD,
+                                            topLeft: cornerRadiusSM,
+                                            topRight: cornerRadiusMD,
+                                          ),
+                                          side: BorderSide.none,
+                                        ),
                                       ),
                                     ),
+                                    icon: FaIcon(
+                                      FontAwesomeIcons.solidFolderOpen,
+                                      color: isAuthenticatedSnapshot.data == true ? primaryLight : tertiaryLight,
+                                      size: textLG - 2,
+                                      semanticLabel: t.selectDirLabel,
+                                    ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: spaceMD),
+                      SizedBox(
+                        width: double.infinity,
+                        child: TextButton.icon(
+                          onPressed: gitDirPathSnapshot.data == null
+                              ? null
+                              : () async {
+                                  await useDirectory(
+                                    await uiSettingsManager.getString(StorageKey.setman_gitDirPath),
+                                    (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath),
+                                    (path) async {
+                                      await Navigator.of(context).push(createFileExplorerRoute(path));
+                                    },
+                                  );
+                                },
+                          style: ButtonStyle(
+                            alignment: Alignment.center,
+                            backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                            padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
+                            shape: WidgetStatePropertyAll(
+                              RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
+                            ),
                           ),
-                    ),
+                          icon: FaIcon(
+                            FontAwesomeIcons.filePen,
+                            color: gitDirPathSnapshot.data == null ? secondaryLight : tertiaryInfo,
+                            size: textLG,
+                          ),
+                          label: Padding(
+                            padding: EdgeInsets.only(left: spaceXS),
+                            child: Text(
+                              t.openFileExplorer.toUpperCase(),
+                              style: TextStyle(
+                                color: gitDirPathSnapshot.data == null ? secondaryLight : tertiaryInfo,
+                                fontSize: textMD,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               SizedBox(height: spaceLG),
               CustomShowcase(
@@ -1721,7 +1672,9 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                   TooltipActionButton(
                     backgroundColor: secondaryInfo,
                     textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: textSM, color: primaryLight),
-                    leadIcon: ActionButtonIcon(icon: Icon(FontAwesomeIcons.solidFileLines, color: primaryLight, size: textSM)),
+                    leadIcon: ActionButtonIcon(
+                      icon: Icon(FontAwesomeIcons.solidFileLines, color: primaryLight, size: textSM),
+                    ),
                     name: t.learnMore.toUpperCase(),
                     onTap: () => launchUrl(Uri.parse(syncOptionsBGDocsLink)),
                     type: null,
@@ -1763,22 +1716,23 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
       ),
       bottomNavigationBar: FutureBuilder(
         future: hasNetworkConnection(),
-        builder:
-            (context, snapshot) =>
-                snapshot.data == false
-                    ? Container(
-                      decoration: BoxDecoration(color: tertiaryNegative),
-                      padding: EdgeInsets.symmetric(vertical: spaceXXS, horizontal: spaceSM),
-                      child: Text.rich(
-                        TextSpan(
-                          children: [
-                            TextSpan(text: t.youreOffline, style: TextStyle(fontWeight: FontWeight.bold)),
-                            TextSpan(text: t.someFeaturesMayNotWork),
-                          ],
-                        ),
+        builder: (context, snapshot) => snapshot.data == false
+            ? Container(
+                decoration: BoxDecoration(color: tertiaryNegative),
+                padding: EdgeInsets.symmetric(vertical: spaceXXS, horizontal: spaceSM),
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: t.youreOffline,
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                    )
-                    : SizedBox.shrink(),
+                      TextSpan(text: t.someFeaturesMayNotWork),
+                    ],
+                  ),
+                ),
+              )
+            : SizedBox.shrink(),
       ),
     );
   }

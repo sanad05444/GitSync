@@ -1,6 +1,3 @@
-/// This is copied from Cargokit (which is the official way to use it currently)
-/// Details: https://fzyzcjy.github.io/flutter_rust_bridge/manual/integrate/builtin
-
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
@@ -29,7 +26,8 @@ abstract class BuildCommand extends Command {
   Future<void> run() async {
     final options = CargokitUserOptions.load();
 
-    if (options.verboseLogging || Platform.environment['CARGOKIT_VERBOSE'] == '1') {
+    if (options.verboseLogging ||
+        Platform.environment['CARGOKIT_VERBOSE'] == '1') {
       enableVerboseLogging();
     }
 
@@ -129,6 +127,10 @@ class PrecompileBinariesCommand extends Command {
         'temp-dir',
         help: 'Directory to store temporary build artifacts',
       )
+      ..addOption(
+        'glibc-version',
+        help: 'GLIBC version to use for linux builds',
+      )
       ..addFlag(
         "verbose",
         abbr: "v",
@@ -169,12 +171,14 @@ class PrecompileBinariesCommand extends Command {
     if (!Directory(manifestDir).existsSync()) {
       throw ArgumentError('Manifest directory does not exist: $manifestDir');
     }
-    String? androidMinSdkVersionString = argResults!['android-min-sdk-version'] as String?;
+    String? androidMinSdkVersionString =
+        argResults!['android-min-sdk-version'] as String?;
     int? androidMinSdkVersion;
     if (androidMinSdkVersionString != null) {
       androidMinSdkVersion = int.tryParse(androidMinSdkVersionString);
       if (androidMinSdkVersion == null) {
-        throw ArgumentError('Invalid android-min-sdk-version: $androidMinSdkVersionString');
+        throw ArgumentError(
+            'Invalid android-min-sdk-version: $androidMinSdkVersionString');
       }
     }
     final targetStrigns = argResults!['target'] as List<String>;
@@ -195,6 +199,7 @@ class PrecompileBinariesCommand extends Command {
       androidNdkVersion: argResults!['android-ndk-version'] as String?,
       androidMinSdkVersion: androidMinSdkVersion,
       tempDir: argResults!['temp-dir'] as String?,
+      glibcVersion: argResults!['glibc-version'] as String?,
     );
 
     await precompileBinaries.run();

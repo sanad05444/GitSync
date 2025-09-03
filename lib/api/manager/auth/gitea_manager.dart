@@ -52,6 +52,7 @@ class GiteaManager extends GitProviderManager {
   }
 
   @override
+  @override
   Future<String?> getToken(String token, Future<void> Function(String p1, String p2) setAccessRefreshToken) async {
     final tokenParts = token.split(conflictSeparator);
     final accessToken = tokenParts.first;
@@ -76,10 +77,10 @@ class GiteaManager extends GitProviderManager {
 
   @override
   Future<void> getRepos(String accessToken, Function(List<(String, String)>) updateCallback, Function(Function()?) nextPageCallback) async {
-    await _getReposRequest(accessToken, "https://$_domain/api/v1/user/repos", updateCallback, nextPageCallback);
+    await getReposRequest(accessToken, "https://$_domain/api/v1/user/repos", updateCallback, nextPageCallback);
   }
 
-  Future<void> _getReposRequest(
+  Future<void> getReposRequest(
     String accessToken,
     String url,
     Function(List<(String, String)>) updateCallback,
@@ -99,7 +100,7 @@ class GiteaManager extends GitProviderManager {
           final match = RegExp(r'<([^>]+)>; rel="next"').firstMatch(linkHeader);
           final String? nextLink = match?.group(1);
           if (nextLink != null) {
-            nextPageCallback(() => _getReposRequest(accessToken, nextLink, updateCallback, nextPageCallback));
+            nextPageCallback(() => getReposRequest(accessToken, nextLink, updateCallback, nextPageCallback));
           } else {
             nextPageCallback(null);
           }

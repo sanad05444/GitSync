@@ -1,6 +1,6 @@
 import 'package:GitSync/api/manager/premium_manager.dart';
 import 'package:GitSync/ui/dialog/onboarding_controller.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:GitSync/l10n/app_localizations.dart';
 import '../api/manager/repo_manager.dart';
 import '../api/manager/settings_manager.dart';
 import '../gitsync_service.dart';
