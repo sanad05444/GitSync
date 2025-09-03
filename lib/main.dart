@@ -442,25 +442,18 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
               ManualSyncDialog.showDialog(context);
             },
           ),
+        if (dirPath != null && clientModeEnabled && submodulePaths.isNotEmpty)
+          t.updateSubmodules: (
+            FontAwesomeIcons.solidSquareCaretDown,
+            () async {
+              GitManager.updateSubmodules();
+            },
+          ),
         if (clientModeEnabled)
           sprintf(t.fetchRemote, [await uiSettingsManager.getString(StorageKey.setman_remote)]): (
             FontAwesomeIcons.caretDown,
             () async {
-              // final result = await GitManager.uploadChanges(repomanRepoindex, uiSettingsManager, () async {
-              //   if (await uiSettingsManager.getBool(StorageKey.setman_syncMessageEnabled)) {
-              //     Fluttertoast.showToast(msg: t.syncStartPush, toastLength: Toast.LENGTH_LONG, gravity: null);
-              //   }
-              // });
-              // if (result == null) return;
-
-              // if (result == false) {
-              //   Fluttertoast.showToast(msg: t.syncNotRequired, toastLength: Toast.LENGTH_LONG, gravity: null);
-              //   return;
-              // }
-
-              // if (await uiSettingsManager.getBool(StorageKey.setman_syncMessageEnabled)) {
-              //   Fluttertoast.showToast(msg: t.syncComplete, toastLength: Toast.LENGTH_LONG, gravity: null);
-              // }
+              await GitManager.fetchRemote();
             },
           ),
         if (!clientModeEnabled)
@@ -488,21 +481,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
           t.pullChanges: (
             FontAwesomeIcons.angleDown,
             () async {
-              // final result = await GitManager.downloadChanges(repomanRepoindex, uiSettingsManager, () async {
-              //   if (await uiSettingsManager.getBool(StorageKey.setman_syncMessageEnabled)) {
-              //     Fluttertoast.showToast(msg: t.syncStartPull, toastLength: Toast.LENGTH_LONG, gravity: null);
-              //   }
-              // });
-              // if (result == null) return;
-
-              // if (result == false && (await GitManager.getUncommittedFilePaths(repomanRepoindex)).isNotEmpty) {
-              //   Fluttertoast.showToast(msg: t.pullFailed, toastLength: Toast.LENGTH_LONG, gravity: null);
-              //   return;
-              // }
-
-              // if (await uiSettingsManager.getBool(StorageKey.setman_syncMessageEnabled)) {
-              //   Fluttertoast.showToast(msg: t.syncComplete, toastLength: Toast.LENGTH_LONG, gravity: null);
-              // }
+              await GitManager.pullChanges();
             },
           ),
         if (clientModeEnabled)
@@ -537,42 +516,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
           t.pushChanges: (
             FontAwesomeIcons.angleUp,
             () async {
-              // final result = await GitManager.uploadChanges(repomanRepoindex, uiSettingsManager, () async {
-              //   if (await uiSettingsManager.getBool(StorageKey.setman_syncMessageEnabled)) {
-              //     Fluttertoast.showToast(msg: t.syncStartPush, toastLength: Toast.LENGTH_LONG, gravity: null);
-              //   }
-              // });
-              // if (result == null) return;
-
-              // if (result == false) {
-              //   Fluttertoast.showToast(msg: t.syncNotRequired, toastLength: Toast.LENGTH_LONG, gravity: null);
-              //   return;
-              // }
-
-              // if (await uiSettingsManager.getBool(StorageKey.setman_syncMessageEnabled)) {
-              //   Fluttertoast.showToast(msg: t.syncComplete, toastLength: Toast.LENGTH_LONG, gravity: null);
-              // }
-            },
-          ),
-        if (dirPath != null && clientModeEnabled && submodulePaths.isNotEmpty)
-          t.updateSubmodules: (
-            FontAwesomeIcons.solidSquareCaretDown,
-            () async {
-              // final result = await GitManager.uploadChanges(repomanRepoindex, uiSettingsManager, () async {
-              //   if (await uiSettingsManager.getBool(StorageKey.setman_syncMessageEnabled)) {
-              //     Fluttertoast.showToast(msg: t.syncStartPush, toastLength: Toast.LENGTH_LONG, gravity: null);
-              //   }
-              // });
-              // if (result == null) return;
-
-              // if (result == false) {
-              //   Fluttertoast.showToast(msg: t.syncNotRequired, toastLength: Toast.LENGTH_LONG, gravity: null);
-              //   return;
-              // }
-
-              // if (await uiSettingsManager.getBool(StorageKey.setman_syncMessageEnabled)) {
-              //   Fluttertoast.showToast(msg: t.syncComplete, toastLength: Toast.LENGTH_LONG, gravity: null);
-              // }
+              await GitManager.pushChanges();
             },
           ),
       });
@@ -585,8 +529,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
           () async {
             ConfirmForcePushPullDialog.showDialog(context, push: true, () async {
               ForcePushPullDialog.showDialog(context, push: true);
-              await GitManager.forcePush();
-              await GitManager.forcePull();
+              await GitManager.uploadAndOverwrite();
+              await GitManager.downloadAndOverwrite();
               Navigator.of(context).canPop() ? Navigator.pop(context) : null;
               setState(() {});
             });
@@ -598,7 +542,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
           () async {
             ConfirmForcePushPullDialog.showDialog(context, () async {
               ForcePushPullDialog.showDialog(context);
-              await GitManager.forcePull();
+              await GitManager.downloadAndOverwrite();
               Navigator.of(context).canPop() ? Navigator.pop(context) : null;
               setState(() {});
             });
@@ -608,25 +552,14 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
         t.forcePush: (
           FontAwesomeIcons.anglesUp,
           () async {
-            // ConfirmForcePushPullDialog.showDialog(context, push: true, () async {
-            //   ForcePushPullDialog.showDialog(context, push: true);
-            //   await GitManager.forcePush();
-            //   await GitManager.forcePull();
-            //   Navigator.of(context).canPop() ? Navigator.pop(context) : null;
-            //   setState(() {});
-            // });
+            await GitManager.forcePush();
           },
         ),
       if (clientModeEnabled)
         t.forcePull: (
           FontAwesomeIcons.anglesDown,
           () async {
-            // ConfirmForcePushPullDialog.showDialog(context, () async {
-            //   ForcePushPullDialog.showDialog(context);
-            //   await GitManager.forcePull();
-            //   Navigator.of(context).canPop() ? Navigator.pop(context) : null;
-            //   setState(() {});
-            // });
+            await GitManager.forcePull();
           },
         ),
       clientModeEnabled ? t.switchToSyncMode : t.switchToClientMode: (
@@ -634,13 +567,6 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
         () async {
           await uiSettingsManager.setBool(StorageKey.setman_clientModeEnabled, !clientModeEnabled);
           setState(() {});
-
-          // ConfirmForcePushPullDialog.showDialog(context, () async {
-          //   ForcePushPullDialog.showDialog(context);
-          //   await GitManager.forcePull();
-          //   Navigator.of(context).canPop() ? Navigator.pop(context) : null;
-          //   setState(() {});
-          // });
         },
       ),
     });
