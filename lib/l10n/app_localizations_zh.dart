@@ -149,13 +149,49 @@ class AppLocalizationsZh extends AppLocalizations {
   String get verifyGhSponsorNote => '注意：新的赞助关系可能需要最多 1 天才能在应用中生效。';
 
   @override
+  String get switchToClientMode => 'Switch to Client Mode…';
+
+  @override
+  String get switchToSyncMode => 'Switch to Sync Mode…';
+
+  @override
+  String get clientMode => 'Client Mode';
+
+  @override
+  String get syncMode => 'Sync Mode';
+
+  @override
   String get syncNow => '立即同步';
+
+  @override
+  String get syncAllChanges => 'Sync All Changes';
+
+  @override
+  String get stageAndCommit => 'Stage & Commit';
+
+  @override
+  String get downloadChanges => 'Download Changes';
+
+  @override
+  String get uploadChanges => 'Upload Changes';
+
+  @override
+  String get downloadAndOverwrite => 'Download + Overwrite';
+
+  @override
+  String get uploadAndOverwrite => 'Upload + Overwrite';
+
+  @override
+  String get fetchRemote => 'Fetch %s';
 
   @override
   String get pullChanges => '拉取更改';
 
   @override
   String get pushChanges => '推送更改';
+
+  @override
+  String get updateSubmodules => 'Update Submodules';
 
   @override
   String get forcePush => '强制推送';
@@ -393,6 +429,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get openFileExplorer => 'Browse & Edit';
 
   @override
+  String get syncSettings => 'Configuración de sincronización';
+
+  @override
   String get enableApplicationObserver => '自动同步设置';
 
   @override
@@ -586,6 +625,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get confirmCloneOverwriteAction => '覆盖';
+
+  @override
+  String get repositorySettings => 'Repository Settings';
 
   @override
   String get settings => '设置';

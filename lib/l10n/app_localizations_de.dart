@@ -151,13 +151,49 @@ class AppLocalizationsDe extends AppLocalizations {
       'Hinweis: Neue Sponsorings können bis zu 1 Tag dauern, bis sie in der App verfügbar sind.';
 
   @override
+  String get switchToClientMode => 'Switch to Client Mode…';
+
+  @override
+  String get switchToSyncMode => 'Switch to Sync Mode…';
+
+  @override
+  String get clientMode => 'Client Mode';
+
+  @override
+  String get syncMode => 'Sync Mode';
+
+  @override
   String get syncNow => 'Änderungen synchronisieren';
+
+  @override
+  String get syncAllChanges => 'Sync All Changes';
+
+  @override
+  String get stageAndCommit => 'Stage & Commit';
+
+  @override
+  String get downloadChanges => 'Download Changes';
+
+  @override
+  String get uploadChanges => 'Upload Changes';
+
+  @override
+  String get downloadAndOverwrite => 'Download + Overwrite';
+
+  @override
+  String get uploadAndOverwrite => 'Upload + Overwrite';
+
+  @override
+  String get fetchRemote => 'Fetch %s';
 
   @override
   String get pullChanges => 'Änderungen abrufen';
 
   @override
   String get pushChanges => 'Änderungen hochladen';
+
+  @override
+  String get updateSubmodules => 'Update Submodules';
 
   @override
   String get forcePush => 'Erzwungener Push';
@@ -417,6 +453,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get openFileExplorer => 'Browse & Edit';
 
   @override
+  String get syncSettings => 'Sync Settings';
+
+  @override
   String get enableApplicationObserver => 'Auto-Sync-Einstellungen';
 
   @override
@@ -620,6 +659,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get confirmCloneOverwriteAction => 'Überschreiben';
+
+  @override
+  String get repositorySettings => 'Repository Settings';
 
   @override
   String get settings => 'Einstellungen';
