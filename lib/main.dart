@@ -1136,7 +1136,9 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                   Colors.black,
                                                   Colors.transparent,
                                                   Colors.transparent,
-                                                  recentCommitsController.offset == 0 ? Colors.transparent : Colors.black,
+                                                  recentCommitsController.hasClients && recentCommitsController.offset == 0
+                                                      ? Colors.transparent
+                                                      : Colors.black,
                                                 ],
                                                 stops: [0.0, 0.1, 0.9, 1.0],
                                               ).createShader(rect);
