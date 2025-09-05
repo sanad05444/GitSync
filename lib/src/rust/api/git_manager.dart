@@ -144,6 +144,16 @@ Future<void> stageFilePaths({
   log: log,
 );
 
+Future<void> unstageFilePaths({
+  required String pathString,
+  required List<String> paths,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerUnstageFilePaths(
+  pathString: pathString,
+  paths: paths,
+  log: log,
+);
+
 Future<void> commitChanges({
   required String pathString,
   (String, String)? commitSigningCredentials,

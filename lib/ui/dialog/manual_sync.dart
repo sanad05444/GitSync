@@ -27,6 +27,7 @@ Future<void> showDialog(BuildContext context) async {
 
   bool uploading = false;
   bool staging = false;
+  bool unstaging = false;
 
   return mat.showDialog(
     context: context,
@@ -78,33 +79,81 @@ Future<void> showDialog(BuildContext context) async {
                           style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
                         ),
                         SizedBox(height: spaceMD + spaceSM),
-                        TextField(
-                          controller: syncMessageController,
-                          maxLines: null,
-                          style: TextStyle(
-                            color: primaryLight,
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.none,
-                            decorationThickness: 0,
-                            fontSize: textMD,
+                        IntrinsicHeight(
+                          child: Row(
+                            // crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: syncMessageController,
+                                  maxLines: null,
+                                  style: TextStyle(
+                                    color: primaryLight,
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.none,
+                                    decorationThickness: 0,
+                                    fontSize: textMD,
+                                  ),
+                                  decoration: InputDecoration(
+                                    fillColor: secondaryDark,
+                                    filled: true,
+                                    border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusSM), borderSide: BorderSide.none),
+                                    hintText: syncMessage,
+                                    isCollapsed: true,
+                                    label: Text(
+                                      t.commitMessage.toUpperCase(),
+                                      style: TextStyle(color: secondaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
+                                    ),
+                                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                                    contentPadding: const EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
+                                    isDense: true,
+                                  ),
+                                  onChanged: (_) {
+                                    setState(() {});
+                                  },
+                                ),
+                              ),
+                              if (clientModeEnabled) SizedBox(width: spaceSM),
+                              if (clientModeEnabled)
+                                TextButton.icon(
+                                  onPressed: (stagedFilePathsSnapshot.data ?? []).isNotEmpty
+                                      ? () async {
+                                          uploading = true;
+                                          setState(() {});
+                                          await GitManager.commitChanges(syncMessageController.text.isEmpty ? null : syncMessageController.text);
+                                          uploading = false;
+                                          setState(() {});
+                                        }
+                                      : null,
+                                  style: ButtonStyle(
+                                    alignment: Alignment.center,
+                                    backgroundColor: WidgetStatePropertyAll(
+                                      (stagedFilePathsSnapshot.data ?? []).isNotEmpty ? primaryPositive : tertiaryDark,
+                                    ),
+                                    padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM * 1.15)),
+                                    shape: WidgetStatePropertyAll(
+                                      RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusSM), side: BorderSide.none),
+                                    ),
+                                  ),
+                                  icon: uploading
+                                      ? Container(
+                                          height: textSM,
+                                          width: textSM,
+                                          margin: EdgeInsets.only(right: spaceXXXS),
+                                          child: CircularProgressIndicator(color: tertiaryDark),
+                                        )
+                                      : null,
+                                  label: Text(
+                                    "Commit".toUpperCase(),
+                                    style: TextStyle(
+                                      color: (stagedFilePathsSnapshot.data ?? []).isNotEmpty ? tertiaryDark : tertiaryLight,
+                                      fontSize: textSM,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                            ],
                           ),
-                          decoration: InputDecoration(
-                            fillColor: secondaryDark,
-                            filled: true,
-                            border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusSM), borderSide: BorderSide.none),
-                            hintText: syncMessage,
-                            isCollapsed: true,
-                            label: Text(
-                              t.commitMessage.toUpperCase(),
-                              style: TextStyle(color: secondaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
-                            ),
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                            contentPadding: const EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
-                            isDense: true,
-                          ),
-                          onChanged: (_) {
-                            setState(() {});
-                          },
                         ),
                         SizedBox(height: spaceMD),
                         (expanded ? (Widget child) => Expanded(child: child) : (child) => child)(
@@ -137,7 +186,7 @@ Future<void> showDialog(BuildContext context) async {
                                                     selectedFiles.clear();
                                                   } else {
                                                     selectedFiles.clear();
-                                                    selectedFiles.addAll(uncommittedFilePathsSnapshot.data?.map((item) => item.$1).toList() ?? []);
+                                                    selectedFiles.addAll(filePaths.map((item) => item.$1).toList() ?? []);
                                                   }
 
                                                   setState(() {});
@@ -231,14 +280,25 @@ Future<void> showDialog(BuildContext context) async {
                                                 child: Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
-                                                    FaIcon(
-                                                      selectedFiles.contains(fileName)
-                                                          ? FontAwesomeIcons.solidCircleCheck
-                                                          : FontAwesomeIcons.circleCheck,
-                                                      color: selectedFiles.contains(fileName)
-                                                          ? (clientModeEnabled && isStagedFile() ? primaryLight : secondaryInfo)
-                                                          : (clientModeEnabled && isStagedFile() ? primaryLight : tertiaryInfo),
-                                                      size: textMD,
+                                                    Stack(
+                                                      children: [
+                                                        Positioned.fill(
+                                                          child: FaIcon(
+                                                            FontAwesomeIcons.circleCheck,
+                                                            color: selectedFiles.contains(fileName) ? tertiaryInfo : Colors.transparent,
+                                                            size: textMD,
+                                                          ),
+                                                        ),
+                                                        FaIcon(
+                                                          selectedFiles.contains(fileName)
+                                                              ? FontAwesomeIcons.solidCircleCheck
+                                                              : FontAwesomeIcons.circleCheck,
+                                                          color: selectedFiles.contains(fileName)
+                                                              ? (clientModeEnabled && isStagedFile() ? primaryInfo : secondaryInfo)
+                                                              : (clientModeEnabled && isStagedFile() ? tertiaryInfo : tertiaryInfo),
+                                                          size: textMD,
+                                                        ),
+                                                      ],
                                                     ),
                                                     SizedBox(width: spaceXS),
                                                     Expanded(
@@ -327,13 +387,76 @@ Future<void> showDialog(BuildContext context) async {
                                   TextButton.icon(
                                     onPressed:
                                         selectedFiles
+                                            .where((file) => (stagedFilePathsSnapshot.data ?? []).map((file) => file.$1).contains(file))
+                                            .isNotEmpty
+                                        ? () async {
+                                            unstaging = true;
+                                            setState(() {});
+                                            await GitManager.unstageFilePaths(
+                                              selectedFiles
+                                                  .where((file) => (stagedFilePathsSnapshot.data ?? []).map((file) => file.$1).contains(file))
+                                                  .toList(),
+                                            );
+                                            selectedFiles.removeWhere(
+                                              (file) => (stagedFilePathsSnapshot.data ?? []).map((file) => file.$1).contains(file),
+                                            );
+                                            unstaging = false;
+                                            setState(() {});
+                                          }
+                                        : null,
+                                    style: ButtonStyle(
+                                      alignment: Alignment.center,
+                                      backgroundColor: WidgetStatePropertyAll(
+                                        selectedFiles
+                                                .where((file) => (stagedFilePathsSnapshot.data ?? []).map((file) => file.$1).contains(file))
+                                                .isNotEmpty
+                                            ? tertiaryInfo
+                                            : tertiaryDark,
+                                      ),
+                                      padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM)),
+                                      shape: WidgetStatePropertyAll(
+                                        RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusSM), side: BorderSide.none),
+                                      ),
+                                    ),
+                                    icon: unstaging
+                                        ? Container(
+                                            height: textSM,
+                                            width: textSM,
+                                            margin: EdgeInsets.only(right: spaceXXXS),
+                                            child: CircularProgressIndicator(color: tertiaryDark),
+                                          )
+                                        : null,
+                                    label: Text(
+                                      "Unstage".toUpperCase(),
+                                      style: TextStyle(
+                                        color:
+                                            selectedFiles
+                                                .where((file) => (stagedFilePathsSnapshot.data ?? []).map((file) => file.$1).contains(file))
+                                                .isNotEmpty
+                                            ? tertiaryDark
+                                            : tertiaryLight,
+                                        fontSize: textSM,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: spaceSM),
+                                  TextButton.icon(
+                                    onPressed:
+                                        selectedFiles
                                             .where((file) => !(stagedFilePathsSnapshot.data ?? []).map((file) => file.$1).contains(file))
                                             .isNotEmpty
                                         ? () async {
                                             staging = true;
                                             setState(() {});
-                                            await GitManager.stageFilePaths(selectedFiles);
-                                            selectedFiles.clear();
+                                            await GitManager.stageFilePaths(
+                                              selectedFiles
+                                                  .where((file) => !(stagedFilePathsSnapshot.data ?? []).map((file) => file.$1).contains(file))
+                                                  .toList(),
+                                            );
+                                            selectedFiles.removeWhere(
+                                              (file) => !(stagedFilePathsSnapshot.data ?? []).map((file) => file.$1).contains(file),
+                                            );
                                             staging = false;
                                             setState(() {});
                                           }
@@ -344,7 +467,7 @@ Future<void> showDialog(BuildContext context) async {
                                         selectedFiles
                                                 .where((file) => !(stagedFilePathsSnapshot.data ?? []).map((file) => file.$1).contains(file))
                                                 .isNotEmpty
-                                            ? primaryPositive
+                                            ? tertiaryInfo
                                             : tertiaryDark,
                                       ),
                                       padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM)),
@@ -369,44 +492,6 @@ Future<void> showDialog(BuildContext context) async {
                                                 .isNotEmpty
                                             ? tertiaryDark
                                             : tertiaryLight,
-                                        fontSize: textSM,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width: spaceSM),
-                                  TextButton.icon(
-                                    onPressed: (stagedFilePathsSnapshot.data ?? []).isNotEmpty
-                                        ? () async {
-                                            uploading = true;
-                                            setState(() {});
-                                            await GitManager.commitChanges(syncMessageController.text.isEmpty ? null : syncMessageController.text);
-                                            uploading = false;
-                                            setState(() {});
-                                          }
-                                        : null,
-                                    style: ButtonStyle(
-                                      alignment: Alignment.center,
-                                      backgroundColor: WidgetStatePropertyAll(
-                                        (stagedFilePathsSnapshot.data ?? []).isNotEmpty ? primaryPositive : tertiaryDark,
-                                      ),
-                                      padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM)),
-                                      shape: WidgetStatePropertyAll(
-                                        RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusSM), side: BorderSide.none),
-                                      ),
-                                    ),
-                                    icon: uploading
-                                        ? Container(
-                                            height: textSM,
-                                            width: textSM,
-                                            margin: EdgeInsets.only(right: spaceXXXS),
-                                            child: CircularProgressIndicator(color: tertiaryDark),
-                                          )
-                                        : null,
-                                    label: Text(
-                                      "Commit".toUpperCase(),
-                                      style: TextStyle(
-                                        color: (stagedFilePathsSnapshot.data ?? []).isNotEmpty ? tertiaryDark : tertiaryLight,
                                         fontSize: textSM,
                                         fontWeight: FontWeight.bold,
                                       ),

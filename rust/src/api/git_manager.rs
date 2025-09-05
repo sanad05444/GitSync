@@ -1204,6 +1204,49 @@ pub async fn stage_file_paths(
 }
 
 
+pub async fn unstage_file_paths(
+    path_string: &String,
+    paths: Vec<String>,
+    log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
+) -> Result<(), git2::Error> {
+    init(None);
+    let log_callback = Arc::new(log);
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::PushToRepo,
+        "Getting local directory".to_string(),
+    );
+    let repo = Repository::open(&path_string)?;
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::PushToRepo,
+        "Retrieved Statuses".to_string(),
+    );
+
+    let mut index = repo.index()?;
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::PushToRepo,
+        "Removing Files from Stage".to_string(),
+    );
+
+    let head = repo.head()?;
+    let commit = head.peel_to_commit()?;
+    repo.reset_default(Some(commit.as_object()), paths.iter())?;
+
+    index.write()?;
+
+    if !index.has_conflicts() {
+        index.write_tree()?;
+    }
+
+    Ok(())
+}
+
+
 pub async fn commit_changes(
     path_string: &String,
     commit_signing_credentials: Option<(String, String)>,

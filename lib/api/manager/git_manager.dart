@@ -281,6 +281,36 @@ class GitManager {
     });
   }
 
+  static Future<void> unstageFilePaths(List<String> paths) async {
+    if (await isLocked()) {
+      Fluttertoast.showToast(msg: operationInProgressError, toastLength: Toast.LENGTH_SHORT, gravity: null);
+      return;
+    }
+
+    final repoIndex = await repoManager.getInt(StorageKey.repoman_repoIndex);
+
+    return await _runWithLock(repoIndex, () async {
+      final dirPath = (await uiSettingsManager.getGitDirPath());
+      if (dirPath == null) return;
+
+      if (!await hasNetworkConnection()) return;
+
+      await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
+        if (!isGitDir(dirPath)) return;
+
+        Logger.gmLog(type: LogType.ForcePull, ".git folder found");
+
+        try {
+          await GitManagerRs.unstageFilePaths(pathString: dirPath, paths: paths, log: _logWrapper);
+        } catch (e, stackTrace) {
+          if (!await hasNetworkConnection()) return;
+          Logger.logError(LogType.ForcePull, e, stackTrace);
+          return;
+        }
+      });
+    });
+  }
+
   static Future<void> commitChanges(String? syncMessage) async {
     if (await isLocked()) {
       Fluttertoast.showToast(msg: operationInProgressError, toastLength: Toast.LENGTH_SHORT, gravity: null);
