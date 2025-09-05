@@ -311,6 +311,41 @@ class GitManager {
     });
   }
 
+  static Future<int?> getRecommendedAction() async {
+    if (await isLocked()) {
+      return null;
+    }
+
+    final repoIndex = await repoManager.getInt(StorageKey.repoman_repoIndex);
+
+    return await _runWithLock(repoIndex, () async {
+      final dirPath = (await uiSettingsManager.getGitDirPath());
+      if (dirPath == null) return null;
+
+      if (!await hasNetworkConnection()) return null;
+
+      return await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
+        if (!isGitDir(dirPath)) return null;
+
+        Logger.gmLog(type: LogType.ForcePull, ".git folder found");
+
+        try {
+          return await GitManagerRs.getRecommendedAction(
+            pathString: dirPath,
+            remoteName: await uiSettingsManager.getString(StorageKey.setman_remote),
+            provider: (await uiSettingsManager.getGitProvider()).name,
+            credentials: await _getCredentials(uiSettingsManager),
+            log: _logWrapper,
+          );
+        } catch (e, stackTrace) {
+          if (!await hasNetworkConnection()) return null;
+          Logger.logError(LogType.ForcePull, e, stackTrace);
+          return null;
+        }
+      });
+    });
+  }
+
   static Future<void> commitChanges(String? syncMessage) async {
     if (await isLocked()) {
       Fluttertoast.showToast(msg: operationInProgressError, toastLength: Toast.LENGTH_SHORT, gravity: null);

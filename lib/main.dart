@@ -382,7 +382,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   }
 
   Future<void> completeUiGuideShowcase(bool initialClientModeEnabled) async {
-    await Navigator.of(context).push(createGlobalSettingsMainRoute(onboarding: true));
+    await Navigator.of(context).push(createGlobalSettingsMainRoute(onboarding: true)).then((_) => setState(() {}));
     await repoManager.setOnboardingStep(-1);
     await uiSettingsManager.setBool(StorageKey.setman_clientModeEnabled, initialClientModeEnabled);
     setState(() {});
@@ -418,6 +418,21 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     //   await uiSettingsManager.setOnboardingStep(3);
     //   await onboardingController?.dismissAll();
     // }
+  }
+
+  Future<String> getLastSyncOption() async {
+    if (await uiSettingsManager.getBool(StorageKey.setman_clientModeEnabled) == true) {
+      final recommendedAction = await GitManager.getRecommendedAction();
+      if (recommendedAction != null) {
+        return [
+          sprintf(t.fetchRemote, [await uiSettingsManager.getString(StorageKey.setman_remote)]),
+          t.pullChanges,
+          t.stageAndCommit,
+          t.pushChanges,
+        ][recommendedAction];
+      }
+    }
+    return await uiSettingsManager.getString(StorageKey.setman_lastSyncMethod);
   }
 
   Future<Map<String, (IconData, Future<void> Function())>> getSyncOptions() async {
@@ -552,14 +567,24 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
         t.forcePush: (
           FontAwesomeIcons.anglesUp,
           () async {
-            await GitManager.forcePush();
+            ConfirmForcePushPullDialog.showDialog(context, push: true, () async {
+              ForcePushPullDialog.showDialog(context, push: true);
+              await GitManager.forcePush();
+              Navigator.of(context).canPop() ? Navigator.pop(context) : null;
+              setState(() {});
+            });
           },
         ),
       if (clientModeEnabled)
         t.forcePull: (
           FontAwesomeIcons.anglesDown,
           () async {
-            await GitManager.forcePull();
+            ConfirmForcePushPullDialog.showDialog(context, () async {
+              ForcePushPullDialog.showDialog(context);
+              await GitManager.forcePull();
+              Navigator.of(context).canPop() ? Navigator.pop(context) : null;
+              setState(() {});
+            });
           },
         ),
       clientModeEnabled ? t.switchToSyncMode : t.switchToClientMode: (
@@ -658,7 +683,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
               style: ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
               constraints: BoxConstraints(),
               onPressed: () async {
-                await Navigator.of(context).push(createGlobalSettingsMainRoute());
+                await Navigator.of(context).push(createGlobalSettingsMainRoute()).then((_) => setState(() {}));
                 widget.setState(() {});
               },
               icon: FaIcon(FontAwesomeIcons.gear, color: tertiaryDark, size: spaceMD + 7),
@@ -704,7 +729,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                   if (!logFile.existsSync()) {
                     logFile = File("${dir.path}/logs/log_0.log");
                   }
-                  await Navigator.of(context).push(createCodeEditorRoute(logFile.path, logs: true));
+                  await Navigator.of(context).push(createCodeEditorRoute(logFile.path, logs: true)).then((_) => setState(() {}));
                 },
                 child: Stack(
                   children: [
@@ -1241,7 +1266,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                     child: FutureBuilder(
                                       future: getSyncOptions(),
                                       builder: (context, syncOptionsSnapshot) => FutureBuilder(
-                                        future: uiSettingsManager.getString(StorageKey.setman_lastSyncMethod),
+                                        future: getLastSyncOption(),
                                         builder: (context, lastSyncMethodSnapshot) => Stack(
                                           children: [
                                             SizedBox.expand(
@@ -1253,6 +1278,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                   WidgetsBinding.instance.addPostFrameCallback((_) async {
                                                     setState(() {});
                                                   });
+
                                                   if (syncOptionsSnapshot.data?.containsKey(lastSyncMethodSnapshot.data) == true) {
                                                     await syncOptionsSnapshot.data![lastSyncMethodSnapshot.data]!.$2();
                                                   } else {
@@ -1762,7 +1788,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                             await uiSettingsManager.getString(StorageKey.setman_gitDirPath),
                                             (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath),
                                             (path) async {
-                                              await Navigator.of(context).push(createFileExplorerRoute(path));
+                                              await Navigator.of(context).push(createFileExplorerRoute(path)).then((_) => setState(() {}));
                                             },
                                           );
                                         },

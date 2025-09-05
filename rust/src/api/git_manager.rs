@@ -1,4 +1,4 @@
-use std::{env, fs, path::Path, path::PathBuf, sync::Arc};
+use std::{env, fs, path::Path, path::PathBuf, sync::Arc, collections::HashMap};
 use regex::Regex;
 use flutter_rust_bridge::DartFnFuture;
 use osshkeys::{KeyPair, KeyType};
@@ -823,7 +823,7 @@ fn pull_changes_priv(
                     LogType::PullFromRepo,
                     "OK fast forward".to_string(),
                 );
-                if get_uncommitted_file_paths_priv(&repo, false, &log_callback).is_empty() {
+                if get_staged_file_paths_priv(&repo, &log_callback).is_empty() && get_uncommitted_file_paths_priv(&repo, false, &log_callback).is_empty() {
                     fast_forward(&repo, &mut r, &fetch_commit, &log_callback)?;
                     update_submodules_priv(&repo, &provider, &credentials, &log_callback)?;
                 } else {
@@ -934,11 +934,13 @@ pub async fn download_changes(
     set_author(&repo, &author);
     repo.cleanup_state();
 
-    if (fetch_remote_priv(&repo, &remote, &provider, &credentials, &log_callback) == Ok(Some(false))) {
+    fetch_remote_priv(&repo, &remote, &provider, &credentials, &log_callback);
+
+    if (pull_changes_priv(&repo, &remote, &provider, &credentials, commit_signing_credentials, &author, sync_callback, &log_callback) == Ok(Some(false))) {
         return (Ok(Some(false)));
     }
 
-    pull_changes_priv(&repo, &remote, &provider, &credentials, commit_signing_credentials, &author, sync_callback, &log_callback)
+    (Ok(Some(true)))
 }
 
 pub async fn push_changes(
@@ -1246,6 +1248,93 @@ pub async fn unstage_file_paths(
     Ok(())
 }
 
+pub async fn get_recommended_action(
+    path_string: &String,
+    remote_name: &String,
+    provider: &String,
+    credentials: &(String, String),
+    log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
+) -> Result<Option<i32>, git2::Error> {
+    init(None);
+    let log_callback = Arc::new(log);
+    let repo = git2::Repository::open(path_string)?;
+    let callbacks = get_default_callbacks(Some(&provider), Some(&credentials));
+    let branch_name = get_branch_name_priv(&repo).unwrap_or_else(|| "master".to_string());
+
+    if let Ok(mut remote) = repo.find_remote(remote_name) {
+        remote.connect_auth(git2::Direction::Fetch, Some(callbacks), None)?;
+        let remote_refs = remote.list()?;
+        for r in remote_refs {
+            let tracking_ref_name = format!("refs/remotes/{}/{}", remote.name().unwrap(), &branch_name);
+
+            if let Ok(tracking_ref) = repo.find_reference(&tracking_ref_name) {
+                if tracking_ref.target() != Some(r.oid()) {
+                    return Ok(Some(0));
+                }
+            } else {
+                return Ok(Some(0));
+            }
+        }
+        remote.disconnect();
+    }
+
+    if !get_staged_file_paths_priv(&repo, &log_callback).is_empty() || !get_uncommitted_file_paths_priv(&repo, false, &log_callback).is_empty() {
+        return Ok(Some(2));
+    }
+
+    if let Ok(head) = repo.head() {
+        if let Ok(local_commit) = head.peel_to_commit() {
+            if let Ok(remote_branch) = repo.find_branch(&format!("{}/{}", remote_name, head.shorthand().unwrap_or("")), git2::BranchType::Remote) {
+                if let Ok(remote_commit) = remote_branch.get().peel_to_commit() {
+                    if local_commit.id() != remote_commit.id() {
+                        let (ahead, behind) = repo.graph_ahead_behind(local_commit.id(), remote_commit.id())?;
+                        if ahead > 0 {
+                            return Ok(Some(3));
+                        } else if behind > 0 {
+                            return Ok(Some(1));
+                        }
+                        return Ok(Some(3));
+                    }
+                }
+            }
+        }
+    }
+    
+    Ok(None)
+}
+
+fn resolve_remote_reference(repo: &Repository, refspec: &str) -> Result<Option<git2::Oid>, git2::Error> {
+    let remote_ref = format!("refs/remotes/origin/{}", refspec.split('/').last().unwrap());
+    match repo.refname_to_id(&remote_ref) {
+        Ok(oid) => Ok(Some(oid)),
+        Err(_) => Ok(None),
+    }
+}
+
+fn has_unpushed_changes(repo: &Repository) -> Result<bool, git2::Error> {
+    let head = repo.head()?;
+    let remote_ref = format!("refs/remotes/origin/{}", head.shorthand().unwrap());
+    let local_commit = head.target().ok_or(git2::Error::from_str("No commit on current branch"))?;
+    let remote_commit = repo.refname_to_id(&remote_ref)?;
+
+    if local_commit != remote_commit {
+        return Ok(true);
+    }
+    Ok(false)
+}
+
+fn has_changes_to_pull(repo: &Repository, head: &git2::Reference, remote_commit_map: &HashMap<String, git2::Oid>) -> Result<bool, git2::Error> {
+    let remote_name = head.shorthand().unwrap();
+    let fetch_head = format!("refs/remotes/origin/{}", remote_name);
+
+    let local_commit = head.target().ok_or(git2::Error::from_str("No commit on current branch"))?;
+    if let Some(&remote_commit) = remote_commit_map.get(fetch_head.as_str()) {
+        if local_commit != remote_commit {
+            return Ok(true);
+        }
+    }
+    Ok(false)
+}
 
 pub async fn commit_changes(
     path_string: &String,
@@ -1346,7 +1435,7 @@ pub async fn upload_changes(
         "Retrieved Statuses".to_string(),
     );
 
-    let uncommitted_file_paths = get_uncommitted_file_paths_priv(&repo, true, &log_callback);
+    let uncommitted_file_paths: Vec<(String, i32)> = get_staged_file_paths_priv(&repo, &log_callback).into_iter().chain(get_uncommitted_file_paths_priv(&repo, true, &log_callback)).collect();
 
     let mut index = repo.index()?;
 
@@ -1662,7 +1751,7 @@ pub async fn upload_and_overwrite(
         rebase.abort()?;
     }
 
-    if !get_uncommitted_file_paths_priv(&repo, true, &log_callback).is_empty() {
+    if !get_staged_file_paths_priv(&repo, &log_callback).is_empty() || !get_uncommitted_file_paths_priv(&repo, true, &log_callback).is_empty() {
         let mut index = repo.index()?;
 
         _log(
@@ -1951,6 +2040,13 @@ pub async fn get_staged_file_paths(
         Err(_) => return Vec::new(),
     };
 
+    get_staged_file_paths_priv(&repo, &log_callback)
+}
+
+fn get_staged_file_paths_priv(
+    repo: &Repository,
+    log_callback: &Arc<impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static>,
+) -> Vec<(String, i32)> {
     _log(
         Arc::clone(&log_callback),
         LogType::GitStatus,
