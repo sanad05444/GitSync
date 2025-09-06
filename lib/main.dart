@@ -321,7 +321,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
     FlutterBackgroundService().on(GitsyncService.REFRESH).listen((event) async {
       await Logger.dismissError(context);
-      setState(() {});
+      widget.setState(() {});
     });
 
     FlutterBackgroundService().on(GitsyncService.MERGE_COMPLETE).listen((event) async {
@@ -459,84 +459,104 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
           t.manualSync: (
             FontAwesomeIcons.listCheck,
             () async {
-              ManualSyncDialog.showDialog(context);
+              setState(() {});
+              await ManualSyncDialog.showDialog(context);
+              setState(() {});
             },
           ),
         if (dirPath != null && clientModeEnabled && submodulePaths.isNotEmpty)
           t.updateSubmodules: (
             FontAwesomeIcons.solidSquareCaretDown,
             () async {
+              setState(() {});
               await GitManager.updateSubmodules();
+              setState(() {});
             },
           ),
         if (clientModeEnabled)
           sprintf(t.fetchRemote, [await uiSettingsManager.getRemote()]): (
             FontAwesomeIcons.caretDown,
             () async {
+              setState(() {});
               await GitManager.fetchRemote();
+              setState(() {});
             },
           ),
         if (!clientModeEnabled)
           t.downloadChanges: (
             FontAwesomeIcons.angleDown,
             () async {
+              setState(() {});
               final result = await GitManager.downloadChanges(repomanRepoindex, uiSettingsManager, () async {
                 if (await uiSettingsManager.getBool(StorageKey.setman_syncMessageEnabled)) {
                   Fluttertoast.showToast(msg: t.syncStartPull, toastLength: Toast.LENGTH_LONG, gravity: null);
                 }
               });
+              setState(() {});
               if (result == null) return;
 
               if (result == false && (await GitManager.getUncommittedFilePaths(repomanRepoindex)).isNotEmpty) {
                 Fluttertoast.showToast(msg: t.pullFailed, toastLength: Toast.LENGTH_LONG, gravity: null);
                 return;
               }
+              setState(() {});
 
               if (await uiSettingsManager.getBool(StorageKey.setman_syncMessageEnabled)) {
                 Fluttertoast.showToast(msg: t.syncComplete, toastLength: Toast.LENGTH_LONG, gravity: null);
               }
+              setState(() {});
             },
           ),
         if (clientModeEnabled)
           t.pullChanges: (
             FontAwesomeIcons.angleDown,
             () async {
+              setState(() {});
               await GitManager.pullChanges();
+              setState(() {});
             },
           ),
         if (clientModeEnabled)
           t.stageAndCommit: (
             FontAwesomeIcons.listCheck,
             () async {
-              ManualSyncDialog.showDialog(context);
+              setState(() {});
+              await ManualSyncDialog.showDialog(context);
+              setState(() {});
             },
           ),
         if (!clientModeEnabled)
           t.uploadChanges: (
             FontAwesomeIcons.angleUp,
             () async {
+              setState(() {});
               final result = await GitManager.uploadChanges(repomanRepoindex, uiSettingsManager, () async {
                 if (await uiSettingsManager.getBool(StorageKey.setman_syncMessageEnabled)) {
                   Fluttertoast.showToast(msg: t.syncStartPush, toastLength: Toast.LENGTH_LONG, gravity: null);
                 }
               });
+              setState(() {});
               if (result == null) return;
 
               if (result == false) {
                 Fluttertoast.showToast(msg: t.syncNotRequired, toastLength: Toast.LENGTH_LONG, gravity: null);
                 return;
               }
+              setState(() {});
 
               if (await uiSettingsManager.getBool(StorageKey.setman_syncMessageEnabled)) {
                 Fluttertoast.showToast(msg: t.syncComplete, toastLength: Toast.LENGTH_LONG, gravity: null);
               }
+              setState(() {});
             },
           ),
         if (clientModeEnabled)
           t.pushChanges: (
             FontAwesomeIcons.angleUp,
             () async {
+              setState(() {});
               await GitManager.pushChanges();
+              setState(() {});
             },
           ),
       });
@@ -1032,6 +1052,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                     commitMessage: "",
                                     additions: 0,
                                     deletions: 0,
+                                    unpulled: false,
+                                    unpushed: false,
                                   ),
                                 ]),
                           ...recentCommitsSnapshot.data ?? <GitManagerRs.Commit>[],
@@ -1047,6 +1069,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                 commitMessage: "",
                                 additions: 0,
                                 deletions: 0,
+                                unpulled: false,
+                                unpushed: false,
                               ),
                             );
                           }
@@ -1057,6 +1081,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                             commitMessage: "",
                             additions: 0,
                             deletions: 0,
+                            unpulled: false,
+                            unpushed: false,
                           );
                         }
 

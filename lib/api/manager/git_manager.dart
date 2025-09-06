@@ -627,7 +627,7 @@ class GitManager {
           Logger.gmLog(type: LogType.RecentCommits, ".git folder found");
 
           try {
-            return await GitManagerRs.getRecentCommits(pathString: dirPath, log: _logWrapper);
+            return await GitManagerRs.getRecentCommits(pathString: dirPath, remoteName: await uiSettingsManager.getRemote(), log: _logWrapper);
           } catch (e, stackTrace) {
             Logger.logError(LogType.RecentCommits, e, stackTrace);
             return <GitManagerRs.Commit>[];

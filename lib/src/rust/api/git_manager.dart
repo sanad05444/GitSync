@@ -46,9 +46,11 @@ Future<void> unstageAll({
 
 Future<List<Commit>> getRecentCommits({
   required String pathString,
+  required String remoteName,
   required FutureOr<void> Function(LogType, String) log,
 }) => RustLib.instance.api.crateApiGitManagerGetRecentCommits(
   pathString: pathString,
+  remoteName: remoteName,
   log: log,
 );
 
@@ -388,6 +390,8 @@ class Commit {
   final String commitMessage;
   final int additions;
   final int deletions;
+  final bool unpulled;
+  final bool unpushed;
 
   const Commit({
     required this.timestamp,
@@ -396,6 +400,8 @@ class Commit {
     required this.commitMessage,
     required this.additions,
     required this.deletions,
+    required this.unpulled,
+    required this.unpushed,
   });
 
   @override
@@ -405,7 +411,9 @@ class Commit {
       reference.hashCode ^
       commitMessage.hashCode ^
       additions.hashCode ^
-      deletions.hashCode;
+      deletions.hashCode ^
+      unpulled.hashCode ^
+      unpushed.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -417,7 +425,9 @@ class Commit {
           reference == other.reference &&
           commitMessage == other.commitMessage &&
           additions == other.additions &&
-          deletions == other.deletions;
+          deletions == other.deletions &&
+          unpulled == other.unpulled &&
+          unpushed == other.unpushed;
 }
 
 enum LogType {

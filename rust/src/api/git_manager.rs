@@ -16,6 +16,8 @@ pub struct Commit {
     pub commit_message: String,
     pub additions: i32,
     pub deletions: i32,
+    pub unpulled: bool,
+    pub unpushed: bool,
 }
 
 // Also add to lib/api/logger.dart:21
@@ -404,6 +406,7 @@ pub async fn unstage_all(
 
 pub async fn get_recent_commits(
     path_string: &String,
+    remote_name: &str,
     log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
 ) -> Result<Vec<Commit>, git2::Error> {
     init(None);
@@ -414,13 +417,33 @@ pub async fn get_recent_commits(
         LogType::RecentCommits,
         "Getting local directory".to_string(),
     );
+
     let repo = Repository::open(path_string)?;
+    let branch_name = get_branch_name_priv(&repo);
+    let mut local_oid: Option<git2::Oid> = None;
+    let mut remote_oid: Option<git2::Oid> = None;
+
     let mut revwalk = repo.revwalk()?;
-    // revwalk.push_head()?;
-    if let Err(e) = revwalk.push_head() {
-        return Ok(vec![]);
+
+    if let Some(name) = branch_name {
+        let local_branch = repo.find_branch(&name, BranchType::Local)?;
+        local_oid = Some(local_branch.get().target().ok_or_else(|| git2::Error::from_str("Invalid local branch"))?);
+        let remote_ref = format!("refs/remotes/{}/{}", remote_name, name);
+        remote_oid = repo.refname_to_id(&remote_ref).ok();
+        if let Some(local_oid) = local_oid {
+            revwalk.push(local_oid)?;
+        }
+        if let Some(remote_oid) = remote_oid {
+            revwalk.push(remote_oid)?;
+        }
+    } else {
+        match revwalk.push_head() {
+            Ok(_) => {},
+            Err(_) => return Ok(Vec::new()), 
+        }
     }
-    revwalk.set_sorting(git2::Sort::TIME)?;
+
+    revwalk.set_sorting(git2::Sort::TOPOLOGICAL | git2::Sort::TIME)?;
 
     let mut commits = Vec::new();
 
@@ -431,49 +454,41 @@ pub async fn get_recent_commits(
         };
 
         let commit = match repo.find_commit(oid) {
-            Ok(commit) => commit,
+            Ok(c) => c,
             Err(_) => continue,
         };
 
         let author = commit.author().name().unwrap_or("<unknown>").to_string();
         let time = commit.time().seconds();
-        let message = commit
-            .message()
-            .unwrap_or("<no message>")
-            .trim()
-            .to_string();
+        let message = commit.message().unwrap_or("<no message>").trim().to_string();
         let reference = format!("{}", oid);
 
         let parent = commit.parent(0).ok();
         let mut diff_opts = DiffOptions::new();
-        
         let diff = match parent {
-            Some(parent_commit) => {
-                match repo.diff_tree_to_tree(
-                    Some(&parent_commit.tree()?),
-                    Some(&commit.tree()?),
-                    Some(&mut diff_opts),
-                ) {
-                    Ok(diff) => diff,
-                    Err(_) => continue,
-                }
-            },
-            None => {
-                match repo.diff_tree_to_tree(
-                    None, 
-                    Some(&commit.tree()?), 
-                    Some(&mut diff_opts)
-                ) {
-                    Ok(diff) => diff,
-                    Err(_) => continue,
-                }
-            }
+            Some(parent_commit) => repo.diff_tree_to_tree(
+                Some(&parent_commit.tree()?),
+                Some(&commit.tree()?),
+                Some(&mut diff_opts),
+            )?,
+            None => repo.diff_tree_to_tree(None, Some(&commit.tree()?), Some(&mut diff_opts))?,
         };
+        let stats = diff.stats()?;
+        let additions = stats.insertions() as i32;
+        let deletions = stats.deletions() as i32;
 
-        let (additions, deletions) = match diff.stats() {
-            Ok(stats) => (stats.insertions() as i32, stats.deletions() as i32),
-            Err(_) => (0, 0)
+        let (ahead_local, behind_local) = if let Some(local_oid) = local_oid {
+            repo.graph_ahead_behind(oid, local_oid)?
+        } else {
+            (0, 0)
         };
+        let (ahead_remote, behind_remote) = if let Some(remote_oid) = remote_oid {
+            repo.graph_ahead_behind(oid, remote_oid)?
+        } else {
+            (0, 0)
+        };
+        let unpulled = ahead_local > 0;
+        let unpushed = ahead_remote > 0;
 
         commits.push(Commit {
             timestamp: time,
@@ -482,6 +497,8 @@ pub async fn get_recent_commits(
             commit_message: message,
             additions,
             deletions,
+            unpushed,
+            unpulled,
         });
     }
 
