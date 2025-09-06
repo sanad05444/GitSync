@@ -305,38 +305,35 @@ class GitManager {
     });
   }
 
+  static int? _lastRecommendedAction;
   static Future<int?> getRecommendedAction() async {
     if (await isLocked()) {
-      return null;
+      return _lastRecommendedAction;
     }
 
-    final repoIndex = await repoManager.getInt(StorageKey.repoman_repoIndex);
+    final dirPath = (await uiSettingsManager.getGitDirPath());
+    if (dirPath == null) return null;
 
-    return await _runWithLock(repoIndex, () async {
-      final dirPath = (await uiSettingsManager.getGitDirPath());
-      if (dirPath == null) return null;
+    if (!await hasNetworkConnection()) return null;
 
-      if (!await hasNetworkConnection()) return null;
+    return await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
+      if (!isGitDir(dirPath)) return null;
 
-      return await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
-        if (!isGitDir(dirPath)) return null;
+      Logger.gmLog(type: LogType.ForcePull, ".git folder found");
 
-        Logger.gmLog(type: LogType.ForcePull, ".git folder found");
-
-        try {
-          return await GitManagerRs.getRecommendedAction(
-            pathString: dirPath,
-            remoteName: await uiSettingsManager.getRemote(),
-            provider: (await uiSettingsManager.getGitProvider()).name,
-            credentials: await _getCredentials(uiSettingsManager),
-            log: _logWrapper,
-          );
-        } catch (e, stackTrace) {
-          if (!await hasNetworkConnection()) return null;
-          Logger.logError(LogType.ForcePull, e, stackTrace);
-          return null;
-        }
-      });
+      try {
+        return await GitManagerRs.getRecommendedAction(
+          pathString: dirPath,
+          remoteName: await uiSettingsManager.getRemote(),
+          provider: (await uiSettingsManager.getGitProvider()).name,
+          credentials: await _getCredentials(uiSettingsManager),
+          log: _logWrapper,
+        );
+      } catch (e, stackTrace) {
+        if (!await hasNetworkConnection()) return null;
+        Logger.logError(LogType.ForcePull, e, stackTrace);
+        return null;
+      }
     });
   }
 
@@ -1152,28 +1149,25 @@ class GitManager {
     });
   }
 
+  static final List<String> _lastSubmodulePaths = [];
   static Future<List<String>> getSubmodulePaths(String repoPath) async {
     if (await isLocked()) {
-      return [];
+      return _lastSubmodulePaths;
     }
 
-    final repoIndex = await repoManager.getInt(StorageKey.repoman_repoIndex);
+    if (!await hasNetworkConnection()) return [];
+    return await useDirectory(repoPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
+          if (!isGitDir(dirPath)) return null;
 
-    return await _runWithLock(repoIndex, () async {
-          if (!await hasNetworkConnection()) return null;
-          return await useDirectory(repoPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
-            if (!isGitDir(dirPath)) return null;
+          Logger.gmLog(type: LogType.SelectDirectory, ".git folder found");
 
-            Logger.gmLog(type: LogType.SelectDirectory, ".git folder found");
-
-            try {
-              return await GitManagerRs.getSubmodulePaths(pathString: dirPath);
-            } catch (e, stackTrace) {
-              if (!await hasNetworkConnection()) return null;
-              Logger.logError(LogType.SelectDirectory, e, stackTrace);
-              return null;
-            }
-          });
+          try {
+            return await GitManagerRs.getSubmodulePaths(pathString: dirPath);
+          } catch (e, stackTrace) {
+            if (!await hasNetworkConnection()) return null;
+            Logger.logError(LogType.SelectDirectory, e, stackTrace);
+            return null;
+          }
         }) ??
         [];
   }
