@@ -123,13 +123,13 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver, Sin
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 FutureBuilder(
-                  future: uiSettingsManager.getBool(StorageKey.setman_clientModeEnabled),
+                  future: uiSettingsManager.getClientModeEnabled(),
                   builder: (context, clientModeEnabledSnapshot) => Row(
                     children: [
                       Expanded(
                         child: TextButton.icon(
                           onPressed: () async {
-                            await uiSettingsManager.setBool(StorageKey.setman_clientModeEnabled, false);
+                            await uiSettingsManager.setBoolNullable(StorageKey.setman_clientModeEnabled, false);
                             setState(() {});
                           },
                           style: ButtonStyle(
@@ -168,7 +168,7 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver, Sin
                       Expanded(
                         child: TextButton.icon(
                           onPressed: () async {
-                            await uiSettingsManager.setBool(StorageKey.setman_clientModeEnabled, true);
+                            await uiSettingsManager.setBoolNullable(StorageKey.setman_clientModeEnabled, true);
                             setState(() {});
                           },
                           style: ButtonStyle(
@@ -356,21 +356,21 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver, Sin
                       ),
                 SizedBox(height: spaceMD),
                 ItemSetting(
-                  setFn: (value) => uiSettingsManager.setString(StorageKey.setman_syncMessage, value),
-                  getFn: () => uiSettingsManager.getString(StorageKey.setman_syncMessage),
+                  setFn: (value) => uiSettingsManager.setStringNullable(StorageKey.setman_syncMessage, value),
+                  getFn: () => uiSettingsManager.getSyncMessage(),
                   title: t.syncMessageLabel,
                   description: t.syncMessageDescription,
-                  hint: syncMessage,
+                  hint: defaultSyncMessage,
                   maxLines: null,
                   minLines: null,
                 ),
                 SizedBox(height: spaceMD),
                 ItemSetting(
-                  setFn: (value) => uiSettingsManager.setString(StorageKey.setman_syncMessageTimeFormat, value),
-                  getFn: () => uiSettingsManager.getString(StorageKey.setman_syncMessageTimeFormat),
+                  setFn: (value) => uiSettingsManager.setStringNullable(StorageKey.setman_syncMessageTimeFormat, value),
+                  getFn: () => uiSettingsManager.getSyncMessageTimeFormat(),
                   title: t.syncMessageTimeFormatLabel,
                   description: t.syncMessageTimeFormatDescription,
-                  hint: syncMessageTimeFormat,
+                  hint: defaultSyncMessageTimeFormat,
                 ),
                 SizedBox(height: spaceLG),
                 Showcase(
@@ -384,15 +384,15 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver, Sin
                   child: Column(
                     children: [
                       ItemSetting(
-                        setFn: (value) => uiSettingsManager.setString(StorageKey.setman_authorName, value.trim()),
-                        getFn: demo ? () async => "" : () => uiSettingsManager.getString(StorageKey.setman_authorName),
+                        setFn: (value) => uiSettingsManager.setStringNullable(StorageKey.setman_authorName, value.trim()),
+                        getFn: demo ? () async => "" : () => uiSettingsManager.getAuthorName(),
                         title: t.authorNameLabel,
                         hint: t.authorName,
                       ),
                       SizedBox(height: spaceMD),
                       ItemSetting(
-                        setFn: (value) => uiSettingsManager.setString(StorageKey.setman_authorEmail, value.trim()),
-                        getFn: demo ? () async => "" : () => uiSettingsManager.getString(StorageKey.setman_authorEmail),
+                        setFn: (value) => uiSettingsManager.setStringNullable(StorageKey.setman_authorEmail, value.trim()),
+                        getFn: demo ? () async => "" : () => uiSettingsManager.getAuthorEmail(),
                         title: t.authorEmailLabel,
                         hint: t.authorEmail,
                       ),
@@ -401,8 +401,8 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver, Sin
                 ),
                 SizedBox(height: spaceLG),
                 ItemSetting(
-                  setFn: (value) => uiSettingsManager.setString(StorageKey.setman_remote, value),
-                  getFn: () => uiSettingsManager.getString(StorageKey.setman_remote),
+                  setFn: (value) => uiSettingsManager.setStringNullable(StorageKey.setman_remote, value),
+                  getFn: () => uiSettingsManager.getRemote(),
                   title: t.remoteLabel,
                   hint: t.defaultRemote,
                 ),

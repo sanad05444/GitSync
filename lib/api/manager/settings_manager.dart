@@ -16,14 +16,42 @@ class SettingsManager extends Storage {
   SettingsManager({super.name, super.keyTransformer = k});
 
   Future<SettingsManager> reinit({int? repoIndex}) async {
-    final repoName = await repoManager.getRepoName(
-      repoIndex ?? await repoManager.getInt(StorageKey.repoman_repoIndex),
-    );
+    final repoName = await repoManager.getRepoName(repoIndex ?? await repoManager.getInt(StorageKey.repoman_repoIndex));
     keyNamespace = "$keyPrefix---$repoName";
     return this;
   }
 
   static String k(String key) => "$keyNamespace::$key";
+
+  Future<T> _getOrDefault<T>(
+    StorageKey<T?> key,
+    Future<T?> Function(StorageKey<T?> key, [bool defaulting]) getFn,
+    Future<T> Function() defaultFn,
+  ) async => await getFn(key, true) ?? await defaultFn();
+
+  Future<bool> getClientModeEnabled() async => await _getOrDefault(
+    StorageKey.setman_clientModeEnabled,
+    getBoolNullable,
+    () => repoManager.getBool(StorageKey.repoman_defaultClientModeEnabled),
+  );
+
+  Future<String> getSyncMessage() async =>
+      await _getOrDefault(StorageKey.setman_syncMessage, getStringNullable, () => repoManager.getString(StorageKey.repoman_defaultSyncMessage));
+
+  Future<String> getSyncMessageTimeFormat() async => await _getOrDefault(
+    StorageKey.setman_syncMessageTimeFormat,
+    getStringNullable,
+    () => repoManager.getString(StorageKey.repoman_defaultSyncMessageTimeFormat),
+  );
+
+  Future<String> getAuthorName() async =>
+      await _getOrDefault(StorageKey.setman_authorName, getStringNullable, () => repoManager.getString(StorageKey.repoman_defaultAuthorName));
+
+  Future<String> getAuthorEmail() async =>
+      await _getOrDefault(StorageKey.setman_authorEmail, getStringNullable, () => repoManager.getString(StorageKey.repoman_defaultAuthorEmail));
+
+  Future<String> getRemote() async =>
+      await _getOrDefault(StorageKey.setman_remote, getStringNullable, () => repoManager.getString(StorageKey.repoman_defaultRemote));
 
   Future<void> clearAll() async {
     final all = await storage.readAll();
@@ -58,41 +86,23 @@ class SettingsManager extends Storage {
     final bookmarkPath = await getString(StorageKey.setman_gitDirPath);
     if (bookmarkPath.isEmpty) return null;
 
-    return await useDirectory(
-      bookmarkPath,
-      (bookmarkPath) async =>
-          await uiSettingsManager.setGitDirPath(bookmarkPath),
-      (path) async {
-        if (!await requestStoragePerm(false) ||
-            (!await Directory('$path/$gitPath').exists() &&
-                !await File('$path/$gitPath').exists())) {
-          await setString(StorageKey.setman_gitDirPath, "");
-          return null;
-        }
-        return path.isEmpty == true
-            ? null
-            : (Platform.isIOS && iosGetPath ? path : bookmarkPath);
-      },
-    );
+    return await useDirectory(bookmarkPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (path) async {
+      if (!await requestStoragePerm(false) || (!await Directory('$path/$gitPath').exists() && !await File('$path/$gitPath').exists())) {
+        await setString(StorageKey.setman_gitDirPath, "");
+        return null;
+      }
+      return path.isEmpty == true ? null : (Platform.isIOS && iosGetPath ? path : bookmarkPath);
+    });
   }
 
   Future<GitProvider> getGitProvider() async {
-    final gitProviderName = await getStringNullable(
-      StorageKey.setman_gitProvider,
-    );
-    return GitProvider.values.firstWhere(
-      (p) => p.name == gitProviderName,
-      orElse: () => GitProvider.GITHUB,
-    );
+    final gitProviderName = await getStringNullable(StorageKey.setman_gitProvider);
+    return GitProvider.values.firstWhere((p) => p.name == gitProviderName, orElse: () => GitProvider.GITHUB);
   }
 
-  Future<void> setGitHttpAuthCredentials(
-    String username,
-    String email,
-    String accessToken,
-  ) async {
-    await setString(StorageKey.setman_authorName, username.trim());
-    await setString(StorageKey.setman_authorEmail, email.trim());
+  Future<void> setGitHttpAuthCredentials(String username, String email, String accessToken) async {
+    await setStringNullable(StorageKey.setman_authorName, username.trim());
+    await setStringNullable(StorageKey.setman_authorEmail, email.trim());
     await setString(StorageKey.setman_gitAuthUsername, username.trim());
     await setString(StorageKey.setman_gitAuthToken, accessToken.trim());
   }
@@ -121,10 +131,7 @@ class SettingsManager extends Storage {
     return (username, oauthToken ?? token);
   }
 
-  Future<void> setGitSshAuthCredentials(
-    String passphrase,
-    String sshKey,
-  ) async {
+  Future<void> setGitSshAuthCredentials(String passphrase, String sshKey) async {
     await setString(StorageKey.setman_gitSshKey, sshKey.trim());
     await setString(StorageKey.setman_gitSshPassphrase, passphrase);
   }
@@ -133,9 +140,7 @@ class SettingsManager extends Storage {
       (await getString(StorageKey.setman_gitSshPassphrase), await getString(StorageKey.setman_gitSshKey));
 
   Future<(String, String)?> getGitCommitSigningCredentials() async {
-    final passphrase = await getStringNullable(
-      StorageKey.setman_gitCommitSigningPassphrase,
-    );
+    final passphrase = await getStringNullable(StorageKey.setman_gitCommitSigningPassphrase);
     final key = await getStringNullable(StorageKey.setman_gitCommitSigningKey);
 
     if (key != null) {

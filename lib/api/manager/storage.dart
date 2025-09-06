@@ -15,13 +15,19 @@ enum StorageKey<T> {
   repoman_locks<List<String>>(name: "locks", defaultValue: <String>[]),
   repoman_showGithubAppRedirectDisclosure<bool>(name: "showGithubAppRedirectDisclosure", defaultValue: true),
   repoman_reportIssueToken<String?>(name: "reportIssueToken", defaultValue: null),
+  repoman_defaultClientModeEnabled<bool>(name: "defaultClientModeEnabled", defaultValue: false),
+  repoman_defaultSyncMessage<String>(name: "defaultSyncMessage", defaultValue: defaultSyncMessage),
+  repoman_defaultSyncMessageTimeFormat<String>(name: "defaultSyncMessageTimeFormat", defaultValue: defaultSyncMessageTimeFormat),
+  repoman_defaultAuthorName<String>(name: "defaultAuthorName", defaultValue: ""),
+  repoman_defaultAuthorEmail<String>(name: "defaultAuthorEmail", defaultValue: ""),
+  repoman_defaultRemote<String>(name: "defaultRemote", defaultValue: "origin"),
 
   // Settings Manager
-  setman_authorName<String>(name: "authorName", defaultValue: ""),
-  setman_authorEmail<String>(name: "authorEmail", defaultValue: ""),
-  setman_syncMessage<String>(name: "syncMessage", defaultValue: syncMessage),
-  setman_syncMessageTimeFormat<String>(name: "syncMessageTimeFormat", defaultValue: syncMessageTimeFormat),
-  setman_remote<String>(name: "remote", defaultValue: "origin"),
+  setman_authorName<String?>(name: "authorName", defaultValue: "", hasDefault: true),
+  setman_authorEmail<String?>(name: "authorEmail", defaultValue: "", hasDefault: true),
+  setman_syncMessage<String?>(name: "syncMessage", defaultValue: defaultSyncMessage, hasDefault: true),
+  setman_syncMessageTimeFormat<String?>(name: "syncMessageTimeFormat", defaultValue: defaultSyncMessageTimeFormat, hasDefault: true),
+  setman_remote<String?>(name: "remote", defaultValue: "origin", hasDefault: true),
   setman_syncMessageEnabled<bool>(name: "syncMessageEnabled", defaultValue: false),
   setman_gitDirPath<String>(name: "gitDirPath", defaultValue: ""),
   setman_gitProvider<String?>(name: "gitProvider", defaultValue: null),
@@ -39,10 +45,11 @@ enum StorageKey<T> {
   setman_lastSyncMethod<String>(name: "lastSyncMethod", defaultValue: ""),
   setman_gitCommitSigningKey<String?>(name: "gitCommitSigningKey", defaultValue: null),
   setman_gitCommitSigningPassphrase<String?>(name: "gitCommitSigningPassphrase", defaultValue: null),
-  setman_clientModeEnabled<bool>(name: "clientModeEnabled", defaultValue: false);
+  setman_clientModeEnabled<bool?>(name: "clientModeEnabled", defaultValue: false, hasDefault: true);
 
-  const StorageKey({required this.name, required this.defaultValue});
+  const StorageKey({required this.name, required this.defaultValue, this.hasDefault = false});
   final T defaultValue;
+  final bool hasDefault;
   final String name;
 }
 
@@ -62,27 +69,32 @@ class Storage<T extends StorageKey> {
 
   String getKeyName(StorageKey key) => keyTransformer(key.name.toString());
 
-  Future<bool> getBool(StorageKey<bool> key) async => _get<bool>(key);
-  Future<String> getString(StorageKey<String> key) async => _get<String>(key);
-  Future<String?> getStringNullable(StorageKey<String?> key) async => _get<String?>(key);
-  Future<int> getInt(StorageKey<int> key) async => _get<int>(key);
-  Future<List<String>> getStringList(StorageKey<List<String>> key) async => _get<List<String>>(key);
+  Future<bool> getBool(StorageKey<bool> key, [bool defaulting = false]) async => _get<bool>(key, defaulting);
+  Future<bool?> getBoolNullable(StorageKey<bool?> key, [bool defaulting = false]) async => _get<bool?>(key, defaulting);
+  Future<String> getString(StorageKey<String> key, [bool defaulting = false]) async => _get<String>(key, defaulting);
+  Future<String?> getStringNullable(StorageKey<String?> key, [bool defaulting = false]) async => _get<String?>(key, defaulting);
+  Future<int> getInt(StorageKey<int> key, [bool defaulting = false]) async => _get<int>(key, defaulting);
+  Future<List<String>> getStringList(StorageKey<List<String>> key, [bool defaulting = false]) async => _get<List<String>>(key, defaulting);
 
   Future<void> setBool(StorageKey<bool> key, bool value) async => _set<bool>(key, value);
+  Future<void> setBoolNullable(StorageKey<bool?> key, bool? value) async => _set<bool?>(key, value);
   Future<void> setString(StorageKey<String> key, String value) async => _set<String>(key, value);
   Future<void> setStringNullable(StorageKey<String?> key, String? value) async => _set<String?>(key, value);
   Future<void> setInt(StorageKey<int> key, int value) async => _set<int>(key, value);
   Future<void> setStringList(StorageKey<List<String>> key, List<String> value) async => _set<List<String>>(key, value);
 
-  Future<N> _get<N>(StorageKey<N> key) async {
+  Future<N> _get<N>(StorageKey<N> key, [bool defaulting = false]) async {
     String? value = await storage.read(key: getKeyName(key));
+    N defaultValue = key.defaultValue;
+
+    if (key.hasDefault && !defaulting) throw StateError('Key <${key.name}> requires defaulting=true when hasDefault is set.');
 
     if (N == getType<String?>() || N == getType<String>()) {
       if (null is N) {
         return (value == "null" ? null : value) as N;
       }
 
-      return (value ?? key.defaultValue) as N;
+      return (value ?? defaultValue) as N;
     }
 
     if (N == getType<int?>() || N == getType<int>()) {
@@ -92,7 +104,7 @@ class Storage<T extends StorageKey> {
         return finalValue as N;
       }
 
-      return (finalValue ?? key.defaultValue) as N;
+      return (finalValue ?? defaultValue) as N;
     }
 
     if (N == getType<bool?>() || N == getType<bool>()) {
@@ -102,7 +114,7 @@ class Storage<T extends StorageKey> {
         return finalValue as N;
       }
 
-      return (finalValue ?? key.defaultValue) as N;
+      return (finalValue ?? defaultValue) as N;
     }
 
     if (N == getType<List<String>?>() || N == getType<List<String>>()) {
@@ -112,7 +124,7 @@ class Storage<T extends StorageKey> {
         return finalValue as N;
       }
 
-      return (finalValue ?? key.defaultValue) as N;
+      return (finalValue ?? defaultValue) as N;
     }
 
     throw Exception("Key <${key.name.toString()}> datatype <$N> unsupported!");

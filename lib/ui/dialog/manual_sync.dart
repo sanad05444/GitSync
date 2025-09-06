@@ -17,7 +17,7 @@ import 'package:GitSync/ui/dialog/confirm_discard_changes.dart' as ConfirmDiscar
 Future<void> showDialog(BuildContext context) async {
   final syncMessageController = TextEditingController();
   final selectedFiles = <String>[];
-  final clientModeEnabled = await uiSettingsManager.getBool(StorageKey.setman_clientModeEnabled);
+  final clientModeEnabled = await uiSettingsManager.getClientModeEnabled();
 
   print(await GitManager.getStagedFilePaths());
 
@@ -98,7 +98,7 @@ Future<void> showDialog(BuildContext context) async {
                                     fillColor: secondaryDark,
                                     filled: true,
                                     border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusSM), borderSide: BorderSide.none),
-                                    hintText: syncMessage,
+                                    hintText: defaultSyncMessage,
                                     isCollapsed: true,
                                     label: Text(
                                       t.commitMessage.toUpperCase(),

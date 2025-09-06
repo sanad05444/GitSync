@@ -30,7 +30,7 @@ class OnboardingController {
   }
 
   Future<void> show() async {
-    final initialClientModeEnabled = await uiSettingsManager.getBool(StorageKey.setman_clientModeEnabled);
+    final initialClientModeEnabled = await uiSettingsManager.getClientModeEnabled();
 
     switch (await repoManager.getInt(StorageKey.repoman_onboardingStep)) {
       case 0:
@@ -42,7 +42,7 @@ class OnboardingController {
       case 3:
         await showCloneRepoPage();
       case 4:
-        await uiSettingsManager.setBool(StorageKey.setman_clientModeEnabled, false);
+        await uiSettingsManager.setBoolNullable(StorageKey.setman_clientModeEnabled, false);
         await repoManager.setOnboardingStep(4);
         ShowCaseWidget.of(context).startShowCase(showCaseKeys);
         while (!ShowCaseWidget.of(context).isShowCaseCompleted) {

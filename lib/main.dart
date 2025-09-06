@@ -71,23 +71,28 @@ const ENABLED_INPUT_METHODS = "enabledInputMethods";
 const COMMIT_MESSAGE = "commitMessage";
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await gitSyncService.initialise(onServiceStart, callbackDispatcher);
-  await uiSettingsManager.reinit();
-  initLogger("${(await getTemporaryDirectory()).path}/logs", maxFileCount: 10, maxFileLength: 5 * 1024 * 1024);
-  await Logger.init();
-  await RustLib.init();
-  await requestStoragePerm(false);
-  // Loads premiumManager initial state
-  await premiumManager.init();
+  FlutterError.onError = (details) {
+    e("${LogType.Global.name}: ${"${details.stack.toString()}\nError: ${details.exception.toString()}"}");
+  };
 
-  if (kReleaseMode) {
-    FlutterError.onError = (details) {
-      e("${LogType.Global.name}: ${"${details.stack.toString()}\nError: ${details.exception.toString()}"}");
-    };
-  }
+  runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      await gitSyncService.initialise(onServiceStart, callbackDispatcher);
+      await uiSettingsManager.reinit();
+      initLogger("${(await getTemporaryDirectory()).path}/logs", maxFileCount: 10, maxFileLength: 5 * 1024 * 1024);
+      await Logger.init();
+      await RustLib.init();
+      await requestStoragePerm(false);
+      // Loads premiumManager initial state
+      await premiumManager.init();
 
-  runApp(const MyApp());
+      runApp(const MyApp());
+    },
+    (error, stackTrace) {
+      e(LogType.Global.name, error, stackTrace);
+    },
+  );
 }
 
 @pragma('vm:entry-point')
@@ -384,7 +389,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   Future<void> completeUiGuideShowcase(bool initialClientModeEnabled) async {
     await Navigator.of(context).push(createGlobalSettingsMainRoute(onboarding: true)).then((_) => setState(() {}));
     await repoManager.setOnboardingStep(-1);
-    await uiSettingsManager.setBool(StorageKey.setman_clientModeEnabled, initialClientModeEnabled);
+    await uiSettingsManager.setBoolNullable(StorageKey.setman_clientModeEnabled, initialClientModeEnabled);
     setState(() {});
   }
 
@@ -421,11 +426,11 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   }
 
   Future<String> getLastSyncOption() async {
-    if (await uiSettingsManager.getBool(StorageKey.setman_clientModeEnabled) == true) {
+    if (await uiSettingsManager.getClientModeEnabled() == true) {
       final recommendedAction = await GitManager.getRecommendedAction();
       if (recommendedAction != null) {
         return [
-          sprintf(t.fetchRemote, [await uiSettingsManager.getString(StorageKey.setman_remote)]),
+          sprintf(t.fetchRemote, [await uiSettingsManager.getRemote()]),
           t.pullChanges,
           t.stageAndCommit,
           t.pushChanges,
@@ -437,7 +442,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
   Future<Map<String, (IconData, Future<void> Function())>> getSyncOptions() async {
     final repomanRepoindex = await repoManager.getInt(StorageKey.repoman_repoIndex);
-    final clientModeEnabled = await uiSettingsManager.getBool(StorageKey.setman_clientModeEnabled);
+    final clientModeEnabled = await uiSettingsManager.getClientModeEnabled();
     final dirPath = await uiSettingsManager.getGitDirPath();
     final submodulePaths = dirPath == null ? [] : await GitManager.getSubmodulePaths(dirPath);
     Map<String, (IconData, Future<void> Function())> syncOptions = {};
@@ -465,7 +470,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
             },
           ),
         if (clientModeEnabled)
-          sprintf(t.fetchRemote, [await uiSettingsManager.getString(StorageKey.setman_remote)]): (
+          sprintf(t.fetchRemote, [await uiSettingsManager.getRemote()]): (
             FontAwesomeIcons.caretDown,
             () async {
               await GitManager.fetchRemote();
@@ -590,7 +595,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
       clientModeEnabled ? t.switchToSyncMode : t.switchToClientMode: (
         FontAwesomeIcons.rightLeft,
         () async {
-          await uiSettingsManager.setBool(StorageKey.setman_clientModeEnabled, !clientModeEnabled);
+          await uiSettingsManager.setBoolNullable(StorageKey.setman_clientModeEnabled, !clientModeEnabled);
           setState(() {});
         },
       ),
@@ -635,8 +640,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
     return AuthDialog.showDialog(context, () async {
       setState(() {});
-      if ((await uiSettingsManager.getString(StorageKey.setman_authorEmail)).isEmpty ||
-          (await uiSettingsManager.getString(StorageKey.setman_authorName)).isEmpty) {
+      if ((await uiSettingsManager.getAuthorEmail()).isEmpty || (await uiSettingsManager.getAuthorName()).isEmpty) {
         await AuthorDetailsPromptDialog.showDialog(
           context,
           () async {
@@ -1002,7 +1006,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
       ),
       body: SingleChildScrollView(
         child: FutureBuilder(
-          future: uiSettingsManager.getBool(StorageKey.setman_clientModeEnabled),
+          future: uiSettingsManager.getClientModeEnabled(),
           builder: (context, clientModeEnabledSnapshot) => Padding(
             padding: EdgeInsets.symmetric(horizontal: spaceMD),
             child: Column(

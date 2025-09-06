@@ -81,7 +81,7 @@ class _BaseAlertDialogState extends State<BaseAlertDialog> {
   @override
   void initState() {
     initAsync(() async {
-      expanded = widget.expandable && await uiSettingsManager.getBool(StorageKey.setman_clientModeEnabled);
+      expanded = widget.expandable && await uiSettingsManager.getClientModeEnabled();
       setState(() {});
     });
     super.initState();
@@ -89,13 +89,7 @@ class _BaseAlertDialogState extends State<BaseAlertDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final titlePadding =
-        widget.titlePadding ??
-        EdgeInsets.only(
-          top: spaceSM * 2,
-          left: spaceSM * 2,
-          right: spaceSM * 2,
-        );
+    final titlePadding = widget.titlePadding ?? EdgeInsets.only(top: spaceSM * 2, left: spaceSM * 2, right: spaceSM * 2);
 
     return Stack(
       children: [
@@ -147,16 +141,9 @@ class _BaseAlertDialogState extends State<BaseAlertDialog> {
                               setState(() {});
                             },
 
-                            icon: FaIcon(
-                              expanded
-                                  ? FontAwesomeIcons.downLeftAndUpRightToCenter
-                                  : FontAwesomeIcons
-                                        .upRightAndDownLeftFromCenter,
-                            ),
+                            icon: FaIcon(expanded ? FontAwesomeIcons.downLeftAndUpRightToCenter : FontAwesomeIcons.upRightAndDownLeftFromCenter),
                             style: ButtonStyle(
-                              backgroundColor: WidgetStatePropertyAll(
-                                Colors.transparent,
-                              ),
+                              backgroundColor: WidgetStatePropertyAll(Colors.transparent),
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               visualDensity: VisualDensity.compact,
                             ),
@@ -167,18 +154,13 @@ class _BaseAlertDialogState extends State<BaseAlertDialog> {
                           expanded
                               ? IconButton(
                                   onPressed: () {
-                                    Navigator.of(context).canPop()
-                                        ? Navigator.pop(context)
-                                        : null;
+                                    Navigator.of(context).canPop() ? Navigator.pop(context) : null;
                                   },
 
                                   icon: FaIcon(FontAwesomeIcons.xmark),
                                   style: ButtonStyle(
-                                    backgroundColor: WidgetStatePropertyAll(
-                                      Colors.transparent,
-                                    ),
-                                    tapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
+                                    backgroundColor: WidgetStatePropertyAll(Colors.transparent),
+                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                     visualDensity: VisualDensity.compact,
                                   ),
                                   color: primaryLight,
@@ -192,36 +174,15 @@ class _BaseAlertDialogState extends State<BaseAlertDialog> {
                   : SizedBox.shrink(),
             ],
           ),
-          content: widget.contentBuilder == null
-              ? widget.content
-              : widget.contentBuilder!(expanded),
+          content: widget.contentBuilder == null ? widget.content : widget.contentBuilder!(expanded),
           contentPadding:
               widget.contentPadding ??
-              EdgeInsets.only(
-                left: spaceSM * 2,
-                right: spaceSM * 2,
-                top: spaceSM,
-                bottom: (widget.actions?.isEmpty ?? true) ? spaceLG : 0,
-              ),
+              EdgeInsets.only(left: spaceSM * 2, right: spaceSM * 2, top: spaceSM, bottom: (widget.actions?.isEmpty ?? true) ? spaceLG : 0),
           actions: widget.actions,
-          actionsPadding:
-              widget.contentPadding ??
-              EdgeInsets.only(
-                right: spaceSM * 2,
-                left: spaceSM * 2,
-                bottom: spaceSM,
-                top: spaceSM,
-              ),
-          insetPadding:
-              widget.insetPadding ?? EdgeInsets.all(expanded ? 0 : spaceLG),
+          actionsPadding: widget.contentPadding ?? EdgeInsets.only(right: spaceSM * 2, left: spaceSM * 2, bottom: spaceSM, top: spaceSM),
+          insetPadding: widget.insetPadding ?? EdgeInsets.all(expanded ? 0 : spaceLG),
           backgroundColor: widget.backgroundColor ?? primaryDark,
-          shape:
-              widget.shape ??
-              RoundedRectangleBorder(
-                borderRadius: expanded
-                    ? BorderRadius.zero
-                    : BorderRadius.all(cornerRadiusMD),
-              ),
+          shape: widget.shape ?? RoundedRectangleBorder(borderRadius: expanded ? BorderRadius.zero : BorderRadius.all(cornerRadiusMD)),
           scrollable: widget.scrollable,
         ),
       ],
@@ -269,9 +230,7 @@ class CustomAlertDialog extends AlertDialog {
     final ThemeData theme = Theme.of(context);
 
     final DialogThemeData dialogTheme = DialogTheme.of(context);
-    final DialogThemeData defaults = theme.useMaterial3
-        ? _DialogDefaultsM3(context)
-        : _DialogDefaultsM2(context);
+    final DialogThemeData defaults = theme.useMaterial3 ? _DialogDefaultsM3(context) : _DialogDefaultsM2(context);
 
     String? label = semanticLabel;
     switch (theme.platform) {
@@ -288,9 +247,7 @@ class CustomAlertDialog extends AlertDialog {
     // The paddingScaleFactor is used to adjust the padding of Dialog's
     // children.
     const double fontSizeToScale = 14.0;
-    final double effectiveTextScale =
-        MediaQuery.textScalerOf(context).scale(fontSizeToScale) /
-        fontSizeToScale;
+    final double effectiveTextScale = MediaQuery.textScalerOf(context).scale(fontSizeToScale) / fontSizeToScale;
     final double paddingScaleFactor = _scalePadding(effectiveTextScale);
     final TextDirection? textDirection = Directionality.maybeOf(context);
 
@@ -312,8 +269,7 @@ class CustomAlertDialog extends AlertDialog {
             ? 0.0
             : 24.0,
       );
-      final EdgeInsets effectiveIconPadding =
-          iconPadding?.resolve(textDirection) ?? defaultIconPadding;
+      final EdgeInsets effectiveIconPadding = iconPadding?.resolve(textDirection) ?? defaultIconPadding;
       iconWidget = Padding(
         padding: EdgeInsets.only(
           left: effectiveIconPadding.left * paddingScaleFactor,
@@ -322,9 +278,7 @@ class CustomAlertDialog extends AlertDialog {
           bottom: effectiveIconPadding.bottom,
         ),
         child: IconTheme(
-          data: IconThemeData(
-            color: iconColor ?? dialogTheme.iconColor ?? defaults.iconColor,
-          ),
+          data: IconThemeData(color: iconColor ?? dialogTheme.iconColor ?? defaults.iconColor),
           child: icon!,
         ),
       );
@@ -337,22 +291,16 @@ class CustomAlertDialog extends AlertDialog {
         right: 24.0,
         bottom: content == null ? 20.0 : 0.0,
       );
-      final EdgeInsets effectiveTitlePadding =
-          titlePadding?.resolve(textDirection) ?? defaultTitlePadding;
+      final EdgeInsets effectiveTitlePadding = titlePadding?.resolve(textDirection) ?? defaultTitlePadding;
       titleWidget = Padding(
         padding: EdgeInsets.only(
           left: effectiveTitlePadding.left * paddingScaleFactor,
           right: effectiveTitlePadding.right * paddingScaleFactor,
-          top: icon == null
-              ? effectiveTitlePadding.top * paddingScaleFactor
-              : effectiveTitlePadding.top,
+          top: icon == null ? effectiveTitlePadding.top * paddingScaleFactor : effectiveTitlePadding.top,
           bottom: effectiveTitlePadding.bottom,
         ),
         child: DefaultTextStyle(
-          style:
-              titleTextStyle ??
-              dialogTheme.titleTextStyle ??
-              defaults.titleTextStyle!,
+          style: titleTextStyle ?? dialogTheme.titleTextStyle ?? defaults.titleTextStyle!,
           textAlign: icon == null ? TextAlign.start : TextAlign.center,
           child: Semantics(
             // For iOS platform, the focus always lands on the title.
@@ -366,33 +314,18 @@ class CustomAlertDialog extends AlertDialog {
     }
 
     if (content != null) {
-      final EdgeInsets defaultContentPadding = EdgeInsets.only(
-        left: 24.0,
-        top: theme.useMaterial3 ? 16.0 : 20.0,
-        right: 24.0,
-        bottom: 24.0,
-      );
-      final EdgeInsets effectiveContentPadding =
-          contentPadding?.resolve(textDirection) ?? defaultContentPadding;
+      final EdgeInsets defaultContentPadding = EdgeInsets.only(left: 24.0, top: theme.useMaterial3 ? 16.0 : 20.0, right: 24.0, bottom: 24.0);
+      final EdgeInsets effectiveContentPadding = contentPadding?.resolve(textDirection) ?? defaultContentPadding;
       contentWidget = Padding(
         padding: EdgeInsets.only(
           left: effectiveContentPadding.left * paddingScaleFactor,
           right: effectiveContentPadding.right * paddingScaleFactor,
-          top: title == null && icon == null
-              ? effectiveContentPadding.top * paddingScaleFactor
-              : effectiveContentPadding.top,
+          top: title == null && icon == null ? effectiveContentPadding.top * paddingScaleFactor : effectiveContentPadding.top,
           bottom: effectiveContentPadding.bottom,
         ),
         child: DefaultTextStyle(
-          style:
-              contentTextStyle ??
-              dialogTheme.contentTextStyle ??
-              defaults.contentTextStyle!,
-          child: Semantics(
-            container: true,
-            explicitChildNodes: true,
-            child: content,
-          ),
+          style: contentTextStyle ?? dialogTheme.contentTextStyle ?? defaults.contentTextStyle!,
+          child: Semantics(container: true, explicitChildNodes: true, child: content),
         ),
       );
     }
@@ -403,14 +336,11 @@ class CustomAlertDialog extends AlertDialog {
         padding:
             actionsPadding ??
             dialogTheme.actionsPadding ??
-            (theme.useMaterial3
-                ? defaults.actionsPadding!
-                : defaults.actionsPadding!.add(EdgeInsets.all(spacing))),
+            (theme.useMaterial3 ? defaults.actionsPadding! : defaults.actionsPadding!.add(EdgeInsets.all(spacing))),
         child: OverflowBar(
           alignment: actionsAlignment ?? MainAxisAlignment.end,
           spacing: spacing,
-          overflowAlignment:
-              actionsOverflowAlignment ?? OverflowBarAlignment.end,
+          overflowAlignment: actionsOverflowAlignment ?? OverflowBarAlignment.end,
           overflowDirection: actionsOverflowDirection ?? VerticalDirection.down,
           overflowSpacing: actionsOverflowButtonSpacing ?? 0,
           children: actions!,
@@ -447,21 +377,11 @@ class CustomAlertDialog extends AlertDialog {
     }
 
     Widget dialogChild = IntrinsicWidth(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: columnChildren,
-      ),
+      child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: columnChildren),
     );
 
     if (label != null) {
-      dialogChild = Semantics(
-        scopesRoute: true,
-        explicitChildNodes: true,
-        namesRoute: true,
-        label: label,
-        child: dialogChild,
-      );
+      dialogChild = Semantics(scopesRoute: true, explicitChildNodes: true, namesRoute: true, label: label, child: dialogChild);
     }
 
     return Dialog(
@@ -476,10 +396,7 @@ class CustomAlertDialog extends AlertDialog {
       child: AnimatedSize(
         duration: Duration(milliseconds: 300),
         curve: Curves.easeInOut,
-        child: SizedBox(
-          height: expanded ? MediaQuery.of(context).size.height : null,
-          child: dialogChild,
-        ),
+        child: SizedBox(height: expanded ? MediaQuery.of(context).size.height : null, child: dialogChild),
       ),
     );
   }
@@ -497,9 +414,7 @@ class _DialogDefaultsM3 extends DialogThemeData {
     : super(
         alignment: Alignment.center,
         elevation: 6.0,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(28.0)),
-        ),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(28.0))),
         clipBehavior: Clip.none,
       );
 
@@ -526,8 +441,7 @@ class _DialogDefaultsM3 extends DialogThemeData {
   TextStyle? get contentTextStyle => _textTheme.bodyMedium;
 
   @override
-  EdgeInsetsGeometry? get actionsPadding =>
-      const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 24.0);
+  EdgeInsetsGeometry? get actionsPadding => const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 24.0);
 }
 
 // Hand coded defaults based on Material Design 2.
@@ -536,9 +450,7 @@ class _DialogDefaultsM2 extends DialogThemeData {
     : super(
         alignment: Alignment.center,
         elevation: 24.0,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(4.0)),
-        ),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4.0))),
         clipBehavior: Clip.none,
       );
 
@@ -551,8 +463,7 @@ class _DialogDefaultsM2 extends DialogThemeData {
   Color? get iconColor => iconTheme.color;
 
   @override
-  Color? get backgroundColor =>
-      theme.brightness == Brightness.dark ? Colors.grey[800]! : Colors.white;
+  Color? get backgroundColor => theme.brightness == Brightness.dark ? Colors.grey[800]! : Colors.white;
 
   @override
   Color? get shadowColor => theme.shadowColor;

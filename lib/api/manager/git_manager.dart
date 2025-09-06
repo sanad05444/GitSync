@@ -111,10 +111,7 @@ class GitManager {
             pathString: repoPath,
             provider: (await uiSettingsManager.getGitProvider()).name,
             credentials: await _getCredentials(uiSettingsManager),
-            author: (
-              await uiSettingsManager.getString(StorageKey.setman_authorName),
-              await uiSettingsManager.getString(StorageKey.setman_authorEmail),
-            ),
+            author: (await uiSettingsManager.getAuthorName(), await uiSettingsManager.getAuthorEmail()),
             cloneTaskCallback: cloneTaskCallback,
             cloneProgressCallback: cloneProgressCallback,
             log: _logWrapper,
@@ -196,7 +193,7 @@ class GitManager {
         try {
           await GitManagerRs.fetchRemote(
             pathString: dirPath,
-            remote: await uiSettingsManager.getString(StorageKey.setman_remote),
+            remote: await uiSettingsManager.getRemote(),
             provider: (await uiSettingsManager.getGitProvider()).name,
             credentials: await _getCredentials(uiSettingsManager),
             log: _logWrapper,
@@ -232,14 +229,11 @@ class GitManager {
         try {
           await GitManagerRs.pullChanges(
             pathString: dirPath,
-            remote: await uiSettingsManager.getString(StorageKey.setman_remote),
+            remote: await uiSettingsManager.getRemote(),
             provider: (await uiSettingsManager.getGitProvider()).name,
             credentials: await _getCredentials(uiSettingsManager),
             log: _logWrapper,
-            author: (
-              await uiSettingsManager.getString(StorageKey.setman_authorName),
-              await uiSettingsManager.getString(StorageKey.setman_authorEmail),
-            ),
+            author: (await uiSettingsManager.getAuthorName(), await uiSettingsManager.getAuthorEmail()),
             syncCallback: () {},
           );
         } catch (e, stackTrace) {
@@ -332,7 +326,7 @@ class GitManager {
         try {
           return await GitManagerRs.getRecommendedAction(
             pathString: dirPath,
-            remoteName: await uiSettingsManager.getString(StorageKey.setman_remote),
+            remoteName: await uiSettingsManager.getRemote(),
             provider: (await uiSettingsManager.getGitProvider()).name,
             credentials: await _getCredentials(uiSettingsManager),
             log: _logWrapper,
@@ -368,13 +362,10 @@ class GitManager {
         try {
           await GitManagerRs.commitChanges(
             pathString: dirPath,
-            author: (
-              await uiSettingsManager.getString(StorageKey.setman_authorName),
-              await uiSettingsManager.getString(StorageKey.setman_authorEmail),
-            ),
+            author: (await uiSettingsManager.getAuthorName(), await uiSettingsManager.getAuthorEmail()),
             commitSigningCredentials: await uiSettingsManager.getGitCommitSigningCredentials(),
-            syncMessage: sprintf(syncMessage ?? await uiSettingsManager.getString(StorageKey.setman_syncMessage), [
-              (DateFormat(await uiSettingsManager.getString(StorageKey.setman_syncMessageTimeFormat))).format(DateTime.now()),
+            syncMessage: sprintf(syncMessage ?? await uiSettingsManager.getSyncMessage(), [
+              (DateFormat(await uiSettingsManager.getSyncMessageTimeFormat())).format(DateTime.now()),
             ]),
             log: _logWrapper,
           );
@@ -409,7 +400,7 @@ class GitManager {
         try {
           await GitManagerRs.pushChanges(
             pathString: dirPath,
-            remoteName: await uiSettingsManager.getString(StorageKey.setman_remote),
+            remoteName: await uiSettingsManager.getRemote(),
             provider: (await uiSettingsManager.getGitProvider()).name,
             credentials: await _getCredentials(uiSettingsManager),
             log: _logWrapper,
@@ -446,7 +437,7 @@ class GitManager {
         try {
           return await GitManagerRs.forcePull(
             pathString: dirPath,
-            remoteName: await uiSettingsManager.getString(StorageKey.setman_remote),
+            remoteName: await uiSettingsManager.getRemote(),
             provider: (await uiSettingsManager.getGitProvider()).name,
             credentials: await _getCredentials(uiSettingsManager),
             log: _logWrapper,
@@ -482,7 +473,7 @@ class GitManager {
         try {
           return await GitManagerRs.forcePush(
             pathString: dirPath,
-            remoteName: await uiSettingsManager.getString(StorageKey.setman_remote),
+            remoteName: await uiSettingsManager.getRemote(),
             provider: (await uiSettingsManager.getGitProvider()).name,
             credentials: await _getCredentials(uiSettingsManager),
             log: _logWrapper,
@@ -518,12 +509,9 @@ class GitManager {
         try {
           return await GitManagerRs.downloadAndOverwrite(
             pathString: dirPath,
-            remoteName: await uiSettingsManager.getString(StorageKey.setman_remote),
+            remoteName: await uiSettingsManager.getRemote(),
             provider: (await uiSettingsManager.getGitProvider()).name,
-            author: (
-              await uiSettingsManager.getString(StorageKey.setman_authorName),
-              await uiSettingsManager.getString(StorageKey.setman_authorEmail),
-            ),
+            author: (await uiSettingsManager.getAuthorName(), await uiSettingsManager.getAuthorEmail()),
             credentials: await _getCredentials(uiSettingsManager),
             log: _logWrapper,
           );
@@ -558,16 +546,13 @@ class GitManager {
         try {
           return await GitManagerRs.uploadAndOverwrite(
             pathString: dirPath,
-            remoteName: await uiSettingsManager.getString(StorageKey.setman_remote),
+            remoteName: await uiSettingsManager.getRemote(),
             provider: (await uiSettingsManager.getGitProvider()).name,
             credentials: await _getCredentials(uiSettingsManager),
             commitSigningCredentials: await uiSettingsManager.getGitCommitSigningCredentials(),
-            author: (
-              await uiSettingsManager.getString(StorageKey.setman_authorName),
-              await uiSettingsManager.getString(StorageKey.setman_authorEmail),
-            ),
-            syncMessage: sprintf(await uiSettingsManager.getString(StorageKey.setman_syncMessage), [
-              (DateFormat(await uiSettingsManager.getString(StorageKey.setman_syncMessageTimeFormat))).format(DateTime.now()),
+            author: (await uiSettingsManager.getAuthorName(), await uiSettingsManager.getAuthorEmail()),
+            syncMessage: sprintf(await uiSettingsManager.getSyncMessage(), [
+              (DateFormat(await uiSettingsManager.getSyncMessageTimeFormat())).format(DateTime.now()),
             ]),
             log: _logWrapper,
           );
@@ -807,11 +792,7 @@ class GitManager {
           Logger.gmLog(type: LogType.RecentCommits, ".git folder found");
 
           try {
-            return (await GitManagerRs.getBranchNames(
-              pathString: dirPath,
-              remote: await settingsManager.getString(StorageKey.setman_remote),
-              log: _logWrapper,
-            ));
+            return (await GitManagerRs.getBranchNames(pathString: dirPath, remote: await settingsManager.getRemote(), log: _logWrapper));
           } catch (e, stackTrace) {
             Logger.logError(LogType.RecentCommits, e, stackTrace);
           }
@@ -841,7 +822,7 @@ class GitManager {
         try {
           return (await GitManagerRs.checkoutBranch(
             pathString: dirPath,
-            remote: await settingsManager.getString(StorageKey.setman_remote),
+            remote: await settingsManager.getRemote(),
             branchName: branchName,
             log: _logWrapper,
           ));
@@ -874,7 +855,7 @@ class GitManager {
         try {
           return (await GitManagerRs.createBranch(
             pathString: dirPath,
-            remoteName: await settingsManager.getString(StorageKey.setman_remote),
+            remoteName: await settingsManager.getRemote(),
             newBranchName: branchName,
             sourceBranchName: basedOn,
             provider: (await settingsManager.getGitProvider()).name,
@@ -1009,7 +990,7 @@ class GitManager {
   static Future<(String, String)?> getRemoteUrlLink([int? repomanRepoindex]) async {
     final settingsManager = repomanRepoindex == null ? uiSettingsManager : await SettingsManager().reinit(repoIndex: repomanRepoindex);
     final gitDirPath = (await settingsManager.getGitDirPath());
-    final remoteName = await settingsManager.getString(StorageKey.setman_remote);
+    final remoteName = await settingsManager.getRemote();
 
     if (gitDirPath == null) return null;
 
@@ -1208,9 +1189,9 @@ class GitManager {
         return await useDirectory(dirPath, (bookmarkPath) async => await settingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
           return await GitManagerRs.downloadChanges(
             pathString: dirPath,
-            remote: await settingsManager.getString(StorageKey.setman_remote),
+            remote: await settingsManager.getRemote(),
             provider: (await settingsManager.getGitProvider()).name,
-            author: (await settingsManager.getString(StorageKey.setman_authorName), await settingsManager.getString(StorageKey.setman_authorEmail)),
+            author: (await settingsManager.getAuthorName(), await settingsManager.getAuthorEmail()),
             credentials: await _getCredentials(settingsManager),
             commitSigningCredentials: await settingsManager.getGitCommitSigningCredentials(),
             syncCallback: syncCallback,
@@ -1245,9 +1226,9 @@ class GitManager {
         return await useDirectory(dirPath, (bookmarkPath) async => await settingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
           return await GitManagerRs.uploadChanges(
             pathString: dirPath,
-            remoteName: await settingsManager.getString(StorageKey.setman_remote),
+            remoteName: await settingsManager.getRemote(),
             provider: (await settingsManager.getGitProvider()).name,
-            author: (await settingsManager.getString(StorageKey.setman_authorName), await settingsManager.getString(StorageKey.setman_authorEmail)),
+            author: (await settingsManager.getAuthorName(), await settingsManager.getAuthorEmail()),
             credentials: await _getCredentials(settingsManager),
             commitSigningCredentials: await settingsManager.getGitCommitSigningCredentials(),
             syncCallback: syncCallback,
@@ -1256,8 +1237,8 @@ class GitManager {
               sendMergeConflictNotification();
             },
             filePaths: filePaths,
-            syncMessage: sprintf(syncMessage ?? await settingsManager.getString(StorageKey.setman_syncMessage), [
-              (DateFormat(await settingsManager.getString(StorageKey.setman_syncMessageTimeFormat))).format(DateTime.now()),
+            syncMessage: sprintf(syncMessage ?? await settingsManager.getSyncMessage(), [
+              (DateFormat(await settingsManager.getSyncMessageTimeFormat())).format(DateTime.now()),
             ]),
             log: _logWrapper,
           );

@@ -60,8 +60,8 @@ const String mergeConflictNotificationTitle = "<Merge Conflict> Tap to fix";
 const String mergeConflictNotificationBody = "There is an irreconcilable difference between the local and remote changes";
 
 // Settings Page
-const String syncMessage = "Last Sync: %s (Mobile)";
-const String syncMessageTimeFormat = "yyyy-MM-dd HH:mm";
+const String defaultSyncMessage = "Last Sync: %s (Mobile)";
+const String defaultSyncMessageTimeFormat = "yyyy-MM-dd HH:mm";
 
 const String documentationLink = "https://gitsync.viscouspotenti.al/wiki/";
 const String privacyPolicyLink = "https://gitsync.viscouspotenti.al/wiki/privacy-policy/";
