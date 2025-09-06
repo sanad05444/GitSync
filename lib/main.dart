@@ -1874,12 +1874,17 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                             },
                                             icon: FaIcon(FontAwesomeIcons.circleQuestion, color: primaryLight, size: textLG),
                                           ),
-                                          label: SizedBox(
-                                            width: double.infinity,
-                                            child: Text(
-                                              t.repositorySettings,
-                                              style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),
-                                            ),
+                                          label: Row(
+                                            children: [
+                                              FaIcon(FontAwesomeIcons.gear, color: primaryLight, size: textLG),
+                                              SizedBox(width: spaceSM),
+                                              Expanded(
+                                                child: Text(
+                                                  t.repositorySettings,
+                                                  style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ),
@@ -1954,12 +1959,17 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                     },
                                     icon: FaIcon(FontAwesomeIcons.circleQuestion, color: primaryLight, size: textLG),
                                   ),
-                                  label: SizedBox(
-                                    width: double.infinity,
-                                    child: Text(
-                                      t.syncSettings,
-                                      style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),
-                                    ),
+                                  label: Row(
+                                    children: [
+                                      FaIcon(FontAwesomeIcons.rightLeft, color: primaryLight, size: textLG),
+                                      SizedBox(width: spaceSM),
+                                      Expanded(
+                                        child: Text(
+                                          t.syncSettings,
+                                          style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 SizedBox(height: spaceMD),
