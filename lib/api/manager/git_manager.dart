@@ -229,11 +229,9 @@ class GitManager {
         try {
           await GitManagerRs.pullChanges(
             pathString: dirPath,
-            remote: await uiSettingsManager.getRemote(),
             provider: (await uiSettingsManager.getGitProvider()).name,
             credentials: await _getCredentials(uiSettingsManager),
             log: _logWrapper,
-            author: (await uiSettingsManager.getAuthorName(), await uiSettingsManager.getAuthorEmail()),
             syncCallback: () {},
           );
         } catch (e, stackTrace) {
@@ -432,13 +430,7 @@ class GitManager {
         Logger.gmLog(type: LogType.ForcePull, ".git folder found");
 
         try {
-          return await GitManagerRs.forcePull(
-            pathString: dirPath,
-            remoteName: await uiSettingsManager.getRemote(),
-            provider: (await uiSettingsManager.getGitProvider()).name,
-            credentials: await _getCredentials(uiSettingsManager),
-            log: _logWrapper,
-          );
+          return await GitManagerRs.forcePull(pathString: dirPath, log: _logWrapper);
         } catch (e, stackTrace) {
           if (!await hasNetworkConnection()) return;
           Logger.logError(LogType.ForcePull, e, stackTrace);

@@ -1,9 +1,8 @@
-use std::{env, fs, path::Path, path::PathBuf, sync::Arc, collections::HashMap};
-use regex::Regex;
+use std::{env, fs, path::Path, path::PathBuf, sync::Arc};
 use flutter_rust_bridge::DartFnFuture;
 use osshkeys::{KeyPair, KeyType};
 use git2::{
-    opts::set_verify_owner_validation, CertificateCheckStatus, Cred,  Diff, DiffOptions, DiffDelta, Delta, ErrorCode,
+    CertificateCheckStatus, Cred,  DiffOptions, ErrorCode,
     FetchOptions, PushOptions, RemoteCallbacks, Repository, RepositoryState, ResetType, Signature,
     StatusOptions, Status, BranchType, Tree, SubmoduleUpdateOptions
 };
@@ -185,7 +184,7 @@ pub async fn clone_repository(
         "Repository cloned successfully".to_string(),
     );
     
-    repo.submodules()?.iter_mut().try_for_each(|mut sm| {
+    repo.submodules()?.iter_mut().try_for_each(|sm| {
         let sm_name = sm.name().unwrap_or("unknown").to_string();
         
         _log(
@@ -477,12 +476,12 @@ pub async fn get_recent_commits(
         let additions = stats.insertions() as i32;
         let deletions = stats.deletions() as i32;
 
-        let (ahead_local, behind_local) = if let Some(local_oid) = local_oid {
+        let (ahead_local, _) = if let Some(local_oid) = local_oid {
             repo.graph_ahead_behind(oid, local_oid)?
         } else {
             (0, 0)
         };
-        let (ahead_remote, behind_remote) = if let Some(remote_oid) = remote_oid {
+        let (ahead_remote, _) = if let Some(remote_oid) = remote_oid {
             repo.graph_ahead_behind(oid, remote_oid)?
         } else {
             (0, 0)
@@ -578,7 +577,7 @@ fn commit(
 		})?;
 
         
-        let mut secret_key = PrivateKey::from_openssh(key.as_bytes())
+        let secret_key = PrivateKey::from_openssh(key.as_bytes())
             .map_err(|e| git2::Error::from_str(&e.to_string()))?;
         if !pass.is_empty() {
             secret_key.decrypt(pass.as_bytes())
@@ -752,11 +751,9 @@ fn fetch_remote_priv(
 
 pub async fn pull_changes(
     path_string: &String,
-    remote: &String,
     provider: &String,
     credentials: &(String, String),
     commit_signing_credentials: Option<(String, String)>,
-    author: &(String, String),
     sync_callback: impl Fn() -> DartFnFuture<()> + Send + Sync + 'static,
     log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
 ) -> Result<Option<bool>, git2::Error> {
@@ -776,16 +773,14 @@ pub async fn pull_changes(
         "Getting local directory".to_string(),
     );
     
-    pull_changes_priv(&repo, &remote, &provider, &credentials, commit_signing_credentials, &author, sync_callback, &log_callback)
+    pull_changes_priv(&repo, &provider, &credentials, commit_signing_credentials, sync_callback, &log_callback)
 }
 
 fn pull_changes_priv(
     repo: &Repository,
-    remote: &String,
     provider: &String,
     credentials: &(String, String),
     commit_signing_credentials: Option<(String, String)>,
-    author: &(String, String),
     sync_callback: impl Fn() -> DartFnFuture<()> + Send + Sync + 'static,
     log_callback: &Arc<impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static>,
 ) -> Result<Option<bool>, git2::Error> {
@@ -876,7 +871,6 @@ fn pull_changes_priv(
                 return Ok(Some(true));
             }
         };
-        return Ok(Some(false));
     } else if analysis.0.is_normal() {
         _log(
             Arc::clone(&log_callback),
@@ -925,8 +919,6 @@ fn pull_changes_priv(
     } else {
         return Ok(Some(false));
     }
-
-    Ok(None)
 }
 
 pub async fn download_changes(
@@ -953,11 +945,11 @@ pub async fn download_changes(
 
     fetch_remote_priv(&repo, &remote, &provider, &credentials, &log_callback);
 
-    if (pull_changes_priv(&repo, &remote, &provider, &credentials, commit_signing_credentials, &author, sync_callback, &log_callback) == Ok(Some(false))) {
-        return (Ok(Some(false)));
+    if pull_changes_priv(&repo, &provider, &credentials, commit_signing_credentials, sync_callback, &log_callback) == Ok(Some(false)) {
+        return Ok(Some(false));
     }
 
-    (Ok(Some(true)))
+    Ok(Some(true))
 }
 
 pub async fn push_changes(
@@ -1077,7 +1069,7 @@ fn push_changes_priv(
                     rebase.commit(None, &commit.author(), None)?;
                 }
                 match rebase.finish(None) {
-                    Ok(mut rebase) => {
+                    Ok(_) => {
                         return Ok(Some(true));
                     }
                     Err(e) if e.code() == ErrorCode::Modified || e.code() == ErrorCode::Unmerged => {
@@ -1320,39 +1312,6 @@ pub async fn get_recommended_action(
     Ok(None)
 }
 
-fn resolve_remote_reference(repo: &Repository, refspec: &str) -> Result<Option<git2::Oid>, git2::Error> {
-    let remote_ref = format!("refs/remotes/origin/{}", refspec.split('/').last().unwrap());
-    match repo.refname_to_id(&remote_ref) {
-        Ok(oid) => Ok(Some(oid)),
-        Err(_) => Ok(None),
-    }
-}
-
-fn has_unpushed_changes(repo: &Repository) -> Result<bool, git2::Error> {
-    let head = repo.head()?;
-    let remote_ref = format!("refs/remotes/origin/{}", head.shorthand().unwrap());
-    let local_commit = head.target().ok_or(git2::Error::from_str("No commit on current branch"))?;
-    let remote_commit = repo.refname_to_id(&remote_ref)?;
-
-    if local_commit != remote_commit {
-        return Ok(true);
-    }
-    Ok(false)
-}
-
-fn has_changes_to_pull(repo: &Repository, head: &git2::Reference, remote_commit_map: &HashMap<String, git2::Oid>) -> Result<bool, git2::Error> {
-    let remote_name = head.shorthand().unwrap();
-    let fetch_head = format!("refs/remotes/origin/{}", remote_name);
-
-    let local_commit = head.target().ok_or(git2::Error::from_str("No commit on current branch"))?;
-    if let Some(&remote_commit) = remote_commit_map.get(fetch_head.as_str()) {
-        if local_commit != remote_commit {
-            return Ok(true);
-        }
-    }
-    Ok(false)
-}
-
 pub async fn commit_changes(
     path_string: &String,
     commit_signing_credentials: Option<(String, String)>,
@@ -1562,9 +1521,6 @@ pub async fn upload_changes(
 
 pub async fn force_pull(
     path_string: String,
-    remote_name: String,
-    provider: String,
-    credentials: (String, String),
     log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
 ) -> Result<(), git2::Error> {
     init(None);
@@ -1600,7 +1556,7 @@ pub async fn force_pull(
             .to_string();
 
         let orig_head_path = git_dir.join("ORIG_HEAD");
-        if (branch_name == "HEAD" && orig_head_path.exists()) {
+        if branch_name == "HEAD" && orig_head_path.exists() {
             let content = fs::read_to_string(&orig_head_path)
                 .map_err(|err| git2::Error::from_str(&format!(
                     "Failed to read orig_head file: {}", err
@@ -1696,7 +1652,7 @@ pub async fn force_push(
             .to_string();
 
         let orig_head_path = git_dir.join("ORIG_HEAD");
-        if (branch_name == "HEAD" && orig_head_path.exists()) {
+        if branch_name == "HEAD" && orig_head_path.exists() {
             let content = fs::read_to_string(&orig_head_path)
                 .map_err(|err| git2::Error::from_str(&format!(
                     "Failed to read orig_head file: {}", err
@@ -1839,7 +1795,7 @@ pub async fn upload_and_overwrite(
             .to_string();
 
         let orig_head_path = git_dir.join("ORIG_HEAD");
-        if (branch_name == "HEAD" && orig_head_path.exists()) {
+        if branch_name == "HEAD" && orig_head_path.exists() {
             let content = fs::read_to_string(&orig_head_path)
                 .map_err(|err| git2::Error::from_str(&format!(
                     "Failed to read orig_head file: {}", err
@@ -1901,11 +1857,7 @@ pub async fn download_and_overwrite(
     let repo = Repository::open(&path_string)?;
     set_author(&repo, &author);
     repo.cleanup_state();
-
-    let head = repo.head()?;
     
-    let remote_branch = head.shorthand().unwrap_or("No branch");
-
     let mut remote = repo.find_remote(&remote_name)?;
 
     let callbacks = get_default_callbacks(Some(&provider), Some(&credentials));
@@ -1945,7 +1897,7 @@ pub async fn download_and_overwrite(
             .to_string();
 
         let orig_head_path = git_dir.join("ORIG_HEAD");
-        if (branch_name == "HEAD" && orig_head_path.exists()) {
+        if branch_name == "HEAD" && orig_head_path.exists() {
             let content = fs::read_to_string(&orig_head_path)
                 .map_err(|err| git2::Error::from_str(&format!(
                     "Failed to read orig_head file: {}", err
@@ -1995,6 +1947,13 @@ pub async fn discard_changes(
     file_paths: Vec<String>,
     log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
 ) -> Result<(), git2::Error> {
+    let log_callback = Arc::new(log);
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::GitStatus,
+        "Getting local directory".to_string(),
+    );
     let repo = Repository::open(path_string)?;
 
     let mut checkout = git2::build::CheckoutBuilder::new();
@@ -2154,6 +2113,13 @@ fn get_uncommitted_file_paths_priv(
 
     let mut file_paths = Vec::new();
 
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::GitStatus,
+        "Getting uncommitted file paths".to_string(),
+    );
+
     for entry in statuses.iter() {
         let path = entry.path().unwrap_or_default();
         let status = entry.status();
@@ -2245,6 +2211,12 @@ pub async fn generate_ssh_key(
     log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
 ) -> (String, String) {
     let log_callback = Arc::new(log);
+    
+    _log(
+        Arc::clone(&log_callback),
+        LogType::Global,
+        "Generating Keys".to_string(),
+    );
 
     let key_pair = KeyPair::generate(KeyType::ED25519, 256).unwrap();
 
@@ -2273,7 +2245,7 @@ pub async fn get_branch_name(
     let repo = Repository::open(Path::new(path_string)).unwrap();
     let branch_name = get_branch_name_priv(&repo);
 
-    if (branch_name == None) {
+    if branch_name == None {
         _log(
             Arc::clone(&log_callback),
             LogType::Global,
@@ -2291,7 +2263,7 @@ fn get_branch_name_priv(
 
     let head = match repo.head() {
         Ok(h) => h,
-        Err(e) => {
+        Err(_) => {
             return None;
         }
     };
@@ -2312,6 +2284,12 @@ pub async fn get_branch_names(
     remote: &String,
     log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
 ) -> Vec<String> {
+    let log_callback = Arc::new(log);
+    _log(
+        Arc::clone(&log_callback),
+        LogType::GitStatus,
+        "Getting local directory".to_string(),
+    );
     let repo = Repository::open(Path::new(path_string)).unwrap();
 
     let mut branch_set = std::collections::HashSet::new();
@@ -2355,6 +2333,11 @@ pub async fn checkout_branch(
 ) -> Result<(), git2::Error> {
     let log_callback = Arc::new(log);
 
+    _log(
+        Arc::clone(&log_callback),
+        LogType::GitStatus,
+        "Getting local directory".to_string(),
+    );
     let repo = Repository::open(Path::new(path_string)).unwrap();
     let branch = match repo.find_branch(&branch_name, git2::BranchType::Local) {
         Ok(branch) => branch,
