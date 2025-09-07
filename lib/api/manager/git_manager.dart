@@ -329,7 +329,7 @@ class GitManager {
         );
       } catch (e, stackTrace) {
         if (!await hasNetworkConnection()) return null;
-        Logger.logError(LogType.ForcePull, e, stackTrace);
+        Logger.logError(LogType.ForcePull, e, stackTrace, causeError: false);
         return null;
       }
     });
