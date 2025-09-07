@@ -269,6 +269,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   double opacity = 0.0;
 
   Timer? hideCheckTimer;
+  Timer? autoRefreshTimer;
   StreamSubscription<List<ConnectivityResult>>? networkSubscription;
   ScrollController recentCommitsController = ScrollController();
 
@@ -351,9 +352,18 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
         await onboardingController?.show();
         setState(() {});
       }
+
+      if (await uiSettingsManager.getClientModeEnabled()) {
+        await updateRecommendedAction();
+        autoRefreshTimer = Timer.periodic(Duration(seconds: 5), (_) async => await updateRecommendedAction());
+      }
     });
 
     super.initState();
+  }
+
+  Future<void> updateRecommendedAction() async {
+    recommendedAction.value = await GitManager.getRecommendedAction();
   }
 
   Future<void> promptClearKeychainValues() async {
@@ -425,30 +435,16 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     // }
   }
 
-  int lastRecommendedActionTime = -1;
-  int? lastRecommendedAction;
+  ValueNotifier<int?> recommendedAction = ValueNotifier(null);
   Future<String> getLastSyncOption() async {
     if (await uiSettingsManager.getClientModeEnabled() == true) {
-      if (DateTime.fromMillisecondsSinceEpoch(lastRecommendedActionTime).add(Duration(seconds: 1)).isAfter(DateTime.now()) &&
-          lastRecommendedAction != null) {
+      if (recommendedAction.value != null) {
         return [
           sprintf(t.fetchRemote, [await uiSettingsManager.getRemote()]),
           t.pullChanges,
           t.stageAndCommit,
           t.pushChanges,
-        ][lastRecommendedAction!];
-      } else {
-        final recommendedAction = await GitManager.getRecommendedAction();
-        if (recommendedAction != null) {
-          lastRecommendedActionTime = DateTime.now().millisecondsSinceEpoch;
-          lastRecommendedAction = recommendedAction;
-          return [
-            sprintf(t.fetchRemote, [await uiSettingsManager.getRemote()]),
-            t.pullChanges,
-            t.stageAndCommit,
-            t.pushChanges,
-          ][recommendedAction];
-        }
+        ][recommendedAction.value!];
       }
     }
     return await uiSettingsManager.getString(StorageKey.setman_lastSyncMethod);
@@ -624,6 +620,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
     premiumManager.dispose();
 
+    autoRefreshTimer?.cancel();
     networkSubscription?.cancel();
     hideCheckTimer?.cancel();
     for (var key in debounceTimers.keys) {
@@ -1289,202 +1286,207 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                   Expanded(
                                     child: FutureBuilder(
                                       future: getSyncOptions(),
-                                      builder: (context, syncOptionsSnapshot) => FutureBuilder(
-                                        future: getLastSyncOption(),
-                                        builder: (context, lastSyncMethodSnapshot) => Stack(
-                                          children: [
-                                            SizedBox.expand(
-                                              child: TextButton.icon(
-                                                key: syncMethodMainButtonKey,
-                                                onPressed: () async {
-                                                  if (syncOptionsSnapshot.data == null || lastSyncMethodSnapshot.data == null) return;
+                                      builder: (context, syncOptionsSnapshot) => ValueListenableBuilder(
+                                        valueListenable: recommendedAction,
+                                        builder: (context, _, _) => FutureBuilder(
+                                          future: getLastSyncOption(),
+                                          builder: (context, lastSyncMethodSnapshot) => Stack(
+                                            children: [
+                                              SizedBox.expand(
+                                                child: TextButton.icon(
+                                                  key: syncMethodMainButtonKey,
+                                                  onPressed: () async {
+                                                    if (syncOptionsSnapshot.data == null || lastSyncMethodSnapshot.data == null) return;
 
-                                                  WidgetsBinding.instance.addPostFrameCallback((_) async {
-                                                    setState(() {});
-                                                  });
+                                                    WidgetsBinding.instance.addPostFrameCallback((_) async {
+                                                      setState(() {});
+                                                    });
 
-                                                  if (syncOptionsSnapshot.data?.containsKey(lastSyncMethodSnapshot.data) == true) {
-                                                    await syncOptionsSnapshot.data![lastSyncMethodSnapshot.data]!.$2();
-                                                  } else {
-                                                    await syncOptionsSnapshot.data?.values.first.$2();
-                                                  }
-                                                  WidgetsBinding.instance.addPostFrameCallback((_) async {
-                                                    setState(() {});
-                                                  });
-                                                },
-                                                style: ButtonStyle(
-                                                  alignment: Alignment.centerLeft,
-                                                  backgroundColor: WidgetStatePropertyAll(secondaryDark),
-                                                  padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD)),
-                                                  shape: WidgetStatePropertyAll(
-                                                    RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.only(
-                                                        topLeft: cornerRadiusSM,
-                                                        topRight: cornerRadiusSM,
-                                                        bottomLeft: cornerRadiusMD,
-                                                        bottomRight: clientModeEnabledSnapshot.data == true ? cornerRadiusMD : cornerRadiusSM,
+                                                    if (syncOptionsSnapshot.data?.containsKey(lastSyncMethodSnapshot.data) == true) {
+                                                      await syncOptionsSnapshot.data![lastSyncMethodSnapshot.data]!.$2();
+                                                    } else {
+                                                      await syncOptionsSnapshot.data?.values.first.$2();
+                                                    }
+                                                    WidgetsBinding.instance.addPostFrameCallback((_) async {
+                                                      setState(() {});
+                                                    });
+                                                    await updateRecommendedAction();
+                                                  },
+                                                  style: ButtonStyle(
+                                                    alignment: Alignment.centerLeft,
+                                                    backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                                                    padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD)),
+                                                    shape: WidgetStatePropertyAll(
+                                                      RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.only(
+                                                          topLeft: cornerRadiusSM,
+                                                          topRight: cornerRadiusSM,
+                                                          bottomLeft: cornerRadiusMD,
+                                                          bottomRight: clientModeEnabledSnapshot.data == true ? cornerRadiusMD : cornerRadiusSM,
+                                                        ),
+                                                        side: BorderSide.none,
                                                       ),
-                                                      side: BorderSide.none,
+                                                    ),
+                                                  ),
+                                                  icon: FaIcon(
+                                                    syncOptionsSnapshot.data?[lastSyncMethodSnapshot.data]?.$1 ??
+                                                        syncOptionsSnapshot.data?.values.first.$1 ??
+                                                        FontAwesomeIcons.solidCircleDown,
+                                                    color: primaryLight,
+                                                    size: textLG,
+                                                  ),
+                                                  label: Padding(
+                                                    padding: EdgeInsets.only(left: spaceXS),
+                                                    child: Text(
+                                                      ((syncOptionsSnapshot.data?.containsKey(lastSyncMethodSnapshot.data) == true
+                                                                  ? lastSyncMethodSnapshot.data
+                                                                  : syncOptionsSnapshot.data?.keys.first) ??
+                                                              t.syncNow)
+                                                          .toUpperCase(),
+                                                      style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
                                                     ),
                                                   ),
                                                 ),
-                                                icon: FaIcon(
-                                                  syncOptionsSnapshot.data?[lastSyncMethodSnapshot.data]?.$1 ??
-                                                      syncOptionsSnapshot.data?.values.first.$1 ??
-                                                      FontAwesomeIcons.solidCircleDown,
-                                                  color: primaryLight,
-                                                  size: textLG,
-                                                ),
-                                                label: Padding(
-                                                  padding: EdgeInsets.only(left: spaceXS),
-                                                  child: Text(
-                                                    ((syncOptionsSnapshot.data?.containsKey(lastSyncMethodSnapshot.data) == true
-                                                                ? lastSyncMethodSnapshot.data
-                                                                : syncOptionsSnapshot.data?.keys.first) ??
-                                                            t.syncNow)
-                                                        .toUpperCase(),
-                                                    style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
-                                                  ),
-                                                ),
                                               ),
-                                            ),
-                                            Positioned(
-                                              left: 0,
-                                              right: 0,
-                                              top: spaceMD * 4,
-                                              child: Container(
-                                                decoration: BoxDecoration(borderRadius: BorderRadius.all(cornerRadiusSM)),
-                                                margin: EdgeInsets.only(left: spaceMD),
-                                                child: DropdownButton(
-                                                  key: syncMethodsDropdownKey,
-                                                  borderRadius: BorderRadius.all(cornerRadiusSM),
-                                                  selectedItemBuilder: (context) =>
-                                                      List.generate(syncOptionsSnapshot.data?.length ?? 0, (_) => SizedBox.shrink()),
-                                                  icon: SizedBox.shrink(),
-                                                  underline: const SizedBox.shrink(),
-                                                  menuWidth: clientModeEnabledSnapshot.data == true
-                                                      ? MediaQuery.of(context).size.width - (spaceMD * 2)
-                                                      : null,
-                                                  dropdownColor: secondaryDark,
-                                                  padding: EdgeInsets.zero,
-                                                  onChanged: (value) {},
-                                                  items: (syncOptionsSnapshot.data ?? {}).entries
-                                                      .where(
-                                                        (item) =>
-                                                            item.key !=
-                                                            (syncOptionsSnapshot.data?.containsKey(lastSyncMethodSnapshot.data) == true
-                                                                ? lastSyncMethodSnapshot.data
-                                                                : syncOptionsSnapshot.data?.keys.first),
-                                                      )
-                                                      .map(
-                                                        (item) => DropdownMenuItem(
-                                                          onTap: () async {
-                                                            if (![t.switchToClientMode, t.switchToSyncMode].contains(item.key)) {
-                                                              await uiSettingsManager.setString(StorageKey.setman_lastSyncMethod, item.key);
-                                                            }
-                                                            WidgetsBinding.instance.addPostFrameCallback((_) async {
-                                                              setState(() {});
-                                                            });
-                                                            await item.value.$2();
-                                                            WidgetsBinding.instance.addPostFrameCallback((_) async {
-                                                              setState(() {});
-                                                            });
-                                                          },
-                                                          value: item.key,
-                                                          child: Row(
-                                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                                            children: [
-                                                              FaIcon(
-                                                                item.value.$1,
-                                                                color: [t.switchToClientMode, t.switchToSyncMode].contains(item.key)
-                                                                    ? tertiaryInfo
-                                                                    : primaryLight,
-                                                                size: textLG,
-                                                              ),
-                                                              SizedBox(width: spaceMD),
-                                                              Text(
-                                                                item.key.toUpperCase(),
-                                                                style: TextStyle(
-                                                                  fontSize: textMD,
+                                              Positioned(
+                                                left: 0,
+                                                right: 0,
+                                                top: spaceMD * 4,
+                                                child: Container(
+                                                  decoration: BoxDecoration(borderRadius: BorderRadius.all(cornerRadiusSM)),
+                                                  margin: EdgeInsets.only(left: spaceMD),
+                                                  child: DropdownButton(
+                                                    key: syncMethodsDropdownKey,
+                                                    borderRadius: BorderRadius.all(cornerRadiusSM),
+                                                    selectedItemBuilder: (context) =>
+                                                        List.generate(syncOptionsSnapshot.data?.length ?? 0, (_) => SizedBox.shrink()),
+                                                    icon: SizedBox.shrink(),
+                                                    underline: const SizedBox.shrink(),
+                                                    menuWidth: clientModeEnabledSnapshot.data == true
+                                                        ? MediaQuery.of(context).size.width - (spaceMD * 2)
+                                                        : null,
+                                                    dropdownColor: secondaryDark,
+                                                    padding: EdgeInsets.zero,
+                                                    onChanged: (value) {},
+                                                    items: (syncOptionsSnapshot.data ?? {}).entries
+                                                        .where(
+                                                          (item) =>
+                                                              item.key !=
+                                                              (syncOptionsSnapshot.data?.containsKey(lastSyncMethodSnapshot.data) == true
+                                                                  ? lastSyncMethodSnapshot.data
+                                                                  : syncOptionsSnapshot.data?.keys.first),
+                                                        )
+                                                        .map(
+                                                          (item) => DropdownMenuItem(
+                                                            onTap: () async {
+                                                              if (![t.switchToClientMode, t.switchToSyncMode].contains(item.key)) {
+                                                                await uiSettingsManager.setString(StorageKey.setman_lastSyncMethod, item.key);
+                                                              }
+                                                              WidgetsBinding.instance.addPostFrameCallback((_) async {
+                                                                setState(() {});
+                                                              });
+                                                              await item.value.$2();
+                                                              WidgetsBinding.instance.addPostFrameCallback((_) async {
+                                                                setState(() {});
+                                                              });
+                                                              await updateRecommendedAction();
+                                                            },
+                                                            value: item.key,
+                                                            child: Row(
+                                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                                              children: [
+                                                                FaIcon(
+                                                                  item.value.$1,
                                                                   color: [t.switchToClientMode, t.switchToSyncMode].contains(item.key)
                                                                       ? tertiaryInfo
                                                                       : primaryLight,
-                                                                  fontWeight: FontWeight.bold,
-                                                                  overflow: TextOverflow.ellipsis,
+                                                                  size: textLG,
                                                                 ),
-                                                              ),
-                                                            ],
+                                                                SizedBox(width: spaceMD),
+                                                                Text(
+                                                                  item.key.toUpperCase(),
+                                                                  style: TextStyle(
+                                                                    fontSize: textMD,
+                                                                    color: [t.switchToClientMode, t.switchToSyncMode].contains(item.key)
+                                                                        ? tertiaryInfo
+                                                                        : primaryLight,
+                                                                    fontWeight: FontWeight.bold,
+                                                                    overflow: TextOverflow.ellipsis,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
                                                           ),
-                                                        ),
-                                                      )
-                                                      .toList(),
-                                                ),
-                                              ),
-                                            ),
-                                            Positioned(
-                                              right: 0,
-                                              top: 0,
-                                              bottom: 0,
-                                              child: IconButton(
-                                                onPressed: () {
-                                                  if (demo) {
-                                                    demoConflicting = true;
-                                                    setState(() {});
-                                                    MergeConflictDialog.showDialog(context, ["Readme.md"])
-                                                        .then((_) {
-                                                          demoConflicting = false;
-                                                          setState(() {});
-                                                        })
-                                                        .then((_) => setState(() {}));
-
-                                                    return;
-                                                  }
-
-                                                  GestureDetector? detector;
-
-                                                  void searchForGestureDetector(BuildContext? element) {
-                                                    element?.visitChildElements((element) {
-                                                      if (element.widget is GestureDetector) {
-                                                        detector = element.widget as GestureDetector;
-                                                        return;
-                                                      } else {
-                                                        searchForGestureDetector(element);
-                                                      }
-
-                                                      return;
-                                                    });
-                                                  }
-
-                                                  searchForGestureDetector(syncMethodsDropdownKey.currentContext);
-
-                                                  detector?.onTap!();
-                                                },
-                                                style: ButtonStyle(
-                                                  backgroundColor: WidgetStatePropertyAll(secondaryDark),
-                                                  padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
-                                                  shape: WidgetStatePropertyAll(
-                                                    RoundedRectangleBorder(
-                                                      borderRadius: clientModeEnabledSnapshot.data == true
-                                                          ? BorderRadius.only(
-                                                              topLeft: cornerRadiusSM,
-                                                              topRight: cornerRadiusSM,
-                                                              bottomLeft: cornerRadiusSM,
-                                                              bottomRight: cornerRadiusMD,
-                                                            )
-                                                          : BorderRadius.all(cornerRadiusSM),
-                                                      side: BorderSide.none,
-                                                    ),
+                                                        )
+                                                        .toList(),
                                                   ),
                                                 ),
-                                                icon: FaIcon(
-                                                  FontAwesomeIcons.ellipsis,
-                                                  color: primaryLight,
-                                                  size: textLG,
-                                                  semanticLabel: t.moreSyncOptionsLabel,
+                                              ),
+                                              Positioned(
+                                                right: 0,
+                                                top: 0,
+                                                bottom: 0,
+                                                child: IconButton(
+                                                  onPressed: () {
+                                                    if (demo) {
+                                                      demoConflicting = true;
+                                                      setState(() {});
+                                                      MergeConflictDialog.showDialog(context, ["Readme.md"])
+                                                          .then((_) {
+                                                            demoConflicting = false;
+                                                            setState(() {});
+                                                          })
+                                                          .then((_) => setState(() {}));
+
+                                                      return;
+                                                    }
+
+                                                    GestureDetector? detector;
+
+                                                    void searchForGestureDetector(BuildContext? element) {
+                                                      element?.visitChildElements((element) {
+                                                        if (element.widget is GestureDetector) {
+                                                          detector = element.widget as GestureDetector;
+                                                          return;
+                                                        } else {
+                                                          searchForGestureDetector(element);
+                                                        }
+
+                                                        return;
+                                                      });
+                                                    }
+
+                                                    searchForGestureDetector(syncMethodsDropdownKey.currentContext);
+
+                                                    detector?.onTap!();
+                                                  },
+                                                  style: ButtonStyle(
+                                                    backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                                                    padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
+                                                    shape: WidgetStatePropertyAll(
+                                                      RoundedRectangleBorder(
+                                                        borderRadius: clientModeEnabledSnapshot.data == true
+                                                            ? BorderRadius.only(
+                                                                topLeft: cornerRadiusSM,
+                                                                topRight: cornerRadiusSM,
+                                                                bottomLeft: cornerRadiusSM,
+                                                                bottomRight: cornerRadiusMD,
+                                                              )
+                                                            : BorderRadius.all(cornerRadiusSM),
+                                                        side: BorderSide.none,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  icon: FaIcon(
+                                                    FontAwesomeIcons.ellipsis,
+                                                    color: primaryLight,
+                                                    size: textLG,
+                                                    semanticLabel: t.moreSyncOptionsLabel,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
