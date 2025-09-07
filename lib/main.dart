@@ -425,16 +425,30 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     // }
   }
 
+  int lastRecommendedActionTime = -1;
+  int? lastRecommendedAction;
   Future<String> getLastSyncOption() async {
     if (await uiSettingsManager.getClientModeEnabled() == true) {
-      final recommendedAction = await GitManager.getRecommendedAction();
-      if (recommendedAction != null) {
+      if (DateTime.fromMillisecondsSinceEpoch(lastRecommendedActionTime).add(Duration(seconds: 1)).isAfter(DateTime.now()) &&
+          lastRecommendedAction != null) {
         return [
           sprintf(t.fetchRemote, [await uiSettingsManager.getRemote()]),
           t.pullChanges,
           t.stageAndCommit,
           t.pushChanges,
-        ][recommendedAction];
+        ][lastRecommendedAction!];
+      } else {
+        final recommendedAction = await GitManager.getRecommendedAction();
+        if (recommendedAction != null) {
+          lastRecommendedActionTime = DateTime.now().millisecondsSinceEpoch;
+          lastRecommendedAction = recommendedAction;
+          return [
+            sprintf(t.fetchRemote, [await uiSettingsManager.getRemote()]),
+            t.pullChanges,
+            t.stageAndCommit,
+            t.pushChanges,
+          ][recommendedAction];
+        }
       }
     }
     return await uiSettingsManager.getString(StorageKey.setman_lastSyncMethod);
