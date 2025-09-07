@@ -51,10 +51,7 @@ $conflictEnd 77976da35a11db4580b80ae27e8d65caf5208086:gear-update.txt
   (18, "- Notebook & pen"),
 ];
 
-Future<void> showDialog(
-  BuildContext parentContext,
-  List<String> conflictingPaths,
-) async {
+Future<void> showDialog(BuildContext parentContext, List<String> conflictingPaths) async {
   bool initialised = false;
   bool isMerging = false;
   int currentIndex = 0;
@@ -66,17 +63,11 @@ Future<void> showDialog(
     print(e);
   }
 
-  final syncMessage = await uiSettingsManager.getString(
-    StorageKey.setman_syncMessage,
-  );
+  final syncMessage = await uiSettingsManager.getSyncMessage();
   final scrollController = AnchorScrollController();
   final commitMessageController = TextEditingController();
 
-  indexListener(
-    int index,
-    bool userScroll,
-    void Function(void Function()) setState,
-  ) {
+  indexListener(int index, bool userScroll, void Function(void Function()) setState) {
     currentIndex = index;
     debounce(mergeConflictDebounceReference, 50, () {
       if (dialogKey.currentContext != null) setState(() {});
@@ -89,9 +80,7 @@ Future<void> showDialog(
 
   print(conflictingPaths);
 
-  Future<void> updateConflictSections(
-    void Function(void Function())? setState,
-  ) async {
+  Future<void> updateConflictSections(void Function(void Function())? setState) async {
     try {
       if (demo) {
         conflictSections = demoConflictSections;
@@ -103,51 +92,44 @@ Future<void> showDialog(
       updating = true;
       if (setState != null) setState(() {});
 
-      final bookmarkPath = await uiSettingsManager.getString(
-        StorageKey.setman_gitDirPath,
-      );
+      final bookmarkPath = await uiSettingsManager.getString(StorageKey.setman_gitDirPath);
       if (bookmarkPath.isEmpty) return;
 
-      await useDirectory(
-        bookmarkPath,
-        (bookmarkPath) async =>
-            await uiSettingsManager.setGitDirPath(bookmarkPath),
-        (path) async {
-          final file = File("$path/${conflictingPaths[conflictIndex]}");
+      await useDirectory(bookmarkPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (path) async {
+        final file = File("$path/${conflictingPaths[conflictIndex]}");
 
-          List<String> conflictStringSections = [];
-          List<String> lines = await file.readAsLines();
-          StringBuffer conflictBuffer = StringBuffer();
-          bool inConflict = false;
+        List<String> conflictStringSections = [];
+        List<String> lines = await file.readAsLines();
+        StringBuffer conflictBuffer = StringBuffer();
+        bool inConflict = false;
 
-          for (var line in lines) {
-            if (line.trim().startsWith(conflictStart)) {
-              inConflict = true;
-              conflictBuffer.writeln(line);
-            } else if (line.trim().startsWith(conflictEnd)) {
-              conflictBuffer.writeln(line);
-              conflictStringSections.add(conflictBuffer.toString());
-              conflictBuffer.clear();
-              inConflict = false;
-            } else if (inConflict) {
-              conflictBuffer.writeln(line);
-            } else {
-              conflictStringSections.add(line);
-            }
-          }
-          if (conflictBuffer.isNotEmpty) {
+        for (var line in lines) {
+          if (line.trim().startsWith(conflictStart)) {
+            inConflict = true;
+            conflictBuffer.writeln(line);
+          } else if (line.trim().startsWith(conflictEnd)) {
+            conflictBuffer.writeln(line);
             conflictStringSections.add(conflictBuffer.toString());
+            conflictBuffer.clear();
+            inConflict = false;
+          } else if (inConflict) {
+            conflictBuffer.writeln(line);
+          } else {
+            conflictStringSections.add(line);
           }
+        }
+        if (conflictBuffer.isNotEmpty) {
+          conflictStringSections.add(conflictBuffer.toString());
+        }
 
-          conflictSections = conflictStringSections.indexed.toList();
+        conflictSections = conflictStringSections.indexed.toList();
+        if (setState != null) setState(() {});
+
+        await Future.delayed(Duration(milliseconds: 500), () {
+          updating = false;
           if (setState != null) setState(() {});
-
-          await Future.delayed(Duration(milliseconds: 500), () {
-            updating = false;
-            if (setState != null) setState(() {});
-          });
-        },
-      );
+        });
+      });
     } catch (e) {
       print(e);
     }
@@ -163,29 +145,17 @@ Future<void> showDialog(
   }
 
   Future<void> refreshConflictSectionIndices() async {
-    final bookmarkPath = await uiSettingsManager.getString(
-      StorageKey.setman_gitDirPath,
-    );
+    final bookmarkPath = await uiSettingsManager.getString(StorageKey.setman_gitDirPath);
     if (bookmarkPath.isEmpty) return;
 
-    await useDirectory(
-      bookmarkPath,
-      (bookmarkPath) async =>
-          await uiSettingsManager.setGitDirPath(bookmarkPath),
-      (path) async {
-        final file = File("$path/${conflictingPaths[conflictIndex]}");
-        await file.writeAsString(
-          conflictSections.map((section) => section.$2).join('\n'),
-        );
+    await useDirectory(bookmarkPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (path) async {
+      final file = File("$path/${conflictingPaths[conflictIndex]}");
+      await file.writeAsString(conflictSections.map((section) => section.$2).join('\n'));
 
-        for (var indexedSection in conflictSections.indexed) {
-          conflictSections[indexedSection.$1] = (
-            indexedSection.$1,
-            indexedSection.$2.$2,
-          );
-        }
-      },
-    );
+      for (var indexedSection in conflictSections.indexed) {
+        conflictSections[indexedSection.$1] = (indexedSection.$1, indexedSection.$2.$2);
+      }
+    });
   }
 
   return await mat.showDialog(
@@ -198,45 +168,20 @@ Future<void> showDialog(
         builder: (context, setState) {
           if (!initialised && conflictSections.isNotEmpty) {
             Future.delayed(Duration(seconds: 0), () async {
-              final scrollIndex = max(
-                0,
-                conflictSections.indexWhere(
-                  (section) => section.$2.contains(conflictStart),
-                ),
-              );
-              await scrollController.scrollToIndex(
-                index: scrollIndex,
-                scrollSpeed: 10,
-              );
-              await scrollController.scrollToIndex(
-                index: scrollIndex,
-                scrollSpeed: 5,
-              );
+              final scrollIndex = max(0, conflictSections.indexWhere((section) => section.$2.contains(conflictStart)));
+              await scrollController.scrollToIndex(index: scrollIndex, scrollSpeed: 10);
+              await scrollController.scrollToIndex(index: scrollIndex, scrollSpeed: 5);
               initialised = true;
             });
           }
-          final int firstConflictIndex = conflictSections.indexWhere(
-            (section) => section.$2.contains(conflictStart),
-          );
-          final int lastConflictIndex = conflictSections.lastIndexWhere(
-            (section) => section.$2.contains(conflictStart),
-          );
-          final prevEnabled =
-              !updating &&
-              ((firstConflictIndex != -1 &&
-                      currentIndex > firstConflictIndex) ||
-                  conflictIndex > 0);
+          final int firstConflictIndex = conflictSections.indexWhere((section) => section.$2.contains(conflictStart));
+          final int lastConflictIndex = conflictSections.lastIndexWhere((section) => section.$2.contains(conflictStart));
+          final prevEnabled = !updating && ((firstConflictIndex != -1 && currentIndex > firstConflictIndex) || conflictIndex > 0);
           final nextEnabled =
-              !updating &&
-              ((lastConflictIndex != -1 && currentIndex < lastConflictIndex) ||
-                  conflictIndex < conflictingPaths.length - 1);
+              !updating && ((lastConflictIndex != -1 && currentIndex < lastConflictIndex) || conflictIndex < conflictingPaths.length - 1);
 
-          scrollController.removeIndexListener(
-            (index, userScroll) => indexListener(index, userScroll, setState),
-          );
-          scrollController.addIndexListener(
-            (index, userScroll) => indexListener(index, userScroll, setState),
-          );
+          scrollController.removeIndexListener((index, userScroll) => indexListener(index, userScroll, setState));
+          scrollController.addIndexListener((index, userScroll) => indexListener(index, userScroll, setState));
 
           return BaseAlertDialog(
             expandable: true,
@@ -245,27 +190,17 @@ Future<void> showDialog(
               child: Text(
                 t.mergeConflict.toUpperCase(),
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: primaryLight,
-                  fontSize: textXL,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
               ),
             ),
             contentBuilder: (expanded) =>
                 (expanded
                 ? (List<Widget> children) => Column(children: children)
-                : (List<Widget> children) => SingleChildScrollView(
-                    child: ListBody(children: children),
-                  ))(<Widget>[
+                : (List<Widget> children) => SingleChildScrollView(child: ListBody(children: children)))(<Widget>[
                   Text(
                     t.mergeDialogMessage,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: secondaryLight,
-                      fontWeight: FontWeight.bold,
-                      fontSize: textSM,
-                    ),
+                    style: const TextStyle(color: secondaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
                   ),
                   SizedBox(height: spaceMD + spaceSM),
                   TextField(
@@ -281,25 +216,15 @@ Future<void> showDialog(
                     decoration: InputDecoration(
                       fillColor: secondaryDark,
                       filled: true,
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(cornerRadiusSM),
-                        borderSide: BorderSide.none,
-                      ),
+                      border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusSM), borderSide: BorderSide.none),
                       hintText: syncMessage,
                       isCollapsed: true,
                       label: Text(
                         t.commitMessage.toUpperCase(),
-                        style: TextStyle(
-                          color: secondaryLight,
-                          fontSize: textSM,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(color: secondaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                       ),
                       floatingLabelBehavior: FloatingLabelBehavior.always,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: spaceMD,
-                        vertical: spaceSM,
-                      ),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
                       isDense: true,
                     ),
                     onChanged: (_) {
@@ -307,61 +232,31 @@ Future<void> showDialog(
                     },
                   ),
                   SizedBox(height: spaceMD),
-                  (expanded
-                      ? (Widget child) => Expanded(child: child)
-                      : (child) => child)(
+                  (expanded ? (Widget child) => Expanded(child: child) : (child) => child)(
                     Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(cornerRadiusSM),
-                        color: secondaryDark,
-                      ),
-                      padding: EdgeInsets.only(
-                        left: spaceXXS,
-                        right: spaceXXS,
-                        bottom: spaceXXS,
-                        top: spaceXXXS,
-                      ),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.all(cornerRadiusSM), color: secondaryDark),
+                      padding: EdgeInsets.only(left: spaceXXS, right: spaceXXS, bottom: spaceXXS, top: spaceXXXS),
                       child: Column(
                         children: [
                           Row(
                             children: [
                               Expanded(
                                 child: TextButton.icon(
-                                  onPressed: () async => OpenFile.open(
-                                    "${await uiSettingsManager.getGitDirPath(true)}/${conflictingPaths[conflictIndex]}",
-                                  ),
+                                  onPressed: () async =>
+                                      OpenFile.open("${await uiSettingsManager.getGitDirPath(true)}/${conflictingPaths[conflictIndex]}"),
                                   style: ButtonStyle(
                                     alignment: Alignment.centerLeft,
-                                    tapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
+                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                     shape: WidgetStatePropertyAll(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                          cornerRadiusSM,
-                                        ),
-                                        side: BorderSide.none,
-                                      ),
+                                      RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusSM), side: BorderSide.none),
                                     ),
                                   ),
-                                  icon: FaIcon(
-                                    FontAwesomeIcons.squareArrowUpRight,
-                                    color: primaryLight,
-                                    size: textMD,
-                                  ),
+                                  icon: FaIcon(FontAwesomeIcons.squareArrowUpRight, color: primaryLight, size: textMD),
                                   label: Text(
-                                    conflictingPaths.isEmpty
-                                        ? "-"
-                                        : conflictingPaths[conflictIndex]
-                                              .split("/")
-                                              .last
-                                              .toUpperCase(),
+                                    conflictingPaths.isEmpty ? "-" : conflictingPaths[conflictIndex].split("/").last.toUpperCase(),
                                     maxLines: 1,
                                     textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                      color: primaryLight,
-                                      fontSize: textSM,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                    style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ),
@@ -371,57 +266,28 @@ Future<void> showDialog(
                                   IconButton(
                                     onPressed: prevEnabled
                                         ? () async {
-                                            if (conflictSections.isEmpty)
-                                              return;
+                                            if (conflictSections.isEmpty) return;
 
-                                            if (currentIndex <=
-                                                    firstConflictIndex ||
-                                                firstConflictIndex == -1) {
-                                              conflictIndex =
-                                                  (conflictIndex - 1).clamp(
-                                                    0,
-                                                    conflictingPaths.length - 1,
-                                                  );
-                                              await updateConflictSections(
-                                                setState,
-                                              );
+                                            if (currentIndex <= firstConflictIndex || firstConflictIndex == -1) {
+                                              conflictIndex = (conflictIndex - 1).clamp(0, conflictingPaths.length - 1);
+                                              await updateConflictSections(setState);
                                             } else {
-                                              int startIndex = currentIndex < 0
-                                                  ? 0
-                                                  : currentIndex;
-                                              int prevConflictIndex =
-                                                  conflictSections
-                                                      .sublist(0, startIndex)
-                                                      .lastIndexWhere(
-                                                        (section) =>
-                                                            section.$2.contains(
-                                                              conflictStart,
-                                                            ),
-                                                      );
+                                              int startIndex = currentIndex < 0 ? 0 : currentIndex;
+                                              int prevConflictIndex = conflictSections
+                                                  .sublist(0, startIndex)
+                                                  .lastIndexWhere((section) => section.$2.contains(conflictStart));
 
-                                              scrollController.scrollToIndex(
-                                                index: prevConflictIndex < 0
-                                                    ? 0
-                                                    : prevConflictIndex,
-                                              );
+                                              scrollController.scrollToIndex(index: prevConflictIndex < 0 ? 0 : prevConflictIndex);
                                             }
                                           }
                                         : null,
                                     icon: FaIcon(FontAwesomeIcons.caretLeft),
                                     style: ButtonStyle(
-                                      backgroundColor: WidgetStatePropertyAll(
-                                        tertiaryDark,
-                                      ),
-                                      tapTargetSize:
-                                          MaterialTapTargetSize.shrinkWrap,
+                                      backgroundColor: WidgetStatePropertyAll(tertiaryDark),
+                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                       visualDensity: VisualDensity.compact,
                                       shape: WidgetStatePropertyAll(
-                                        RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                            cornerRadiusSM,
-                                          ),
-                                          side: BorderSide.none,
-                                        ),
+                                        RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusSM), side: BorderSide.none),
                                       ),
                                     ),
                                     color: primaryLight,
@@ -432,64 +298,33 @@ Future<void> showDialog(
                                   IconButton(
                                     onPressed: nextEnabled
                                         ? () async {
-                                            if (conflictSections.isEmpty)
-                                              return;
+                                            if (conflictSections.isEmpty) return;
 
-                                            if (currentIndex +
-                                                        (expanded ? 30 : 15) >=
-                                                    lastConflictIndex ||
+                                            if (currentIndex + (expanded ? 30 : 15) >= lastConflictIndex ||
                                                 conflictSections.isEmpty ||
-                                                !conflictSections.any(
-                                                  (section) => section.$2
-                                                      .contains(conflictStart),
-                                                )) {
+                                                !conflictSections.any((section) => section.$2.contains(conflictStart))) {
                                               currentIndex = 0;
-                                              conflictIndex =
-                                                  (conflictIndex + 1).clamp(
-                                                    0,
-                                                    conflictingPaths.length - 1,
-                                                  );
-                                              await updateConflictSections(
-                                                setState,
-                                              );
+                                              conflictIndex = (conflictIndex + 1).clamp(0, conflictingPaths.length - 1);
+                                              await updateConflictSections(setState);
                                             } else {
-                                              int startIndex = currentIndex < 0
-                                                  ? 0
-                                                  : currentIndex;
-                                              int nextConflictIndex =
-                                                  conflictSections
-                                                      .sublist(startIndex)
-                                                      .indexWhere(
-                                                        (section) =>
-                                                            section.$2.contains(
-                                                              conflictStart,
-                                                            ),
-                                                      );
+                                              int startIndex = currentIndex < 0 ? 0 : currentIndex;
+                                              int nextConflictIndex = conflictSections
+                                                  .sublist(startIndex)
+                                                  .indexWhere((section) => section.$2.contains(conflictStart));
 
                                               scrollController.scrollToIndex(
-                                                index: nextConflictIndex < 0
-                                                    ? conflictSections.length
-                                                    : nextConflictIndex +
-                                                          startIndex,
+                                                index: nextConflictIndex < 0 ? conflictSections.length : nextConflictIndex + startIndex,
                                               );
                                             }
                                           }
                                         : null,
                                     icon: FaIcon(FontAwesomeIcons.caretRight),
                                     style: ButtonStyle(
-                                      backgroundColor: WidgetStatePropertyAll(
-                                        tertiaryDark,
-                                      ),
-                                      tapTargetSize:
-                                          MaterialTapTargetSize.shrinkWrap,
+                                      backgroundColor: WidgetStatePropertyAll(tertiaryDark),
+                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                       visualDensity: VisualDensity.compact,
                                       shape: WidgetStatePropertyAll(
-                                        RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                            cornerRadiusSM,
-                                          ),
-                                          side: BorderSide.none,
-                                        ),
+                                        RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusSM), side: BorderSide.none),
                                       ),
                                     ),
                                     color: primaryLight,
@@ -500,301 +335,148 @@ Future<void> showDialog(
                               ),
                             ],
                           ),
-                          (expanded
-                              ? (Widget child) => Expanded(child: child)
-                              : (child) => child)(
+                          (expanded ? (Widget child) => Expanded(child: child) : (child) => child)(
                             Padding(
                               padding: EdgeInsets.all(spaceXS),
                               child: conflictSections.isEmpty
                                   ? Center(
-                                      child: CircularProgressIndicator(
-                                        color: primaryLight,
-                                        padding: EdgeInsets.all(spaceXS),
-                                      ),
+                                      child: CircularProgressIndicator(color: primaryLight, padding: EdgeInsets.all(spaceXS)),
                                     )
                                   : SingleChildScrollView(
                                       scrollDirection: Axis.horizontal,
                                       child: SizedBox(
-                                        height: expanded
-                                            ? double.infinity
-                                            : MediaQuery.sizeOf(
-                                                    context,
-                                                  ).height /
-                                                  3,
+                                        height: expanded ? double.infinity : MediaQuery.sizeOf(context).height / 3,
                                         width: double.maxFinite,
                                         child: AnimatedListView(
                                           controller: scrollController,
                                           items: conflictSections,
-                                          isSameItem: (a, b) =>
-                                              a.$1 == b.$1 && a.$2 == b.$2,
+                                          isSameItem: (a, b) => a.$1 == b.$1 && a.$2 == b.$2,
                                           itemBuilder: (BuildContext context, int index) {
-                                            final item =
-                                                conflictSections[index];
+                                            final item = conflictSections[index];
 
-                                            if (item.$2.contains(
-                                              conflictStart,
-                                            )) {
+                                            if (item.$2.contains(conflictStart)) {
                                               final lines = item.$2.split("\n");
-                                              final startIndex = lines
-                                                  .indexWhere(
-                                                    (line) => line.contains(
-                                                      conflictStart,
-                                                    ),
-                                                  );
-                                              final midIndex = lines.indexWhere(
-                                                (line) => line.contains(
-                                                  conflictSeparator,
-                                                ),
-                                              );
-                                              final endIndex = lines.indexWhere(
-                                                (line) =>
-                                                    line.contains(conflictEnd),
-                                              );
+                                              final startIndex = lines.indexWhere((line) => line.contains(conflictStart));
+                                              final midIndex = lines.indexWhere((line) => line.contains(conflictSeparator));
+                                              final endIndex = lines.indexWhere((line) => line.contains(conflictEnd));
 
-                                              final remoteLines = lines
-                                                  .sublist(
-                                                    startIndex + 1,
-                                                    midIndex,
-                                                  )
-                                                  .indexed;
-                                              final localLines = lines
-                                                  .sublist(
-                                                    midIndex + 1,
-                                                    endIndex,
-                                                  )
-                                                  .indexed;
+                                              final remoteLines = lines.sublist(startIndex + 1, midIndex).indexed;
+                                              final localLines = lines.sublist(midIndex + 1, endIndex).indexed;
 
                                               return AnchorItemWrapper(
-                                                key: Key(
-                                                  "${item.$1}//${item.$2}",
-                                                ),
+                                                key: Key("${item.$1}//${item.$2}"),
                                                 controller: scrollController,
                                                 index: item.$1,
                                                 child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Padding(
-                                                      padding: EdgeInsets.only(
-                                                        left: spaceSM,
-                                                        top: spaceSM,
-                                                      ),
+                                                      padding: EdgeInsets.only(left: spaceSM, top: spaceSM),
                                                       child: Text(
-                                                        t.keepChanges
-                                                            .toUpperCase(),
-                                                        style: TextStyle(
-                                                          color: primaryLight,
-                                                          fontSize: textSM,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
+                                                        t.keepChanges.toUpperCase(),
+                                                        style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                                                       ),
                                                     ),
                                                     SizedBox(height: spaceXXS),
                                                     SizedBox(
                                                       width:
-                                                          MediaQuery.of(
-                                                            context,
-                                                          ).size.width -
-                                                          ((spaceLG * 2) +
-                                                              (spaceSM *
-                                                                  2 *
-                                                                  2) +
-                                                              (spaceXS * 2) +
-                                                              (spaceXXS * 2)),
+                                                          MediaQuery.of(context).size.width -
+                                                          ((spaceLG * 2) + (spaceSM * 2 * 2) + (spaceXS * 2) + (spaceXXS * 2)),
                                                       child: Row(
                                                         children: [
                                                           Expanded(
                                                             child: TextButton(
                                                               onPressed: () async {
-                                                                conflictSections
-                                                                    .removeAt(
-                                                                      index,
-                                                                    );
-                                                                conflictSections
-                                                                    .insertAll(
-                                                                      index,
-                                                                      localLines,
-                                                                    );
+                                                                conflictSections.removeAt(index);
+                                                                conflictSections.insertAll(index, localLines);
                                                                 await refreshConflictSectionIndices();
                                                                 setState(() {});
                                                               },
                                                               style: ButtonStyle(
-                                                                backgroundColor:
-                                                                    WidgetStatePropertyAll(
-                                                                      tertiaryPositive,
-                                                                    ),
-                                                                tapTargetSize:
-                                                                    MaterialTapTargetSize
-                                                                        .shrinkWrap,
-                                                                visualDensity:
-                                                                    VisualDensity
-                                                                        .compact,
-                                                                padding:
-                                                                    WidgetStatePropertyAll(
-                                                                      EdgeInsets
-                                                                          .zero,
-                                                                    ),
+                                                                backgroundColor: WidgetStatePropertyAll(tertiaryPositive),
+                                                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                                visualDensity: VisualDensity.compact,
+                                                                padding: WidgetStatePropertyAll(EdgeInsets.zero),
                                                                 shape: WidgetStatePropertyAll(
                                                                   RoundedRectangleBorder(
                                                                     borderRadius: BorderRadius.only(
-                                                                      topLeft:
-                                                                          cornerRadiusSM,
-                                                                      topRight:
-                                                                          cornerRadiusSM,
-                                                                      bottomLeft:
-                                                                          cornerRadiusSM,
-                                                                      bottomRight:
-                                                                          cornerRadiusSM,
+                                                                      topLeft: cornerRadiusSM,
+                                                                      topRight: cornerRadiusSM,
+                                                                      bottomLeft: cornerRadiusSM,
+                                                                      bottomRight: cornerRadiusSM,
                                                                     ),
-                                                                    side: BorderSide
-                                                                        .none,
+                                                                    side: BorderSide.none,
                                                                   ),
                                                                 ),
                                                               ),
                                                               child: Text(
-                                                                t.local
-                                                                    .toUpperCase(),
-                                                                style: TextStyle(
-                                                                  color:
-                                                                      secondaryDark,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
+                                                                t.local.toUpperCase(),
+                                                                style: TextStyle(color: secondaryDark, fontWeight: FontWeight.bold),
                                                               ),
                                                             ),
                                                           ),
-                                                          SizedBox(
-                                                            width: spaceXXS,
-                                                          ),
+                                                          SizedBox(width: spaceXXS),
                                                           Expanded(
                                                             child: TextButton(
                                                               onPressed: () async {
-                                                                conflictSections
-                                                                    .removeAt(
-                                                                      index,
-                                                                    );
-                                                                conflictSections
-                                                                    .insertAll(
-                                                                      index,
-                                                                      remoteLines,
-                                                                    );
-                                                                conflictSections
-                                                                    .insertAll(
-                                                                      index,
-                                                                      localLines,
-                                                                    );
+                                                                conflictSections.removeAt(index);
+                                                                conflictSections.insertAll(index, remoteLines);
+                                                                conflictSections.insertAll(index, localLines);
                                                                 await refreshConflictSectionIndices();
                                                                 setState(() {});
                                                               },
                                                               style: ButtonStyle(
-                                                                backgroundColor:
-                                                                    WidgetStatePropertyAll(
-                                                                      tertiaryLight,
-                                                                    ),
-                                                                visualDensity:
-                                                                    VisualDensity
-                                                                        .compact,
-                                                                tapTargetSize:
-                                                                    MaterialTapTargetSize
-                                                                        .shrinkWrap,
-                                                                padding:
-                                                                    WidgetStatePropertyAll(
-                                                                      EdgeInsets
-                                                                          .zero,
-                                                                    ),
+                                                                backgroundColor: WidgetStatePropertyAll(tertiaryLight),
+                                                                visualDensity: VisualDensity.compact,
+                                                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                                padding: WidgetStatePropertyAll(EdgeInsets.zero),
                                                                 shape: WidgetStatePropertyAll(
                                                                   RoundedRectangleBorder(
                                                                     borderRadius: BorderRadius.only(
-                                                                      topLeft:
-                                                                          cornerRadiusSM,
-                                                                      topRight:
-                                                                          cornerRadiusSM,
-                                                                      bottomLeft:
-                                                                          cornerRadiusSM,
-                                                                      bottomRight:
-                                                                          cornerRadiusSM,
+                                                                      topLeft: cornerRadiusSM,
+                                                                      topRight: cornerRadiusSM,
+                                                                      bottomLeft: cornerRadiusSM,
+                                                                      bottomRight: cornerRadiusSM,
                                                                     ),
-                                                                    side: BorderSide
-                                                                        .none,
+                                                                    side: BorderSide.none,
                                                                   ),
                                                                 ),
                                                               ),
                                                               child: Text(
-                                                                t.both
-                                                                    .toUpperCase(),
-                                                                style: TextStyle(
-                                                                  color:
-                                                                      secondaryDark,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
+                                                                t.both.toUpperCase(),
+                                                                style: TextStyle(color: secondaryDark, fontWeight: FontWeight.bold),
                                                               ),
                                                             ),
                                                           ),
-                                                          SizedBox(
-                                                            width: spaceXXS,
-                                                          ),
+                                                          SizedBox(width: spaceXXS),
                                                           Expanded(
                                                             child: TextButton(
                                                               onPressed: () async {
-                                                                conflictSections
-                                                                    .removeAt(
-                                                                      index,
-                                                                    );
-                                                                conflictSections
-                                                                    .insertAll(
-                                                                      index,
-                                                                      remoteLines,
-                                                                    );
+                                                                conflictSections.removeAt(index);
+                                                                conflictSections.insertAll(index, remoteLines);
                                                                 await refreshConflictSectionIndices();
                                                                 setState(() {});
                                                               },
                                                               style: ButtonStyle(
-                                                                backgroundColor:
-                                                                    WidgetStatePropertyAll(
-                                                                      tertiaryNegative,
-                                                                    ),
-                                                                tapTargetSize:
-                                                                    MaterialTapTargetSize
-                                                                        .shrinkWrap,
-                                                                visualDensity:
-                                                                    VisualDensity
-                                                                        .compact,
-                                                                padding:
-                                                                    WidgetStatePropertyAll(
-                                                                      EdgeInsets
-                                                                          .zero,
-                                                                    ),
+                                                                backgroundColor: WidgetStatePropertyAll(tertiaryNegative),
+                                                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                                visualDensity: VisualDensity.compact,
+                                                                padding: WidgetStatePropertyAll(EdgeInsets.zero),
                                                                 shape: WidgetStatePropertyAll(
                                                                   RoundedRectangleBorder(
                                                                     borderRadius: BorderRadius.only(
-                                                                      topLeft:
-                                                                          cornerRadiusSM,
-                                                                      topRight:
-                                                                          cornerRadiusSM,
-                                                                      bottomLeft:
-                                                                          cornerRadiusSM,
-                                                                      bottomRight:
-                                                                          cornerRadiusSM,
+                                                                      topLeft: cornerRadiusSM,
+                                                                      topRight: cornerRadiusSM,
+                                                                      bottomLeft: cornerRadiusSM,
+                                                                      bottomRight: cornerRadiusSM,
                                                                     ),
-                                                                    side: BorderSide
-                                                                        .none,
+                                                                    side: BorderSide.none,
                                                                   ),
                                                                 ),
                                                               ),
                                                               child: Text(
-                                                                t.remote
-                                                                    .toUpperCase(),
-                                                                style: TextStyle(
-                                                                  color:
-                                                                      secondaryDark,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
+                                                                t.remote.toUpperCase(),
+                                                                style: TextStyle(color: secondaryDark, fontWeight: FontWeight.bold),
                                                               ),
                                                             ),
                                                           ),
@@ -804,76 +486,32 @@ Future<void> showDialog(
                                                     SizedBox(height: spaceXS),
                                                     ...localLines.map(
                                                       (line) => Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
                                                         children: [
                                                           Text(
-                                                            padNumber(
-                                                              item.$1 +
-                                                                  line.$1 +
-                                                                  1,
-                                                            ),
-                                                            style: TextStyle(
-                                                              color:
-                                                                  tertiaryPositive,
-                                                              fontSize: textSM,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
+                                                            padNumber(item.$1 + line.$1 + 1),
+                                                            style: TextStyle(color: tertiaryPositive, fontSize: textSM, fontWeight: FontWeight.bold),
                                                           ),
-                                                          SizedBox(
-                                                            width: spaceSM,
-                                                          ),
+                                                          SizedBox(width: spaceSM),
                                                           Text(
                                                             line.$2.trim(),
-                                                            style: TextStyle(
-                                                              color:
-                                                                  tertiaryPositive,
-                                                              fontSize: textMD,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
+                                                            style: TextStyle(color: tertiaryPositive, fontSize: textMD, fontWeight: FontWeight.bold),
                                                           ),
                                                         ],
                                                       ),
                                                     ),
                                                     ...remoteLines.map(
                                                       (line) => Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
                                                         children: [
                                                           Text(
-                                                            padNumber(
-                                                              item.$1 +
-                                                                  line.$1 +
-                                                                  1,
-                                                            ),
-                                                            style: TextStyle(
-                                                              color:
-                                                                  tertiaryNegative,
-                                                              fontSize: textSM,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
+                                                            padNumber(item.$1 + line.$1 + 1),
+                                                            style: TextStyle(color: tertiaryNegative, fontSize: textSM, fontWeight: FontWeight.bold),
                                                           ),
-                                                          SizedBox(
-                                                            width: spaceSM,
-                                                          ),
+                                                          SizedBox(width: spaceSM),
                                                           Text(
                                                             line.$2.trim(),
-                                                            style: TextStyle(
-                                                              color:
-                                                                  tertiaryNegative,
-                                                              fontSize: textMD,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
+                                                            style: TextStyle(color: tertiaryNegative, fontSize: textMD, fontWeight: FontWeight.bold),
                                                           ),
                                                         ],
                                                       ),
@@ -884,33 +522,20 @@ Future<void> showDialog(
                                               );
                                             }
                                             return AnchorItemWrapper(
-                                              key: Key(
-                                                "${item.$1}//${item.$2}",
-                                              ),
+                                              key: Key("${item.$1}//${item.$2}"),
                                               controller: scrollController,
                                               index: item.$1,
                                               child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: [
                                                   Text(
                                                     padNumber(item.$1 + 1),
-                                                    style: TextStyle(
-                                                      color: tertiaryLight,
-                                                      fontSize: textSM,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
+                                                    style: TextStyle(color: tertiaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                                                   ),
                                                   SizedBox(width: spaceSM),
                                                   Text(
                                                     item.$2.trim(),
-                                                    style: TextStyle(
-                                                      color: secondaryLight,
-                                                      fontSize: textMD,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
+                                                    style: TextStyle(color: secondaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
                                                   ),
                                                 ],
                                               ),
@@ -934,50 +559,25 @@ Future<void> showDialog(
                   TextButton(
                     onPressed: () async {
                       await GitManager.abortMerge();
-                      Navigator.of(context).canPop()
-                          ? Navigator.pop(context)
-                          : null;
+                      Navigator.of(context).canPop() ? Navigator.pop(context) : null;
                     },
                     style: ButtonStyle(
                       alignment: Alignment.center,
-                      backgroundColor: WidgetStatePropertyAll(
-                        secondaryNegative,
-                      ),
-                      padding: WidgetStatePropertyAll(
-                        EdgeInsets.symmetric(
-                          horizontal: spaceMD,
-                          vertical: spaceSM,
-                        ),
-                      ),
-                      shape: WidgetStatePropertyAll(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(cornerRadiusSM),
-                          side: BorderSide.none,
-                        ),
-                      ),
+                      backgroundColor: WidgetStatePropertyAll(secondaryNegative),
+                      padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM)),
+                      shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusSM), side: BorderSide.none)),
                     ),
                     child: Text(
                       t.abortMerge.toUpperCase(),
-                      style: TextStyle(
-                        color: primaryLight,
-                        fontSize: textSM,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                     ),
                   ),
                   TextButton.icon(
-                    onPressed:
-                        conflictSections.indexWhere(
-                              (section) => section.$2.contains("\n"),
-                            ) ==
-                            -1
+                    onPressed: conflictSections.indexWhere((section) => section.$2.contains("\n")) == -1
                         ? () async {
                             if (conflictingPaths.length > 1) {
                               conflictingPaths.removeAt(conflictIndex);
-                              conflictIndex = conflictIndex.clamp(
-                                0,
-                                conflictingPaths.length - 1,
-                              );
+                              conflictIndex = conflictIndex.clamp(0, conflictingPaths.length - 1);
                               await updateConflictSections(setState);
 
                               return;
@@ -985,48 +585,26 @@ Future<void> showDialog(
 
                             isMerging = true;
 
-                            FlutterBackgroundService()
-                                .invoke(GitsyncService.MERGE, {
-                                  COMMIT_MESSAGE:
-                                      commitMessageController.text.isEmpty
-                                      ? syncMessage
-                                      : commitMessageController.text,
-                                });
+                            FlutterBackgroundService().invoke(GitsyncService.MERGE, {
+                              COMMIT_MESSAGE: commitMessageController.text.isEmpty ? syncMessage : commitMessageController.text,
+                            });
                             setState(() {});
                           }
                         : null,
                     style: ButtonStyle(
                       alignment: Alignment.center,
                       backgroundColor: WidgetStatePropertyAll(
-                        !demo &&
-                                conflictSections.indexWhere(
-                                      (section) => section.$2.contains("\n"),
-                                    ) ==
-                                    -1
-                            ? primaryPositive
-                            : tertiaryDark,
+                        !demo && conflictSections.indexWhere((section) => section.$2.contains("\n")) == -1 ? primaryPositive : tertiaryDark,
                       ),
-                      padding: WidgetStatePropertyAll(
-                        EdgeInsets.symmetric(
-                          horizontal: spaceMD,
-                          vertical: spaceSM,
-                        ),
-                      ),
-                      shape: WidgetStatePropertyAll(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(cornerRadiusSM),
-                          side: BorderSide.none,
-                        ),
-                      ),
+                      padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM)),
+                      shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusSM), side: BorderSide.none)),
                     ),
                     icon: isMerging
                         ? Container(
                             height: textSM,
                             width: textSM,
                             margin: EdgeInsets.only(right: spaceXXXS),
-                            child: CircularProgressIndicator(
-                              color: tertiaryDark,
-                            ),
+                            child: CircularProgressIndicator(color: tertiaryDark),
                           )
                         : null,
                     label: Text(
@@ -1034,20 +612,10 @@ Future<void> showDialog(
                               ? t.merging
                               // 0 1
                               // 0 1
-                              : (conflictIndex == conflictingPaths.length - 1 ||
-                                        conflictingPaths.length <= 1
-                                    ? t.merge
-                                    : "next"))
+                              : (conflictIndex == conflictingPaths.length - 1 || conflictingPaths.length <= 1 ? t.merge : "next"))
                           .toUpperCase(),
                       style: TextStyle(
-                        color:
-                            !demo &&
-                                conflictSections.indexWhere(
-                                      (section) => section.$2.contains("\n"),
-                                    ) ==
-                                    -1
-                            ? tertiaryDark
-                            : tertiaryLight,
+                        color: !demo && conflictSections.indexWhere((section) => section.$2.contains("\n")) == -1 ? tertiaryDark : tertiaryLight,
                         fontSize: textSM,
                         fontWeight: FontWeight.bold,
                       ),

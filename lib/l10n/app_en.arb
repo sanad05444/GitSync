@@ -62,9 +62,21 @@
     
 
     "@@x-SYNC_OPTIONS": "",
+    "switchToClientMode": "Switch to Client Mode…",
+    "switchToSyncMode": "Switch to Sync Mode…",
+    "clientMode": "Client Mode",
+    "syncMode": "Sync Mode",
     "syncNow": "Sync Changes",
+    "syncAllChanges": "Sync All Changes",
+    "stageAndCommit": "Stage & Commit",
+    "downloadChanges": "Download Changes",
+    "uploadChanges": "Upload Changes",
+    "downloadAndOverwrite": "Download + Overwrite",
+    "uploadAndOverwrite": "Upload + Overwrite",
+    "fetchRemote": "Fetch %s",
     "pullChanges": "Pull Changes",
     "pushChanges": "Push Changes",
+    "updateSubmodules": "Update Submodules",
     "forcePush": "Force Push",
     "forcePushing": "Force pushing…",
     "confirmForcePush": "Confirm Force Push",
@@ -148,6 +160,7 @@
     "auth": "AUTH",
     "gitDirPathHint": "/storage/emulated/0/…",
     "openFileExplorer": "Browse & Edit",
+    "syncSettings": "Sync Settings",
     "enableApplicationObserver": "Auto Sync Settings",
     "accessibilityServiceDisclosureTitle": "Accessibility Service Disclosure",
     "accessibilityServiceDisclosureMessage": "To enhance your experience,\nGitSync uses Android's Accessibility Service to detect when apps are opened or closed.\n\nThis helps us provide tailored features without storing or sharing any data.\n\nᴘʟᴇᴀsᴇ ᴇɴᴀʙʟᴇ ɢɪᴛsʏɴᴄ ᴏɴ ᴛʜᴇ ɴᴇxᴛ sᴄʀᴇᴇɴ",
@@ -220,6 +233,7 @@
 
 
     "@@x-SETTINGS_PAGE": "",
+    "repositorySettings": "Repository Settings",
     "settings": "Settings",
     "signedCommitsLabel": "Signed Commits",
     "signedCommitsDescription": "sign commits to verify your identity",

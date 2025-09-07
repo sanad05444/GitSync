@@ -150,13 +150,49 @@ class AppLocalizationsRu extends AppLocalizations {
       'Примечание: новые спонсорства могут стать доступными в приложении в течение 1 дня.';
 
   @override
+  String get switchToClientMode => 'Switch to Client Mode…';
+
+  @override
+  String get switchToSyncMode => 'Switch to Sync Mode…';
+
+  @override
+  String get clientMode => 'Client Mode';
+
+  @override
+  String get syncMode => 'Sync Mode';
+
+  @override
   String get syncNow => 'Синхронизировать изменения';
+
+  @override
+  String get syncAllChanges => 'Sync All Changes';
+
+  @override
+  String get stageAndCommit => 'Stage & Commit';
+
+  @override
+  String get downloadChanges => 'Download Changes';
+
+  @override
+  String get uploadChanges => 'Upload Changes';
+
+  @override
+  String get downloadAndOverwrite => 'Download + Overwrite';
+
+  @override
+  String get uploadAndOverwrite => 'Upload + Overwrite';
+
+  @override
+  String get fetchRemote => 'Fetch %s';
 
   @override
   String get pullChanges => 'Получить изменения';
 
   @override
   String get pushChanges => 'Отправить изменения';
+
+  @override
+  String get updateSubmodules => 'Update Submodules';
 
   @override
   String get forcePush => 'Принудительная отправка';
@@ -415,6 +451,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get openFileExplorer => 'Browse & Edit';
 
   @override
+  String get syncSettings => 'Sync Settings';
+
+  @override
   String get enableApplicationObserver => 'Настройки автосинхронизации';
 
   @override
@@ -618,6 +657,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get confirmCloneOverwriteAction => 'Перезаписать';
+
+  @override
+  String get repositorySettings => 'Repository Settings';
 
   @override
   String get settings => 'Настройки';

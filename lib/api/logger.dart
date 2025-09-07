@@ -160,7 +160,7 @@ class Logger {
         null) {
       await GithubIssueOauthDialog.showDialog(context, () async {
         final oauthManager = GithubManager();
-        final token = (await oauthManager.launchOAuthFlow())?.$2;
+        final token = (await oauthManager.launchOAuthFlow(["public_repo"]))?.$2;
         await repoManager.setStringNullable(
           StorageKey.repoman_reportIssueToken,
           token,

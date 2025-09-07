@@ -380,11 +380,77 @@ abstract class AppLocalizations {
   /// **'Note: new sponsorships may take up to 1 day to become available in the app.'**
   String get verifyGhSponsorNote;
 
+  /// No description provided for @switchToClientMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch to Client Mode…'**
+  String get switchToClientMode;
+
+  /// No description provided for @switchToSyncMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch to Sync Mode…'**
+  String get switchToSyncMode;
+
+  /// No description provided for @clientMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Client Mode'**
+  String get clientMode;
+
+  /// No description provided for @syncMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Mode'**
+  String get syncMode;
+
   /// No description provided for @syncNow.
   ///
   /// In en, this message translates to:
   /// **'Sync Changes'**
   String get syncNow;
+
+  /// No description provided for @syncAllChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync All Changes'**
+  String get syncAllChanges;
+
+  /// No description provided for @stageAndCommit.
+  ///
+  /// In en, this message translates to:
+  /// **'Stage & Commit'**
+  String get stageAndCommit;
+
+  /// No description provided for @downloadChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Download Changes'**
+  String get downloadChanges;
+
+  /// No description provided for @uploadChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload Changes'**
+  String get uploadChanges;
+
+  /// No description provided for @downloadAndOverwrite.
+  ///
+  /// In en, this message translates to:
+  /// **'Download + Overwrite'**
+  String get downloadAndOverwrite;
+
+  /// No description provided for @uploadAndOverwrite.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload + Overwrite'**
+  String get uploadAndOverwrite;
+
+  /// No description provided for @fetchRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetch %s'**
+  String get fetchRemote;
 
   /// No description provided for @pullChanges.
   ///
@@ -397,6 +463,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Push Changes'**
   String get pushChanges;
+
+  /// No description provided for @updateSubmodules.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Submodules'**
+  String get updateSubmodules;
 
   /// No description provided for @forcePush.
   ///
@@ -854,6 +926,12 @@ abstract class AppLocalizations {
   /// **'Browse & Edit'**
   String get openFileExplorer;
 
+  /// No description provided for @syncSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Settings'**
+  String get syncSettings;
+
   /// No description provided for @enableApplicationObserver.
   ///
   /// In en, this message translates to:
@@ -1231,6 +1309,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Overwrite'**
   String get confirmCloneOverwriteAction;
+
+  /// No description provided for @repositorySettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Repository Settings'**
+  String get repositorySettings;
 
   /// No description provided for @settings.
   ///

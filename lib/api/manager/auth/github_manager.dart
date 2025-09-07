@@ -19,12 +19,12 @@ class GithubManager extends GitProviderManager {
   OAuth2Client getOauthClient() => GitHubOAuth2Client(redirectUri: 'gitsync://auth', customUriScheme: 'gitsync');
 
   @override
-  Future<(String, String, String)?> launchOAuthFlow() async {
+  Future<(String, String, String)?> launchOAuthFlow([List<String>? scopeOverride]) async {
     OAuth2Client ghClient = getOauthClient();
     final response = await ghClient.getTokenWithAuthCodeFlow(
       clientId: gitHubClientId,
       clientSecret: gitHubClientSecret,
-      scopes: ["user", "user:email", "repo", "workflow"],
+      scopes: scopeOverride ?? ["user", "user:email", "repo", "workflow"],
     );
     if (response.accessToken == null) return null;
 

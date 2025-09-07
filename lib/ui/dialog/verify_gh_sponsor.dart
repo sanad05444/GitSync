@@ -16,11 +16,7 @@ Future<void> showDialog(BuildContext context) async {
         width: MediaQuery.of(context).size.width,
         child: Text(
           t.verifyGhSponsorTitle,
-          style: TextStyle(
-            color: primaryLight,
-            fontSize: textXL,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
         ),
       ),
       content: SingleChildScrollView(
@@ -28,20 +24,12 @@ Future<void> showDialog(BuildContext context) async {
           children: [
             Text(
               t.verifyGhSponsorMsg,
-              style: TextStyle(
-                color: primaryLight,
-                fontWeight: FontWeight.bold,
-                fontSize: textSM,
-              ),
+              style: TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
             ),
             SizedBox(height: spaceSM),
             Text(
               t.verifyGhSponsorNote,
-              style: TextStyle(
-                color: tertiaryInfo,
-                fontWeight: FontWeight.bold,
-                fontSize: textSM,
-              ),
+              style: TextStyle(color: tertiaryInfo, fontWeight: FontWeight.bold, fontSize: textSM),
             ),
           ],
         ),
@@ -55,38 +43,20 @@ Future<void> showDialog(BuildContext context) async {
               final result = await GithubManager().launchOAuthFlow();
               if (result == null) return;
 
-              await repoManager.setStringNullable(
-                StorageKey.repoman_ghSponsorToken,
-                result.$2,
-              );
+              await repoManager.setStringNullable(StorageKey.repoman_ghSponsorToken, result.$3);
               await premiumManager.updateGitHubSponsorPremium();
               Navigator.of(context).canPop() ? Navigator.pop(context) : null;
             },
             style: ButtonStyle(
               alignment: Alignment.center,
               backgroundColor: WidgetStatePropertyAll(primaryPositive),
-              padding: WidgetStatePropertyAll(
-                EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
-              ),
-              shape: WidgetStatePropertyAll(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(cornerRadiusMD),
-                  side: BorderSide.none,
-                ),
-              ),
+              padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM)),
+              shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none)),
             ),
-            icon: FaIcon(
-              FontAwesomeIcons.squareArrowUpRight,
-              color: secondaryDark,
-              size: textLG,
-            ),
+            icon: FaIcon(FontAwesomeIcons.squareArrowUpRight, color: secondaryDark, size: textLG),
             label: Text(
               t.oauth.toUpperCase(),
-              style: TextStyle(
-                color: secondaryDark,
-                fontSize: textSM,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(color: secondaryDark, fontSize: textSM, fontWeight: FontWeight.bold),
             ),
           ),
         ),

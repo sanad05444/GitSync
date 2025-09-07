@@ -6,7 +6,7 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `_log`, `commit`, `fast_forward`, `get_branch_name_priv`, `get_default_callbacks`, `get_uncommitted_file_paths_priv`, `set_author`, `update_submodules`
+// These functions are ignored because they are not marked as `pub`: `_log`, `commit`, `fast_forward`, `fetch_remote_priv`, `get_branch_name_priv`, `get_default_callbacks`, `get_staged_file_paths_priv`, `get_uncommitted_file_paths_priv`, `pull_changes_priv`, `push_changes_priv`, `set_author`, `update_submodules_priv`
 
 Future<void> init({String? homepath}) =>
     RustLib.instance.api.crateApiGitManagerInit(homepath: homepath);
@@ -46,9 +46,53 @@ Future<void> unstageAll({
 
 Future<List<Commit>> getRecentCommits({
   required String pathString,
+  required String remoteName,
   required FutureOr<void> Function(LogType, String) log,
 }) => RustLib.instance.api.crateApiGitManagerGetRecentCommits(
   pathString: pathString,
+  remoteName: remoteName,
+  log: log,
+);
+
+Future<void> updateSubmodules({
+  required String pathString,
+  required String provider,
+  required (String, String) credentials,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerUpdateSubmodules(
+  pathString: pathString,
+  provider: provider,
+  credentials: credentials,
+  log: log,
+);
+
+Future<bool?> fetchRemote({
+  required String pathString,
+  required String remote,
+  required String provider,
+  required (String, String) credentials,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerFetchRemote(
+  pathString: pathString,
+  remote: remote,
+  provider: provider,
+  credentials: credentials,
+  log: log,
+);
+
+Future<bool?> pullChanges({
+  required String pathString,
+  required String provider,
+  required (String, String) credentials,
+  (String, String)? commitSigningCredentials,
+  required FutureOr<void> Function() syncCallback,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerPullChanges(
+  pathString: pathString,
+  provider: provider,
+  credentials: credentials,
+  commitSigningCredentials: commitSigningCredentials,
+  syncCallback: syncCallback,
   log: log,
 );
 
@@ -72,6 +116,70 @@ Future<bool?> downloadChanges({
   log: log,
 );
 
+Future<bool?> pushChanges({
+  required String pathString,
+  required String remoteName,
+  required String provider,
+  required (String, String) credentials,
+  required FutureOr<void> Function() mergeConflictCallback,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerPushChanges(
+  pathString: pathString,
+  remoteName: remoteName,
+  provider: provider,
+  credentials: credentials,
+  mergeConflictCallback: mergeConflictCallback,
+  log: log,
+);
+
+Future<void> stageFilePaths({
+  required String pathString,
+  required List<String> paths,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerStageFilePaths(
+  pathString: pathString,
+  paths: paths,
+  log: log,
+);
+
+Future<void> unstageFilePaths({
+  required String pathString,
+  required List<String> paths,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerUnstageFilePaths(
+  pathString: pathString,
+  paths: paths,
+  log: log,
+);
+
+Future<int?> getRecommendedAction({
+  required String pathString,
+  required String remoteName,
+  required String provider,
+  required (String, String) credentials,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerGetRecommendedAction(
+  pathString: pathString,
+  remoteName: remoteName,
+  provider: provider,
+  credentials: credentials,
+  log: log,
+);
+
+Future<void> commitChanges({
+  required String pathString,
+  (String, String)? commitSigningCredentials,
+  required (String, String) author,
+  required String syncMessage,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerCommitChanges(
+  pathString: pathString,
+  commitSigningCredentials: commitSigningCredentials,
+  author: author,
+  syncMessage: syncMessage,
+  log: log,
+);
+
 Future<bool?> uploadChanges({
   required String pathString,
   required String remoteName,
@@ -79,10 +187,10 @@ Future<bool?> uploadChanges({
   required (String, String) credentials,
   (String, String)? commitSigningCredentials,
   required (String, String) author,
-  required FutureOr<void> Function() syncCallback,
-  required FutureOr<void> Function() mergeConflictCallback,
   List<String>? filePaths,
   required String syncMessage,
+  required FutureOr<void> Function() syncCallback,
+  required FutureOr<void> Function() mergeConflictCallback,
   required FutureOr<void> Function(LogType, String) log,
 }) => RustLib.instance.api.crateApiGitManagerUploadChanges(
   pathString: pathString,
@@ -91,10 +199,18 @@ Future<bool?> uploadChanges({
   credentials: credentials,
   commitSigningCredentials: commitSigningCredentials,
   author: author,
-  syncCallback: syncCallback,
-  mergeConflictCallback: mergeConflictCallback,
   filePaths: filePaths,
   syncMessage: syncMessage,
+  syncCallback: syncCallback,
+  mergeConflictCallback: mergeConflictCallback,
+  log: log,
+);
+
+Future<void> forcePull({
+  required String pathString,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerForcePull(
+  pathString: pathString,
   log: log,
 );
 
@@ -103,11 +219,25 @@ Future<void> forcePush({
   required String remoteName,
   required String provider,
   required (String, String) credentials,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerForcePush(
+  pathString: pathString,
+  remoteName: remoteName,
+  provider: provider,
+  credentials: credentials,
+  log: log,
+);
+
+Future<void> uploadAndOverwrite({
+  required String pathString,
+  required String remoteName,
+  required String provider,
+  required (String, String) credentials,
   (String, String)? commitSigningCredentials,
   required (String, String) author,
   required String syncMessage,
   required FutureOr<void> Function(LogType, String) log,
-}) => RustLib.instance.api.crateApiGitManagerForcePush(
+}) => RustLib.instance.api.crateApiGitManagerUploadAndOverwrite(
   pathString: pathString,
   remoteName: remoteName,
   provider: provider,
@@ -118,14 +248,14 @@ Future<void> forcePush({
   log: log,
 );
 
-Future<void> forcePull({
+Future<void> downloadAndOverwrite({
   required String pathString,
   required String remoteName,
   required String provider,
   required (String, String) credentials,
   required (String, String) author,
   required FutureOr<void> Function(LogType, String) log,
-}) => RustLib.instance.api.crateApiGitManagerForcePull(
+}) => RustLib.instance.api.crateApiGitManagerDownloadAndOverwrite(
   pathString: pathString,
   remoteName: remoteName,
   provider: provider,
@@ -148,6 +278,14 @@ Future<List<String>> getConflicting({
   required String pathString,
   required FutureOr<void> Function(LogType, String) log,
 }) => RustLib.instance.api.crateApiGitManagerGetConflicting(
+  pathString: pathString,
+  log: log,
+);
+
+Future<List<(String, int)>> getStagedFilePaths({
+  required String pathString,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerGetStagedFilePaths(
   pathString: pathString,
   log: log,
 );
@@ -242,6 +380,8 @@ class Commit {
   final String commitMessage;
   final int additions;
   final int deletions;
+  final bool unpulled;
+  final bool unpushed;
 
   const Commit({
     required this.timestamp,
@@ -250,6 +390,8 @@ class Commit {
     required this.commitMessage,
     required this.additions,
     required this.deletions,
+    required this.unpulled,
+    required this.unpushed,
   });
 
   @override
@@ -259,7 +401,9 @@ class Commit {
       reference.hashCode ^
       commitMessage.hashCode ^
       additions.hashCode ^
-      deletions.hashCode;
+      deletions.hashCode ^
+      unpulled.hashCode ^
+      unpushed.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -271,7 +415,9 @@ class Commit {
           reference == other.reference &&
           commitMessage == other.commitMessage &&
           additions == other.additions &&
-          deletions == other.deletions;
+          deletions == other.deletions &&
+          unpulled == other.unpulled &&
+          unpushed == other.unpushed;
 }
 
 enum LogType {

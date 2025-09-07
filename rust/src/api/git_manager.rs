@@ -1,9 +1,8 @@
 use std::{env, fs, path::Path, path::PathBuf, sync::Arc};
-use regex::Regex;
 use flutter_rust_bridge::DartFnFuture;
 use osshkeys::{KeyPair, KeyType};
 use git2::{
-    opts::set_verify_owner_validation, CertificateCheckStatus, Cred,  Diff, DiffOptions, DiffDelta, Delta, ErrorCode,
+    CertificateCheckStatus, Cred,  DiffOptions, ErrorCode,
     FetchOptions, PushOptions, RemoteCallbacks, Repository, RepositoryState, ResetType, Signature,
     StatusOptions, Status, BranchType, Tree, SubmoduleUpdateOptions
 };
@@ -16,6 +15,8 @@ pub struct Commit {
     pub commit_message: String,
     pub additions: i32,
     pub deletions: i32,
+    pub unpulled: bool,
+    pub unpushed: bool,
 }
 
 // Also add to lib/api/logger.dart:21
@@ -183,7 +184,7 @@ pub async fn clone_repository(
         "Repository cloned successfully".to_string(),
     );
     
-    repo.submodules()?.iter_mut().try_for_each(|mut sm| {
+    repo.submodules()?.iter_mut().try_for_each(|sm| {
         let sm_name = sm.name().unwrap_or("unknown").to_string();
         
         _log(
@@ -404,6 +405,7 @@ pub async fn unstage_all(
 
 pub async fn get_recent_commits(
     path_string: &String,
+    remote_name: &str,
     log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
 ) -> Result<Vec<Commit>, git2::Error> {
     init(None);
@@ -414,13 +416,33 @@ pub async fn get_recent_commits(
         LogType::RecentCommits,
         "Getting local directory".to_string(),
     );
+
     let repo = Repository::open(path_string)?;
+    let branch_name = get_branch_name_priv(&repo);
+    let mut local_oid: Option<git2::Oid> = None;
+    let mut remote_oid: Option<git2::Oid> = None;
+
     let mut revwalk = repo.revwalk()?;
-    // revwalk.push_head()?;
-    if let Err(e) = revwalk.push_head() {
-        return Ok(vec![]);
+
+    if let Some(name) = branch_name {
+        let local_branch = repo.find_branch(&name, BranchType::Local)?;
+        local_oid = Some(local_branch.get().target().ok_or_else(|| git2::Error::from_str("Invalid local branch"))?);
+        let remote_ref = format!("refs/remotes/{}/{}", remote_name, name);
+        remote_oid = repo.refname_to_id(&remote_ref).ok();
+        if let Some(local_oid) = local_oid {
+            revwalk.push(local_oid)?;
+        }
+        if let Some(remote_oid) = remote_oid {
+            revwalk.push(remote_oid)?;
+        }
+    } else {
+        match revwalk.push_head() {
+            Ok(_) => {},
+            Err(_) => return Ok(Vec::new()), 
+        }
     }
-    revwalk.set_sorting(git2::Sort::TIME)?;
+
+    revwalk.set_sorting(git2::Sort::TOPOLOGICAL | git2::Sort::TIME)?;
 
     let mut commits = Vec::new();
 
@@ -431,49 +453,41 @@ pub async fn get_recent_commits(
         };
 
         let commit = match repo.find_commit(oid) {
-            Ok(commit) => commit,
+            Ok(c) => c,
             Err(_) => continue,
         };
 
         let author = commit.author().name().unwrap_or("<unknown>").to_string();
         let time = commit.time().seconds();
-        let message = commit
-            .message()
-            .unwrap_or("<no message>")
-            .trim()
-            .to_string();
+        let message = commit.message().unwrap_or("<no message>").trim().to_string();
         let reference = format!("{}", oid);
 
         let parent = commit.parent(0).ok();
         let mut diff_opts = DiffOptions::new();
-        
         let diff = match parent {
-            Some(parent_commit) => {
-                match repo.diff_tree_to_tree(
-                    Some(&parent_commit.tree()?),
-                    Some(&commit.tree()?),
-                    Some(&mut diff_opts),
-                ) {
-                    Ok(diff) => diff,
-                    Err(_) => continue,
-                }
-            },
-            None => {
-                match repo.diff_tree_to_tree(
-                    None, 
-                    Some(&commit.tree()?), 
-                    Some(&mut diff_opts)
-                ) {
-                    Ok(diff) => diff,
-                    Err(_) => continue,
-                }
-            }
+            Some(parent_commit) => repo.diff_tree_to_tree(
+                Some(&parent_commit.tree()?),
+                Some(&commit.tree()?),
+                Some(&mut diff_opts),
+            )?,
+            None => repo.diff_tree_to_tree(None, Some(&commit.tree()?), Some(&mut diff_opts))?,
         };
+        let stats = diff.stats()?;
+        let additions = stats.insertions() as i32;
+        let deletions = stats.deletions() as i32;
 
-        let (additions, deletions) = match diff.stats() {
-            Ok(stats) => (stats.insertions() as i32, stats.deletions() as i32),
-            Err(_) => (0, 0)
+        let (ahead_local, _) = if let Some(local_oid) = local_oid {
+            repo.graph_ahead_behind(oid, local_oid)?
+        } else {
+            (0, 0)
         };
+        let (ahead_remote, _) = if let Some(remote_oid) = remote_oid {
+            repo.graph_ahead_behind(oid, remote_oid)?
+        } else {
+            (0, 0)
+        };
+        let unpulled = ahead_local > 0;
+        let unpushed = ahead_remote > 0;
 
         commits.push(Commit {
             timestamp: time,
@@ -482,6 +496,8 @@ pub async fn get_recent_commits(
             commit_message: message,
             additions,
             deletions,
+            unpushed,
+            unpulled,
         });
     }
 
@@ -561,7 +577,7 @@ fn commit(
 		})?;
 
         
-        let mut secret_key = PrivateKey::from_openssh(key.as_bytes())
+        let secret_key = PrivateKey::from_openssh(key.as_bytes())
             .map_err(|e| git2::Error::from_str(&e.to_string()))?;
         if !pass.is_empty() {
             secret_key.decrypt(pass.as_bytes())
@@ -617,14 +633,76 @@ fn commit(
 	Ok(commit_id.into())
 }
 
-pub async fn download_changes(
-    path_string: &String,
+pub async fn update_submodules(
+    path_string: &str, 
+    provider: &String,
+    credentials: &(String, String),
+    log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
+) -> Result<(), git2::Error> {
+    init(None);
+    let log_callback = Arc::new(log);
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::GitStatus,
+        "Getting local directory".to_string(),
+    );
+    let repo = Repository::open(&path_string)?;
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::GitStatus,
+        "Getting local directory".to_string(),
+    );
+    
+    update_submodules_priv(&repo, &provider, &credentials, &log_callback)
+}
+
+fn update_submodules_priv(
+    repo: &Repository,
+    provider: &String,
+    credentials: &(String, String),
+    log_callback: &Arc<impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static>,
+) -> Result<(), git2::Error> {
+    for mut submodule in repo.submodules()? {
+        let name = submodule.name().unwrap_or("unknown").to_string();
+
+        _log(
+            Arc::clone(&log_callback),
+            LogType::PullFromRepo,
+            format!("Updating submodule: {}", name),
+        );
+
+        let callbacks = get_default_callbacks(Some(&provider), Some(&credentials));
+        let mut fetch_options = FetchOptions::new();
+        fetch_options.prune(git2::FetchPrune::On);
+        fetch_options.update_fetchhead(true);
+        fetch_options.remote_callbacks(callbacks);
+        fetch_options.download_tags(git2::AutotagOption::All);
+
+
+        let mut submodule_opts = git2::SubmoduleUpdateOptions::new();
+        submodule_opts.fetch(fetch_options);
+
+        submodule.update(true, Some(&mut submodule_opts))?;
+
+        if let Ok(sub_repo) = submodule.open() {
+            sub_repo.checkout_head(Some(
+                git2::build::CheckoutBuilder::default()
+                    .allow_conflicts(true)
+                    .conflict_style_merge(true)
+                    .force(),
+            ))?;
+        }
+    }
+    Ok(())
+}
+
+pub async fn fetch_remote(
+    path_string: &str, 
     remote: &String,
     provider: &String,
     credentials: &(String, String),
-    commit_signing_credentials: Option<(String, String)>,
-    author: &(String, String),
-    sync_callback: impl Fn() -> DartFnFuture<()> + Send + Sync + 'static,
     log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
 ) -> Result<Option<bool>, git2::Error> {
     init(None);
@@ -632,13 +710,27 @@ pub async fn download_changes(
 
     _log(
         Arc::clone(&log_callback),
-        LogType::PullFromRepo,
+        LogType::GitStatus,
         "Getting local directory".to_string(),
     );
-    let repo = Repository::open(path_string)?;
-    set_author(&repo, &author);
-    repo.cleanup_state();
+    let repo = Repository::open(&path_string)?;
 
+    _log(
+        Arc::clone(&log_callback),
+        LogType::GitStatus,
+        "Getting local directory".to_string(),
+    );
+    
+    fetch_remote_priv(&repo, &remote, &provider, &credentials, &log_callback)
+}
+
+fn fetch_remote_priv(
+    repo: &Repository,
+    remote: &String,
+    provider: &String,
+    credentials: &(String, String),
+    log_callback: &Arc<impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static>,
+) -> Result<Option<bool>, git2::Error> {
     let mut remote = repo.find_remote(&remote)?;
 
     let callbacks = get_default_callbacks(Some(&provider), Some(&credentials));
@@ -648,6 +740,50 @@ pub async fn download_changes(
     fetch_options.remote_callbacks(callbacks);
     fetch_options.download_tags(git2::AutotagOption::All);
 
+    _log(
+        Arc::clone(&log_callback),
+        LogType::PullFromRepo,
+        "Fetching changes".to_string(),
+    );
+    remote.fetch::<&str>(&[], Some(&mut fetch_options), None)?;
+    return Ok(Some(true));
+}
+
+pub async fn pull_changes(
+    path_string: &String,
+    provider: &String,
+    credentials: &(String, String),
+    commit_signing_credentials: Option<(String, String)>,
+    sync_callback: impl Fn() -> DartFnFuture<()> + Send + Sync + 'static,
+    log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
+) -> Result<Option<bool>, git2::Error> {
+    init(None);
+    let log_callback = Arc::new(log);
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::GitStatus,
+        "Getting local directory".to_string(),
+    );
+    let repo = Repository::open(&path_string)?;
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::GitStatus,
+        "Getting local directory".to_string(),
+    );
+    
+    pull_changes_priv(&repo, &provider, &credentials, commit_signing_credentials, sync_callback, &log_callback)
+}
+
+fn pull_changes_priv(
+    repo: &Repository,
+    provider: &String,
+    credentials: &(String, String),
+    commit_signing_credentials: Option<(String, String)>,
+    sync_callback: impl Fn() -> DartFnFuture<()> + Send + Sync + 'static,
+    log_callback: &Arc<impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static>,
+) -> Result<Option<bool>, git2::Error> {
     let result = match repo.head() {
         Ok(h) => Some(h),
         Err(e) => {
@@ -667,13 +803,6 @@ pub async fn download_changes(
     let resolved_head = head.resolve()?;
     let remote_branch = resolved_head.shorthand()
         .ok_or_else(|| git2::Error::from_str("Could not determine branch name"))?;
-
-    _log(
-        Arc::clone(&log_callback),
-        LogType::PullFromRepo,
-        "Fetching changes".to_string(),
-    );
-    remote.fetch::<&str>(&[], Some(&mut fetch_options), None)?;
 
     let fetch_head = repo.find_reference("FETCH_HEAD")?;
     let fetch_commit = repo.reference_to_annotated_commit(&fetch_head)?;
@@ -706,9 +835,9 @@ pub async fn download_changes(
                     LogType::PullFromRepo,
                     "OK fast forward".to_string(),
                 );
-                if get_uncommitted_file_paths_priv(&repo, false, &log_callback).is_empty() {
+                if get_staged_file_paths_priv(&repo, &log_callback).is_empty() && get_uncommitted_file_paths_priv(&repo, false, &log_callback).is_empty() {
                     fast_forward(&repo, &mut r, &fetch_commit, &log_callback)?;
-                    update_submodules(&repo, &provider, &credentials, &log_callback)?;
+                    update_submodules_priv(&repo, &provider, &credentials, &log_callback)?;
                 } else {
                     _log(
                         Arc::clone(&log_callback),
@@ -738,11 +867,10 @@ pub async fn download_changes(
                         .conflict_style_merge(true)
                         .force(),
                 ))?;
-                update_submodules(&repo, &provider, &credentials, &log_callback)?;
+                update_submodules_priv(&repo, &provider, &credentials, &log_callback)?;
                 return Ok(Some(true));
             }
         };
-        return Ok(Some(false));
     } else if analysis.0.is_normal() {
         _log(
             Arc::clone(&log_callback),
@@ -791,63 +919,16 @@ pub async fn download_changes(
     } else {
         return Ok(Some(false));
     }
-
-    Ok(None)
 }
 
-
-
-fn update_submodules(
-    repo: &Repository,
+pub async fn download_changes(
+    path_string: &String,
+    remote: &String,
     provider: &String,
     credentials: &(String, String),
-    log_callback: &Arc<impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static>,
-) -> Result<(), git2::Error> {
-    for mut submodule in repo.submodules()? {
-        let name = submodule.name().unwrap_or("unknown").to_string();
-
-        _log(
-            Arc::clone(&log_callback),
-            LogType::PullFromRepo,
-            format!("Updating submodule: {}", name),
-        );
-
-        let callbacks = get_default_callbacks(Some(&provider), Some(&credentials));
-        let mut fetch_options = FetchOptions::new();
-        fetch_options.prune(git2::FetchPrune::On);
-        fetch_options.update_fetchhead(true);
-        fetch_options.remote_callbacks(callbacks);
-        fetch_options.download_tags(git2::AutotagOption::All);
-
-
-        let mut submodule_opts = git2::SubmoduleUpdateOptions::new();
-        submodule_opts.fetch(fetch_options);
-
-        submodule.update(true, Some(&mut submodule_opts))?;
-
-        if let Ok(sub_repo) = submodule.open() {
-            sub_repo.checkout_head(Some(
-                git2::build::CheckoutBuilder::default()
-                    .allow_conflicts(true)
-                    .conflict_style_merge(true)
-                    .force(),
-            ))?;
-        }
-    }
-    Ok(())
-}
-
-pub async fn upload_changes(
-    path_string: String,
-    remote_name: String,
-    provider: String,
-    credentials: (String, String),
     commit_signing_credentials: Option<(String, String)>,
-    author: (String, String),
+    author: &(String, String),
     sync_callback: impl Fn() -> DartFnFuture<()> + Send + Sync + 'static,
-    merge_conflict_callback: impl Fn() -> DartFnFuture<()> + Send + Sync + 'static,
-    file_paths: Option<Vec<String>>,
-    sync_message: String,
     log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
 ) -> Result<Option<bool>, git2::Error> {
     init(None);
@@ -855,129 +936,57 @@ pub async fn upload_changes(
 
     _log(
         Arc::clone(&log_callback),
-        LogType::PushToRepo,
+        LogType::PullFromRepo,
+        "Getting local directory".to_string(),
+    );
+    let repo = Repository::open(path_string)?;
+    set_author(&repo, &author);
+    repo.cleanup_state();
+
+    fetch_remote_priv(&repo, &remote, &provider, &credentials, &log_callback);
+
+    if pull_changes_priv(&repo, &provider, &credentials, commit_signing_credentials, sync_callback, &log_callback) == Ok(Some(false)) {
+        return Ok(Some(false));
+    }
+
+    Ok(Some(true))
+}
+
+pub async fn push_changes(
+    path_string: &String,
+    remote_name: &String,
+    provider: &String,
+    credentials: &(String, String),
+    merge_conflict_callback: impl Fn() -> DartFnFuture<()> + Send + Sync + 'static,
+    log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
+) -> Result<Option<bool>, git2::Error> {
+    init(None);
+    let log_callback = Arc::new(log);
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::GitStatus,
         "Getting local directory".to_string(),
     );
     let repo = Repository::open(&path_string)?;
-    set_author(&repo, &author);
-
 
     _log(
         Arc::clone(&log_callback),
-        LogType::PushToRepo,
-        "Retrieved Statuses".to_string(),
+        LogType::GitStatus,
+        "Getting local directory".to_string(),
     );
+    
+    push_changes_priv(&repo, &remote_name, &provider, &credentials, merge_conflict_callback, &log_callback)
+}
 
-    let uncommitted_file_paths = get_uncommitted_file_paths_priv(&repo, true, &log_callback);
-
-    // TODO: Removing this has fixed stuck merge conflicts
-    // if !uncommitted_file_paths.is_empty() {
-        let mut index = repo.index()?;
-
-        // Store the initial index state to compare later
-        let has_conflicts = index.has_conflicts();
-        let initial_tree_oid = if !has_conflicts {
-            Some(index.write_tree()?)
-        } else {
-            None
-        };
-        
-        if !uncommitted_file_paths.is_empty() {
-            flutter_rust_bridge::spawn(async move {
-                sync_callback().await;
-            });
-        }
-
-        _log(
-            Arc::clone(&log_callback),
-            LogType::PushToRepo,
-            "Adding Files to Stage".to_string(),
-        );
-
-        let paths: Vec<String> = if let Some(paths) = file_paths {
-            paths
-        } else {
-            uncommitted_file_paths.into_iter().map(|(p, _)| p).collect()
-        };
-
-        match index.add_all(paths.iter(), git2::IndexAddOption::DEFAULT, None) {
-            Ok(_) => {}
-            Err(_) => { index.update_all(paths.iter(), None)?; }
-        }
-
-        for path in &paths {
-            if let Ok(mut sm) = repo.find_submodule(path) {
-                let sm_repo = sm.open()?;
-                sm_repo.index()?.write()?;
-                sm.add_to_index(false)?;
-            }
-        }
-
-        index.write()?;
-
-        let updated_tree_oid = if !index.has_conflicts() {
-            Some(index.write_tree()?)
-        } else {
-            None
-        };
-
-
-        let should_commit = match (initial_tree_oid, updated_tree_oid) {
-            (Some(old), Some(new)) => old != new,
-            (None, None) => true,
-            _ => true,
-        };
-        
-        // Only commit if the index has actually changed
-        if should_commit {
-            _log(
-                Arc::clone(&log_callback),
-                LogType::PushToRepo,
-                "Index has changed, committing changes".to_string(),
-            );
-            
-            let signature = repo
-                .signature()
-                .or_else(|_| Signature::now(&author.0, &author.1))?;
-
-            let parents = match repo.head()
-                .ok()
-                .and_then(|h| h.resolve().ok())
-                .and_then(|h| h.peel_to_commit().ok()) {
-                    Some(commit) => vec![commit],
-                    None => vec![],
-                };
-
-
-            let tree_oid = updated_tree_oid.unwrap_or_else(|| index.write_tree_to(&repo).unwrap());
-            let tree = repo.find_tree(tree_oid)?;
-
-            commit(
-                &repo,
-                Some("HEAD"),
-                &signature,
-                &sync_message,
-                &tree,
-                &parents.iter().collect::<Vec<_>>(),
-                commit_signing_credentials,
-                &log_callback,
-            )?;
-        } else {
-            _log(
-                Arc::clone(&log_callback),
-                LogType::PushToRepo,
-                "No changes to index, skipping commit".to_string(),
-            );
-        }
-    // }
-
-
-    _log(
-        Arc::clone(&log_callback),
-        LogType::PushToRepo,
-        "Added Files to Stage (optional)".to_string(),
-    );
-
+fn push_changes_priv(
+    repo: &Repository,
+    remote_name: &String,
+    provider: &String,
+    credentials: &(String, String),
+    merge_conflict_callback: impl Fn() -> DartFnFuture<()> + Send + Sync + 'static,
+    log_callback: &Arc<impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static>,
+) -> Result<Option<bool>, git2::Error> {
     let mut remote = repo.find_remote(&remote_name)?;
     let callbacks = get_default_callbacks(Some(&provider), Some(&credentials));
 
@@ -1060,7 +1069,7 @@ pub async fn upload_changes(
                     rebase.commit(None, &commit.author(), None)?;
                 }
                 match rebase.finish(None) {
-                    Ok(mut rebase) => {
+                    Ok(_) => {
                         return Ok(Some(true));
                     }
                     Err(e) if e.code() == ErrorCode::Modified || e.code() == ErrorCode::Unmerged => {
@@ -1154,7 +1163,539 @@ pub async fn upload_changes(
     Ok(Some(true))
 }
 
+pub async fn stage_file_paths(
+    path_string: &String,
+    paths: Vec<String>,
+    log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
+) -> Result<(), git2::Error> {
+    init(None);
+    let log_callback = Arc::new(log);
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::PushToRepo,
+        "Getting local directory".to_string(),
+    );
+    let repo = Repository::open(&path_string)?;
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::PushToRepo,
+        "Retrieved Statuses".to_string(),
+    );
+
+    let mut index = repo.index()?;
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::PushToRepo,
+        "Adding Files to Stage".to_string(),
+    );
+
+    match index.add_all(paths.iter(), git2::IndexAddOption::DEFAULT, None) {
+        Ok(_) => {}
+        Err(_) => { index.update_all(paths.iter(), None)?; }
+    }
+
+    for path in &paths {
+        if let Ok(mut sm) = repo.find_submodule(path) {
+            let sm_repo = sm.open()?;
+            sm_repo.index()?.write()?;
+            sm.add_to_index(false)?;
+        }
+    }
+
+    index.write()?;
+
+    if !index.has_conflicts() {
+        index.write_tree()?;
+    }
+
+    Ok(())
+}
+
+
+pub async fn unstage_file_paths(
+    path_string: &String,
+    paths: Vec<String>,
+    log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
+) -> Result<(), git2::Error> {
+    init(None);
+    let log_callback = Arc::new(log);
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::PushToRepo,
+        "Getting local directory".to_string(),
+    );
+    let repo = Repository::open(&path_string)?;
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::PushToRepo,
+        "Retrieved Statuses".to_string(),
+    );
+
+    let mut index = repo.index()?;
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::PushToRepo,
+        "Removing Files from Stage".to_string(),
+    );
+
+    let head = repo.head()?;
+    let commit = head.peel_to_commit()?;
+    repo.reset_default(Some(commit.as_object()), paths.iter())?;
+
+    index.write()?;
+
+    if !index.has_conflicts() {
+        index.write_tree()?;
+    }
+
+    Ok(())
+}
+
+pub async fn get_recommended_action(
+    path_string: &String,
+    remote_name: &String,
+    provider: &String,
+    credentials: &(String, String),
+    log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
+) -> Result<Option<i32>, git2::Error> {
+    init(None);
+    let log_callback = Arc::new(log);
+    let repo = git2::Repository::open(path_string)?;
+    let callbacks = get_default_callbacks(Some(&provider), Some(&credentials));
+    let branch_name = get_branch_name_priv(&repo).unwrap_or_else(|| "master".to_string());
+
+    if let Ok(mut remote) = repo.find_remote(remote_name) {
+        remote.connect_auth(git2::Direction::Fetch, Some(callbacks), None)?;
+        let remote_refs = remote.list()?;
+        for r in remote_refs {
+            let tracking_ref_name = format!("refs/remotes/{}/{}", remote.name().unwrap(), &branch_name);
+
+            if let Ok(tracking_ref) = repo.find_reference(&tracking_ref_name) {
+                if tracking_ref.target() != Some(r.oid()) {
+                    return Ok(Some(0));
+                }
+            } else {
+                return Ok(Some(0));
+            }
+        }
+        remote.disconnect();
+    }
+
+    if !get_staged_file_paths_priv(&repo, &log_callback).is_empty() || !get_uncommitted_file_paths_priv(&repo, false, &log_callback).is_empty() {
+        return Ok(Some(2));
+    }
+
+    if let Ok(head) = repo.head() {
+        if let Ok(local_commit) = head.peel_to_commit() {
+            if let Ok(remote_branch) = repo.find_branch(&format!("{}/{}", remote_name, head.shorthand().unwrap_or("")), git2::BranchType::Remote) {
+                if let Ok(remote_commit) = remote_branch.get().peel_to_commit() {
+                    if local_commit.id() != remote_commit.id() {
+                        let (ahead, behind) = repo.graph_ahead_behind(local_commit.id(), remote_commit.id())?;
+                        if ahead > 0 {
+                            return Ok(Some(3));
+                        } else if behind > 0 {
+                            return Ok(Some(1));
+                        }
+                        return Ok(Some(3));
+                    }
+                }
+            }
+        }
+    }
+    
+    Ok(None)
+}
+
+pub async fn commit_changes(
+    path_string: &String,
+    commit_signing_credentials: Option<(String, String)>,
+    author: &(String, String),
+    sync_message: &String,
+    log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
+) -> Result<(), git2::Error> {
+    init(None);
+    let log_callback = Arc::new(log);
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::PushToRepo,
+        "Getting local directory".to_string(),
+    );
+    let repo = Repository::open(&path_string)?;
+    set_author(&repo, &author);
+
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::PushToRepo,
+        "Retrieved Statuses".to_string(),
+    );
+
+    let mut index = repo.index()?;
+    let updated_tree_oid = if !index.has_conflicts() {
+        Some(index.write_tree()?)
+    } else {
+        None
+    };
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::PushToRepo,
+        "Committing changes".to_string(),
+    );
+    
+    let signature = repo
+        .signature()
+        .or_else(|_| Signature::now(&author.0, &author.1))?;
+
+    let parents = match repo.head()
+        .ok()
+        .and_then(|h| h.resolve().ok())
+        .and_then(|h| h.peel_to_commit().ok()) {
+            Some(commit) => vec![commit],
+            None => vec![],
+        };
+
+
+    let tree_oid = updated_tree_oid.unwrap_or_else(|| index.write_tree_to(&repo).unwrap());
+    let tree = repo.find_tree(tree_oid)?;
+
+    commit(
+        &repo,
+        Some("HEAD"),
+        &signature,
+        &sync_message,
+        &tree,
+        &parents.iter().collect::<Vec<_>>(),
+        commit_signing_credentials,
+        &log_callback,
+    )?;
+
+    Ok(())
+}
+
+pub async fn upload_changes(
+    path_string: &String,
+    remote_name: &String,
+    provider: &String,
+    credentials: &(String, String),
+    commit_signing_credentials: Option<(String, String)>,
+    author: &(String, String),
+    file_paths: Option<Vec<String>>,
+    sync_message: &String,
+    sync_callback: impl Fn() -> DartFnFuture<()> + Send + Sync + 'static,
+    merge_conflict_callback: impl Fn() -> DartFnFuture<()> + Send + Sync + 'static,
+    log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
+) -> Result<Option<bool>, git2::Error> {
+    init(None);
+    let log_callback = Arc::new(log);
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::PushToRepo,
+        "Getting local directory".to_string(),
+    );
+    let repo = Repository::open(&path_string)?;
+    set_author(&repo, &author);
+
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::PushToRepo,
+        "Retrieved Statuses".to_string(),
+    );
+
+    let uncommitted_file_paths: Vec<(String, i32)> = get_staged_file_paths_priv(&repo, &log_callback).into_iter().chain(get_uncommitted_file_paths_priv(&repo, true, &log_callback)).collect();
+
+    let mut index = repo.index()?;
+
+    // Store the initial index state to compare later
+    let has_conflicts = index.has_conflicts();
+    let initial_tree_oid = if !has_conflicts {
+        Some(index.write_tree()?)
+    } else {
+        None
+    };
+    
+    if !uncommitted_file_paths.is_empty() {
+        flutter_rust_bridge::spawn(async move {
+            sync_callback().await;
+        });
+    }
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::PushToRepo,
+        "Adding Files to Stage".to_string(),
+    );
+
+    let paths: Vec<String> = if let Some(paths) = file_paths { paths } else {
+        uncommitted_file_paths.into_iter().map(|(p, _)| p).collect()
+    };
+
+    match index.add_all(paths.iter(), git2::IndexAddOption::DEFAULT, None) {
+        Ok(_) => {}
+        Err(_) => { index.update_all(paths.iter(), None)?; }
+    }
+
+    for path in &paths {
+        if let Ok(mut sm) = repo.find_submodule(path) {
+            let sm_repo = sm.open()?;
+            sm_repo.index()?.write()?;
+            sm.add_to_index(false)?;
+        }
+    }
+
+    index.write()?;
+
+    let updated_tree_oid = if !index.has_conflicts() {
+        Some(index.write_tree()?)
+    } else {
+        None
+    };
+
+
+    let should_commit = match (initial_tree_oid, updated_tree_oid) {
+        (Some(old), Some(new)) => old != new,
+        (None, None) => true,
+        _ => true,
+    };
+    
+    // Only commit if the index has actually changed
+    if should_commit {
+        _log(
+            Arc::clone(&log_callback),
+            LogType::PushToRepo,
+            "Index has changed, committing changes".to_string(),
+        );
+        
+        let signature = repo
+            .signature()
+            .or_else(|_| Signature::now(&author.0, &author.1))?;
+
+        let parents = match repo.head()
+            .ok()
+            .and_then(|h| h.resolve().ok())
+            .and_then(|h| h.peel_to_commit().ok()) {
+                Some(commit) => vec![commit],
+                None => vec![],
+            };
+
+
+        let tree_oid = updated_tree_oid.unwrap_or_else(|| index.write_tree_to(&repo).unwrap());
+        let tree = repo.find_tree(tree_oid)?;
+
+        commit(
+            &repo,
+            Some("HEAD"),
+            &signature,
+            &sync_message,
+            &tree,
+            &parents.iter().collect::<Vec<_>>(),
+            commit_signing_credentials,
+            &log_callback,
+        )?;
+    } else {
+        _log(
+            Arc::clone(&log_callback),
+            LogType::PushToRepo,
+            "No changes to index, skipping commit".to_string(),
+        );
+    }
+
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::PushToRepo,
+        "Added Files to Stage (optional)".to_string(),
+    );
+
+    push_changes_priv(&repo, &remote_name, &provider, &credentials, merge_conflict_callback, &log_callback)
+}
+
+pub async fn force_pull(
+    path_string: String,
+    log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
+) -> Result<(), git2::Error> {
+    init(None);
+    let log_callback = Arc::new(log);
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::ForcePull,
+        "Getting local directory".to_string(),
+    );
+    let repo = Repository::open(&path_string)?;
+    repo.cleanup_state();
+
+    let fetch_commit = repo
+        .find_reference("FETCH_HEAD")
+        .and_then(|r| repo.reference_to_annotated_commit(&r))?;
+
+
+    let git_dir = repo.path();
+    let rebase_head_path = git_dir.join("rebase-merge").join("head-name");
+    let refname = if rebase_head_path.exists() {
+        let content = fs::read_to_string(&rebase_head_path)
+            .map_err(|err| git2::Error::from_str(&format!(
+                "Failed to read rebase head-name file: {}", err
+            )))?;
+        
+        content.trim().to_string()
+    } else {
+        let head = repo.head()?;
+        let resolved_head = head.resolve()?;
+        let mut branch_name = resolved_head.shorthand()
+            .ok_or_else(|| git2::Error::from_str("Could not determine branch name"))?
+            .to_string();
+
+        let orig_head_path = git_dir.join("ORIG_HEAD");
+        if branch_name == "HEAD" && orig_head_path.exists() {
+            let content = fs::read_to_string(&orig_head_path)
+                .map_err(|err| git2::Error::from_str(&format!(
+                    "Failed to read orig_head file: {}", err
+                )))?;
+            let orig_commit_id = content.trim();
+            let orig_commit = repo.find_commit(git2::Oid::from_str(orig_commit_id)?)?;
+            let branches = repo.branches(None)?;
+
+            for branch in branches {
+                let (branch_ref, _) = branch?;
+                let branch_commit = repo.reference_to_annotated_commit(&branch_ref.get())?;
+                
+                if orig_commit.id() == branch_commit.id() {
+                    branch_name = match branch_ref.name() {
+                        Ok(Some(name)) => name.to_string(),
+                        Ok(None) | Err(_) => return Err(git2::Error::from_str("Unable to determine branch name"))
+                    };
+                    break;
+                }
+            }
+        }
+        
+        format!("refs/heads/{}", branch_name)
+    };
+
+    let mut reference = repo.find_reference(&refname)?;
+    reference.set_target(fetch_commit.id(), "force pull")?;
+    repo.set_head(&refname)?;
+    repo.checkout_head(Some(
+        git2::build::CheckoutBuilder::new()
+            .force()
+            .allow_conflicts(true)
+            .conflict_style_merge(true),
+    ))?;
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::ForcePull,
+        "Force pull successful".to_string(),
+    );
+
+    Ok(())
+}
+
 pub async fn force_push(
+    path_string: String,
+    remote_name: String,
+    provider: String,
+    credentials: (String, String),
+    log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
+) -> Result<(), git2::Error> {
+    init(None);
+    let log_callback = Arc::new(log);
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::ForcePush,
+        "Getting local directory".to_string(),
+    );
+    let repo = Repository::open(&path_string)?;
+
+    let mut remote = repo.find_remote(&remote_name)?;
+    let callbacks = get_default_callbacks(Some(&provider), Some(&credentials));
+
+    let mut push_options = PushOptions::new();
+    push_options.remote_callbacks(callbacks);
+
+    let git_dir = repo.path();
+    let rebase_head_path = git_dir.join("rebase-merge").join("head-name");
+    let refname = if rebase_head_path.exists() {
+        let content = fs::read_to_string(&rebase_head_path)
+            .map_err(|err| git2::Error::from_str(&format!(
+                "Failed to read rebase head-name file: {}", err
+            )))?;
+
+        let rebase_merge = git_dir.join("rebase-merge");
+        let rebase_apply = git_dir.join("rebase-apply");
+
+        if rebase_merge.exists() {
+            fs::remove_dir_all(rebase_merge).unwrap();
+        }
+
+        if rebase_apply.exists() {
+            fs::remove_dir_all(rebase_apply).unwrap();
+        }
+        
+        format!("+{}", content.trim().to_string())
+    } else {
+        let head = repo.head()?;
+        let resolved_head = head.resolve()?;
+        let mut branch_name = resolved_head.shorthand()
+            .ok_or_else(|| git2::Error::from_str("Could not determine branch name"))?
+            .to_string();
+
+        let orig_head_path = git_dir.join("ORIG_HEAD");
+        if branch_name == "HEAD" && orig_head_path.exists() {
+            let content = fs::read_to_string(&orig_head_path)
+                .map_err(|err| git2::Error::from_str(&format!(
+                    "Failed to read orig_head file: {}", err
+                )))?;
+            let orig_commit_id = content.trim();
+            let orig_commit = repo.find_commit(git2::Oid::from_str(orig_commit_id)?)?;
+            let branches = repo.branches(None)?;
+
+            for branch in branches {
+                let (branch_ref, _) = branch?;
+                let branch_commit = repo.reference_to_annotated_commit(&branch_ref.get())?;
+                
+                if orig_commit.id() == branch_commit.id() {
+                    branch_name = match branch_ref.name() {
+                        Ok(Some(name)) => name.to_string(),
+                        Ok(None) | Err(_) => return Err(git2::Error::from_str("Unable to determine branch name"))
+                    };
+                    break;
+                }
+            }
+        }
+        
+        format!("+refs/heads/{}", branch_name)
+    };
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::ForcePush,
+        "Force pushing changes".to_string(),
+    );
+
+    remote.push(&[&refname], Some(&mut push_options)).unwrap();
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::ForcePush,
+        "Force push successful".to_string(),
+    );
+
+    Ok(())
+}
+
+pub async fn upload_and_overwrite(
     path_string: String,
     remote_name: String,
     provider: String,
@@ -1183,7 +1724,7 @@ pub async fn force_push(
         rebase.abort()?;
     }
 
-    if !get_uncommitted_file_paths_priv(&repo, true, &log_callback).is_empty() {
+    if !get_staged_file_paths_priv(&repo, &log_callback).is_empty() || !get_uncommitted_file_paths_priv(&repo, true, &log_callback).is_empty() {
         let mut index = repo.index()?;
 
         _log(
@@ -1254,7 +1795,7 @@ pub async fn force_push(
             .to_string();
 
         let orig_head_path = git_dir.join("ORIG_HEAD");
-        if (branch_name == "HEAD" && orig_head_path.exists()) {
+        if branch_name == "HEAD" && orig_head_path.exists() {
             let content = fs::read_to_string(&orig_head_path)
                 .map_err(|err| git2::Error::from_str(&format!(
                     "Failed to read orig_head file: {}", err
@@ -1297,7 +1838,7 @@ pub async fn force_push(
     Ok(())
 }
 
-pub async fn force_pull(
+pub async fn download_and_overwrite(
     path_string: String,
     remote_name: String,
     provider: String,
@@ -1316,11 +1857,7 @@ pub async fn force_pull(
     let repo = Repository::open(&path_string)?;
     set_author(&repo, &author);
     repo.cleanup_state();
-
-    let head = repo.head()?;
     
-    let remote_branch = head.shorthand().unwrap_or("No branch");
-
     let mut remote = repo.find_remote(&remote_name)?;
 
     let callbacks = get_default_callbacks(Some(&provider), Some(&credentials));
@@ -1360,7 +1897,7 @@ pub async fn force_pull(
             .to_string();
 
         let orig_head_path = git_dir.join("ORIG_HEAD");
-        if (branch_name == "HEAD" && orig_head_path.exists()) {
+        if branch_name == "HEAD" && orig_head_path.exists() {
             let content = fs::read_to_string(&orig_head_path)
                 .map_err(|err| git2::Error::from_str(&format!(
                     "Failed to read orig_head file: {}", err
@@ -1410,6 +1947,13 @@ pub async fn discard_changes(
     file_paths: Vec<String>,
     log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
 ) -> Result<(), git2::Error> {
+    let log_callback = Arc::new(log);
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::GitStatus,
+        "Getting local directory".to_string(),
+    );
     let repo = Repository::open(path_string)?;
 
     let mut checkout = git2::build::CheckoutBuilder::new();
@@ -1455,6 +1999,81 @@ pub async fn get_conflicting(
     conflicts
 }
 
+pub async fn get_staged_file_paths(
+    path_string: &str, 
+    log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
+) -> Vec<(String, i32)> {
+    init(None);
+    let log_callback = Arc::new(log);
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::GitStatus,
+        "Getting local directory".to_string(),
+    );
+    let repo = match Repository::open(path_string) {
+        Ok(repo) => repo,
+        Err(_) => return Vec::new(),
+    };
+
+    get_staged_file_paths_priv(&repo, &log_callback)
+}
+
+fn get_staged_file_paths_priv(
+    repo: &Repository,
+    log_callback: &Arc<impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static>,
+) -> Vec<(String, i32)> {
+    _log(
+        Arc::clone(&log_callback),
+        LogType::GitStatus,
+        "Getting staged files".to_string(),
+    );
+
+    let mut opts = StatusOptions::new();
+    opts.include_untracked(false);
+    opts.include_ignored(false);
+    opts.update_index(true);
+    opts.show(git2::StatusShow::Index);
+    let statuses = repo.statuses(Some(&mut opts)).unwrap();
+
+    let mut file_paths = Vec::new();
+
+    for entry in statuses.iter() {
+        let path = entry.path().unwrap_or_default();
+        let status = entry.status();
+
+        if path.ends_with('/') && repo.find_submodule(&path[..path.len()-1]).is_ok() {
+            continue;
+        }
+
+        if let Ok(mut submodule) = repo.find_submodule(path) {
+            submodule.reload(true).ok();
+            let head_oid = submodule.head_id();
+            let index_oid = submodule.index_id();
+
+            if head_oid != index_oid {
+                file_paths.push((path.to_string(), 1));
+            }
+            continue;
+        }
+
+        match status {
+            Status::INDEX_MODIFIED => {
+                file_paths.push((path.to_string(), 1));
+            },
+            Status::INDEX_DELETED => {
+                file_paths.push((path.to_string(), 2));
+            },
+            Status::INDEX_NEW => {
+                file_paths.push((path.to_string(), 3));
+            },
+            _ => {}
+        }
+    }
+
+    file_paths
+}
+
 pub async fn get_uncommitted_file_paths(
     path_string: &str, 
     log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
@@ -1493,6 +2112,13 @@ fn get_uncommitted_file_paths_priv(
     let statuses = repo.statuses(Some(&mut opts)).unwrap();
 
     let mut file_paths = Vec::new();
+
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::GitStatus,
+        "Getting uncommitted file paths".to_string(),
+    );
 
     for entry in statuses.iter() {
         let path = entry.path().unwrap_or_default();
@@ -1585,6 +2211,12 @@ pub async fn generate_ssh_key(
     log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
 ) -> (String, String) {
     let log_callback = Arc::new(log);
+    
+    _log(
+        Arc::clone(&log_callback),
+        LogType::Global,
+        "Generating Keys".to_string(),
+    );
 
     let key_pair = KeyPair::generate(KeyType::ED25519, 256).unwrap();
 
@@ -1613,7 +2245,7 @@ pub async fn get_branch_name(
     let repo = Repository::open(Path::new(path_string)).unwrap();
     let branch_name = get_branch_name_priv(&repo);
 
-    if (branch_name == None) {
+    if branch_name == None {
         _log(
             Arc::clone(&log_callback),
             LogType::Global,
@@ -1631,7 +2263,7 @@ fn get_branch_name_priv(
 
     let head = match repo.head() {
         Ok(h) => h,
-        Err(e) => {
+        Err(_) => {
             return None;
         }
     };
@@ -1652,6 +2284,12 @@ pub async fn get_branch_names(
     remote: &String,
     log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
 ) -> Vec<String> {
+    let log_callback = Arc::new(log);
+    _log(
+        Arc::clone(&log_callback),
+        LogType::GitStatus,
+        "Getting local directory".to_string(),
+    );
     let repo = Repository::open(Path::new(path_string)).unwrap();
 
     let mut branch_set = std::collections::HashSet::new();
@@ -1695,6 +2333,11 @@ pub async fn checkout_branch(
 ) -> Result<(), git2::Error> {
     let log_callback = Arc::new(log);
 
+    _log(
+        Arc::clone(&log_callback),
+        LogType::GitStatus,
+        "Getting local directory".to_string(),
+    );
     let repo = Repository::open(Path::new(path_string)).unwrap();
     let branch = match repo.find_branch(&branch_name, git2::BranchType::Local) {
         Ok(branch) => branch,

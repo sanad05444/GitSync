@@ -44,9 +44,9 @@ class _ButtonSettingState extends State<ButtonSetting> {
   }
 
   void onPressed() async {
-    setState(() => loading = true);
+    if (mounted) setState(() => loading = true);
     await widget.onPressed();
-    setState(() => loading = false);
+    if (mounted) setState(() => loading = false);
   }
 
   Widget getIcon() => widget.loads && loading

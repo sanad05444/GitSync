@@ -1,8 +1,7 @@
 import 'dart:io';
 
 import 'package:GitSync/api/manager/git_manager.dart';
-import 'package:GitSync/ui/dialog/prompt_disable_ssl.dart'
-    as PromptDisableSslDialog;
+import 'package:GitSync/ui/dialog/prompt_disable_ssl.dart' as PromptDisableSslDialog;
 import 'package:animated_reorderable_list/animated_reorderable_list.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -17,8 +16,7 @@ import '../../../ui/dialog/select_folder.dart' as SelectFolderDialog;
 import '../../../ui/dialog/cloning_repository.dart' as CloningRepositoryDialog;
 import '../../../ui/dialog/repo_url_invalid.dart' as RepoUrlInvalid;
 import '../../../ui/dialog/clone_failed.dart' as CloneFailedDialog;
-import '../../../ui/dialog/confirm_clone_overwrite.dart'
-    as ConfirmCloneOverwriteDialog;
+import '../../../ui/dialog/confirm_clone_overwrite.dart' as ConfirmCloneOverwriteDialog;
 
 class CloneRepoMain extends StatefulWidget {
   const CloneRepoMain({super.key});
@@ -60,20 +58,13 @@ class _CloneRepoMain extends State<CloneRepoMain> with WidgetsBindingObserver {
     });
 
     initAsync(() async {
-      final gitProviderManager = GitProviderManager.getGitProviderManager(
-        await uiSettingsManager.getGitProvider(),
-      );
+      final gitProviderManager = GitProviderManager.getGitProviderManager(await uiSettingsManager.getGitProvider());
       if (gitProviderManager == null) return;
 
       setLoadingRepos(true);
-      final accessToken =
-          (await uiSettingsManager.getGitHttpAuthCredentials()).$2;
+      final accessToken = (await uiSettingsManager.getGitHttpAuthCredentials()).$2;
 
-      gitProviderManager.getRepos(
-        accessToken,
-        addRepos,
-        (callback) => loadNextRepos = callback,
-      );
+      gitProviderManager.getRepos(accessToken, addRepos, (callback) => loadNextRepos = callback);
     });
   }
 
@@ -115,40 +106,30 @@ class _CloneRepoMain extends State<CloneRepoMain> with WidgetsBindingObserver {
       }
       if (selectedDirectory == null) return;
 
-      final isEmpty = await useDirectory(
-        selectedDirectory,
-        (bookmarkPath) async =>
-            await uiSettingsManager.setGitDirPath(bookmarkPath),
-        (selectedDirectory) async {
-          final dir = Directory(selectedDirectory);
-          return await dir.exists() && (await dir.list().isEmpty);
-        },
-      );
+      final isEmpty = await useDirectory(selectedDirectory, (_) async {}, (selectedDirectory) async {
+        final dir = Directory(selectedDirectory);
+        return await dir.exists() && (await dir.list().isEmpty);
+      });
 
       Future<void> startClone() async {
-        await CloningRepositoryDialog.showDialog(
-          context,
-          repoUrl,
-          selectedDirectory!,
-          (result) async {
-            if (result == null) {
-              if (!mounted) return;
-              await setGitDirPathGetSubmodules(context, selectedDirectory!);
-              if (repoUrl.startsWith("http") && !repoUrl.startsWith("https")) {
-                await PromptDisableSslDialog.showDialog(context, () async {
-                  GitManager.setDisableSsl(true);
-                });
-              }
-              await repoManager.setOnboardingStep(4);
-              if (context.mounted) {
-                Navigator.of(context).canPop() ? Navigator.pop(context) : null;
-              }
-              await onboardingController?.show();
-            } else {
-              await CloneFailedDialog.showDialog(context, result);
+        await CloningRepositoryDialog.showDialog(context, repoUrl, selectedDirectory!, (result) async {
+          if (result == null) {
+            if (!mounted) return;
+            await setGitDirPathGetSubmodules(context, selectedDirectory!);
+            if (repoUrl.startsWith("http") && !repoUrl.startsWith("https")) {
+              await PromptDisableSslDialog.showDialog(context, () async {
+                GitManager.setDisableSsl(true);
+              });
             }
-          },
-        );
+            await repoManager.setOnboardingStep(4);
+            if (context.mounted) {
+              Navigator.of(context).canPop() ? Navigator.pop(context) : null;
+            }
+            await onboardingController?.show();
+          } else {
+            await CloneFailedDialog.showDialog(context, result);
+          }
+        });
       }
 
       if (isEmpty == true) {
@@ -176,10 +157,7 @@ class _CloneRepoMain extends State<CloneRepoMain> with WidgetsBindingObserver {
         foregroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
         centerTitle: true,
-        leading: getBackButton(
-          context,
-          () => Navigator.of(context).canPop() ? Navigator.pop(context) : null,
-        ),
+        leading: getBackButton(context, () => Navigator.of(context).canPop() ? Navigator.pop(context) : null),
         title: Text(
           t.cloneRepo,
           style: TextStyle(color: primaryLight, fontWeight: FontWeight.bold),
@@ -208,10 +186,7 @@ class _CloneRepoMain extends State<CloneRepoMain> with WidgetsBindingObserver {
                                 bottomRight: cornerRadiusSM,
                               ),
                             ),
-                            margin: EdgeInsets.only(
-                              top: spaceLG,
-                              bottom: spaceLG,
-                            ),
+                            margin: EdgeInsets.only(top: spaceLG, bottom: spaceLG),
                             padding: EdgeInsets.all(spaceMD),
                             child: ShaderMask(
                               shaderCallback: (Rect rect) {
@@ -222,9 +197,7 @@ class _CloneRepoMain extends State<CloneRepoMain> with WidgetsBindingObserver {
                                     atTop ? Colors.transparent : Colors.black,
                                     Colors.transparent,
                                     Colors.transparent,
-                                    atBottom
-                                        ? Colors.transparent
-                                        : Colors.black,
+                                    atBottom ? Colors.transparent : Colors.black,
                                   ],
                                   stops: [0.0, 0.1, 0.9, 1.0],
                                 ).createShader(rect);
@@ -244,32 +217,16 @@ class _CloneRepoMain extends State<CloneRepoMain> with WidgetsBindingObserver {
                                       onPressed: () => cloneRepository(repo.$2),
                                       style: ButtonStyle(
                                         alignment: Alignment.centerLeft,
-                                        backgroundColor: WidgetStatePropertyAll(
-                                          tertiaryDark,
-                                        ),
+                                        backgroundColor: WidgetStatePropertyAll(tertiaryDark),
                                         padding: WidgetStatePropertyAll(
-                                          EdgeInsets.only(
-                                            right: spaceMD,
-                                            top: spaceSM,
-                                            bottom: spaceSM,
-                                            left: spaceXS,
-                                          ),
+                                          EdgeInsets.only(right: spaceMD, top: spaceSM, bottom: spaceSM, left: spaceXS),
                                         ),
                                         shape: WidgetStatePropertyAll(
-                                          RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(
-                                              cornerRadiusMD,
-                                            ),
-                                            side: BorderSide.none,
-                                          ),
+                                          RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
                                         ),
                                       ),
                                       iconAlignment: IconAlignment.end,
-                                      icon: FaIcon(
-                                        FontAwesomeIcons.solidCircleDown,
-                                        color: primaryPositive,
-                                        size: textXL,
-                                      ),
+                                      icon: FaIcon(FontAwesomeIcons.solidCircleDown, color: primaryPositive, size: textXL),
                                       label: Container(
                                         width: double.infinity,
                                         padding: EdgeInsets.only(left: spaceXS),
@@ -300,31 +257,16 @@ class _CloneRepoMain extends State<CloneRepoMain> with WidgetsBindingObserver {
                           child: TextField(
                             controller: cloneUrlController,
                             maxLines: 1,
-                            style: TextStyle(
-                              color: primaryLight,
-                              decoration: TextDecoration.none,
-                              decorationThickness: 0,
-                              fontSize: textLG,
-                            ),
+                            style: TextStyle(color: primaryLight, decoration: TextDecoration.none, decorationThickness: 0, fontSize: textLG),
                             decoration: InputDecoration(
                               hintText: t.gitRepoUrlHint,
-                              hintStyle: TextStyle(
-                                color: secondaryLight,
-                                fontSize: textLG,
-                              ),
+                              hintStyle: TextStyle(color: secondaryLight, fontSize: textLG),
                               fillColor: secondaryDark,
                               filled: true,
-                              border: const OutlineInputBorder(
-                                borderRadius: BorderRadius.all(cornerRadiusMD),
-                                borderSide: BorderSide.none,
-                              ),
+                              border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusMD), borderSide: BorderSide.none),
                               isCollapsed: true,
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: spaceMD,
-                                vertical: spaceSM,
-                              ),
+                              floatingLabelBehavior: FloatingLabelBehavior.always,
+                              contentPadding: const EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
                               isDense: true,
                             ),
                             onChanged: (_) => setState(() {}),
@@ -336,56 +278,33 @@ class _CloneRepoMain extends State<CloneRepoMain> with WidgetsBindingObserver {
                               ? null
                               : () async {
                                   final isValid = validateGitRepoUrl(
-                                    await uiSettingsManager.getGitProvider() ==
-                                        GitProvider.SSH,
+                                    await uiSettingsManager.getGitProvider() == GitProvider.SSH,
                                     cloneUrlController.text,
                                   );
                                   if (isValid) {
                                     cloneRepository(cloneUrlController.text);
                                   } else {
-                                    RepoUrlInvalid.showDialog(
-                                      context,
-                                      () => cloneRepository(
-                                        cloneUrlController.text,
-                                      ),
-                                    );
+                                    RepoUrlInvalid.showDialog(context, () => cloneRepository(cloneUrlController.text));
                                   }
                                 },
                           style: ButtonStyle(
                             alignment: Alignment.center,
-                            backgroundColor: WidgetStatePropertyAll(
-                              secondaryDark,
-                            ),
-                            padding: WidgetStatePropertyAll(
-                              EdgeInsets.symmetric(
-                                horizontal: spaceMD,
-                                vertical: 0,
-                              ),
-                            ),
+                            backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                            padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: 0)),
                             shape: WidgetStatePropertyAll(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(cornerRadiusMD),
-                                side: BorderSide.none,
-                              ),
+                              RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
                             ),
                           ),
                           icon: FaIcon(
                             FontAwesomeIcons.solidCircleDown,
-                            color: cloneUrlController.text.isEmpty
-                                ? secondaryPositive
-                                : primaryPositive,
+                            color: cloneUrlController.text.isEmpty ? secondaryPositive : primaryPositive,
                             size: textLG,
                           ),
                           label: Padding(
                             padding: EdgeInsets.only(left: spaceXS),
                             child: Text(
                               t.clone.toUpperCase(),
-                              style: TextStyle(
-                                color: cloneUrlController.text.isEmpty
-                                    ? tertiaryLight
-                                    : primaryLight,
-                                fontSize: textMD,
-                              ),
+                              style: TextStyle(color: cloneUrlController.text.isEmpty ? tertiaryLight : primaryLight, fontSize: textMD),
                             ),
                           ),
                         ),
@@ -415,48 +334,31 @@ class _CloneRepoMain extends State<CloneRepoMain> with WidgetsBindingObserver {
                             if (selectedDirectory == null) return;
 
                             if (!mounted) return;
-                            await setGitDirPathGetSubmodules(
-                              context,
-                              selectedDirectory,
-                            );
+                            await setGitDirPathGetSubmodules(context, selectedDirectory);
                             await repoManager.setOnboardingStep(4);
+                            setState(() {});
 
-                            Navigator.of(context).canPop()
-                                ? Navigator.pop(context)
-                                : null;
+                            Navigator.of(context).canPop() ? Navigator.pop(context) : null;
 
                             await onboardingController?.show();
+                            if (mounted) setState(() {});
                           },
                           style: ButtonStyle(
                             alignment: Alignment.center,
-                            backgroundColor: WidgetStatePropertyAll(
-                              secondaryDark,
-                            ),
-                            padding: WidgetStatePropertyAll(
-                              EdgeInsets.symmetric(horizontal: spaceMD),
-                            ),
+                            backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                            padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD)),
                             shape: WidgetStatePropertyAll(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(cornerRadiusMD),
-                                side: BorderSide.none,
-                              ),
+                              RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
                             ),
                           ),
-                          icon: FaIcon(
-                            FontAwesomeIcons.solidFolderOpen,
-                            color: primaryLight,
-                            size: textMD,
-                          ),
+                          icon: FaIcon(FontAwesomeIcons.solidFolderOpen, color: primaryLight, size: textMD),
                           label: Container(
                             width: double.infinity,
                             padding: EdgeInsets.only(left: spaceXS),
                             child: Text(
                               t.iHaveALocalRepository.toUpperCase(),
                               textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: primaryLight,
-                                fontSize: textMD,
-                              ),
+                              style: TextStyle(color: primaryLight, fontSize: textMD),
                             ),
                           ),
                         ),
@@ -477,8 +379,7 @@ class _CloneRepoMain extends State<CloneRepoMain> with WidgetsBindingObserver {
 Route createCloneRepoMainRoute() {
   return PageRouteBuilder(
     settings: const RouteSettings(name: clone_repo_main),
-    pageBuilder: (context, animation, secondaryAnimation) =>
-        const CloneRepoMain(),
+    pageBuilder: (context, animation, secondaryAnimation) => const CloneRepoMain(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(0.0, 1.0);
       const end = Offset.zero;

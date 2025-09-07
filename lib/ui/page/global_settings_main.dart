@@ -6,6 +6,7 @@ import 'package:GitSync/api/manager/settings_manager.dart';
 import 'package:GitSync/api/manager/storage.dart';
 import 'package:GitSync/ui/component/button_setting.dart';
 import 'package:GitSync/ui/component/custom_showcase.dart';
+import 'package:GitSync/ui/component/item_setting.dart';
 import 'package:GitSync/ui/page/file_explorer.dart';
 import 'package:archive/archive_io.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -104,31 +105,27 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain> with WidgetsBindingO
                     await ChangeLanguageDialog.showDialog(context, (locale) async {
                       await repoManager.setStringNullable(StorageKey.repoman_appLocale, locale);
                       Navigator.of(context).canPop() ? Navigator.pop(context) : null;
-                      setState(() {});
+                      if (mounted) setState(() {});
                       Navigator.of(context).canPop() ? Navigator.pop(context) : null;
                     });
                   },
                 ),
-                // SizedBox(height: spaceMD),
-                // ButtonSetting(
-                //   text: t.browseEditDir,
-                //   icon: FontAwesomeIcons.folderTree,
-                //   onPressed: () async {
-                //     String? selectedDirectory;
-                //     if (await requestStoragePerm()) {
-                //       selectedDirectory = await pickDirectory();
-                //     }
-                //     if (selectedDirectory == null) return;
+                SizedBox(height: spaceMD),
+                ButtonSetting(
+                  text: t.browseEditDir,
+                  icon: FontAwesomeIcons.folderTree,
+                  onPressed: () async {
+                    String? selectedDirectory;
+                    if (await requestStoragePerm()) {
+                      selectedDirectory = await pickDirectory();
+                    }
+                    if (selectedDirectory == null) return;
 
-                //     await useDirectory(selectedDirectory, (_) async {}, (
-                //       path,
-                //     ) async {
-                //       await Navigator.of(
-                //         context,
-                //       ).push(createFileExplorerRoute(path));
-                //     });
-                //   },
-                // ),
+                    await useDirectory(selectedDirectory, (_) async {}, (path) async {
+                      await Navigator.of(context).push(createFileExplorerRoute(path));
+                    });
+                  },
+                ),
                 SizedBox(height: spaceLG),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: spaceMD),
@@ -212,6 +209,159 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain> with WidgetsBindingO
                       Navigator.of(context).canPop() ? Navigator.pop(context) : null;
                     });
                   },
+                ),
+
+                SizedBox(height: spaceLG),
+
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: spaceMD),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          color: tertiaryLight,
+                          height: spaceXXXXS,
+                          margin: EdgeInsets.only(right: spaceSM),
+                        ),
+                      ),
+                      Text(
+                        "Repository Defaults".toUpperCase(),
+                        style: TextStyle(fontSize: textSM, color: primaryLight, fontWeight: FontWeight.bold),
+                      ),
+                      Expanded(
+                        child: Container(
+                          color: tertiaryLight,
+                          height: spaceXXXXS,
+                          margin: EdgeInsets.only(left: spaceSM),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: spaceMD),
+                FutureBuilder(
+                  future: repoManager.getBool(StorageKey.repoman_defaultClientModeEnabled),
+                  builder: (context, clientModeEnabledSnapshot) => Row(
+                    children: [
+                      Expanded(
+                        child: TextButton.icon(
+                          onPressed: () async {
+                            await repoManager.setBool(StorageKey.repoman_defaultClientModeEnabled, false);
+                            setState(() {});
+                          },
+                          style: ButtonStyle(
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            padding: WidgetStatePropertyAll(EdgeInsets.zero),
+                            backgroundColor: WidgetStatePropertyAll(clientModeEnabledSnapshot.data != true ? primaryPositive : tertiaryDark),
+                            shape: WidgetStatePropertyAll(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: cornerRadiusMD,
+                                  topRight: Radius.zero,
+                                  bottomLeft: cornerRadiusMD,
+                                  bottomRight: Radius.zero,
+                                ),
+
+                                side: clientModeEnabledSnapshot.data != true ? BorderSide.none : BorderSide(width: 3, color: primaryPositive),
+                              ),
+                            ),
+                            animationDuration: Duration.zero,
+                          ),
+                          icon: FaIcon(
+                            FontAwesomeIcons.arrowsRotate,
+                            color: clientModeEnabledSnapshot.data != true ? tertiaryDark : primaryLight,
+                            size: textMD,
+                          ),
+                          label: Text(
+                            t.syncMode,
+                            style: TextStyle(
+                              color: clientModeEnabledSnapshot.data != true ? tertiaryDark : primaryLight,
+                              fontSize: textMD,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: TextButton.icon(
+                          onPressed: () async {
+                            await repoManager.setBool(StorageKey.repoman_defaultClientModeEnabled, true);
+                            setState(() {});
+                          },
+                          style: ButtonStyle(
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            padding: WidgetStatePropertyAll(EdgeInsets.zero),
+                            backgroundColor: WidgetStatePropertyAll(clientModeEnabledSnapshot.data == true ? primaryPositive : tertiaryDark),
+                            shape: WidgetStatePropertyAll(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.zero,
+                                  topRight: cornerRadiusMD,
+                                  bottomLeft: Radius.zero,
+                                  bottomRight: cornerRadiusMD,
+                                ),
+                                side: clientModeEnabledSnapshot.data == true ? BorderSide.none : BorderSide(width: 3, color: primaryPositive),
+                              ),
+                            ),
+                            animationDuration: Duration.zero,
+                          ),
+                          iconAlignment: IconAlignment.end,
+                          icon: FaIcon(
+                            FontAwesomeIcons.codeCompare,
+                            color: clientModeEnabledSnapshot.data == true ? tertiaryDark : primaryLight,
+                            size: textMD,
+                          ),
+                          label: Text(
+                            t.clientMode,
+                            style: TextStyle(
+                              color: clientModeEnabledSnapshot.data == true ? tertiaryDark : primaryLight,
+                              fontSize: textMD,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: spaceMD),
+                ItemSetting(
+                  setFn: (value) => repoManager.setString(StorageKey.repoman_defaultSyncMessage, value),
+                  getFn: () => repoManager.getString(StorageKey.repoman_defaultSyncMessage),
+                  title: t.syncMessageLabel,
+                  description: t.syncMessageDescription,
+                  hint: defaultSyncMessage,
+                  maxLines: null,
+                  minLines: null,
+                ),
+                SizedBox(height: spaceMD),
+                ItemSetting(
+                  setFn: (value) => repoManager.setString(StorageKey.repoman_defaultSyncMessageTimeFormat, value),
+                  getFn: () => repoManager.getString(StorageKey.repoman_defaultSyncMessageTimeFormat),
+                  title: t.syncMessageTimeFormatLabel,
+                  description: t.syncMessageTimeFormatDescription,
+                  hint: defaultSyncMessageTimeFormat,
+                ),
+                SizedBox(height: spaceMD),
+                ItemSetting(
+                  setFn: (value) => repoManager.setString(StorageKey.repoman_defaultAuthorName, value.trim()),
+                  getFn: demo ? () async => "" : () => repoManager.getString(StorageKey.repoman_defaultAuthorName),
+                  title: t.authorNameLabel,
+                  hint: t.authorName,
+                ),
+                SizedBox(height: spaceMD),
+                ItemSetting(
+                  setFn: (value) => repoManager.setString(StorageKey.repoman_defaultAuthorEmail, value.trim()),
+                  getFn: demo ? () async => "" : () => repoManager.getString(StorageKey.repoman_defaultAuthorEmail),
+                  title: t.authorEmailLabel,
+                  hint: t.authorEmail,
+                ),
+                SizedBox(height: spaceMD),
+                ItemSetting(
+                  setFn: (value) => repoManager.setString(StorageKey.repoman_defaultRemote, value),
+                  getFn: () => repoManager.getString(StorageKey.repoman_defaultRemote),
+                  title: t.remoteLabel,
+                  hint: t.defaultRemote,
                 ),
 
                 SizedBox(height: spaceLG),
@@ -375,6 +525,7 @@ ${await Logger.generateDeviceInfo()}
                 CustomShowcase(
                   globalKey: _uiSetupGuideKey,
                   description: t.guidedSetupHint,
+                  cornerRadius: cornerRadiusMD,
                   last: true,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -386,6 +537,7 @@ ${await Logger.generateDeviceInfo()}
                           await repoManager.setInt(StorageKey.repoman_onboardingStep, 0);
                           Navigator.of(context).canPop() ? Navigator.pop(context) : null;
                           await onboardingController?.show();
+                          if (mounted) setState(() {});
                         },
                       ),
                       SizedBox(height: spaceMD),
@@ -396,6 +548,7 @@ ${await Logger.generateDeviceInfo()}
                           await repoManager.setInt(StorageKey.repoman_onboardingStep, 4);
                           Navigator.of(context).canPop() ? Navigator.pop(context) : null;
                           await onboardingController?.show();
+                          if (mounted) setState(() {});
                         },
                       ),
                     ],
@@ -404,6 +557,32 @@ ${await Logger.generateDeviceInfo()}
 
                 SizedBox(height: spaceLG + spaceMD),
 
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: spaceMD),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          color: tertiaryLight,
+                          height: spaceXXXXS,
+                          margin: EdgeInsets.only(right: spaceSM),
+                        ),
+                      ),
+                      Text(
+                        "Miscellaneous".toUpperCase(),
+                        style: TextStyle(fontSize: textSM, color: primaryLight, fontWeight: FontWeight.bold),
+                      ),
+                      Expanded(
+                        child: Container(
+                          color: tertiaryLight,
+                          height: spaceXXXXS,
+                          margin: EdgeInsets.only(left: spaceSM),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: spaceSM),
                 ValueListenableBuilder(
                   valueListenable: premiumManager.hasPremiumNotifier,
                   builder: (context, hasPremium, child) => ButtonSetting(
@@ -414,8 +593,8 @@ ${await Logger.generateDeviceInfo()}
                       if (hasPremium == true) {
                         await launchUrl(Uri.parse(contributeLink));
                       } else {
-                        await UnlockPremiumDialog.showDialog(context, () => setState(() {}));
-                        setState(() {});
+                        await UnlockPremiumDialog.showDialog(context, () => mounted ? setState(() {}) : null);
+                        if (mounted) setState(() {});
                       }
                     },
                   ),
@@ -436,7 +615,35 @@ ${await Logger.generateDeviceInfo()}
                     launchUrl(Uri.parse(eulaLink));
                   },
                 ),
+
                 SizedBox(height: spaceLG),
+
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: spaceMD),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          color: tertiaryNegative,
+                          height: spaceXXXXS,
+                          margin: EdgeInsets.only(right: spaceSM),
+                        ),
+                      ),
+                      Text(
+                        "Danger Zone".toUpperCase(),
+                        style: TextStyle(fontSize: textSM, color: tertiaryNegative, fontWeight: FontWeight.bold),
+                      ),
+                      Expanded(
+                        child: Container(
+                          color: tertiaryNegative,
+                          height: spaceXXXXS,
+                          margin: EdgeInsets.only(left: spaceSM),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: spaceSM),
                 ButtonSetting(
                   text: t.iosClearDataAction,
                   icon: FontAwesomeIcons.dumpsterFire,
