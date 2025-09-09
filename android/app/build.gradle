@@ -37,22 +37,12 @@ android {
         versionName = flutter.versionName
         multiDexEnabled true
     }
-
-    signingConfigs {
-        release {
-            storeFile file(keystoreProperties['release_storeFile'])
-            storePassword keystoreProperties['release_signingPassword']
-            keyAlias keystoreProperties['release_keyAlias']
-            keyPassword keystoreProperties['release_signingPassword']
-        }
-    }
-
+    
     buildTypes {
         release {
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
         }
     }
 }
