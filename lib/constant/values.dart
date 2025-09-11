@@ -1,3 +1,4 @@
+import 'package:GitSync/constant/langLog.dart';
 import 'package:re_highlight/languages/dart.dart';
 import 'package:re_highlight/languages/javascript.dart';
 import 'package:re_highlight/languages/typescript.dart';
@@ -90,6 +91,7 @@ final extensionToLanguageMap = {
   'makefile': langMakefile,
   'mk': langMakefile,
   'pro': langProlog,
+  'log': langLog,
   'r': langR,
   'tcl': langTcl,
   'vb': langVbnet,

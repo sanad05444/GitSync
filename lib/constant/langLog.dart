@@ -1,0 +1,24 @@
+// GENERATED MODE - LOG HIGHLIGHTER - DO NOT MODIFY BY HAND
+import 'package:re_highlight/re_highlight.dart';
+
+final langLog = Mode(
+  name: 'SimpleLog',
+  caseInsensitive: false,
+  illegal: null,
+  contains: <Mode>[
+    Mode(className: 'comment', begin: r'^.*\s.git\sfolder\sfound.*$', relevance: 10),
+    Mode(className: 'comment', begin: r'^.*\sGetting\slocal\sdirectory.*$', relevance: 10),
+    Mode(className: 'comment', begin: r'^.*\sGitStatus:\s.*$', relevance: 10),
+    Mode(className: 'comment', begin: r'^.*\RecentCommits:\s.*$', relevance: 10),
+
+    Mode(className: 'number', begin: r'^\d{4}-\d{2}-\d{2}', relevance: 5),
+
+    Mode(className: 'string', begin: r'\s+\d{2}:\d{2}:\d{2}\.\d{3}', relevance: 5),
+
+    Mode(className: 'keyword', begin: r'\s\[(I|W|E|D|V|T)\]\s', relevance: 5),
+
+    Mode(className: 'variable', begin: r'\b[A-Za-z][A-Za-z0-9_]*\b:', relevance: 5),
+
+    Mode(className: 'root', begin: r'.+', relevance: 0),
+  ],
+);
