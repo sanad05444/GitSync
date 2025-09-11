@@ -14,7 +14,7 @@ import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
 import 'package:GitSync/ui/dialog/confirm_discard_changes.dart' as ConfirmDiscardChangesDialog;
 
-Future<void> showDialog(BuildContext context) async {
+Future<void> showDialog(BuildContext context, Future<void> Function() updateRecommendedActionCallback) async {
   final syncMessageController = TextEditingController();
   final selectedFiles = <String>[];
   final clientModeEnabled = await uiSettingsManager.getClientModeEnabled();
@@ -121,6 +121,7 @@ Future<void> showDialog(BuildContext context) async {
                                           uploading = true;
                                           setState(() {});
                                           await GitManager.commitChanges(syncMessageController.text.isEmpty ? null : syncMessageController.text);
+                                          await updateRecommendedActionCallback();
                                           uploading = false;
                                           setState(() {});
                                         }

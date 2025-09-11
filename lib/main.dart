@@ -362,8 +362,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     super.initState();
   }
 
-  Future<void> updateRecommendedAction() async {
-    recommendedAction.value = await GitManager.getRecommendedAction();
+  Future<void> updateRecommendedAction([int? override]) async {
+    recommendedAction.value = override ?? await GitManager.getRecommendedAction();
   }
 
   Future<void> promptClearKeychainValues() async {
@@ -469,7 +469,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
           t.manualSync: (
             FontAwesomeIcons.listCheck,
             () async {
-              await ManualSyncDialog.showDialog(context);
+              await ManualSyncDialog.showDialog(context, () async => await updateRecommendedAction(3));
             },
           ),
         if (dirPath != null && clientModeEnabled && submodulePaths.isNotEmpty)
@@ -484,6 +484,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
             FontAwesomeIcons.caretDown,
             () async {
               await GitManager.fetchRemote();
+              await updateRecommendedAction(1);
             },
           ),
         if (!clientModeEnabled)
@@ -518,7 +519,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
           t.stageAndCommit: (
             FontAwesomeIcons.listCheck,
             () async {
-              await ManualSyncDialog.showDialog(context);
+              await ManualSyncDialog.showDialog(context, () async => await updateRecommendedAction(3));
             },
           ),
         if (!clientModeEnabled)
@@ -1587,7 +1588,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                         child: TextButton.icon(
                                           onPressed: demo
                                               ? () {
-                                                  ManualSyncDialog.showDialog(context);
+                                                  ManualSyncDialog.showDialog(context, () async {});
                                                 }
                                               : (snapshot.data == null ? null : () => launchUrl(Uri.parse(snapshot.data!.$2))),
                                           style: ButtonStyle(

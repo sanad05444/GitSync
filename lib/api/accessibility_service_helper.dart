@@ -8,29 +8,19 @@ import 'package:flutter/services.dart';
 import '../ui/dialog/manual_sync.dart' as ManualSyncDialog;
 
 class AccessibilityServiceHelper {
-  static const MethodChannel _channel = MethodChannel(
-    'accessibility_service_helper',
-  );
+  static const MethodChannel _channel = MethodChannel('accessibility_service_helper');
 
-  static init(
-    BuildContext context,
-    void Function(void Function() fn) setState,
-  ) {
+  static init(BuildContext context, void Function(void Function() fn) setState) {
     _channel.setMethodCallHandler((call) async {
       if (call.method == 'onIntentAction') {
         String action = call.arguments;
         switch (action) {
           case GitsyncService.MANUAL_SYNC:
             {
-              await repoManager.setInt(
-                StorageKey.repoman_repoIndex,
-                await repoManager.getInt(
-                  StorageKey.repoman_tileManualSyncIndex,
-                ),
-              );
+              await repoManager.setInt(StorageKey.repoman_repoIndex, await repoManager.getInt(StorageKey.repoman_tileManualSyncIndex));
               await uiSettingsManager.reinit();
               setState(() {});
-              await ManualSyncDialog.showDialog(context);
+              await ManualSyncDialog.showDialog(context, () async {});
             }
         }
       }
@@ -43,8 +33,7 @@ class AccessibilityServiceHelper {
 
   static Future<bool> isAccessibilityServiceEnabled() async {
     if (Platform.isIOS) return false;
-    final bool isEnabled =
-        await _channel.invokeMethod('isAccessibilityServiceEnabled') ?? false;
+    final bool isEnabled = await _channel.invokeMethod('isAccessibilityServiceEnabled') ?? false;
     return isEnabled;
   }
 
@@ -53,14 +42,8 @@ class AccessibilityServiceHelper {
     await _channel.invokeMethod('openAccessibilitySettings');
   }
 
-  static Future<List<String>> getDeviceApplications([
-    String? searchText,
-  ]) async {
-    final devicePackageNames =
-        ((await _channel.invokeMethod('getDeviceApplications') ?? []) as List)
-            .map((item) => item.toString())
-            .toSet()
-            .toList();
+  static Future<List<String>> getDeviceApplications([String? searchText]) async {
+    final devicePackageNames = ((await _channel.invokeMethod('getDeviceApplications') ?? []) as List).map((item) => item.toString()).toSet().toList();
 
     if (searchText == null || searchText.isEmpty) {
       return devicePackageNames;
@@ -69,9 +52,7 @@ class AccessibilityServiceHelper {
     final List<String> filteredPackageNames = [];
 
     for (var devicePackageName in devicePackageNames) {
-      if ((await getApplicationLabel(
-        devicePackageName,
-      )).toLowerCase().contains(searchText.toLowerCase().trim())) {
+      if ((await getApplicationLabel(devicePackageName)).toLowerCase().contains(searchText.toLowerCase().trim())) {
         filteredPackageNames.add(devicePackageName);
       }
     }
@@ -79,8 +60,6 @@ class AccessibilityServiceHelper {
     return filteredPackageNames;
   }
 
-  static Future<String> getApplicationLabel(String packageName) async =>
-      await _channel.invokeMethod('getApplicationLabel', packageName);
-  static Future<Uint8List?> getApplicationIcon(String packageName) async =>
-      await _channel.invokeMethod<Uint8List>('getApplicationIcon', packageName);
+  static Future<String> getApplicationLabel(String packageName) async => await _channel.invokeMethod('getApplicationLabel', packageName);
+  static Future<Uint8List?> getApplicationIcon(String packageName) async => await _channel.invokeMethod<Uint8List>('getApplicationIcon', packageName);
 }
