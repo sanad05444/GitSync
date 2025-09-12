@@ -1,16 +1,62 @@
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:GitSync/api/helper.dart';
 import 'package:GitSync/constant/colors.dart';
 import 'package:GitSync/constant/dimens.dart';
 import 'package:GitSync/constant/values.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mmap2/mmap2.dart';
 import 'package:mmap2_flutter/mmap2_flutter.dart';
 import '../../../constant/strings.dart';
 import 'package:path/path.dart' as p;
 import 'package:re_editor/re_editor.dart' as ReEditor;
+
+class LogsChunkAnalyzer implements ReEditor.CodeChunkAnalyzer {
+  static const List<String> matchSubstrings = ["RecentCommits:", "GitStatus:", "Getting local directory", ".git folder found"];
+
+  const LogsChunkAnalyzer();
+
+  @override
+  List<ReEditor.CodeChunk> run(ReEditor.CodeLines codeLines) {
+    final List<ReEditor.CodeChunk> chunks = [];
+    int? runStart;
+
+    for (int i = 0; i < codeLines.length; i++) {
+      final String line = codeLines[i].text;
+      final bool matches = _lineMatches(line);
+
+      if (matches) {
+        runStart ??= i;
+      } else {
+        if (runStart != null) {
+          chunks.add(ReEditor.CodeChunk(runStart, i - 1));
+          runStart = null;
+        }
+      }
+    }
+
+    if (runStart != null) {
+      chunks.add(ReEditor.CodeChunk(runStart, codeLines.length - 1));
+    }
+
+    return chunks;
+  }
+
+  bool _lineMatches(String line) {
+    final String trimmed = line;
+    if (RegExp(r'^.*\s\[E\]\s.*$').hasMatch(line)) return true;
+    if (RegExp(r'^(?!.*\s\[(I|W|E|D|V|T)\]\s).*$').hasMatch(line)) return true;
+    for (final String sub in matchSubstrings) {
+      if (trimmed.contains(sub)) {
+        return true;
+      }
+    }
+    return false;
+  }
+}
 
 class CodeEditor extends StatefulWidget {
   const CodeEditor({super.key, required this.path, this.logs = false});
@@ -28,6 +74,8 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
   final ScrollController horizontalController = ScrollController();
   final ScrollController verticalController = ScrollController();
   Mmap? writeMmap;
+  Map<String, ReEditor.CodeHighlightThemeMode> languages = {};
+  bool logsCollapsed = false;
 
   @override
   void initState() {
@@ -37,25 +85,50 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
     try {
       _mapFile();
       controller.text = writeMmap == null ? "" : String.fromCharCodes(writeMmap!.writableData);
-      print(writeMmap == null ? "" : String.fromCharCodes(writeMmap!.writableData));
 
       controller.addListener(_onTextChanged);
-
-      //   controller.reversed = widget.logs;
-
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        if (widget.logs) {
-          await Future.delayed(Duration(milliseconds: 500));
-          horizontalController.jumpTo(80);
-          await Future.delayed(Duration(milliseconds: 500));
-          horizontalController.jumpTo(80);
-
-          verticalController.jumpTo(verticalController.position.maxScrollExtent);
-        }
-      });
     } catch (e) {
       print(e);
     }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!widget.logs || controller.text.isEmpty) return;
+
+      final chunkController = ReEditor.CodeChunkController(controller, LogsChunkAnalyzer());
+      while (chunkController.value.isEmpty) {
+        await Future.delayed(Duration(milliseconds: 100));
+      }
+      int offset = 0;
+
+      if (widget.logs) {
+        for (final chunk in chunkController.value) {
+          chunkController.collapse(chunk.index - offset);
+          offset += max(0, chunk.end - chunk.index - 1);
+        }
+      }
+      logsCollapsed = true;
+      setState(() {});
+      logsScrollToBottom();
+    });
+
+    languages =
+        (extensionToLanguageMap.keys.contains(p.extension(widget.path).replaceFirst('.', ''))
+                ? extensionToLanguageMap[p.extension(widget.path).replaceFirst('.', '')]!
+                : extensionToLanguageMap["txt"]!)
+            .map((key, value) => MapEntry(key, ReEditor.CodeHighlightThemeMode(mode: value)));
+  }
+
+  void logsScrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (widget.logs) {
+        await Future.delayed(Duration(milliseconds: 500));
+        horizontalController.jumpTo(80);
+        await Future.delayed(Duration(milliseconds: 500));
+        horizontalController.jumpTo(80);
+
+        verticalController.jumpTo(verticalController.position.maxScrollExtent);
+      }
+    });
   }
 
   void _mapFile() {
@@ -130,65 +203,68 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
         margin: EdgeInsets.only(left: spaceSM, right: spaceSM, bottom: spaceLG),
         padding: EdgeInsets.only(right: spaceXS),
         clipBehavior: Clip.hardEdge,
-        child: ReEditor.CodeEditor(
-          controller: controller,
-          scrollController: ReEditor.CodeScrollController(verticalScroller: verticalController, horizontalScroller: horizontalController),
-          wordWrap: false,
+        child: widget.logs && !logsCollapsed
+            ? Center(child: CircularProgressIndicator(color: primaryLight))
+            : ReEditor.CodeEditor(
+                controller: controller,
+                scrollController: ReEditor.CodeScrollController(verticalScroller: verticalController, horizontalScroller: horizontalController),
+                wordWrap: false,
+                chunkAnalyzer: widget.logs ? LogsChunkAnalyzer() : ReEditor.DefaultCodeChunkAnalyzer(),
+                style: ReEditor.CodeEditorStyle(
+                  textColor: Color(0xfff8f8f2),
+                  fontSize: textMD,
+                  codeTheme: ReEditor.CodeHighlightTheme(
+                    languages: languages,
+                    theme: {
+                      'root': TextStyle(color: primaryLight),
+                      'comment': TextStyle(color: secondaryLight),
+                      'quote': TextStyle(color: tertiaryInfo),
+                      'variable': TextStyle(color: secondaryWarning),
+                      'template-variable': TextStyle(color: secondaryWarning),
+                      'tag': TextStyle(color: secondaryWarning),
+                      'name': TextStyle(color: secondaryWarning),
+                      'selector-id': TextStyle(color: secondaryWarning),
+                      'selector-class': TextStyle(color: secondaryWarning),
+                      'regexp': TextStyle(color: secondaryWarning),
+                      'deletion': TextStyle(color: secondaryWarning),
+                      'number': TextStyle(color: primaryWarning),
+                      'built_in': TextStyle(color: primaryWarning),
+                      'builtin-name': TextStyle(color: primaryWarning),
+                      'literal': TextStyle(color: primaryWarning),
+                      'type': TextStyle(color: primaryWarning),
+                      'params': TextStyle(color: primaryWarning),
+                      'meta': TextStyle(color: primaryWarning),
+                      'link': TextStyle(color: primaryWarning),
+                      'attribute': TextStyle(color: tertiaryInfo),
+                      'string': TextStyle(color: primaryPositive),
+                      'symbol': TextStyle(color: primaryPositive),
+                      'bullet': TextStyle(color: primaryPositive),
+                      'addition': TextStyle(color: primaryPositive),
+                      'title': TextStyle(color: tertiaryInfo, fontWeight: FontWeight.w500),
+                      'section': TextStyle(color: tertiaryInfo, fontWeight: FontWeight.w500),
+                      'keyword': TextStyle(color: tertiaryNegative),
+                      'selector-tag': TextStyle(color: tertiaryNegative),
+                      'emphasis': TextStyle(fontStyle: FontStyle.italic),
+                      'strong': TextStyle(fontWeight: FontWeight.bold),
 
-          style: ReEditor.CodeEditorStyle(
-            textColor: Color(0xfff8f8f2),
-            fontSize: textMD,
-
-            codeTheme: ReEditor.CodeHighlightTheme(
-              languages:
-                  (extensionToLanguageMap.keys.contains(p.extension(widget.path).replaceFirst('.', ''))
-                          ? {p.extension(widget.path).replaceFirst('.', ''): extensionToLanguageMap[p.extension(widget.path).replaceFirst('.', '')]!}
-                          : {"txt": extensionToLanguageMap["txt"]!})
-                      .map((key, value) => MapEntry(key, ReEditor.CodeHighlightThemeMode(mode: value))),
-              theme: {
-                'root': TextStyle(color: Color(0xfff8f8f2), backgroundColor: Color(0xff2b2b2b)),
-                'comment': TextStyle(color: Color(0xffd4d0ab)),
-                'quote': TextStyle(color: Color(0xffd4d0ab)),
-                'variable': TextStyle(color: Color(0xffffa07a)),
-                'template-variable': TextStyle(color: Color(0xffffa07a)),
-                'tag': TextStyle(color: Color(0xffffa07a)),
-                'name': TextStyle(color: Color(0xffffa07a)),
-                'selector-id': TextStyle(color: Color(0xffffa07a)),
-                'selector-class': TextStyle(color: Color(0xffffa07a)),
-                'regexp': TextStyle(color: Color(0xffffa07a)),
-                'deletion': TextStyle(color: Color(0xffffa07a)),
-                'number': TextStyle(color: Color(0xfff5ab35)),
-                'built_in': TextStyle(color: Color(0xfff5ab35)),
-                'builtin-name': TextStyle(color: Color(0xfff5ab35)),
-                'literal': TextStyle(color: Color(0xfff5ab35)),
-                'type': TextStyle(color: Color(0xfff5ab35)),
-                'params': TextStyle(color: Color(0xfff5ab35)),
-                'meta': TextStyle(color: Color(0xfff5ab35)),
-                'link': TextStyle(color: Color(0xfff5ab35)),
-                'attribute': TextStyle(color: Color(0xffffd700)),
-                'string': TextStyle(color: Color(0xffabe338)),
-                'symbol': TextStyle(color: Color(0xffabe338)),
-                'bullet': TextStyle(color: Color(0xffabe338)),
-                'addition': TextStyle(color: Color(0xffabe338)),
-                'title': TextStyle(color: Color(0xff00e0e0)),
-                'section': TextStyle(color: Color(0xff00e0e0)),
-                'keyword': TextStyle(color: Color(0xffdcc6e0)),
-                'selector-tag': TextStyle(color: Color(0xffdcc6e0)),
-                'emphasis': TextStyle(fontStyle: FontStyle.italic),
-                'strong': TextStyle(fontWeight: FontWeight.bold),
-              },
-            ),
-          ),
-          readOnly: widget.logs,
-          indicatorBuilder: (context, editingController, chunkController, notifier) {
-            return Row(
-              children: [
-                if (!widget.logs) ReEditor.DefaultCodeLineNumber(controller: editingController, notifier: notifier),
-                ReEditor.DefaultCodeChunkIndicator(width: 20, controller: chunkController, notifier: notifier),
-              ],
-            );
-          },
-        ),
+                      'logDate': TextStyle(color: tertiaryInfo.withAlpha(170)),
+                      'logTime': TextStyle(color: tertiaryInfo),
+                      'logLevel': TextStyle(color: tertiaryPositive),
+                      'logComponent': TextStyle(color: primaryPositive),
+                      'logError': TextStyle(color: tertiaryNegative),
+                    },
+                  ),
+                ),
+                readOnly: widget.logs,
+                indicatorBuilder: (context, editingController, chunkController, notifier) {
+                  return Row(
+                    children: [
+                      if (!widget.logs) ReEditor.DefaultCodeLineNumber(controller: editingController, notifier: notifier),
+                      ReEditor.DefaultCodeChunkIndicator(width: 20, controller: chunkController, notifier: notifier),
+                    ],
+                  );
+                },
+              ),
       ),
     );
   }

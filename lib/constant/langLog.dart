@@ -11,13 +11,12 @@ final langLog = Mode(
     Mode(className: 'comment', begin: r'^.*\sGitStatus:\s.*$', relevance: 10),
     Mode(className: 'comment', begin: r'^.*\RecentCommits:\s.*$', relevance: 10),
 
-    Mode(className: 'number', begin: r'^\d{4}-\d{2}-\d{2}', relevance: 5),
-
-    Mode(className: 'string', begin: r'\s+\d{2}:\d{2}:\d{2}\.\d{3}', relevance: 5),
-
-    Mode(className: 'keyword', begin: r'\s\[(I|W|E|D|V|T)\]\s', relevance: 5),
-
-    Mode(className: 'variable', begin: r'\b[A-Za-z][A-Za-z0-9_]*\b:', relevance: 5),
+    Mode(className: 'logError', begin: r'.*\s\[E\]\s.*', relevance: 8),
+    Mode(className: 'logError', begin: r'^(?!.*\s\[(I|W|E|D|V|T)\]\s).*$', relevance: 8),
+    Mode(className: 'logDate', begin: r'^\d{4}-\d{2}-\d{2}', relevance: 5),
+    Mode(className: 'logTime', begin: r'\s+\d{2}:\d{2}:\d{2}\.\d{3}', relevance: 5),
+    Mode(className: 'logLevel', begin: r'\s\[(I|W|E|D|V|T)\]\s', relevance: 5),
+    Mode(className: 'logComponent', begin: r'\b[A-Za-z][A-Za-z0-9_]*\b:', relevance: 5),
 
     Mode(className: 'root', begin: r'.+', relevance: 0),
   ],
