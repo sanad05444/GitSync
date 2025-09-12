@@ -45,7 +45,7 @@ Future<void> showDialog(BuildContext context) async {
 
               await repoManager.setStringNullable(StorageKey.repoman_ghSponsorToken, result.$3);
               await premiumManager.updateGitHubSponsorPremium();
-              Navigator.of(context).canPop() ? Navigator.pop(context) : null;
+              if (context.mounted) Navigator.of(context).canPop() ? Navigator.pop(context) : null;
             },
             style: ButtonStyle(
               alignment: Alignment.center,
