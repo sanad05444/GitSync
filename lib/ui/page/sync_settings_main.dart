@@ -20,10 +20,24 @@ class _SyncSettingsMain extends State<SyncSettingsMain> with WidgetsBindingObser
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _controller.addListener(() {
       atTop = _controller.offset <= 0;
       setState(() {});
     });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.resumed) {
+      setState(() {});
+    }
   }
 
   @override
@@ -36,7 +50,10 @@ class _SyncSettingsMain extends State<SyncSettingsMain> with WidgetsBindingObser
         surfaceTintColor: Colors.transparent,
         leading: getBackButton(context, () => Navigator.of(context).canPop() ? Navigator.pop(context) : null),
         centerTitle: true,
-        title: Text(t.syncSettings.toUpperCase(), style: TextStyle(color: primaryLight, fontWeight: FontWeight.bold)),
+        title: Text(
+          t.syncSettings.toUpperCase(),
+          style: TextStyle(color: primaryLight, fontWeight: FontWeight.bold),
+        ),
       ),
       body: ShaderMask(
         shaderCallback: (Rect rect) {
