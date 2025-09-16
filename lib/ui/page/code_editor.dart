@@ -8,6 +8,7 @@ import 'package:GitSync/constant/dimens.dart';
 import 'package:GitSync/constant/values.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mmap2/mmap2.dart';
 import 'package:mmap2_flutter/mmap2_flutter.dart';
 import '../../../constant/strings.dart';
@@ -180,6 +181,12 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: secondaryDark,
+          systemNavigationBarColor: secondaryDark,
+          statusBarIconBrightness: Brightness.light,
+          systemNavigationBarIconBrightness: Brightness.light,
+        ),
         leading: getBackButton(context, () => (Navigator.of(context).canPop() ? Navigator.pop(context) : null)) ?? SizedBox.shrink(),
         title: Text(
           p.basename(widget.path),

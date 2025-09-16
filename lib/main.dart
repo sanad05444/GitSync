@@ -18,6 +18,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:extended_text/extended_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_localized_locales/flutter_localized_locales.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -226,6 +227,15 @@ class _MyAppState extends State<MyApp> {
           return const Locale('en');
         },
         theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: primaryDark), useMaterial3: true),
+
+        builder: (context, child) {
+          return child == null
+              ? SizedBox.shrink()
+              : Container(
+                  color: primaryDark,
+                  child: SafeArea(top: false, bottom: true, child: child),
+                );
+        },
         home: ShowCaseWidget(
           blurValue: 3,
           builder: (context) {
@@ -688,6 +698,12 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
         surfaceTintColor: Colors.transparent,
         centerTitle: false,
         actionsPadding: EdgeInsets.only(bottom: spaceXXS),
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: primaryDark,
+          systemNavigationBarColor: primaryDark,
+          statusBarIconBrightness: Brightness.light,
+          systemNavigationBarIconBrightness: Brightness.light,
+        ),
         actions: [
           CustomShowcase(
             globalKey: _globalSettingsKey,

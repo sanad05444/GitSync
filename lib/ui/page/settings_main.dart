@@ -3,6 +3,7 @@ import 'package:GitSync/type/git_provider.dart';
 import 'package:GitSync/ui/component/button_setting.dart';
 import 'package:GitSync/ui/page/global_settings_main.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:showcaseview/showcaseview.dart';
 import '../../../api/helper.dart';
@@ -97,6 +98,12 @@ class _SettingsMain extends State<SettingsMain> with WidgetsBindingObserver, Sin
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: secondaryDark,
+          systemNavigationBarColor: secondaryDark,
+          statusBarIconBrightness: Brightness.light,
+          systemNavigationBarIconBrightness: Brightness.light,
+        ),
         leading: getBackButton(context, () => Navigator.of(context).canPop() ? Navigator.pop(context) : null),
         centerTitle: true,
         title: Text(
