@@ -132,7 +132,7 @@ Your support means a lot! If you find GitSync useful, please:
 - Consider becoming a [GitHub Sponsor](https://github.com/sponsors/ViscousPot)
 
 <br>
-At this time, code contributions aren’t needed anywhere in particular, but I’d love your help improving [**localization**](#localization-contributions)
+At this time, code contributions aren’t needed anywhere in particular, but I’d love your help improving <strong><a href="#localization-contributions">localization</a></strong>
 
 <details>
 <summary><h3 style="display:inline-block;">Localization Contributions</h3></summary>
