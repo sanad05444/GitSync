@@ -538,6 +538,12 @@ class AppLocalizationsRu extends AppLocalizations {
       'Выберите вашего провайдера git и авторизуйтесь';
 
   @override
+  String get oauthProviders => 'oAuth Providers';
+
+  @override
+  String get gitProtocols => 'Git Protocols';
+
+  @override
   String get oauthNoAffiliation =>
       'Авторизация через третьи стороны;\nникакой принадлежности или одобрения не подразумевается.';
 

@@ -1082,6 +1082,18 @@ abstract class AppLocalizations {
   /// **'Select your git provider and authenticate'**
   String get selectYourGitProviderAndAuthenticate;
 
+  /// No description provided for @oauthProviders.
+  ///
+  /// In en, this message translates to:
+  /// **'oAuth Providers'**
+  String get oauthProviders;
+
+  /// No description provided for @gitProtocols.
+  ///
+  /// In en, this message translates to:
+  /// **'Git Protocols'**
+  String get gitProtocols;
+
   /// No description provided for @oauthNoAffiliation.
   ///
   /// In en, this message translates to:

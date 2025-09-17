@@ -538,6 +538,12 @@ class AppLocalizationsDe extends AppLocalizations {
       'Wählen Sie Ihren Git-Anbieter aus und authentifizieren Sie sich';
 
   @override
+  String get oauthProviders => 'oAuth Providers';
+
+  @override
+  String get gitProtocols => 'Git Protocols';
+
+  @override
   String get oauthNoAffiliation =>
       'Authentifizierung über Drittanbieter;\nkeine Zugehörigkeit oder Befürwortung impliziert.';
 

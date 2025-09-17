@@ -189,6 +189,8 @@
 
     "@@x-AUTH": "",
     "selectYourGitProviderAndAuthenticate": "Select your git provider and authenticate",
+    "oauthProviders": "oAuth Providers",
+    "gitProtocols": "Git Protocols",
     "oauthNoAffiliation": "Authentication via third parties;\nno affiliation or endorsement implied.",
     "oauth": "oauth",
     "ensureTokenScope": "Ensure your token includes the \"repo\" scope for full functionality.",

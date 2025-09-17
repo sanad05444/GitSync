@@ -666,26 +666,64 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                     );
                     setState(() {});
                   },
-                  items: GitProviderManager.GitProviderIconsMap.keys
-                      .map(
-                        (e) => DropdownMenuItem(
-                          value: e.name.toUpperCase(),
-                          child: Row(
-                            children: [
-                              GitProviderManager.GitProviderIconsMap[e]!,
-                              SizedBox(width: spaceSM),
-                              Text(
-                                e.name.toUpperCase(),
-                                style: TextStyle(
-                                  fontSize: textSM,
-                                  color: primaryLight,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                      .toList(),
+
+                  items:
+                      [
+                            ...GitProviderManager.GitProviderIconsMap.keys.toList().sublist(
+                              0,
+                              GitProviderManager.GitProviderIconsMap.keys.length - 2,
+                            ),
+                            "separator",
+                            ...GitProviderManager.GitProviderIconsMap.keys.toList().sublist(GitProviderManager.GitProviderIconsMap.keys.length - 2),
+                          ]
+                          .map(
+                            (e) => e is GitProvider
+                                ? DropdownMenuItem(
+                                    value: e.name.toUpperCase(),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            GitProviderManager.GitProviderIconsMap[e]!,
+                                            SizedBox(width: spaceSM),
+                                            Text(
+                                              e.name.toUpperCase(),
+                                              style: TextStyle(fontSize: textSM, color: primaryLight),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : DropdownMenuItem(
+                                    value: null,
+                                    onTap: () {},
+                                    enabled: false,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          t.oauthProviders.toUpperCase(),
+                                          style: TextStyle(color: primaryPositive, fontSize: textSM, fontWeight: FontWeight.bold),
+                                        ),
+                                        Container(
+                                          margin: EdgeInsets.symmetric(horizontal: spaceMD),
+                                          color: tertiaryDark,
+                                          height: 2,
+                                          width: double.infinity,
+                                        ),
+                                        Text(
+                                          t.gitProtocols.toUpperCase(),
+                                          style: TextStyle(color: secondaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                          )
+                          .toList(),
                 ),
               ),
               buildContent(setState),

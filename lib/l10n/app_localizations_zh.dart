@@ -510,6 +510,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get selectYourGitProviderAndAuthenticate => '选择您的 Git 提供商并进行身份验证';
 
   @override
+  String get oauthProviders => 'oAuth Providers';
+
+  @override
+  String get gitProtocols => 'Git Protocols';
+
+  @override
   String get oauthNoAffiliation => '通过第三方进行身份验证；\n不表示关联或认可。';
 
   @override
