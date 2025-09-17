@@ -57,7 +57,7 @@ jobs:
       - uses: SimonMarquis/android-accept-licenses@v1
 
       - name: Build Release APKs
-        run: flutter build apk --release
+        run: flutter build apk --release  --split-per-abi
 
       - name: Sign App
         id: sign_app
