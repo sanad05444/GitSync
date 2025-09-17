@@ -11,7 +11,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  cupertino_icons: ^1.0.8
   animated_reorderable_list: ^1.1.5
   font_awesome_flutter: ^10.8.0
   timeago: ^3.7.0
@@ -49,7 +48,6 @@ dependencies:
   package_info_plus: ^8.3.0
   device_info_plus: ^11.3.3
   anchor_scroll_controller: ^0.4.4
-  flutter_launcher_icons: ^0.14.3
   path: ^1.9.1
   open_file: ^3.5.10
   flutter_localizations:
@@ -77,13 +75,9 @@ dependencies:
   mmap2: ^0.1.0
   mmap2_flutter: ^0.2.1
   re_highlight: ^0.0.3
-  flutter_code_editor:
-    git:
-      url: https://github.com/ViscousPot/flutter-code-editor
-      ref: faa92be04d37d2914f65c9b46598c3e488595239
-
   async: any
   collection: any
+
 dependency_overrides:
   flutter_background_service_platform_interface:
     git:
