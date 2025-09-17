@@ -12,7 +12,6 @@ import '../../../constant/dimens.dart';
 import '../../../global.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
 import 'package:flutter/services.dart';
-import 'package:async/async.dart';
 
 Future<void> showDialog(BuildContext parentContext, Set<String>? prevSelectedApplications) async {
   final List<String> selectedApplications = prevSelectedApplications?.toList() ?? [];
