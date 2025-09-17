@@ -862,6 +862,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get readOnly => 'Read-Only';
 
   @override
+  String get experimental => 'Experimental';
+
+  @override
+  String get experimentalMsg => 'Use at your own risk';
+
+  @override
   String get defaultContainerName => 'alias';
 
   @override

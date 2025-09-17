@@ -308,6 +308,8 @@
     "renameFileDir": "Rename %s",
     "fileTooLarge": "File larger than %s lines",
     "readOnly": "Read-Only",
+    "experimental": "Experimental",
+    "experimentalMsg": "Use at your own risk",
 
 
     "@@x-REPO_MANAGEMENT": "",

@@ -61,6 +61,8 @@
     "renameFileDir",
     "fileTooLarge",
     "readOnly",
+    "experimental",
+    "experimentalMsg",
     "submodulesFoundTitle",
     "submodulesFoundMessage",
     "submodulesFoundAction"
@@ -128,6 +130,8 @@
     "renameFileDir",
     "fileTooLarge",
     "readOnly",
+    "experimental",
+    "experimentalMsg",
     "submodulesFoundTitle",
     "submodulesFoundMessage",
     "submodulesFoundAction"
@@ -195,6 +199,8 @@
     "renameFileDir",
     "fileTooLarge",
     "readOnly",
+    "experimental",
+    "experimentalMsg",
     "submodulesFoundTitle",
     "submodulesFoundMessage",
     "submodulesFoundAction"
@@ -261,6 +267,8 @@
     "renameFileDir",
     "fileTooLarge",
     "readOnly",
+    "experimental",
+    "experimentalMsg",
     "submodulesFoundTitle",
     "submodulesFoundMessage",
     "submodulesFoundAction"

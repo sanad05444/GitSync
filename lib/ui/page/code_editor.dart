@@ -6,6 +6,7 @@ import 'package:GitSync/api/helper.dart';
 import 'package:GitSync/constant/colors.dart';
 import 'package:GitSync/constant/dimens.dart';
 import 'package:GitSync/constant/values.dart';
+import 'package:GitSync/global.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -205,73 +206,98 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
               )
             : SizedBox.shrink(),
       ),
-      body: Container(
-        decoration: BoxDecoration(borderRadius: BorderRadius.all(cornerRadiusMD), color: tertiaryDark),
-        margin: EdgeInsets.only(left: spaceSM, right: spaceSM, bottom: spaceLG),
-        padding: EdgeInsets.only(right: spaceXS),
-        clipBehavior: Clip.hardEdge,
-        child: widget.logs && !logsCollapsed
-            ? Center(child: CircularProgressIndicator(color: primaryLight))
-            : ReEditor.CodeEditor(
-                controller: controller,
-                scrollController: ReEditor.CodeScrollController(verticalScroller: verticalController, horizontalScroller: horizontalController),
-                wordWrap: false,
-                chunkAnalyzer: widget.logs ? LogsChunkAnalyzer() : ReEditor.DefaultCodeChunkAnalyzer(),
-                style: ReEditor.CodeEditorStyle(
-                  textColor: Color(0xfff8f8f2),
-                  fontSize: textMD,
-                  codeTheme: ReEditor.CodeHighlightTheme(
-                    languages: languages,
-                    theme: {
-                      'root': TextStyle(color: primaryLight),
-                      'comment': TextStyle(color: secondaryLight),
-                      'quote': TextStyle(color: tertiaryInfo),
-                      'variable': TextStyle(color: secondaryWarning),
-                      'template-variable': TextStyle(color: secondaryWarning),
-                      'tag': TextStyle(color: secondaryWarning),
-                      'name': TextStyle(color: secondaryWarning),
-                      'selector-id': TextStyle(color: secondaryWarning),
-                      'selector-class': TextStyle(color: secondaryWarning),
-                      'regexp': TextStyle(color: secondaryWarning),
-                      'deletion': TextStyle(color: secondaryWarning),
-                      'number': TextStyle(color: primaryWarning),
-                      'built_in': TextStyle(color: primaryWarning),
-                      'builtin-name': TextStyle(color: primaryWarning),
-                      'literal': TextStyle(color: primaryWarning),
-                      'type': TextStyle(color: primaryWarning),
-                      'params': TextStyle(color: primaryWarning),
-                      'meta': TextStyle(color: primaryWarning),
-                      'link': TextStyle(color: primaryWarning),
-                      'attribute': TextStyle(color: tertiaryInfo),
-                      'string': TextStyle(color: primaryPositive),
-                      'symbol': TextStyle(color: primaryPositive),
-                      'bullet': TextStyle(color: primaryPositive),
-                      'addition': TextStyle(color: primaryPositive),
-                      'title': TextStyle(color: tertiaryInfo, fontWeight: FontWeight.w500),
-                      'section': TextStyle(color: tertiaryInfo, fontWeight: FontWeight.w500),
-                      'keyword': TextStyle(color: tertiaryNegative),
-                      'selector-tag': TextStyle(color: tertiaryNegative),
-                      'emphasis': TextStyle(fontStyle: FontStyle.italic),
-                      'strong': TextStyle(fontWeight: FontWeight.bold),
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            decoration: BoxDecoration(borderRadius: BorderRadius.all(cornerRadiusMD), color: tertiaryDark),
+            margin: EdgeInsets.only(left: spaceSM, right: spaceSM, bottom: spaceLG),
+            padding: EdgeInsets.only(right: spaceXS),
+            clipBehavior: Clip.hardEdge,
+            child: widget.logs && !logsCollapsed
+                ? Center(child: CircularProgressIndicator(color: primaryLight))
+                : ReEditor.CodeEditor(
+                    controller: controller,
+                    scrollController: ReEditor.CodeScrollController(verticalScroller: verticalController, horizontalScroller: horizontalController),
+                    wordWrap: false,
+                    chunkAnalyzer: widget.logs ? LogsChunkAnalyzer() : ReEditor.DefaultCodeChunkAnalyzer(),
+                    style: ReEditor.CodeEditorStyle(
+                      textColor: Color(0xfff8f8f2),
+                      fontSize: textMD,
+                      codeTheme: ReEditor.CodeHighlightTheme(
+                        languages: languages,
+                        theme: {
+                          'root': TextStyle(color: primaryLight),
+                          'comment': TextStyle(color: secondaryLight),
+                          'quote': TextStyle(color: tertiaryInfo),
+                          'variable': TextStyle(color: secondaryWarning),
+                          'template-variable': TextStyle(color: secondaryWarning),
+                          'tag': TextStyle(color: secondaryWarning),
+                          'name': TextStyle(color: secondaryWarning),
+                          'selector-id': TextStyle(color: secondaryWarning),
+                          'selector-class': TextStyle(color: secondaryWarning),
+                          'regexp': TextStyle(color: secondaryWarning),
+                          'deletion': TextStyle(color: secondaryWarning),
+                          'number': TextStyle(color: primaryWarning),
+                          'built_in': TextStyle(color: primaryWarning),
+                          'builtin-name': TextStyle(color: primaryWarning),
+                          'literal': TextStyle(color: primaryWarning),
+                          'type': TextStyle(color: primaryWarning),
+                          'params': TextStyle(color: primaryWarning),
+                          'meta': TextStyle(color: primaryWarning),
+                          'link': TextStyle(color: primaryWarning),
+                          'attribute': TextStyle(color: tertiaryInfo),
+                          'string': TextStyle(color: primaryPositive),
+                          'symbol': TextStyle(color: primaryPositive),
+                          'bullet': TextStyle(color: primaryPositive),
+                          'addition': TextStyle(color: primaryPositive),
+                          'title': TextStyle(color: tertiaryInfo, fontWeight: FontWeight.w500),
+                          'section': TextStyle(color: tertiaryInfo, fontWeight: FontWeight.w500),
+                          'keyword': TextStyle(color: tertiaryNegative),
+                          'selector-tag': TextStyle(color: tertiaryNegative),
+                          'emphasis': TextStyle(fontStyle: FontStyle.italic),
+                          'strong': TextStyle(fontWeight: FontWeight.bold),
 
-                      'logDate': TextStyle(color: tertiaryInfo.withAlpha(170)),
-                      'logTime': TextStyle(color: tertiaryInfo),
-                      'logLevel': TextStyle(color: tertiaryPositive),
-                      'logComponent': TextStyle(color: primaryPositive),
-                      'logError': TextStyle(color: tertiaryNegative),
+                          'logDate': TextStyle(color: tertiaryInfo.withAlpha(170)),
+                          'logTime': TextStyle(color: tertiaryInfo),
+                          'logLevel': TextStyle(color: tertiaryPositive),
+                          'logComponent': TextStyle(color: primaryPositive),
+                          'logError': TextStyle(color: tertiaryNegative),
+                        },
+                      ),
+                    ),
+                    readOnly: widget.logs,
+                    indicatorBuilder: (context, editingController, chunkController, notifier) {
+                      return Row(
+                        children: [
+                          if (!widget.logs) ReEditor.DefaultCodeLineNumber(controller: editingController, notifier: notifier),
+                          ReEditor.DefaultCodeChunkIndicator(width: 20, controller: chunkController, notifier: notifier),
+                        ],
+                      );
                     },
                   ),
-                ),
-                readOnly: widget.logs,
-                indicatorBuilder: (context, editingController, chunkController, notifier) {
-                  return Row(
-                    children: [
-                      if (!widget.logs) ReEditor.DefaultCodeLineNumber(controller: editingController, notifier: notifier),
-                      ReEditor.DefaultCodeChunkIndicator(width: 20, controller: chunkController, notifier: notifier),
-                    ],
-                  );
-                },
+          ),
+          Positioned(
+            bottom: spaceXXL,
+            child: Container(
+              decoration: BoxDecoration(color: primaryDark, borderRadius: BorderRadius.all(cornerRadiusSM)),
+              padding: EdgeInsets.symmetric(horizontal: spaceSM, vertical: spaceXS),
+              child: Column(
+                children: [
+                  Text(
+                    t.experimental.toUpperCase(),
+                    style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: spaceXXXS),
+                  Text(
+                    t.experimentalMsg,
+                    style: TextStyle(color: secondaryLight, fontSize: textSM),
+                  ),
+                ],
               ),
+            ),
+          ),
+        ],
       ),
     );
   }

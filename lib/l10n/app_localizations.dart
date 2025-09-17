@@ -1712,6 +1712,18 @@ abstract class AppLocalizations {
   /// **'Read-Only'**
   String get readOnly;
 
+  /// No description provided for @experimental.
+  ///
+  /// In en, this message translates to:
+  /// **'Experimental'**
+  String get experimental;
+
+  /// No description provided for @experimentalMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Use at your own risk'**
+  String get experimentalMsg;
+
   /// No description provided for @defaultContainerName.
   ///
   /// In en, this message translates to:
