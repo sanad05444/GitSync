@@ -13,11 +13,7 @@ Future<void> showDialog(BuildContext context, Function() callback) {
         width: MediaQuery.of(context).size.width,
         child: Text(
           t.invalidRepositoryUrlTitle,
-          style: TextStyle(
-            color: primaryLight,
-            fontSize: textXL,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
         ),
       ),
       content: SingleChildScrollView(
@@ -25,11 +21,7 @@ Future<void> showDialog(BuildContext context, Function() callback) {
           children: [
             Text(
               t.invalidRepositoryUrlMessage,
-              style: const TextStyle(
-                color: tertiaryNegative,
-                fontWeight: FontWeight.bold,
-                fontSize: textSM,
-              ),
+              style: const TextStyle(color: tertiaryNegative, fontWeight: FontWeight.bold, fontSize: textSM),
             ),
           ],
         ),

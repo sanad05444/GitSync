@@ -5,10 +5,7 @@ import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
 import 'package:GitSync/global.dart';
 
-Future<void> showDialog(
-  BuildContext context,
-  Function((String, String) sshCredentials) callback,
-) {
+Future<void> showDialog(BuildContext context, Function((String, String) sshCredentials) callback) {
   final keyController = TextEditingController();
   final passphraseController = TextEditingController();
 
@@ -19,11 +16,7 @@ Future<void> showDialog(
         width: MediaQuery.of(context).size.width,
         child: Text(
           t.importPrivateKey,
-          style: TextStyle(
-            color: primaryLight,
-            fontSize: textXL,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
         ),
       ),
       content: SingleChildScrollView(
@@ -31,11 +24,7 @@ Future<void> showDialog(
           children: [
             Text(
               t.importPrivateKeyMsg,
-              style: const TextStyle(
-                color: primaryLight,
-                fontWeight: FontWeight.bold,
-                fontSize: textSM,
-              ),
+              style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
             ),
             SizedBox(height: spaceLG),
             Row(
@@ -46,11 +35,7 @@ Future<void> showDialog(
                       padding: EdgeInsets.symmetric(vertical: spaceSM),
                       child: Text(
                         t.passphrase.toUpperCase(),
-                        style: TextStyle(
-                          color: primaryLight,
-                          fontSize: textSM,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                       ),
                     ),
                     SizedBox(height: spaceMD),
@@ -58,11 +43,7 @@ Future<void> showDialog(
                       padding: EdgeInsets.symmetric(vertical: spaceSM),
                       child: Text(
                         t.privKey.toUpperCase(),
-                        style: TextStyle(
-                          color: primaryLight,
-                          fontSize: textSM,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
@@ -85,36 +66,19 @@ Future<void> showDialog(
                         decoration: InputDecoration(
                           fillColor: secondaryDark,
                           filled: true,
-                          border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.all(cornerRadiusSM),
-                            borderSide: BorderSide.none,
-                          ),
+                          border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusSM), borderSide: BorderSide.none),
                           hintText: t.optionalLabel.toUpperCase(),
-                          hintStyle: TextStyle(
-                            fontSize: textSM,
-                            fontWeight: FontWeight.bold,
-                            overflow: TextOverflow.ellipsis,
-                            color: tertiaryLight,
-                          ),
+                          hintStyle: TextStyle(fontSize: textSM, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis, color: tertiaryLight),
                           isCollapsed: true,
                           floatingLabelBehavior: FloatingLabelBehavior.always,
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: spaceMD,
-                            vertical: spaceSM,
-                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
                           isDense: true,
                         ),
                       ),
                       SizedBox(height: spaceSM),
                       Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: spaceMD,
-                          vertical: spaceSM,
-                        ),
-                        decoration: BoxDecoration(
-                          color: secondaryDark,
-                          borderRadius: BorderRadius.all(cornerRadiusSM),
-                        ),
+                        padding: EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
+                        decoration: BoxDecoration(color: secondaryDark, borderRadius: BorderRadius.all(cornerRadiusSM)),
                         height: textMD * 1.5 + (spaceSM * 2),
                         child: SingleChildScrollView(
                           child: TextField(
@@ -129,9 +93,7 @@ Future<void> showDialog(
                             ),
 
                             decoration: InputDecoration(
-                              border: const OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                              ),
+                              border: const OutlineInputBorder(borderSide: BorderSide.none),
                               hintText: t.sshPrivKeyExample,
                               hintStyle: TextStyle(
                                 fontSize: textSM,
@@ -140,8 +102,7 @@ Future<void> showDialog(
                                 color: tertiaryLight,
                               ),
                               isCollapsed: true,
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
+                              floatingLabelBehavior: FloatingLabelBehavior.always,
                               isDense: true,
                             ),
                           ),

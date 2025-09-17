@@ -87,8 +87,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get detectingChanges => 'Detecting Changes…';
 
   @override
-  String get thisActionCannotBeUndone =>
-      'Diese Aktion kann nicht rückgängig gemacht werden.';
+  String get thisActionCannotBeUndone => 'Diese Aktion kann nicht rückgängig gemacht werden.';
 
   @override
   String get cloneProgressLabel => 'Klon-Fortschritt';
@@ -147,8 +146,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Wenn Sie ein GitHub-Sponsor sind, können Sie Premium-Funktionen kostenlos nutzen. Authentifizieren Sie sich mit GitHub, damit wir Ihren Sponsor-Status verifizieren können.';
 
   @override
-  String get verifyGhSponsorNote =>
-      'Hinweis: Neue Sponsorings können bis zu 1 Tag dauern, bis sie in der App verfügbar sind.';
+  String get verifyGhSponsorNote => 'Hinweis: Neue Sponsorings können bis zu 1 Tag dauern, bis sie in der App verfügbar sind.';
 
   @override
   String get switchToClientMode => 'Switch to Client Mode…';
@@ -222,19 +220,16 @@ class AppLocalizationsDe extends AppLocalizations {
       'Sind Sie sicher, dass Sie diese Änderungen erzwungen pullen möchten? Alle laufenden Merge-Konflikte werden ignoriert.';
 
   @override
-  String get localHistoryOverwriteWarning =>
-      'Diese Aktion wird die lokale Historie überschreiben und kann nicht rückgängig gemacht werden.';
+  String get localHistoryOverwriteWarning => 'Diese Aktion wird die lokale Historie überschreiben und kann nicht rückgängig gemacht werden.';
 
   @override
-  String get forcePushPullMessage =>
-      'Bitte schließen Sie die App nicht, bis der Vorgang abgeschlossen ist.';
+  String get forcePushPullMessage => 'Bitte schließen Sie die App nicht, bis der Vorgang abgeschlossen ist.';
 
   @override
   String get manualSync => 'Manuelle Synchronisation';
 
   @override
-  String get manualSyncMsg =>
-      'Wählen Sie die Dateien aus, die Sie synchronisieren möchten';
+  String get manualSyncMsg => 'Wählen Sie die Dateien aus, die Sie synchronisieren möchten';
 
   @override
   String get selectAll => 'Alle auswählen';
@@ -252,19 +247,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get discardChangesTitle => 'Änderungen verwerfen?';
 
   @override
-  String get discardChangesMsg =>
-      'Sind Sie sicher, dass Sie alle Änderungen an \"%s\" verwerfen möchten?';
+  String get discardChangesMsg => 'Sind Sie sicher, dass Sie alle Änderungen an \"%s\" verwerfen möchten?';
 
   @override
-  String get mergeConflictItemMessage =>
-      'Es gibt einen Merge-Konflikt! Tippen Sie zum Lösen';
+  String get mergeConflictItemMessage => 'Es gibt einen Merge-Konflikt! Tippen Sie zum Lösen';
 
   @override
   String get mergeConflict => 'Merge-Konflikt';
 
   @override
-  String get mergeDialogMessage =>
-      'Verwenden Sie den Editor, um die Merge-Konflikte zu lösen';
+  String get mergeDialogMessage => 'Verwenden Sie den Editor, um die Merge-Konflikte zu lösen';
 
   @override
   String get commitMessage => 'Commit-Nachricht';
@@ -304,8 +296,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get clearDataConfirmTitle => 'Confirm App Data Reset';
 
   @override
-  String get clearDataConfirmMsg =>
-      'This will permanently delete all app data, including Keychain entries. Are you sure you want to proceed?';
+  String get clearDataConfirmMsg => 'This will permanently delete all app data, including Keychain entries. Are you sure you want to proceed?';
 
   @override
   String get iosClearDataAction => 'Clear All Data';
@@ -314,16 +305,14 @@ class AppLocalizationsDe extends AppLocalizations {
   String get legacyAppUserDialogTitle => 'Willkommen zur neuen Version!';
 
   @override
-  String get legacyAppUserDialogMessagePart1 =>
-      'Wir haben die App von Grund auf neu entwickelt für bessere Leistung und zukünftiges Wachstum.';
+  String get legacyAppUserDialogMessagePart1 => 'Wir haben die App von Grund auf neu entwickelt für bessere Leistung und zukünftiges Wachstum.';
 
   @override
   String get legacyAppUserDialogMessagePart2 =>
       'Leider können Ihre alten Einstellungen nicht übernommen werden, sodass Sie alles neu einrichten müssen.\n\nAlle Ihre Lieblingsfunktionen sind noch da. Multi-Repo-Unterstützung ist jetzt Teil eines kleinen einmaligen Upgrades, das die laufende Entwicklung unterstützt.';
 
   @override
-  String get legacyAppUserDialogMessagePart3 =>
-      'Danke, dass Sie bei uns bleiben :)';
+  String get legacyAppUserDialogMessagePart3 => 'Danke, dass Sie bei uns bleiben :)';
 
   @override
   String get setUp => 'Einrichten';
@@ -332,8 +321,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get welcome => 'Willkommen!';
 
   @override
-  String get welcomeMessage =>
-      'Es scheint, als wären Sie zum ersten Mal hier.\n\nMöchten Sie eine kurze Einrichtung durchlaufen, um zu beginnen?';
+  String get welcomeMessage => 'Es scheint, als wären Sie zum ersten Mal hier.\n\nMöchten Sie eine kurze Einrichtung durchlaufen, um zu beginnen?';
 
   @override
   String get welcomePositive => 'Los geht\'s';
@@ -352,8 +340,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Bitte aktivieren Sie die Benachrichtigungsberechtigungen für die beste Erfahrung.\n\nDie App verwendet Benachrichtigungen für \n  • Popup-Sync-Nachrichten (optional)\n  • Fehlerberichte';
 
   @override
-  String get allFilesAccessDialogTitle =>
-      '\"Zugriff auf alle Dateien\" aktivieren';
+  String get allFilesAccessDialogTitle => '\"Zugriff auf alle Dateien\" aktivieren';
 
   @override
   String get allFilesAccessDialogMessage =>
@@ -374,8 +361,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get authDialogTitle => 'Mit einem Git-Anbieter authentifizieren';
 
   @override
-  String get authDialogMessage =>
-      'Bitte authentifizieren Sie sich mit Ihrem gewählten Git-Anbieter und fahren Sie mit dem Klonen Ihres Repos fort!';
+  String get authDialogMessage => 'Bitte authentifizieren Sie sich mit Ihrem gewählten Git-Anbieter und fahren Sie mit dem Klonen Ihres Repos fort!';
 
   @override
   String get authorDetailsPromptTitle => 'Autor-Details erforderlich';
@@ -398,24 +384,19 @@ class AppLocalizationsDe extends AppLocalizations {
       'Halten Sie Ihre Daten mühelos auf dem neuesten Stand. Aktivieren Sie Auto-Sync, um automatisch im Hintergrund zu synchronisieren, wenn Apps geöffnet oder geschlossen werden.';
 
   @override
-  String get addMoreHint =>
-      'Klicken Sie diese Schaltfläche, um weitere Repositorys zur App hinzuzufügen';
+  String get addMoreHint => 'Klicken Sie diese Schaltfläche, um weitere Repositorys zur App hinzuzufügen';
 
   @override
-  String get globalSettingsHint =>
-      'Klicken Sie diese Schaltfläche, um auf die globalen App-Einstellungen zuzugreifen';
+  String get globalSettingsHint => 'Klicken Sie diese Schaltfläche, um auf die globalen App-Einstellungen zuzugreifen';
 
   @override
-  String get syncProgressHint =>
-      'Verfolgen Sie hier den Status aktiver Synchronisationsvorgänge';
+  String get syncProgressHint => 'Verfolgen Sie hier den Status aktiver Synchronisationsvorgänge';
 
   @override
-  String get controlHint =>
-      'Verwenden Sie diese Steuerelemente, um manuell zu synchronisieren oder Repository-Aktionen zu verwalten';
+  String get controlHint => 'Verwenden Sie diese Steuerelemente, um manuell zu synchronisieren oder Repository-Aktionen zu verwalten';
 
   @override
-  String get configHint =>
-      'Konfigurieren Sie Repository-Einstellungen und initialisieren Sie die Einrichtung mit diesem Bereich';
+  String get configHint => 'Konfigurieren Sie Repository-Einstellungen und initialisieren Sie die Einrichtung mit diesem Bereich';
 
   @override
   String get autoSyncOptionsHint =>
@@ -459,8 +440,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get enableApplicationObserver => 'Auto-Sync-Einstellungen';
 
   @override
-  String get accessibilityServiceDisclosureTitle =>
-      'Offenlegung Barrierefreiheitsdienst';
+  String get accessibilityServiceDisclosureTitle => 'Offenlegung Barrierefreiheitsdienst';
 
   @override
   String get accessibilityServiceDisclosureMessage =>
@@ -534,8 +514,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get useForTileManualSync => 'Für manuelle Kachel-Sync verwenden';
 
   @override
-  String get selectYourGitProviderAndAuthenticate =>
-      'Wählen Sie Ihren Git-Anbieter aus und authentifizieren Sie sich';
+  String get selectYourGitProviderAndAuthenticate => 'Wählen Sie Ihren Git-Anbieter aus und authentifizieren Sie sich';
 
   @override
   String get oauthProviders => 'oAuth Providers';
@@ -544,15 +523,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get gitProtocols => 'Git Protocols';
 
   @override
-  String get oauthNoAffiliation =>
-      'Authentifizierung über Drittanbieter;\nkeine Zugehörigkeit oder Befürwortung impliziert.';
+  String get oauthNoAffiliation => 'Authentifizierung über Drittanbieter;\nkeine Zugehörigkeit oder Befürwortung impliziert.';
 
   @override
   String get oauth => 'oauth';
 
   @override
-  String get ensureTokenScope =>
-      'Stellen Sie sicher, dass Ihr Token den \"repo\"-Bereich für volle Funktionalität enthält.';
+  String get ensureTokenScope => 'Stellen Sie sicher, dass Ihr Token den \"repo\"-Bereich für volle Funktionalität enthält.';
 
   @override
   String get user => 'Benutzer';
@@ -585,22 +562,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get sshPubKeyExample => 'ssh-ed25519 AABBCCDDEEFF112233445566';
 
   @override
-  String get sshPrivKeyExample =>
-      '-----BEGIN OPENSSH PRIVATE KEY----- AABBCCDDEEFF112233445566';
+  String get sshPrivKeyExample => '-----BEGIN OPENSSH PRIVATE KEY----- AABBCCDDEEFF112233445566';
 
   @override
   String get generateKeys => 'Schlüssel generieren';
 
   @override
-  String get confirmKeySaved =>
-      'Speicherung des öffentlichen Schlüssels bestätigen';
+  String get confirmKeySaved => 'Speicherung des öffentlichen Schlüssels bestätigen';
 
   @override
   String get copiedText => 'Text kopiert!';
 
   @override
-  String get confirmPrivKeyCopy =>
-      'Kopieren des privaten Schlüssels bestätigen';
+  String get confirmPrivKeyCopy => 'Kopieren des privaten Schlüssels bestätigen';
 
   @override
   String get confirmPrivKeyCopyMsg =>
@@ -647,8 +621,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get cloneMessagePart1 => 'VERLASSEN SIE DIESEN BILDSCHIRM NICHT';
 
   @override
-  String get cloneMessagePart2 =>
-      'Dies kann je nach Größe Ihres Repos eine Weile dauern\n';
+  String get cloneMessagePart2 => 'Dies kann je nach Größe Ihres Repos eine Weile dauern\n';
 
   @override
   String get selectCloneDirectory => 'Wählen Sie einen Ordner zum Klonen aus';
@@ -657,8 +630,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get confirmCloneOverwriteTitle => 'Ordner nicht leer';
 
   @override
-  String get confirmCloneOverwriteMsg =>
-      'Der ausgewählte Ordner enthält bereits Dateien. Das Klonen hinein wird dessen Inhalte überschreiben.';
+  String get confirmCloneOverwriteMsg => 'Der ausgewählte Ordner enthält bereits Dateien. Das Klonen hinein wird dessen Inhalte überschreiben.';
 
   @override
   String get confirmCloneOverwriteWarning => 'Diese Aktion ist irreversibel.';
@@ -697,8 +669,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get syncMessageTimeFormatLabel => 'Zeitformat für Sync-Nachricht';
 
   @override
-  String get syncMessageTimeFormatDescription =>
-      'Verwendet Standard-Datetime-Formatierungssyntax';
+  String get syncMessageTimeFormatDescription => 'Verwendet Standard-Datetime-Formatierungssyntax';
 
   @override
   String get remoteLabel => 'Standard-Remote';
@@ -722,8 +693,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get gitIgnore => '.gitignore';
 
   @override
-  String get gitIgnoreDescription =>
-      'Dateien oder Ordner auflisten, die auf allen Geräten ignoriert werden sollen';
+  String get gitIgnoreDescription => 'Dateien oder Ordner auflisten, die auf allen Geräten ignoriert werden sollen';
 
   @override
   String get gitIgnoreHint => '.trash/\n./…';
@@ -732,8 +702,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get gitInfoExclude => '.git/info/exclude';
 
   @override
-  String get gitInfoExcludeDescription =>
-      'Dateien oder Ordner auflisten, die auf diesem Gerät ignoriert werden sollen';
+  String get gitInfoExcludeDescription => 'Dateien oder Ordner auflisten, die auf diesem Gerät ignoriert werden sollen';
 
   @override
   String get gitInfoExcludeHint => '.trash/\n./…';
@@ -745,8 +714,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get disableSslPromptTitle => 'Disable SSL?';
 
   @override
-  String get disableSslPromptMsg =>
-      'The address you cloned starts with \"http\" (not secure). Disabling SSL will match the URL but reduce security.';
+  String get disableSslPromptMsg => 'The address you cloned starts with \"http\" (not secure). Disabling SSL will match the URL but reduce security.';
 
   @override
   String get proceedAnyway => 'Proceed anyway?';
@@ -764,8 +732,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get browseEditDir => 'Browse & Edit Directory';
 
   @override
-  String get backupRestoreTitle =>
-      'Verschlüsselte Konfigurationswiederherstellung';
+  String get backupRestoreTitle => 'Verschlüsselte Konfigurationswiederherstellung';
 
   @override
   String get backup => 'Sicherung';
@@ -843,8 +810,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get confirmFileDirDeleteTitle => 'Confirm %s Deletion';
 
   @override
-  String get confirmFileDirDeleteMsg =>
-      'Are you sure you want to delete the %s \"%s\" %s?';
+  String get confirmFileDirDeleteMsg => 'Are you sure you want to delete the %s \"%s\" %s?';
 
   @override
   String get deleteMultipleSuffix => 'and %s more and their contents';
@@ -886,8 +852,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get renameRepository => 'Repository umbenennen';
 
   @override
-  String get renameRepositoryMsg =>
-      'Geben Sie einen neuen Alias für den Repository-Container ein';
+  String get renameRepositoryMsg => 'Geben Sie einen neuen Alias für den Repository-Container ein';
 
   @override
   String get addMore => 'Weitere hinzufügen';
@@ -903,19 +868,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get confirmRepositoryDelete => 'Repository-Löschung bestätigen';
 
   @override
-  String get confirmRepositoryDeleteMsg =>
-      'Sind Sie sicher, dass Sie den Repository-Container \"%s\" löschen möchten?';
+  String get confirmRepositoryDeleteMsg => 'Sind Sie sicher, dass Sie den Repository-Container \"%s\" löschen möchten?';
 
   @override
-  String get deleteRepoDirectoryCheckbox =>
-      'Auch das Repository-Verzeichnis und alle seine Inhalte löschen';
+  String get deleteRepoDirectoryCheckbox => 'Auch das Repository-Verzeichnis und alle seine Inhalte löschen';
 
   @override
   String get confirmRepositoryDeleteTitle => 'Repository-Löschung bestätigen';
 
   @override
-  String get confirmRepositoryDeleteMessage =>
-      'Sind Sie sicher, dass Sie das Repository \"%s\" und seine Inhalte löschen möchten?';
+  String get confirmRepositoryDeleteMessage => 'Sind Sie sicher, dass Sie das Repository \"%s\" und seine Inhalte löschen möchten?';
 
   @override
   String get submodulesFoundTitle => 'Submodules Found';
@@ -931,15 +893,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get confirmBranchCheckoutTitle => 'Branch auschecken?';
 
   @override
-  String get confirmBranchCheckoutMsgPart1 =>
-      'Sind Sie sicher, dass Sie den Branch ';
+  String get confirmBranchCheckoutMsgPart1 => 'Sind Sie sicher, dass Sie den Branch ';
 
   @override
   String get confirmBranchCheckoutMsgPart2 => ' auschecken möchten?';
 
   @override
-  String get unsavedChangesMayBeLost =>
-      'Nicht gespeicherte Änderungen könnten verloren gehen.';
+  String get unsavedChangesMayBeLost => 'Nicht gespeicherte Änderungen könnten verloren gehen.';
 
   @override
   String get checkout => 'Auschecken';
@@ -963,40 +923,34 @@ class AppLocalizationsDe extends AppLocalizations {
   String get youreOffline => 'Sie sind offline.';
 
   @override
-  String get someFeaturesMayNotWork =>
-      'Einige Funktionen funktionieren möglicherweise nicht.';
+  String get someFeaturesMayNotWork => 'Einige Funktionen funktionieren möglicherweise nicht.';
 
   @override
   String get ongoingMergeConflict => 'Laufender Merge-Konflikt';
 
   @override
-  String get enableAccessibilityService =>
-      'Bitte aktivieren Sie Git Sync unter \"Installierte Apps\"';
+  String get enableAccessibilityService => 'Bitte aktivieren Sie Git Sync unter \"Installierte Apps\"';
 
   @override
   String get networkUnavailable => 'Netzwerk nicht verfügbar!';
 
   @override
-  String get networkUnavailableRetry =>
-      'Netzwerk nicht verfügbar!\nGitSync wird es erneut versuchen, wenn die Verbindung wiederhergestellt ist';
+  String get networkUnavailableRetry => 'Netzwerk nicht verfügbar!\nGitSync wird es erneut versuchen, wenn die Verbindung wiederhergestellt ist';
 
   @override
-  String get pullFailed =>
-      'Pull fehlgeschlagen! Bitte prüfen Sie auf nicht-commitete Änderungen und versuchen Sie es erneut.';
+  String get pullFailed => 'Pull fehlgeschlagen! Bitte prüfen Sie auf nicht-commitete Änderungen und versuchen Sie es erneut.';
 
   @override
   String get reportABug => 'Fehler melden';
 
   @override
-  String get reportBug =>
-      '<GitSync-Fehler> Tippen Sie, um einen Fehlerbericht zu senden';
+  String get reportBug => '<GitSync-Fehler> Tippen Sie, um einen Fehlerbericht zu senden';
 
   @override
   String get unknownError => 'Unbekannter Fehler';
 
   @override
-  String get enableNotifications =>
-      'Aktivieren Sie die Benachrichtigungsberechtigung, um mehr zu sehen.';
+  String get enableNotifications => 'Aktivieren Sie die Benachrichtigungsberechtigung, um mehr zu sehen.';
 
   @override
   String get errorOccurredTitle => 'Ein Fehler ist aufgetreten!';
@@ -1006,8 +960,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Falls dies Probleme verursacht hat, erstellen Sie bitte schnell einen Fehlerbericht mit der Schaltfläche unten.';
 
   @override
-  String get errorOccurredMessagePart2 =>
-      'Andernfalls können Sie schließen und fortfahren.';
+  String get errorOccurredMessagePart2 => 'Andernfalls können Sie schließen und fortfahren.';
 
   @override
   String get applicationError => 'Anwendungsfehler!';
@@ -1017,26 +970,22 @@ class AppLocalizationsDe extends AppLocalizations {
       'Fehlende Repository-Autor-Details. Bitte setzen Sie Ihren Namen und Ihre E-Mail in den Repository-Einstellungen.';
 
   @override
-  String get authMethodMismatchError =>
-      'Authentifizierungsmethoden-Konflikt. Verwenden Sie SSH für SSH-Repositorys und HTTPS für HTTP-Repositorys.';
+  String get authMethodMismatchError => 'Authentifizierungsmethoden-Konflikt. Verwenden Sie SSH für SSH-Repositorys und HTTPS für HTTP-Repositorys.';
 
   @override
   String get outOfMemory => 'Der Anwendung ist der Speicher ausgegangen!';
 
   @override
-  String get invalidRemote =>
-      'Ungültiges Remote! Ändern Sie dies in den Einstellungen';
+  String get invalidRemote => 'Ungültiges Remote! Ändern Sie dies in den Einstellungen';
 
   @override
-  String get largeFile =>
-      'Einzelne Dateien größer als 50MB werden nicht unterstützt!';
+  String get largeFile => 'Einzelne Dateien größer als 50MB werden nicht unterstützt!';
 
   @override
   String get cloneFailed => 'Repository konnte nicht geklont werden!';
 
   @override
-  String get inaccessibleDirectoryMessage =>
-      'Nicht zugängliches Verzeichnis! Bitte wählen Sie einen anderen Standort.';
+  String get inaccessibleDirectoryMessage => 'Nicht zugängliches Verzeichnis! Bitte wählen Sie einen anderen Standort.';
 
   @override
   String get autoRebaseFailedException =>
@@ -1046,15 +995,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get nonExistingException => 'Remote-Ref existierte nicht.';
 
   @override
-  String get rejectedNodeleteException =>
-      'Remote-Ref-Update wurde abgelehnt, weil die Remote-Seite das Löschen von Refs nicht unterstützt/erlaubt.';
+  String get rejectedNodeleteException => 'Remote-Ref-Update wurde abgelehnt, weil die Remote-Seite das Löschen von Refs nicht unterstützt/erlaubt.';
 
   @override
   String get rejectedException => 'Remote-Ref-Update wurde abgelehnt.';
 
   @override
-  String get rejectionWithReasonException =>
-      'Remote-Ref-Update wurde abgelehnt, weil %s.';
+  String get rejectionWithReasonException => 'Remote-Ref-Update wurde abgelehnt, weil %s.';
 
   @override
   String get remoteChangedException =>
@@ -1067,23 +1014,20 @@ class AppLocalizationsDe extends AppLocalizations {
   String get fieldCannotBeEmpty => 'Feld darf nicht leer sein';
 
   @override
-  String get githubIssueOauthTitle =>
-      'GitHub verbinden, um automatisch zu melden';
+  String get githubIssueOauthTitle => 'GitHub verbinden, um automatisch zu melden';
 
   @override
   String get githubIssueOauthMsg =>
       'Sie müssen Ihr GitHub-Konto verbinden, um Fehler zu melden und deren Fortschritt zu verfolgen.\nSie können diese Verbindung jederzeit in den globalen Einstellungen zurücksetzen.';
 
   @override
-  String get issueReportMessage =>
-      'Logs werden automatisch mit Berichten eingefügt';
+  String get issueReportMessage => 'Logs werden automatisch mit Berichten eingefügt';
 
   @override
   String get issueReportTitleTitle => 'Titel';
 
   @override
-  String get issueReportTitleDesc =>
-      'Ein paar Worte, die das Problem zusammenfassen';
+  String get issueReportTitleDesc => 'Ein paar Worte, die das Problem zusammenfassen';
 
   @override
   String get issueReportDescTitle => 'Beschreibung';
@@ -1095,8 +1039,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get issueReportMinimalReproTitle => 'Reproduktionsschritte';
 
   @override
-  String get issueReportMinimalReproDesc =>
-      'Minimale Schritte zur Reproduktion des Problems';
+  String get issueReportMinimalReproDesc => 'Minimale Schritte zur Reproduktion des Problems';
 
   @override
   String get report => 'Melden';

@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'package:GitSync/api/logger.dart';
 import 'package:GitSync/constant/strings.dart';
-import 'package:oauth2_client/oauth2_helper.dart';
-import 'package:path/path.dart';
 
 import '../../manager/auth/git_provider_manager.dart';
 import '../../../constant/secrets.dart';

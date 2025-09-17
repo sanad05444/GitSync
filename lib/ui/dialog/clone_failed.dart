@@ -14,11 +14,7 @@ Future<void> showDialog(BuildContext context, String errorMessage) {
         width: MediaQuery.of(context).size.width,
         child: Text(
           cloneFailed,
-          style: TextStyle(
-            color: primaryLight,
-            fontSize: textXL,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
         ),
       ),
       content: SingleChildScrollView(
@@ -26,11 +22,7 @@ Future<void> showDialog(BuildContext context, String errorMessage) {
           children: [
             Text(
               errorMessage,
-              style: const TextStyle(
-                color: tertiaryNegative,
-                fontWeight: FontWeight.bold,
-                fontSize: textSM,
-              ),
+              style: const TextStyle(color: tertiaryNegative, fontWeight: FontWeight.bold, fontSize: textSM),
             ),
           ],
         ),

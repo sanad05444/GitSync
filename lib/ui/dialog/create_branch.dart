@@ -6,10 +6,7 @@ import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
 import 'package:GitSync/global.dart';
 
-Future<void> showDialog(
-  BuildContext context,
-  Future<void> Function(String branchName, String basedOn) callback,
-) async {
+Future<void> showDialog(BuildContext context, Future<void> Function(String branchName, String basedOn) callback) async {
   final textController = TextEditingController();
   String? basedOnBranchName = await GitManager.getBranchName();
 
@@ -21,11 +18,7 @@ Future<void> showDialog(
           width: MediaQuery.of(context).size.width,
           child: Text(
             t.createBranch,
-            style: TextStyle(
-              color: primaryLight,
-              fontSize: textXL,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
           ),
         ),
         content: SingleChildScrollView(
@@ -45,24 +38,14 @@ Future<void> showDialog(
                 decoration: InputDecoration(
                   fillColor: secondaryDark,
                   filled: true,
-                  border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(cornerRadiusSM),
-                    borderSide: BorderSide.none,
-                  ),
+                  border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusSM), borderSide: BorderSide.none),
                   isCollapsed: true,
                   label: Text(
                     t.createBranchName.toUpperCase(),
-                    style: TextStyle(
-                      color: secondaryLight,
-                      fontSize: textSM,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(color: secondaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                   ),
                   floatingLabelBehavior: FloatingLabelBehavior.always,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: spaceMD,
-                    vertical: spaceSM,
-                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
                   isDense: true,
                 ),
                 onChanged: (_) => setState(() {}),
@@ -77,32 +60,16 @@ Future<void> showDialog(
                       future: GitManager.getBranchNames(),
                       builder: (context, branchNamesSnapshot) => Container(
                         width: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(cornerRadiusSM),
-                          color: secondaryDark,
-                        ),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.all(cornerRadiusSM), color: secondaryDark),
                         child: DropdownButton(
                           isDense: true,
                           isExpanded: true,
                           hint: Text(
                             t.detachedHead.toUpperCase(),
-                            style: TextStyle(
-                              fontSize: textMD,
-                              fontWeight: FontWeight.bold,
-                              color: secondaryLight,
-                            ),
+                            style: TextStyle(fontSize: textMD, fontWeight: FontWeight.bold, color: secondaryLight),
                           ),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: spaceMD,
-                            vertical: spaceXS,
-                          ),
-                          value:
-                              branchNamesSnapshot.data?.contains(
-                                    branchNameSnapshot.data,
-                                  ) ==
-                                  true
-                              ? branchNameSnapshot.data
-                              : null,
+                          padding: EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceXS),
+                          value: branchNamesSnapshot.data?.contains(branchNameSnapshot.data) == true ? branchNameSnapshot.data : null,
                           menuMaxHeight: 250,
                           dropdownColor: secondaryDark,
                           borderRadius: BorderRadius.all(cornerRadiusSM),
@@ -112,13 +79,8 @@ Future<void> showDialog(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  (branchNamesSnapshot.data ?? [])[index]
-                                      .toUpperCase(),
-                                  style: TextStyle(
-                                    fontSize: textMD,
-                                    fontWeight: FontWeight.bold,
-                                    color: primaryLight,
-                                  ),
+                                  (branchNamesSnapshot.data ?? [])[index].toUpperCase(),
+                                  style: TextStyle(fontSize: textMD, fontWeight: FontWeight.bold, color: primaryLight),
                                 ),
                               ],
                             ),
@@ -153,11 +115,7 @@ Future<void> showDialog(
                     left: spaceMD,
                     child: Text(
                       t.createBranchBasedOn.toUpperCase(),
-                      style: TextStyle(
-                        color: secondaryLight,
-                        fontSize: textXXS,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(color: secondaryLight, fontSize: textXXS, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
@@ -176,23 +134,16 @@ Future<void> showDialog(
             },
           ),
           TextButton(
-            onPressed:
-                (textController.text.isNotEmpty && basedOnBranchName != null)
+            onPressed: (textController.text.isNotEmpty && basedOnBranchName != null)
                 ? () async {
-                    Navigator.of(context).canPop()
-                        ? Navigator.pop(context)
-                        : null;
+                    Navigator.of(context).canPop() ? Navigator.pop(context) : null;
                     await callback(textController.text, basedOnBranchName!);
                   }
                 : null,
             child: Text(
               t.add.toUpperCase(),
               style: TextStyle(
-                color:
-                    (textController.text.isNotEmpty &&
-                        basedOnBranchName != null)
-                    ? primaryPositive
-                    : secondaryPositive,
+                color: (textController.text.isNotEmpty && basedOnBranchName != null) ? primaryPositive : secondaryPositive,
                 fontSize: textMD,
               ),
             ),

@@ -51,11 +51,7 @@ class _ItemSetting extends State<ItemSetting> {
           padding: EdgeInsets.symmetric(horizontal: spaceMD),
           child: Text(
             widget.title.toUpperCase(),
-            style: TextStyle(
-              color: primaryLight,
-              fontSize: textMD,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
           ),
         ),
         widget.description == null
@@ -64,37 +60,23 @@ class _ItemSetting extends State<ItemSetting> {
                 padding: EdgeInsets.symmetric(horizontal: spaceMD),
                 child: Text(
                   widget.description ?? "",
-                  style: TextStyle(
-                    color: secondaryLight,
-                    fontSize: textSM,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(color: secondaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                 ),
               ),
         SizedBox(height: spaceSM),
         widget.isTextArea
             ? Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: spaceMD,
-                  vertical: spaceSM,
-                ),
-                decoration: BoxDecoration(
-                  color: tertiaryDark,
-                  borderRadius: BorderRadius.all(cornerRadiusMD),
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
+                decoration: BoxDecoration(color: tertiaryDark, borderRadius: BorderRadius.all(cornerRadiusMD)),
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: ConstrainedBox(
                     constraints: BoxConstraints(maxWidth: double.maxFinite),
                     child: TextField(
                       controller: controller,
-                      maxLines: widget.maxLines != null && widget.maxLines! < 1
-                          ? null
-                          : widget.maxLines,
-                      minLines: widget.minLines != null && widget.minLines! < 1
-                          ? 4
-                          : widget.minLines,
+                      maxLines: widget.maxLines != null && widget.maxLines! < 1 ? null : widget.maxLines,
+                      minLines: widget.minLines != null && widget.minLines! < 1 ? 4 : widget.minLines,
                       style: TextStyle(
                         color: primaryLight,
                         fontWeight: FontWeight.bold,
@@ -103,9 +85,7 @@ class _ItemSetting extends State<ItemSetting> {
                         fontSize: textMD,
                       ),
                       decoration: InputDecoration(
-                        border: const OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                        ),
+                        border: const OutlineInputBorder(borderSide: BorderSide.none),
                         isCollapsed: true,
                         hintText: widget.hint,
                         contentPadding: const EdgeInsets.all(0),
@@ -119,12 +99,8 @@ class _ItemSetting extends State<ItemSetting> {
             : TextField(
                 controller: controller,
                 // controller: TextEditingController()..text = ',
-                maxLines: widget.maxLines != null && widget.maxLines! < 1
-                    ? (widget.isTextArea ? null : 1)
-                    : widget.maxLines,
-                minLines: widget.minLines != null && widget.minLines! < 1
-                    ? (widget.isTextArea ? 4 : 1)
-                    : widget.minLines,
+                maxLines: widget.maxLines != null && widget.maxLines! < 1 ? (widget.isTextArea ? null : 1) : widget.maxLines,
+                minLines: widget.minLines != null && widget.minLines! < 1 ? (widget.isTextArea ? 4 : 1) : widget.minLines,
                 style: TextStyle(
                   color: primaryLight,
                   fontWeight: FontWeight.bold,
@@ -135,17 +111,11 @@ class _ItemSetting extends State<ItemSetting> {
                 decoration: InputDecoration(
                   fillColor: tertiaryDark,
                   filled: true,
-                  border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(cornerRadiusMD),
-                    borderSide: BorderSide.none,
-                  ),
+                  border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusMD), borderSide: BorderSide.none),
                   isCollapsed: true,
                   hintText: widget.hint,
                   floatingLabelBehavior: FloatingLabelBehavior.always,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: spaceMD,
-                    vertical: spaceSM,
-                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
                   isDense: true,
                 ),
                 onChanged: (value) => widget.setFn(value),

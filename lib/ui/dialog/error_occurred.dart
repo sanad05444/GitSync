@@ -8,8 +8,7 @@ import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
 import 'package:GitSync/global.dart';
 
-final Map<String, Future<void> Function([int? repomanRepoindex])>
-autoFixCallbackMap = {
+final Map<String, Future<void> Function([int? repomanRepoindex])> autoFixCallbackMap = {
   invalidIndexHeaderError: GitManager.deleteGitIndex,
   invalidDataInIndexInvalidEntry: GitManager.deleteGitIndex,
   invalidDataInIndexExtensionIsTruncated: GitManager.deleteGitIndex,
@@ -18,11 +17,7 @@ autoFixCallbackMap = {
 };
 final GlobalKey errorDialogKey = GlobalKey();
 
-Future<void> showDialog(
-  BuildContext context,
-  String error,
-  Function() callback,
-) {
+Future<void> showDialog(BuildContext context, String error, Function() callback) {
   bool autoFixing = false;
 
   return mat.showDialog(
@@ -32,11 +27,7 @@ Future<void> showDialog(
       title: SizedBox(
         child: Text(
           t.errorOccurredTitle,
-          style: TextStyle(
-            color: primaryLight,
-            fontSize: textXL,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
         ),
       ),
       content: SingleChildScrollView(
@@ -44,11 +35,7 @@ Future<void> showDialog(
           children: [
             Text(
               error,
-              style: const TextStyle(
-                color: tertiaryNegative,
-                fontWeight: FontWeight.bold,
-                fontSize: textSM,
-              ),
+              style: const TextStyle(color: tertiaryNegative, fontWeight: FontWeight.bold, fontSize: textSM),
             ),
             SizedBox(height: spaceMD),
             ...autoFixCallbackMap.containsKey(error.split(";")[0])
@@ -66,28 +53,16 @@ Future<void> showDialog(
                           autoFixing = false;
                           setState(() {});
 
-                          Navigator.of(context).canPop()
-                              ? Navigator.pop(context)
-                              : null;
+                          Navigator.of(context).canPop() ? Navigator.pop(context) : null;
                         },
                         style: ButtonStyle(
                           alignment: Alignment.center,
-                          backgroundColor: WidgetStatePropertyAll(
-                            secondaryDark,
-                          ),
-                          padding: WidgetStatePropertyAll(
-                            EdgeInsets.symmetric(
-                              horizontal: spaceMD,
-                              vertical: spaceMD,
-                            ),
-                          ),
+                          backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                          padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
                           shape: WidgetStatePropertyAll(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.all(cornerRadiusMD),
-                              side: BorderSide(
-                                color: primaryPositive,
-                                width: spaceXXXS,
-                              ),
+                              side: BorderSide(color: primaryPositive, width: spaceXXXS),
                             ),
                           ),
                         ),
@@ -95,22 +70,12 @@ Future<void> showDialog(
                             ? SizedBox(
                                 height: textSM,
                                 width: textSM,
-                                child: CircularProgressIndicator(
-                                  color: primaryPositive,
-                                ),
+                                child: CircularProgressIndicator(color: primaryPositive),
                               )
-                            : FaIcon(
-                                FontAwesomeIcons.bugSlash,
-                                color: primaryPositive,
-                                size: textLG,
-                              ),
+                            : FaIcon(FontAwesomeIcons.bugSlash, color: primaryPositive, size: textLG),
                         label: Text(
                           t.attemptAutoFix.toUpperCase(),
-                          style: TextStyle(
-                            color: primaryPositive,
-                            fontSize: textSM,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: TextStyle(color: primaryPositive, fontSize: textSM, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
@@ -119,20 +84,12 @@ Future<void> showDialog(
                 : [],
             Text(
               t.errorOccurredMessagePart1,
-              style: const TextStyle(
-                color: primaryLight,
-                fontWeight: FontWeight.bold,
-                fontSize: textSM,
-              ),
+              style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
             ),
             SizedBox(height: spaceSM),
             Text(
               t.errorOccurredMessagePart2,
-              style: const TextStyle(
-                color: primaryLight,
-                fontWeight: FontWeight.bold,
-                fontSize: textSM,
-              ),
+              style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
             ),
           ],
         ),

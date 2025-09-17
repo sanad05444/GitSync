@@ -7,10 +7,7 @@ import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
 
-Future<void> showDialog(
-  BuildContext context,
-  Future<void> Function() callback,
-) {
+Future<void> showDialog(BuildContext context, Future<void> Function() callback) {
   if (Platform.isIOS) return Future.value();
 
   return mat.showDialog(
@@ -20,11 +17,7 @@ Future<void> showDialog(
         width: MediaQuery.of(context).size.width,
         child: Text(
           t.accessibilityServiceDisclosureTitle,
-          style: TextStyle(
-            color: primaryLight,
-            fontSize: textXL,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
         ),
       ),
       content: SingleChildScrollView(
@@ -32,11 +25,7 @@ Future<void> showDialog(
           children: [
             Text(
               t.accessibilityServiceDisclosureMessage,
-              style: const TextStyle(
-                color: primaryLight,
-                fontWeight: FontWeight.bold,
-                fontSize: textSM,
-              ),
+              style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
             ),
           ],
         ),

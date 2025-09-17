@@ -146,8 +146,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Если вы являетесь спонсором GitHub, вы можете получить доступ к премиум-функциям бесплатно. Авторизуйтесь через GitHub, чтобы мы могли проверить ваш статус спонсора.';
 
   @override
-  String get verifyGhSponsorNote =>
-      'Примечание: новые спонсорства могут стать доступными в приложении в течение 1 дня.';
+  String get verifyGhSponsorNote => 'Примечание: новые спонсорства могут стать доступными в приложении в течение 1 дня.';
 
   @override
   String get switchToClientMode => 'Switch to Client Mode…';
@@ -204,8 +203,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get confirmForcePush => 'Подтвердить принудительную отправку';
 
   @override
-  String get confirmForcePushMsg =>
-      'Вы уверены, что хотите принудительно отправить эти изменения? Все текущие конфликты слияния будут прерваны.';
+  String get confirmForcePushMsg => 'Вы уверены, что хотите принудительно отправить эти изменения? Все текущие конфликты слияния будут прерваны.';
 
   @override
   String get forcePull => 'Принудительное получение';
@@ -221,19 +219,16 @@ class AppLocalizationsRu extends AppLocalizations {
       'Вы уверены, что хотите принудительно получить эти изменения? Все текущие конфликты слияния будут проигнорированы.';
 
   @override
-  String get localHistoryOverwriteWarning =>
-      'Это действие перезапишет локальную историю и не может быть отменено.';
+  String get localHistoryOverwriteWarning => 'Это действие перезапишет локальную историю и не может быть отменено.';
 
   @override
-  String get forcePushPullMessage =>
-      'Пожалуйста, не закрывайте и не выходите из приложения до завершения процесса.';
+  String get forcePushPullMessage => 'Пожалуйста, не закрывайте и не выходите из приложения до завершения процесса.';
 
   @override
   String get manualSync => 'Ручная синхронизация';
 
   @override
-  String get manualSyncMsg =>
-      'Выберите файлы, которые вы хотите синхронизировать';
+  String get manualSyncMsg => 'Выберите файлы, которые вы хотите синхронизировать';
 
   @override
   String get selectAll => 'Выбрать все';
@@ -251,19 +246,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get discardChangesTitle => 'Отменить изменения?';
 
   @override
-  String get discardChangesMsg =>
-      'Вы уверены, что хотите отменить все изменения в \"%s\"?';
+  String get discardChangesMsg => 'Вы уверены, что хотите отменить все изменения в \"%s\"?';
 
   @override
-  String get mergeConflictItemMessage =>
-      'Есть конфликт слияния! Нажмите для разрешения';
+  String get mergeConflictItemMessage => 'Есть конфликт слияния! Нажмите для разрешения';
 
   @override
   String get mergeConflict => 'Конфликт слияния';
 
   @override
-  String get mergeDialogMessage =>
-      'Используйте редактор для разрешения конфликтов слияния';
+  String get mergeDialogMessage => 'Используйте редактор для разрешения конфликтов слияния';
 
   @override
   String get commitMessage => 'Сообщение коммита';
@@ -303,8 +295,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get clearDataConfirmTitle => 'Confirm App Data Reset';
 
   @override
-  String get clearDataConfirmMsg =>
-      'This will permanently delete all app data, including Keychain entries. Are you sure you want to proceed?';
+  String get clearDataConfirmMsg => 'This will permanently delete all app data, including Keychain entries. Are you sure you want to proceed?';
 
   @override
   String get iosClearDataAction => 'Clear All Data';
@@ -313,16 +304,14 @@ class AppLocalizationsRu extends AppLocalizations {
   String get legacyAppUserDialogTitle => 'Добро пожаловать в новую версию!';
 
   @override
-  String get legacyAppUserDialogMessagePart1 =>
-      'Мы полностью перестроили приложение для лучшей производительности и будущего роста.';
+  String get legacyAppUserDialogMessagePart1 => 'Мы полностью перестроили приложение для лучшей производительности и будущего роста.';
 
   @override
   String get legacyAppUserDialogMessagePart2 =>
       'К сожалению, ваши старые настройки не могут быть перенесены, поэтому вам нужно будет настроить все заново.\n\nВсе ваши любимые функции по-прежнему здесь. Поддержка нескольких репозиториев теперь является частью небольшого разового обновления, которое помогает поддерживать дальнейшую разработку.';
 
   @override
-  String get legacyAppUserDialogMessagePart3 =>
-      'Спасибо, что остаетесь с нами :)';
+  String get legacyAppUserDialogMessagePart3 => 'Спасибо, что остаетесь с нами :)';
 
   @override
   String get setUp => 'Настроить';
@@ -331,8 +320,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get welcome => 'Добро пожаловать!';
 
   @override
-  String get welcomeMessage =>
-      'Похоже, вы здесь впервые.\n\nХотели бы вы пройти быструю настройку для начала работы?';
+  String get welcomeMessage => 'Похоже, вы здесь впервые.\n\nХотели бы вы пройти быструю настройку для начала работы?';
 
   @override
   String get welcomePositive => 'Поехали';
@@ -372,15 +360,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get authDialogTitle => 'Авторизация у провайдера Git';
 
   @override
-  String get authDialogMessage =>
-      'Пожалуйста, авторизуйтесь у выбранного провайдера git и продолжите клонирование вашего репозитория!';
+  String get authDialogMessage => 'Пожалуйста, авторизуйтесь у выбранного провайдера git и продолжите клонирование вашего репозитория!';
 
   @override
   String get authorDetailsPromptTitle => 'Требуются данные автора';
 
   @override
-  String get authorDetailsPromptMessage =>
-      'Отсутствует имя автора или email. Пожалуйста, обновите их в настройках репозитория перед синхронизацией.';
+  String get authorDetailsPromptMessage => 'Отсутствует имя автора или email. Пожалуйста, обновите их в настройках репозитория перед синхронизацией.';
 
   @override
   String get authorDetailsShowcasePrompt => 'Fill out your author details';
@@ -396,24 +382,19 @@ class AppLocalizationsRu extends AppLocalizations {
       'Поддерживайте ваши данные актуальными без усилий. Включите автосинхронизацию для автоматической синхронизации в фоне при открытии или закрытии приложений.';
 
   @override
-  String get addMoreHint =>
-      'Нажмите эту кнопку, чтобы добавить дополнительные репозитории в приложение';
+  String get addMoreHint => 'Нажмите эту кнопку, чтобы добавить дополнительные репозитории в приложение';
 
   @override
-  String get globalSettingsHint =>
-      'Нажмите эту кнопку для доступа к глобальным настройкам приложения';
+  String get globalSettingsHint => 'Нажмите эту кнопку для доступа к глобальным настройкам приложения';
 
   @override
-  String get syncProgressHint =>
-      'Отслеживайте статус активных операций синхронизации здесь';
+  String get syncProgressHint => 'Отслеживайте статус активных операций синхронизации здесь';
 
   @override
-  String get controlHint =>
-      'Используйте эти элементы управления для ручной синхронизации или управления действиями репозитория';
+  String get controlHint => 'Используйте эти элементы управления для ручной синхронизации или управления действиями репозитория';
 
   @override
-  String get configHint =>
-      'Настройте параметры репозитория и инициализируйте настройку, используя этот раздел';
+  String get configHint => 'Настройте параметры репозитория и инициализируйте настройку, используя этот раздел';
 
   @override
   String get autoSyncOptionsHint =>
@@ -457,8 +438,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get enableApplicationObserver => 'Настройки автосинхронизации';
 
   @override
-  String get accessibilityServiceDisclosureTitle =>
-      'Раскрытие информации о службе специальных возможностей';
+  String get accessibilityServiceDisclosureTitle => 'Раскрытие информации о службе специальных возможностей';
 
   @override
   String get accessibilityServiceDisclosureMessage =>
@@ -505,8 +485,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get aboutEvery => '~каждые';
 
   @override
-  String get enhancedScheduledSync =>
-      'Расширенная запланированная синхронизация';
+  String get enhancedScheduledSync => 'Расширенная запланированная синхронизация';
 
   @override
   String get enhancedScheduledSyncMsg1 =>
@@ -517,8 +496,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Синхронизируйте ваши репозитории в фоне так часто, как раз в минуту, даже когда приложение закрыто!\n\nБез усилий, непрерывные обновления означают, что ваши репозитории всегда готовы, когда вы готовы.';
 
   @override
-  String get enhancedScheduledSyncNote =>
-      'Примечание: Фоновая синхронизация может быть затронута режимами энергосбережения и \"Не беспокоить\".';
+  String get enhancedScheduledSyncNote => 'Примечание: Фоновая синхронизация может быть затронута режимами энергосбережения и \"Не беспокоить\".';
 
   @override
   String get tileSyncSettings => 'Настройки синхронизации плитки';
@@ -530,12 +508,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get useForTileSync => 'Использовать для синхронизации плитки';
 
   @override
-  String get useForTileManualSync =>
-      'Использовать для ручной синхронизации плитки';
+  String get useForTileManualSync => 'Использовать для ручной синхронизации плитки';
 
   @override
-  String get selectYourGitProviderAndAuthenticate =>
-      'Выберите вашего провайдера git и авторизуйтесь';
+  String get selectYourGitProviderAndAuthenticate => 'Выберите вашего провайдера git и авторизуйтесь';
 
   @override
   String get oauthProviders => 'oAuth Providers';
@@ -544,15 +520,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get gitProtocols => 'Git Protocols';
 
   @override
-  String get oauthNoAffiliation =>
-      'Авторизация через третьи стороны;\nникакой принадлежности или одобрения не подразумевается.';
+  String get oauthNoAffiliation => 'Авторизация через третьи стороны;\nникакой принадлежности или одобрения не подразумевается.';
 
   @override
   String get oauth => 'oauth';
 
   @override
-  String get ensureTokenScope =>
-      'Убедитесь, что ваш токен включает область \"repo\" для полной функциональности.';
+  String get ensureTokenScope => 'Убедитесь, что ваш токен включает область \"repo\" для полной функциональности.';
 
   @override
   String get user => 'пользователь';
@@ -585,8 +559,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get sshPubKeyExample => 'ssh-ed25519 AABBCCDDEEFF112233445566';
 
   @override
-  String get sshPrivKeyExample =>
-      '-----BEGIN OPENSSH PRIVATE KEY----- AABBCCDDEEFF112233445566';
+  String get sshPrivKeyExample => '-----BEGIN OPENSSH PRIVATE KEY----- AABBCCDDEEFF112233445566';
 
   @override
   String get generateKeys => 'сгенерировать ключи';
@@ -645,8 +618,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get cloneMessagePart1 => 'НЕ ВЫХОДИТЕ С ЭТОГО ЭКРАНА';
 
   @override
-  String get cloneMessagePart2 =>
-      'Это может занять некоторое время в зависимости от размера вашего репозитория\n';
+  String get cloneMessagePart2 => 'Это может занять некоторое время в зависимости от размера вашего репозитория\n';
 
   @override
   String get selectCloneDirectory => 'Выберите папку для клонирования';
@@ -655,8 +627,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get confirmCloneOverwriteTitle => 'Папка не пуста';
 
   @override
-  String get confirmCloneOverwriteMsg =>
-      'Выбранная вами папка уже содержит файлы. Клонирование в неё перезапишет её содержимое.';
+  String get confirmCloneOverwriteMsg => 'Выбранная вами папка уже содержит файлы. Клонирование в неё перезапишет её содержимое.';
 
   @override
   String get confirmCloneOverwriteWarning => 'Это действие необратимо.';
@@ -692,12 +663,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get syncMessageDescription => 'используйте %s для даты и времени';
 
   @override
-  String get syncMessageTimeFormatLabel =>
-      'Формат времени сообщения синхронизации';
+  String get syncMessageTimeFormatLabel => 'Формат времени сообщения синхронизации';
 
   @override
-  String get syncMessageTimeFormatDescription =>
-      'Использует стандартный синтаксис форматирования даты и времени';
+  String get syncMessageTimeFormatDescription => 'Использует стандартный синтаксис форматирования даты и времени';
 
   @override
   String get remoteLabel => 'удаленный репозиторий по умолчанию';
@@ -721,8 +690,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get gitIgnore => '.gitignore';
 
   @override
-  String get gitIgnoreDescription =>
-      'список файлов или папок для игнорирования на всех устройствах';
+  String get gitIgnoreDescription => 'список файлов или папок для игнорирования на всех устройствах';
 
   @override
   String get gitIgnoreHint => '.trash/\n./…';
@@ -731,8 +699,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get gitInfoExclude => '.git/info/exclude';
 
   @override
-  String get gitInfoExcludeDescription =>
-      'список файлов или папок для игнорирования на этом устройстве';
+  String get gitInfoExcludeDescription => 'список файлов или папок для игнорирования на этом устройстве';
 
   @override
   String get gitInfoExcludeHint => '.trash/\n./…';
@@ -744,8 +711,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get disableSslPromptTitle => 'Disable SSL?';
 
   @override
-  String get disableSslPromptMsg =>
-      'The address you cloned starts with \"http\" (not secure). Disabling SSL will match the URL but reduce security.';
+  String get disableSslPromptMsg => 'The address you cloned starts with \"http\" (not secure). Disabling SSL will match the URL but reduce security.';
 
   @override
   String get proceedAnyway => 'Proceed anyway?';
@@ -841,8 +807,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get confirmFileDirDeleteTitle => 'Confirm %s Deletion';
 
   @override
-  String get confirmFileDirDeleteMsg =>
-      'Are you sure you want to delete the %s \"%s\" %s?';
+  String get confirmFileDirDeleteMsg => 'Are you sure you want to delete the %s \"%s\" %s?';
 
   @override
   String get deleteMultipleSuffix => 'and %s more and their contents';
@@ -884,8 +849,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get renameRepository => 'Переименовать репозиторий';
 
   @override
-  String get renameRepositoryMsg =>
-      'Введите новый псевдоним для контейнера репозитория';
+  String get renameRepositoryMsg => 'Введите новый псевдоним для контейнера репозитория';
 
   @override
   String get addMore => 'Добавить еще';
@@ -894,26 +858,22 @@ class AppLocalizationsRu extends AppLocalizations {
   String get addRepository => 'Добавить репозиторий';
 
   @override
-  String get addRepositoryMsg =>
-      'Дайте новому контейнеру репозитория уникальный псевдоним. Это поможет вам идентифицировать его позже.';
+  String get addRepositoryMsg => 'Дайте новому контейнеру репозитория уникальный псевдоним. Это поможет вам идентифицировать его позже.';
 
   @override
   String get confirmRepositoryDelete => 'Подтвердить удаление репозитория';
 
   @override
-  String get confirmRepositoryDeleteMsg =>
-      'Вы уверены, что хотите удалить контейнер репозитория \"%s\"?';
+  String get confirmRepositoryDeleteMsg => 'Вы уверены, что хотите удалить контейнер репозитория \"%s\"?';
 
   @override
-  String get deleteRepoDirectoryCheckbox =>
-      'Также удалить папку репозитория и все её содержимое';
+  String get deleteRepoDirectoryCheckbox => 'Также удалить папку репозитория и все её содержимое';
 
   @override
   String get confirmRepositoryDeleteTitle => 'Подтвердить удаление репозитория';
 
   @override
-  String get confirmRepositoryDeleteMessage =>
-      'Вы уверены, что хотите удалить репозиторий \"%s\" и его содержимое?';
+  String get confirmRepositoryDeleteMessage => 'Вы уверены, что хотите удалить репозиторий \"%s\" и его содержимое?';
 
   @override
   String get submodulesFoundTitle => 'Submodules Found';
@@ -929,15 +889,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get confirmBranchCheckoutTitle => 'Переключиться на ветку?';
 
   @override
-  String get confirmBranchCheckoutMsgPart1 =>
-      'Вы уверены, что хотите переключиться на ветку ';
+  String get confirmBranchCheckoutMsgPart1 => 'Вы уверены, что хотите переключиться на ветку ';
 
   @override
   String get confirmBranchCheckoutMsgPart2 => '?';
 
   @override
-  String get unsavedChangesMayBeLost =>
-      'Несохраненные изменения могут быть потеряны.';
+  String get unsavedChangesMayBeLost => 'Несохраненные изменения могут быть потеряны.';
 
   @override
   String get checkout => 'Переключиться';
@@ -967,73 +925,61 @@ class AppLocalizationsRu extends AppLocalizations {
   String get ongoingMergeConflict => 'Текущий конфликт слияния';
 
   @override
-  String get enableAccessibilityService =>
-      'Пожалуйста, включите Git Sync в разделе \"Установленные приложения\"';
+  String get enableAccessibilityService => 'Пожалуйста, включите Git Sync в разделе \"Установленные приложения\"';
 
   @override
   String get networkUnavailable => 'Сеть недоступна!';
 
   @override
-  String get networkUnavailableRetry =>
-      'Сеть недоступна!\nGitSync повторит попытку при подключении';
+  String get networkUnavailableRetry => 'Сеть недоступна!\nGitSync повторит попытку при подключении';
 
   @override
-  String get pullFailed =>
-      'Получение не удалось! Пожалуйста, проверьте незафиксированные изменения и попробуйте снова.';
+  String get pullFailed => 'Получение не удалось! Пожалуйста, проверьте незафиксированные изменения и попробуйте снова.';
 
   @override
   String get reportABug => 'Сообщить об ошибке';
 
   @override
-  String get reportBug =>
-      '<Ошибка GitSync> Нажмите, чтобы отправить отчет об ошибке';
+  String get reportBug => '<Ошибка GitSync> Нажмите, чтобы отправить отчет об ошибке';
 
   @override
   String get unknownError => 'Неизвестная ошибка';
 
   @override
-  String get enableNotifications =>
-      'Включите разрешение на уведомления для подробностей.';
+  String get enableNotifications => 'Включите разрешение на уведомления для подробностей.';
 
   @override
   String get errorOccurredTitle => 'Произошла ошибка!';
 
   @override
-  String get errorOccurredMessagePart1 =>
-      'Если это вызвало проблемы, пожалуйста, быстро создайте отчет об ошибке, используя кнопку ниже.';
+  String get errorOccurredMessagePart1 => 'Если это вызвало проблемы, пожалуйста, быстро создайте отчет об ошибке, используя кнопку ниже.';
 
   @override
-  String get errorOccurredMessagePart2 =>
-      'В противном случае вы можете закрыть и продолжить.';
+  String get errorOccurredMessagePart2 => 'В противном случае вы можете закрыть и продолжить.';
 
   @override
   String get applicationError => 'Ошибка приложения!';
 
   @override
-  String get missingAuthorDetailsError =>
-      'Отсутствуют данные автора репозитория. Пожалуйста, установите ваше имя и email в настройках репозитория.';
+  String get missingAuthorDetailsError => 'Отсутствуют данные автора репозитория. Пожалуйста, установите ваше имя и email в настройках репозитория.';
 
   @override
-  String get authMethodMismatchError =>
-      'Несоответствие метода авторизации. Используйте SSH для SSH-репозиториев и HTTPS для HTTP-репозиториев.';
+  String get authMethodMismatchError => 'Несоответствие метода авторизации. Используйте SSH для SSH-репозиториев и HTTPS для HTTP-репозиториев.';
 
   @override
   String get outOfMemory => 'В приложении закончилась память!';
 
   @override
-  String get invalidRemote =>
-      'Неверный удаленный репозиторий! Измените это в настройках';
+  String get invalidRemote => 'Неверный удаленный репозиторий! Измените это в настройках';
 
   @override
-  String get largeFile =>
-      'Отдельные файлы размером более 50 МБ не поддерживаются!';
+  String get largeFile => 'Отдельные файлы размером более 50 МБ не поддерживаются!';
 
   @override
   String get cloneFailed => 'Не удалось клонировать репозиторий!';
 
   @override
-  String get inaccessibleDirectoryMessage =>
-      'Недоступная папка! Пожалуйста, выберите другое расположение.';
+  String get inaccessibleDirectoryMessage => 'Недоступная папка! Пожалуйста, выберите другое расположение.';
 
   @override
   String get autoRebaseFailedException =>
@@ -1050,8 +996,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get rejectedException => 'Обновление удаленной ссылки было отклонено.';
 
   @override
-  String get rejectionWithReasonException =>
-      'Обновление удаленной ссылки было отклонено, потому что %s.';
+  String get rejectionWithReasonException => 'Обновление удаленной ссылки было отклонено, потому что %s.';
 
   @override
   String get remoteChangedException =>
@@ -1064,8 +1009,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get fieldCannotBeEmpty => 'Поле не может быть пустым';
 
   @override
-  String get githubIssueOauthTitle =>
-      'Подключить GitHub для автоматических отчетов';
+  String get githubIssueOauthTitle => 'Подключить GitHub для автоматических отчетов';
 
   @override
   String get githubIssueOauthMsg =>
@@ -1090,8 +1034,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get issueReportMinimalReproTitle => 'Шаги воспроизведения';
 
   @override
-  String get issueReportMinimalReproDesc =>
-      'Минимальные шаги для воспроизведения проблемы';
+  String get issueReportMinimalReproDesc => 'Минимальные шаги для воспроизведения проблемы';
 
   @override
   String get report => 'Сообщить';

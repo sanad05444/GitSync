@@ -13,11 +13,7 @@ Future<void> showDialog(BuildContext context, Function() callback) {
         width: MediaQuery.of(context).size.width,
         child: Text(
           t.confirmPrivKeyCopy,
-          style: TextStyle(
-            color: primaryLight,
-            fontSize: textXL,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
         ),
       ),
       content: SingleChildScrollView(
@@ -25,11 +21,7 @@ Future<void> showDialog(BuildContext context, Function() callback) {
           children: [
             Text(
               t.confirmPrivKeyCopyMsg,
-              style: const TextStyle(
-                color: primaryLight,
-                fontWeight: FontWeight.bold,
-                fontSize: textSM,
-              ),
+              style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
             ),
           ],
         ),

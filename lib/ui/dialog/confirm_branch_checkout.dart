@@ -5,11 +5,7 @@ import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
 import 'package:GitSync/global.dart';
 
-Future<void> showDialog(
-  BuildContext context,
-  String branchName,
-  Future<void> Function() callback,
-) {
+Future<void> showDialog(BuildContext context, String branchName, Future<void> Function() callback) {
   bool loading = false;
 
   return mat.showDialog(
@@ -20,11 +16,7 @@ Future<void> showDialog(
           width: MediaQuery.of(context).size.width,
           child: Text(
             t.confirmBranchCheckoutTitle,
-            style: TextStyle(
-              color: primaryLight,
-              fontSize: textXL,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
           ),
         ),
         content: SingleChildScrollView(
@@ -32,11 +24,7 @@ Future<void> showDialog(
             children: [
               RichText(
                 text: TextSpan(
-                  style: const TextStyle(
-                    color: primaryLight,
-                    fontWeight: FontWeight.bold,
-                    fontSize: textSM,
-                  ),
+                  style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
                   children: [
                     TextSpan(text: t.confirmBranchCheckoutMsgPart1),
                     TextSpan(
@@ -50,11 +38,7 @@ Future<void> showDialog(
               SizedBox(height: spaceSM),
               Text(
                 t.unsavedChangesMayBeLost,
-                style: const TextStyle(
-                  color: tertiaryNegative,
-                  fontWeight: FontWeight.bold,
-                  fontSize: textSM,
-                ),
+                style: const TextStyle(color: tertiaryNegative, fontWeight: FontWeight.bold, fontSize: textSM),
               ),
             ],
           ),
@@ -63,11 +47,7 @@ Future<void> showDialog(
           TextButton(
             child: Text(
               t.cancel.toUpperCase(),
-              style: TextStyle(
-                color: primaryLight,
-                fontSize: textMD,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
             ),
             onPressed: () {
               Navigator.of(context).canPop() ? Navigator.pop(context) : null;
@@ -76,11 +56,7 @@ Future<void> showDialog(
           TextButton.icon(
             label: Text(
               t.checkout.toUpperCase(),
-              style: TextStyle(
-                color: primaryPositive,
-                fontSize: textMD,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(color: primaryPositive, fontSize: textMD, fontWeight: FontWeight.bold),
             ),
             iconAlignment: IconAlignment.end,
             icon: loading

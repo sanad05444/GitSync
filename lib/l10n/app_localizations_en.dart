@@ -146,8 +146,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'If you are a GitHub Sponsor, you can access premium features for free. Authenticate with GitHub so we can verify your sponsor status.';
 
   @override
-  String get verifyGhSponsorNote =>
-      'Note: new sponsorships may take up to 1 day to become available in the app.';
+  String get verifyGhSponsorNote => 'Note: new sponsorships may take up to 1 day to become available in the app.';
 
   @override
   String get switchToClientMode => 'Switch to Client Mode…';
@@ -204,8 +203,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmForcePush => 'Confirm Force Push';
 
   @override
-  String get confirmForcePushMsg =>
-      'Are you sure you want to force push these changes? Any ongoing merge conflicts will be aborted.';
+  String get confirmForcePushMsg => 'Are you sure you want to force push these changes? Any ongoing merge conflicts will be aborted.';
 
   @override
   String get forcePull => 'Force Pull';
@@ -217,16 +215,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmForcePull => 'Confirm Force Pull';
 
   @override
-  String get confirmForcePullMsg =>
-      'Are you sure you want to force pull these changes? Any ongoing merge conflicts will be ignored.';
+  String get confirmForcePullMsg => 'Are you sure you want to force pull these changes? Any ongoing merge conflicts will be ignored.';
 
   @override
-  String get localHistoryOverwriteWarning =>
-      'This action will overwrite the local history and cannot be undone.';
+  String get localHistoryOverwriteWarning => 'This action will overwrite the local history and cannot be undone.';
 
   @override
-  String get forcePushPullMessage =>
-      'Please do not close or exit the app until the process is complete.';
+  String get forcePushPullMessage => 'Please do not close or exit the app until the process is complete.';
 
   @override
   String get manualSync => 'Manual Sync';
@@ -250,19 +245,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get discardChangesTitle => 'Discard Changes?';
 
   @override
-  String get discardChangesMsg =>
-      'Are you sure you want to discard all changes to \"%s\"?';
+  String get discardChangesMsg => 'Are you sure you want to discard all changes to \"%s\"?';
 
   @override
-  String get mergeConflictItemMessage =>
-      'There is a merge conflict! Tap to resolve';
+  String get mergeConflictItemMessage => 'There is a merge conflict! Tap to resolve';
 
   @override
   String get mergeConflict => 'Merge Conflict';
 
   @override
-  String get mergeDialogMessage =>
-      'Use the editor to resolve the merge conflicts';
+  String get mergeDialogMessage => 'Use the editor to resolve the merge conflicts';
 
   @override
   String get commitMessage => 'Commit Message';
@@ -302,8 +294,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clearDataConfirmTitle => 'Confirm App Data Reset';
 
   @override
-  String get clearDataConfirmMsg =>
-      'This will permanently delete all app data, including Keychain entries. Are you sure you want to proceed?';
+  String get clearDataConfirmMsg => 'This will permanently delete all app data, including Keychain entries. Are you sure you want to proceed?';
 
   @override
   String get iosClearDataAction => 'Clear All Data';
@@ -312,16 +303,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get legacyAppUserDialogTitle => 'Welcome to the New Version!';
 
   @override
-  String get legacyAppUserDialogMessagePart1 =>
-      'We\'ve rebuilt the app from the ground up for better performance and future growth.';
+  String get legacyAppUserDialogMessagePart1 => 'We\'ve rebuilt the app from the ground up for better performance and future growth.';
 
   @override
   String get legacyAppUserDialogMessagePart2 =>
       'Regrettably, your old settings can\'t be carried over, so you\'ll need to set things up again.\n\nAll your favorite features are still here. Multi-repo support is now part of a small one-time upgrade that helps support ongoing development.';
 
   @override
-  String get legacyAppUserDialogMessagePart3 =>
-      'Thanks for sticking with us :)';
+  String get legacyAppUserDialogMessagePart3 => 'Thanks for sticking with us :)';
 
   @override
   String get setUp => 'Set Up';
@@ -330,8 +319,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcome => 'Welcome!';
 
   @override
-  String get welcomeMessage =>
-      'It looks like this is your first time here.\n\nWould you like to go through a quick setup to get started?';
+  String get welcomeMessage => 'It looks like this is your first time here.\n\nWould you like to go through a quick setup to get started?';
 
   @override
   String get welcomePositive => 'Let\'s go';
@@ -371,15 +359,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authDialogTitle => 'Authenticate with a Git Provider';
 
   @override
-  String get authDialogMessage =>
-      'Please authenticate with your chosen git provider and continue on to clone your repo!';
+  String get authDialogMessage => 'Please authenticate with your chosen git provider and continue on to clone your repo!';
 
   @override
   String get authorDetailsPromptTitle => 'Author Details Required';
 
   @override
-  String get authorDetailsPromptMessage =>
-      'Your author name or email are missing. Please update them in the repository settings before syncing.';
+  String get authorDetailsPromptMessage => 'Your author name or email are missing. Please update them in the repository settings before syncing.';
 
   @override
   String get authorDetailsShowcasePrompt => 'Fill out your author details';
@@ -395,32 +381,25 @@ class AppLocalizationsEn extends AppLocalizations {
       'Keep your data up-to-date effortlessly. Turn on Auto Sync to automatically sync in the background whenever apps are opened or closed.';
 
   @override
-  String get addMoreHint =>
-      'Click this button to add additional repositories to the app';
+  String get addMoreHint => 'Click this button to add additional repositories to the app';
 
   @override
-  String get globalSettingsHint =>
-      'Click this button to access the global app settings';
+  String get globalSettingsHint => 'Click this button to access the global app settings';
 
   @override
-  String get syncProgressHint =>
-      'Track the status of active sync operations here';
+  String get syncProgressHint => 'Track the status of active sync operations here';
 
   @override
-  String get controlHint =>
-      'Use these controls to manually sync or manage repository actions';
+  String get controlHint => 'Use these controls to manually sync or manage repository actions';
 
   @override
-  String get configHint =>
-      'Configure repository settings and initialize setup using this section';
+  String get configHint => 'Configure repository settings and initialize setup using this section';
 
   @override
-  String get autoSyncOptionsHint =>
-      'Enable background sync and ensure your data stays up-to-date automatically using these settings';
+  String get autoSyncOptionsHint => 'Enable background sync and ensure your data stays up-to-date automatically using these settings';
 
   @override
-  String get guidedSetupHint =>
-      'Click here to restart the setup or UI guide whenever you need a walkthrough or want to review the UI again';
+  String get guidedSetupHint => 'Click here to restart the setup or UI guide whenever you need a walkthrough or want to review the UI again';
 
   @override
   String get detachedHead => 'Detached Head';
@@ -456,8 +435,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enableApplicationObserver => 'Auto Sync Settings';
 
   @override
-  String get accessibilityServiceDisclosureTitle =>
-      'Accessibility Service Disclosure';
+  String get accessibilityServiceDisclosureTitle => 'Accessibility Service Disclosure';
 
   @override
   String get accessibilityServiceDisclosureMessage =>
@@ -515,8 +493,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Sync your repositories in the background as often as a sync per minute, even when the app is closed!\n\nEffortless, continuous updates mean your repos are always ready when you are.';
 
   @override
-  String get enhancedScheduledSyncNote =>
-      'Note: Background syncing may be affected by battery saver and Do Not Disturb modes.';
+  String get enhancedScheduledSyncNote => 'Note: Background syncing may be affected by battery saver and Do Not Disturb modes.';
 
   @override
   String get tileSyncSettings => 'Tile Sync Settings';
@@ -531,8 +508,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get useForTileManualSync => 'Use for Tile Manual Sync';
 
   @override
-  String get selectYourGitProviderAndAuthenticate =>
-      'Select your git provider and authenticate';
+  String get selectYourGitProviderAndAuthenticate => 'Select your git provider and authenticate';
 
   @override
   String get oauthProviders => 'oAuth Providers';
@@ -541,15 +517,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gitProtocols => 'Git Protocols';
 
   @override
-  String get oauthNoAffiliation =>
-      'Authentication via third parties;\nno affiliation or endorsement implied.';
+  String get oauthNoAffiliation => 'Authentication via third parties;\nno affiliation or endorsement implied.';
 
   @override
   String get oauth => 'oauth';
 
   @override
-  String get ensureTokenScope =>
-      'Ensure your token includes the \"repo\" scope for full functionality.';
+  String get ensureTokenScope => 'Ensure your token includes the \"repo\" scope for full functionality.';
 
   @override
   String get user => 'user';
@@ -582,8 +556,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sshPubKeyExample => 'ssh-ed25519 AABBCCDDEEFF112233445566';
 
   @override
-  String get sshPrivKeyExample =>
-      '-----BEGIN OPENSSH PRIVATE KEY----- AABBCCDDEEFF112233445566';
+  String get sshPrivKeyExample => '-----BEGIN OPENSSH PRIVATE KEY----- AABBCCDDEEFF112233445566';
 
   @override
   String get generateKeys => 'generate keys';
@@ -642,8 +615,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cloneMessagePart1 => 'DON\'T EXIT THIS SCREEN';
 
   @override
-  String get cloneMessagePart2 =>
-      'This may take a while depending on the size of your repo\n';
+  String get cloneMessagePart2 => 'This may take a while depending on the size of your repo\n';
 
   @override
   String get selectCloneDirectory => 'Select a folder to clone into';
@@ -652,8 +624,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmCloneOverwriteTitle => 'Folder Not Empty';
 
   @override
-  String get confirmCloneOverwriteMsg =>
-      'The folder you selected already contains files. Cloning into it will overwrite its contents.';
+  String get confirmCloneOverwriteMsg => 'The folder you selected already contains files. Cloning into it will overwrite its contents.';
 
   @override
   String get confirmCloneOverwriteWarning => 'This action is irreversible.';
@@ -692,8 +663,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get syncMessageTimeFormatLabel => 'Sync Message Time Format';
 
   @override
-  String get syncMessageTimeFormatDescription =>
-      'uses standard datetime formatting syntax';
+  String get syncMessageTimeFormatDescription => 'uses standard datetime formatting syntax';
 
   @override
   String get remoteLabel => 'default remote';
@@ -717,8 +687,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gitIgnore => '.gitignore';
 
   @override
-  String get gitIgnoreDescription =>
-      'list files or folders to ignore on all devices';
+  String get gitIgnoreDescription => 'list files or folders to ignore on all devices';
 
   @override
   String get gitIgnoreHint => '.trash/\n./…';
@@ -727,8 +696,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gitInfoExclude => '.git/info/exclude';
 
   @override
-  String get gitInfoExcludeDescription =>
-      'list files or folders to ignore on this device';
+  String get gitInfoExcludeDescription => 'list files or folders to ignore on this device';
 
   @override
   String get gitInfoExcludeHint => '.trash/\n./…';
@@ -740,8 +708,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get disableSslPromptTitle => 'Disable SSL?';
 
   @override
-  String get disableSslPromptMsg =>
-      'The address you cloned starts with \"http\" (not secure). Disabling SSL will match the URL but reduce security.';
+  String get disableSslPromptMsg => 'The address you cloned starts with \"http\" (not secure). Disabling SSL will match the URL but reduce security.';
 
   @override
   String get proceedAnyway => 'Proceed anyway?';
@@ -837,8 +804,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmFileDirDeleteTitle => 'Confirm %s Deletion';
 
   @override
-  String get confirmFileDirDeleteMsg =>
-      'Are you sure you want to delete the %s \"%s\" %s?';
+  String get confirmFileDirDeleteMsg => 'Are you sure you want to delete the %s \"%s\" %s?';
 
   @override
   String get deleteMultipleSuffix => 'and %s more and their contents';
@@ -880,8 +846,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get renameRepository => 'Rename Container';
 
   @override
-  String get renameRepositoryMsg =>
-      'Enter a new alias for the repository container';
+  String get renameRepositoryMsg => 'Enter a new alias for the repository container';
 
   @override
   String get addMore => 'Add More';
@@ -890,26 +855,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addRepository => 'Add Container';
 
   @override
-  String get addRepositoryMsg =>
-      'Give your new repository container a unique alias. This will help you identify it later.';
+  String get addRepositoryMsg => 'Give your new repository container a unique alias. This will help you identify it later.';
 
   @override
   String get confirmRepositoryDelete => 'Confirm Container Deletion';
 
   @override
-  String get confirmRepositoryDeleteMsg =>
-      'Are you sure you want to delete the repository container \"%s\"?';
+  String get confirmRepositoryDeleteMsg => 'Are you sure you want to delete the repository container \"%s\"?';
 
   @override
-  String get deleteRepoDirectoryCheckbox =>
-      'Also delete the repository’s directory and all its contents';
+  String get deleteRepoDirectoryCheckbox => 'Also delete the repository’s directory and all its contents';
 
   @override
   String get confirmRepositoryDeleteTitle => 'Confirm Container Deletion';
 
   @override
-  String get confirmRepositoryDeleteMessage =>
-      'Are you sure you want to delete the repository \"%s\" and it\'s contents?';
+  String get confirmRepositoryDeleteMessage => 'Are you sure you want to delete the repository \"%s\" and it\'s contents?';
 
   @override
   String get submodulesFoundTitle => 'Submodules Found';
@@ -925,8 +886,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmBranchCheckoutTitle => 'Checkout Branch?';
 
   @override
-  String get confirmBranchCheckoutMsgPart1 =>
-      'Are you sure you want to checkout the branch ';
+  String get confirmBranchCheckoutMsgPart1 => 'Are you sure you want to checkout the branch ';
 
   @override
   String get confirmBranchCheckoutMsgPart2 => '?';
@@ -962,19 +922,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ongoingMergeConflict => 'Ongoing merge conflict';
 
   @override
-  String get enableAccessibilityService =>
-      'Please enable Git Sync under \"Installed apps\"';
+  String get enableAccessibilityService => 'Please enable Git Sync under \"Installed apps\"';
 
   @override
   String get networkUnavailable => 'Network unavailable!';
 
   @override
-  String get networkUnavailableRetry =>
-      'Network unavailable!\nGitSync will retry when reconnected';
+  String get networkUnavailableRetry => 'Network unavailable!\nGitSync will retry when reconnected';
 
   @override
-  String get pullFailed =>
-      'Pull failed! Please check for uncommitted changes and try again.';
+  String get pullFailed => 'Pull failed! Please check for uncommitted changes and try again.';
 
   @override
   String get reportABug => 'Report a Bug';
@@ -986,30 +943,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unknownError => 'Unknown Error';
 
   @override
-  String get enableNotifications =>
-      'Enable notifications permission to see more.';
+  String get enableNotifications => 'Enable notifications permission to see more.';
 
   @override
   String get errorOccurredTitle => 'An Error Occurred!';
 
   @override
-  String get errorOccurredMessagePart1 =>
-      'If this caused any issues, please create a bug report quickly using the button below.';
+  String get errorOccurredMessagePart1 => 'If this caused any issues, please create a bug report quickly using the button below.';
 
   @override
-  String get errorOccurredMessagePart2 =>
-      'Otherwise, you can dismiss and continue.';
+  String get errorOccurredMessagePart2 => 'Otherwise, you can dismiss and continue.';
 
   @override
   String get applicationError => 'Application Error!';
 
   @override
-  String get missingAuthorDetailsError =>
-      'Missing repository author details. Please set your name and email in the repository settings.';
+  String get missingAuthorDetailsError => 'Missing repository author details. Please set your name and email in the repository settings.';
 
   @override
-  String get authMethodMismatchError =>
-      'Authentication method mismatch. Use SSH for SSH repositories and HTTPS for HTTP repositories.';
+  String get authMethodMismatchError => 'Authentication method mismatch. Use SSH for SSH repositories and HTTPS for HTTP repositories.';
 
   @override
   String get outOfMemory => 'Application ran out of memory!';
@@ -1024,8 +976,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cloneFailed => 'Failed to clone repository!';
 
   @override
-  String get inaccessibleDirectoryMessage =>
-      'Inaccessible directory! Please select a different location.';
+  String get inaccessibleDirectoryMessage => 'Inaccessible directory! Please select a different location.';
 
   @override
   String get autoRebaseFailedException =>
@@ -1035,15 +986,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nonExistingException => 'Remote ref didn\'t exist.';
 
   @override
-  String get rejectedNodeleteException =>
-      'Remote ref update was rejected, because remote side doesn\'t support/allow deleting refs.';
+  String get rejectedNodeleteException => 'Remote ref update was rejected, because remote side doesn\'t support/allow deleting refs.';
 
   @override
   String get rejectedException => 'Remote ref update was rejected.';
 
   @override
-  String get rejectionWithReasonException =>
-      'Remote ref update was rejected because %s.';
+  String get rejectionWithReasonException => 'Remote ref update was rejected because %s.';
 
   @override
   String get remoteChangedException =>
@@ -1081,8 +1030,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get issueReportMinimalReproTitle => 'Reproduction Steps';
 
   @override
-  String get issueReportMinimalReproDesc =>
-      'Minimal steps to reproduce the issue';
+  String get issueReportMinimalReproDesc => 'Minimal steps to reproduce the issue';
 
   @override
   String get report => 'Report';

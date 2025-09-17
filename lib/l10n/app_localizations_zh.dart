@@ -126,8 +126,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get premiumDialogTitle => '解锁高级版';
 
   @override
-  String get premiumDialogMessage =>
-      '此功能是高级体验的一部分。\n一次性支付 %s 即可解锁并享受更强大的工具。\n\n高级功能：\n • 多仓库支持\n\n或者，连接您的 GitHub 账户以检查您是否是符合条件的 GitHub 赞助者。';
+  String get premiumDialogMessage => '此功能是高级体验的一部分。\n一次性支付 %s 即可解锁并享受更强大的工具。\n\n高级功能：\n • 多仓库支持\n\n或者，连接您的 GitHub 账户以检查您是否是符合条件的 GitHub 赞助者。';
 
   @override
   String get premiumDialogButtonText => '以 %s 解锁';
@@ -142,8 +141,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get verifyGhSponsorTitle => '验证 GitHub 赞助';
 
   @override
-  String get verifyGhSponsorMsg =>
-      '如果您是 GitHub 赞助者，可以免费使用高级功能。请使用 GitHub 进行身份验证，以便我们验证您的赞助者状态。';
+  String get verifyGhSponsorMsg => '如果您是 GitHub 赞助者，可以免费使用高级功能。请使用 GitHub 进行身份验证，以便我们验证您的赞助者状态。';
 
   @override
   String get verifyGhSponsorNote => '注意：新的赞助关系可能需要最多 1 天才能在应用中生效。';
@@ -294,8 +292,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get clearDataConfirmTitle => 'Confirm App Data Reset';
 
   @override
-  String get clearDataConfirmMsg =>
-      'This will permanently delete all app data, including Keychain entries. Are you sure you want to proceed?';
+  String get clearDataConfirmMsg => 'This will permanently delete all app data, including Keychain entries. Are you sure you want to proceed?';
 
   @override
   String get iosClearDataAction => 'Clear All Data';
@@ -307,8 +304,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get legacyAppUserDialogMessagePart1 => '我们从头重建了应用，以获得更好的性能和未来发展。';
 
   @override
-  String get legacyAppUserDialogMessagePart2 =>
-      '遗憾的是，您的旧设置无法继承，因此您需要重新设置。\n\n您喜爱的所有功能都还在。多仓库支持现在是一个小的一次性升级的一部分，有助于支持持续开发。';
+  String get legacyAppUserDialogMessagePart2 => '遗憾的是，您的旧设置无法继承，因此您需要重新设置。\n\n您喜爱的所有功能都还在。多仓库支持现在是一个小的一次性升级的一部分，有助于支持持续开发。';
 
   @override
   String get legacyAppUserDialogMessagePart3 => '感谢您继续支持我们 :)';
@@ -335,15 +331,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get notificationDialogTitle => '启用通知';
 
   @override
-  String get notificationDialogMessage =>
-      '请启用通知权限以获得最佳体验。\n\n应用使用通知来：\n  • 弹出同步消息（可选）\n  • 错误报告';
+  String get notificationDialogMessage => '请启用通知权限以获得最佳体验。\n\n应用使用通知来：\n  • 弹出同步消息（可选）\n  • 错误报告';
 
   @override
   String get allFilesAccessDialogTitle => '启用\"所有文件访问权限\"';
 
   @override
-  String get allFilesAccessDialogMessage =>
-      '没有\"所有文件访问权限\"您无法使用 GitSync！请启用它以获得最佳体验。\n\n应用使用\"所有文件访问权限\"将您的仓库同步到设备上选定的目录。应用不会尝试访问所选目录之外的任何文件。';
+  String get allFilesAccessDialogMessage => '没有\"所有文件访问权限\"您无法使用 GitSync！请启用它以获得最佳体验。\n\n应用使用\"所有文件访问权限\"将您的仓库同步到设备上选定的目录。应用不会尝试访问所选目录之外的任何文件。';
 
   @override
   String get almostThereDialogTitle => '快完成了！';
@@ -353,8 +347,7 @@ class AppLocalizationsZh extends AppLocalizations {
       '很快，我们将进行身份验证并将您的仓库克隆到设备上，为同步做准备。\n\n设置完成后，有几种方式可以触发同步：\n\n  • 从应用内\n  • 从快速磁贴\n  • 使用自动同步\n  • 使用自定义意图（高级）';
 
   @override
-  String get almostThereDialogMessageIos =>
-      '很快，我们将进行身份验证并将您的仓库克隆到设备上，为同步做准备。\n\n设置完成后，有几种方式可以触发同步：\n\n  • 从应用内';
+  String get almostThereDialogMessageIos => '很快，我们将进行身份验证并将您的仓库克隆到设备上，为同步做准备。\n\n设置完成后，有几种方式可以触发同步：\n\n  • 从应用内';
 
   @override
   String get authDialogTitle => '使用 Git 提供商进行身份验证';
@@ -488,8 +481,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get enhancedScheduledSyncMsg1 => '与基本同步不同，此功能使用高级后台更新来更频繁和可靠地提供新数据。';
 
   @override
-  String get enhancedScheduledSyncMsg2 =>
-      '在后台同步您的仓库，频率可达每分钟一次，即使应用关闭时也可以！\n\n轻松的持续更新意味着您的仓库在您需要时总是准备就绪。';
+  String get enhancedScheduledSyncMsg2 => '在后台同步您的仓库，频率可达每分钟一次，即使应用关闭时也可以！\n\n轻松的持续更新意味着您的仓库在您需要时总是准备就绪。';
 
   @override
   String get enhancedScheduledSyncNote => '注意：后台同步可能会受到省电模式和勿扰模式的影响。';
@@ -555,8 +547,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sshPubKeyExample => 'ssh-ed25519 AABBCCDDEEFF112233445566';
 
   @override
-  String get sshPrivKeyExample =>
-      '-----BEGIN OPENSSH PRIVATE KEY----- AABBCCDDEEFF112233445566';
+  String get sshPrivKeyExample => '-----BEGIN OPENSSH PRIVATE KEY----- AABBCCDDEEFF112233445566';
 
   @override
   String get generateKeys => '生成密钥';
@@ -571,8 +562,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get confirmPrivKeyCopy => '确认私钥复制';
 
   @override
-  String get confirmPrivKeyCopyMsg =>
-      '您确定要将私钥复制到剪贴板吗？\n\n任何拥有此密钥的人都可以控制您的账户。确保您仅在安全位置粘贴它，并在之后清除剪贴板。';
+  String get confirmPrivKeyCopyMsg => '您确定要将私钥复制到剪贴板吗？\n\n任何拥有此密钥的人都可以控制您的账户。确保您仅在安全位置粘贴它，并在之后清除剪贴板。';
 
   @override
   String get understood => '明白了';
@@ -581,8 +571,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get importPrivateKey => '导入私钥';
 
   @override
-  String get importPrivateKeyMsg =>
-      '在下方粘贴您的私钥以使用现有账户。\n\n确保您在安全环境中粘贴密钥，因为任何拥有此密钥的人都可以控制您的账户。';
+  String get importPrivateKeyMsg => '在下方粘贴您的私钥以使用现有账户。\n\n确保您在安全环境中粘贴密钥，因为任何拥有此密钥的人都可以控制您的账户。';
 
   @override
   String get importKey => '导入';
@@ -708,8 +697,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get disableSslPromptTitle => 'Disable SSL?';
 
   @override
-  String get disableSslPromptMsg =>
-      'The address you cloned starts with \"http\" (not secure). Disabling SSL will match the URL but reduce security.';
+  String get disableSslPromptMsg => 'The address you cloned starts with \"http\" (not secure). Disabling SSL will match the URL but reduce security.';
 
   @override
   String get proceedAnyway => 'Proceed anyway?';
@@ -805,8 +793,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get confirmFileDirDeleteTitle => 'Confirm %s Deletion';
 
   @override
-  String get confirmFileDirDeleteMsg =>
-      'Are you sure you want to delete the %s \"%s\" %s?';
+  String get confirmFileDirDeleteMsg => 'Are you sure you want to delete the %s \"%s\" %s?';
 
   @override
   String get deleteMultipleSuffix => 'and %s more and their contents';
@@ -963,8 +950,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get missingAuthorDetailsError => '缺少仓库作者详细信息。请在仓库设置中设置您的姓名和邮箱。';
 
   @override
-  String get authMethodMismatchError =>
-      '身份验证方法不匹配。对 SSH 仓库使用 SSH，对 HTTP 仓库使用 HTTPS。';
+  String get authMethodMismatchError => '身份验证方法不匹配。对 SSH 仓库使用 SSH，对 HTTP 仓库使用 HTTPS。';
 
   @override
   String get outOfMemory => '应用程序内存不足！';
@@ -1009,8 +995,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get githubIssueOauthTitle => '连接 GitHub 以自动报告';
 
   @override
-  String get githubIssueOauthMsg =>
-      '您需要连接您的 GitHub 账户来报告错误并跟踪其进度。\n您可以随时在全局设置中重置此连接。';
+  String get githubIssueOauthMsg => '您需要连接您的 GitHub 账户来报告错误并跟踪其进度。\n您可以随时在全局设置中重置此连接。';
 
   @override
   String get issueReportMessage => '日志自动包含在报告中';
@@ -1040,8 +1025,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get issueReportSuccessTitle => '问题报告成功';
 
   @override
-  String get issueReportSuccessMsg =>
-      '您的问题已报告。您可以使用下面的链接跟踪其进度并回复消息。\n\n7 天内无活动的问题将自动关闭。';
+  String get issueReportSuccessMsg => '您的问题已报告。您可以使用下面的链接跟踪其进度并回复消息。\n\n7 天内无活动的问题将自动关闭。';
 
   @override
   String get trackIssue => '跟踪问题';

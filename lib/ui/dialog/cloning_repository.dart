@@ -6,12 +6,7 @@ import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
 import 'package:GitSync/global.dart';
 
-Future<void> showDialog(
-  BuildContext context,
-  String repoUrl,
-  String dir,
-  Function(String?) callback,
-) async {
+Future<void> showDialog(BuildContext context, String repoUrl, String dir, Function(String?) callback) async {
   String task = "";
   double progress = 0.0;
   StateSetter? setState;
@@ -42,11 +37,7 @@ Future<void> showDialog(
           width: MediaQuery.of(context).size.width,
           child: Text(
             t.cloningRepository,
-            style: TextStyle(
-              color: primaryLight,
-              fontSize: textXL,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
           ),
         ),
         content: StatefulBuilder(
@@ -57,28 +48,17 @@ Future<void> showDialog(
                 children: [
                   Text(
                     t.cloneMessagePart1,
-                    style: const TextStyle(
-                      color: tertiaryNegative,
-                      fontWeight: FontWeight.bold,
-                      fontSize: textMD,
-                    ),
+                    style: const TextStyle(color: tertiaryNegative, fontWeight: FontWeight.bold, fontSize: textMD),
                   ),
                   Text(
                     t.cloneMessagePart2,
-                    style: const TextStyle(
-                      color: primaryLight,
-                      fontSize: textMD,
-                    ),
+                    style: const TextStyle(color: primaryLight, fontSize: textMD),
                   ),
                   SizedBox(height: spaceMD),
                   Text(
                     task,
                     maxLines: 1,
-                    style: const TextStyle(
-                      color: primaryLight,
-                      fontSize: textMD,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    style: const TextStyle(color: primaryLight, fontSize: textMD, overflow: TextOverflow.ellipsis),
                   ),
                   SizedBox(height: spaceMD),
                   LinearProgressIndicator(

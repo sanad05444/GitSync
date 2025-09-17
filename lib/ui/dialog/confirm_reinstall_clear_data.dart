@@ -1,5 +1,4 @@
-import 'package:GitSync/ui/dialog/confirm_clear_data.dart'
-    as ConfirmClearDataDialog;
+import 'package:GitSync/ui/dialog/confirm_clear_data.dart' as ConfirmClearDataDialog;
 import 'package:flutter/material.dart' as mat;
 import 'package:flutter/material.dart';
 import '../../../constant/colors.dart';
@@ -7,10 +6,7 @@ import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
 import 'package:GitSync/global.dart';
 
-Future<void> showDialog(
-  BuildContext context,
-  Future<void> Function() deleteContentsCallback,
-) {
+Future<void> showDialog(BuildContext context, Future<void> Function() deleteContentsCallback) {
   bool overwriting = false;
 
   return mat.showDialog(
@@ -22,11 +18,7 @@ Future<void> showDialog(
           width: MediaQuery.of(context).size.width,
           child: Text(
             t.iosClearDataTitle,
-            style: TextStyle(
-              color: primaryLight,
-              fontSize: textXL,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
           ),
         ),
         content: SingleChildScrollView(
@@ -34,20 +26,12 @@ Future<void> showDialog(
             children: [
               Text(
                 t.iosClearDataMsg,
-                style: const TextStyle(
-                  color: primaryLight,
-                  fontWeight: FontWeight.bold,
-                  fontSize: textSM,
-                ),
+                style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
               ),
               SizedBox(height: spaceSM),
               Text(
                 t.confirmCloneOverwriteWarning,
-                style: const TextStyle(
-                  color: tertiaryNegative,
-                  fontWeight: FontWeight.bold,
-                  fontSize: textSM,
-                ),
+                style: const TextStyle(color: tertiaryNegative, fontWeight: FontWeight.bold, fontSize: textSM),
               ),
             ],
           ),
@@ -75,9 +59,7 @@ Future<void> showDialog(
                   overwriting = false;
                   setState(() {});
 
-                  Navigator.of(context).canPop()
-                      ? Navigator.pop(context)
-                      : null;
+                  Navigator.of(context).canPop() ? Navigator.pop(context) : null;
                 });
               },
             ),

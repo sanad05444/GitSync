@@ -15,11 +15,7 @@ Future<void> showDialog(BuildContext context, Function(String text) callback) {
         width: MediaQuery.of(context).size.width,
         child: Text(
           t.createADir,
-          style: TextStyle(
-            color: primaryLight,
-            fontSize: textXL,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
         ),
       ),
       content: SingleChildScrollView(
@@ -39,24 +35,14 @@ Future<void> showDialog(BuildContext context, Function(String text) callback) {
               decoration: InputDecoration(
                 fillColor: tertiaryDark,
                 filled: true,
-                border: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(cornerRadiusSM),
-                  borderSide: BorderSide.none,
-                ),
+                border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusSM), borderSide: BorderSide.none),
                 label: Text(
                   t.dirName.toUpperCase(),
-                  style: TextStyle(
-                    color: secondaryLight,
-                    fontSize: textSM,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(color: secondaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                 ),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
                 isCollapsed: true,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: spaceMD,
-                  vertical: spaceSM,
-                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
                 isDense: true,
               ),
             ),

@@ -13,11 +13,7 @@ Future<void> showDialog(BuildContext context, Function() callback) {
         width: MediaQuery.of(context).size.width,
         child: Text(
           t.selectCloneDirectory,
-          style: TextStyle(
-            color: primaryLight,
-            fontSize: textXL,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
         ),
       ),
       content: null,

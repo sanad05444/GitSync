@@ -5,10 +5,7 @@ import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
 
-Future<void> showDialog(
-  BuildContext context,
-  Future<void> Function() callback,
-) {
+Future<void> showDialog(BuildContext context, Future<void> Function() callback) {
   return mat.showDialog(
     context: context,
     builder: (BuildContext context) => BaseAlertDialog(
@@ -16,11 +13,7 @@ Future<void> showDialog(
         width: MediaQuery.of(context).size.width,
         child: Text(
           t.disableSslPromptTitle,
-          style: TextStyle(
-            color: primaryLight,
-            fontSize: textXL,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
         ),
       ),
       content: SingleChildScrollView(
@@ -28,20 +21,12 @@ Future<void> showDialog(
           children: [
             Text(
               t.disableSslPromptMsg,
-              style: const TextStyle(
-                color: primaryLight,
-                fontWeight: FontWeight.bold,
-                fontSize: textSM,
-              ),
+              style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
             ),
             SizedBox(height: spaceMD),
             Text(
               t.proceedAnyway,
-              style: const TextStyle(
-                color: primaryLight,
-                fontWeight: FontWeight.bold,
-                fontSize: textSM,
-              ),
+              style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
             ),
           ],
         ),

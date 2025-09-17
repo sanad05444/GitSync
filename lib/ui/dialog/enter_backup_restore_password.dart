@@ -5,11 +5,7 @@ import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
 import 'package:GitSync/global.dart';
 
-Future<void> showDialog(
-  BuildContext context,
-  bool backupRestore,
-  Function(String text) callback,
-) {
+Future<void> showDialog(BuildContext context, bool backupRestore, Function(String text) callback) {
   final textController = TextEditingController();
   return mat.showDialog(
     context: context,
@@ -19,11 +15,7 @@ Future<void> showDialog(
         width: MediaQuery.of(context).size.width,
         child: Text(
           t.enterPassword,
-          style: TextStyle(
-            color: primaryLight,
-            fontSize: textXL,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
         ),
       ),
       content: SingleChildScrollView(
@@ -45,15 +37,9 @@ Future<void> showDialog(
               decoration: InputDecoration(
                 fillColor: tertiaryDark,
                 filled: true,
-                border: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(cornerRadiusSM),
-                  borderSide: BorderSide.none,
-                ),
+                border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusSM), borderSide: BorderSide.none),
                 isCollapsed: true,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: spaceMD,
-                  vertical: spaceSM,
-                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
                 isDense: true,
               ),
             ),

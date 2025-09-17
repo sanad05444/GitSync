@@ -52,10 +52,7 @@ class _ButtonSettingState extends State<ButtonSetting> {
   Widget getIcon() => widget.loads && loading
       ? SizedBox.square(
           dimension: textXL,
-          child: CircularProgressIndicator(
-            padding: EdgeInsets.all(spaceXXXXS),
-            color: widget.iconColor,
-          ),
+          child: CircularProgressIndicator(padding: EdgeInsets.all(spaceXXXXS), color: widget.iconColor),
         )
       : FaIcon(widget.icon, color: widget.iconColor, size: textXL);
 
@@ -67,16 +64,9 @@ class _ButtonSettingState extends State<ButtonSetting> {
             style: ButtonStyle(
               alignment: Alignment.centerLeft,
               backgroundColor: WidgetStatePropertyAll(widget.buttonColor),
-              padding: WidgetStatePropertyAll(
-                EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD),
-              ),
+              padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
               shape: WidgetStatePropertyAll(
-                RoundedRectangleBorder(
-                  borderRadius: widget.sub
-                      ? BorderRadius.zero
-                      : BorderRadius.all(cornerRadiusMD),
-                  side: BorderSide.none,
-                ),
+                RoundedRectangleBorder(borderRadius: widget.sub ? BorderRadius.zero : BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
               ),
             ),
             icon: getIcon(),
@@ -84,20 +74,13 @@ class _ButtonSettingState extends State<ButtonSetting> {
               padding: EdgeInsets.only(left: spaceXS),
               child: Text(
                 widget.text.toUpperCase(),
-                style: TextStyle(
-                  color: widget.textColor,
-                  fontSize: textMD,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(color: widget.textColor, fontSize: textMD, fontWeight: FontWeight.bold),
               ),
             ),
           )
         : Container(
             width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(cornerRadiusMD),
-              color: widget.buttonColor,
-            ),
+            decoration: BoxDecoration(borderRadius: BorderRadius.all(cornerRadiusMD), color: widget.buttonColor),
             clipBehavior: Clip.hardEdge,
             child: Stack(
               clipBehavior: Clip.hardEdge,
@@ -109,41 +92,22 @@ class _ButtonSettingState extends State<ButtonSetting> {
                       onPressed: onPressed,
                       style: ButtonStyle(
                         alignment: Alignment.centerLeft,
-                        backgroundColor: WidgetStatePropertyAll(
-                          widget.buttonColor,
-                        ),
-                        padding: WidgetStatePropertyAll(
-                          EdgeInsets.symmetric(
-                            horizontal: spaceMD,
-                            vertical: spaceMD,
-                          ),
-                        ),
-                        shape: WidgetStatePropertyAll(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(cornerRadiusMD),
-                            side: BorderSide.none,
-                          ),
-                        ),
+                        backgroundColor: WidgetStatePropertyAll(widget.buttonColor),
+                        padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
+                        shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none)),
                       ),
                       icon: getIcon(),
                       label: Padding(
                         padding: EdgeInsets.only(left: spaceXS),
                         child: Text(
                           widget.text.toUpperCase(),
-                          style: TextStyle(
-                            color: widget.textColor,
-                            fontSize: textMD,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: TextStyle(color: widget.textColor, fontSize: textMD, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
                     AnimatedSize(
                       duration: Duration(milliseconds: 200),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: expanded ? widget.subButtons! : [],
-                      ),
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: expanded ? widget.subButtons! : []),
                     ),
                   ],
                 ),
@@ -158,29 +122,11 @@ class _ButtonSettingState extends State<ButtonSetting> {
 
                     style: ButtonStyle(
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      backgroundColor: WidgetStatePropertyAll(
-                        widget.buttonColor,
-                      ),
-                      padding: WidgetStatePropertyAll(
-                        EdgeInsets.symmetric(
-                          horizontal: spaceMD,
-                          vertical: spaceMD,
-                        ),
-                      ),
-                      shape: WidgetStatePropertyAll(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(cornerRadiusMD),
-                          side: BorderSide.none,
-                        ),
-                      ),
+                      backgroundColor: WidgetStatePropertyAll(widget.buttonColor),
+                      padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceMD)),
+                      shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none)),
                     ),
-                    icon: FaIcon(
-                      expanded
-                          ? FontAwesomeIcons.caretUp
-                          : FontAwesomeIcons.caretDown,
-                      color: widget.iconColor,
-                      size: textLG,
-                    ),
+                    icon: FaIcon(expanded ? FontAwesomeIcons.caretUp : FontAwesomeIcons.caretDown, color: widget.iconColor, size: textLG),
                   ),
                 ),
               ],

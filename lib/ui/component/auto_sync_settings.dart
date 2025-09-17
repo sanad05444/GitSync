@@ -7,10 +7,8 @@ import 'package:GitSync/constant/colors.dart';
 import 'package:GitSync/constant/dimens.dart';
 import 'package:GitSync/constant/strings.dart';
 import 'package:GitSync/global.dart';
-import 'package:GitSync/ui/dialog/select_application.dart'
-    as SelectApplicationDialog;
-import 'package:GitSync/ui/dialog/prominent_disclosure.dart'
-    as ProminentDisclosureDialog;
+import 'package:GitSync/ui/dialog/select_application.dart' as SelectApplicationDialog;
+import 'package:GitSync/ui/dialog/prominent_disclosure.dart' as ProminentDisclosureDialog;
 import 'package:sprintf/sprintf.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -24,18 +22,13 @@ class AutoSyncSettings extends StatefulWidget {
 class _AutoSyncSettingsState extends State<AutoSyncSettings> {
   Future<bool> getExpanded() async {
     return await AccessibilityServiceHelper.isAccessibilityServiceEnabled() &&
-        await uiSettingsManager.getBool(
-          StorageKey.setman_applicationObserverExpanded,
-        );
+        await uiSettingsManager.getBool(StorageKey.setman_applicationObserverExpanded);
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: secondaryDark,
-        borderRadius: BorderRadius.all(cornerRadiusMD),
-      ),
+      decoration: BoxDecoration(color: secondaryDark, borderRadius: BorderRadius.all(cornerRadiusMD)),
       child: FutureBuilder(
         future: AccessibilityServiceHelper.isAccessibilityServiceEnabled(),
         builder: (BuildContext context, AsyncSnapshot accessibilityServiceEnabledSnapshot) => FutureBuilder(
@@ -48,49 +41,28 @@ class _AutoSyncSettingsState extends State<AutoSyncSettings> {
                 child: TextButton.icon(
                   onPressed: () async {
                     final enabled = (expandedSnapshot.data ?? false);
-                    if (!enabled &&
-                        !(accessibilityServiceEnabledSnapshot.data ?? false)) {
-                      await ProminentDisclosureDialog.showDialog(
-                        context,
-                        () async {
-                          await AccessibilityServiceHelper.openAccessibilitySettings();
-                          setState(() {});
-                        },
-                      );
+                    if (!enabled && !(accessibilityServiceEnabledSnapshot.data ?? false)) {
+                      await ProminentDisclosureDialog.showDialog(context, () async {
+                        await AccessibilityServiceHelper.openAccessibilitySettings();
+                        setState(() {});
+                      });
 
                       setState(() {});
                       return;
                     }
 
-                    uiSettingsManager.setBool(
-                      StorageKey.setman_applicationObserverExpanded,
-                      !enabled,
-                    );
+                    uiSettingsManager.setBool(StorageKey.setman_applicationObserverExpanded, !enabled);
                     setState(() {});
                   },
                   iconAlignment: IconAlignment.end,
                   style: ButtonStyle(
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    padding: WidgetStatePropertyAll(
-                      EdgeInsets.symmetric(
-                        horizontal: spaceLG,
-                        vertical: spaceMD,
-                      ),
-                    ),
-                    shape: WidgetStatePropertyAll(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(cornerRadiusMD),
-                        side: BorderSide.none,
-                      ),
-                    ),
+                    padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceLG, vertical: spaceMD)),
+                    shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none)),
                   ),
                   icon: FaIcon(
-                    (expandedSnapshot.data ?? false)
-                        ? FontAwesomeIcons.chevronUp
-                        : FontAwesomeIcons.chevronDown,
-                    color: (accessibilityServiceEnabledSnapshot.data ?? false)
-                        ? primaryPositive
-                        : primaryLight,
+                    (expandedSnapshot.data ?? false) ? FontAwesomeIcons.chevronUp : FontAwesomeIcons.chevronDown,
+                    color: (accessibilityServiceEnabledSnapshot.data ?? false) ? primaryPositive : primaryLight,
                     size: textXL,
                   ),
                   label: SizedBox(
@@ -105,31 +77,19 @@ class _AutoSyncSettingsState extends State<AutoSyncSettings> {
                             clipBehavior: Clip.hardEdge,
                             child: IconButton(
                               padding: EdgeInsets.zero,
-                              style: ButtonStyle(
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              ),
+                              style: ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
                               constraints: BoxConstraints(),
                               onPressed: () async {
                                 launchUrl(Uri.parse(autoSyncDocsLink));
                               },
-                              icon: FaIcon(
-                                FontAwesomeIcons.circleQuestion,
-                                color: primaryLight,
-                                size: textLG,
-                              ),
+                              icon: FaIcon(FontAwesomeIcons.circleQuestion, color: primaryLight, size: textLG),
                             ),
                           ),
                         ),
-                        SizedBox(
-                          width: (expandedSnapshot.data ?? false) ? spaceSM : 0,
-                        ),
+                        SizedBox(width: (expandedSnapshot.data ?? false) ? spaceSM : 0),
                         Text(
                           t.enableApplicationObserver,
-                          style: TextStyle(
-                            fontFeatures: [FontFeature.enable('smcp')],
-                            color: primaryLight,
-                            fontSize: textLG,
-                          ),
+                          style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),
                         ),
                       ],
                     ),
@@ -147,90 +107,49 @@ class _AutoSyncSettingsState extends State<AutoSyncSettings> {
                       children: (expandedSnapshot.data ?? false)
                           ? [
                               Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: spaceMD + spaceXS,
-                                ),
+                                padding: EdgeInsets.symmetric(horizontal: spaceMD + spaceXS),
                                 child: TextButton.icon(
-                                  onPressed:
-                                      (applicationPackagesSnapshot.data ?? {})
-                                          .isEmpty
+                                  onPressed: (applicationPackagesSnapshot.data ?? {}).isEmpty
                                       ? null
                                       : () async {
                                           uiSettingsManager.setBool(
                                             StorageKey.setman_syncOnAppOpened,
-                                            !(await uiSettingsManager.getBool(
-                                              StorageKey.setman_syncOnAppOpened,
-                                            )),
+                                            !(await uiSettingsManager.getBool(StorageKey.setman_syncOnAppOpened)),
                                           );
                                           setState(() {});
                                         },
                                   iconAlignment: IconAlignment.end,
                                   style: ButtonStyle(
-                                    tapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
-                                    padding: WidgetStatePropertyAll(
-                                      EdgeInsets.only(
-                                        left: spaceMD,
-                                        top: spaceXS,
-                                        bottom: spaceXS,
-                                        right: spaceXS,
-                                      ),
-                                    ),
+                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    padding: WidgetStatePropertyAll(EdgeInsets.only(left: spaceMD, top: spaceXS, bottom: spaceXS, right: spaceXS)),
 
                                     shape: WidgetStatePropertyAll(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                          cornerRadiusMD,
-                                        ),
-                                        side: BorderSide.none,
-                                      ),
+                                      RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
                                     ),
-                                    backgroundColor: WidgetStatePropertyAll(
-                                      tertiaryDark,
-                                    ),
+                                    backgroundColor: WidgetStatePropertyAll(tertiaryDark),
                                   ),
                                   icon: FutureBuilder(
-                                    future: uiSettingsManager.getBool(
-                                      StorageKey.setman_syncOnAppOpened,
-                                    ),
+                                    future: uiSettingsManager.getBool(StorageKey.setman_syncOnAppOpened),
                                     builder: (context, snapshot) => Container(
-                                      margin: EdgeInsets.symmetric(
-                                        horizontal: spaceSM,
-                                        vertical: spaceXXS,
-                                      ),
+                                      margin: EdgeInsets.symmetric(horizontal: spaceSM, vertical: spaceXXS),
                                       width: spaceLG,
                                       child: FittedBox(
                                         fit: BoxFit.fill,
                                         child: Switch(
-                                          value:
-                                              (applicationPackagesSnapshot
-                                                          .data ??
-                                                      {})
-                                                  .isEmpty
-                                              ? false
-                                              : snapshot.data ?? false,
+                                          value: (applicationPackagesSnapshot.data ?? {}).isEmpty ? false : snapshot.data ?? false,
                                           onChanged: (value) {
-                                            uiSettingsManager.setBool(
-                                              StorageKey.setman_syncOnAppOpened,
-                                              value,
-                                            );
+                                            uiSettingsManager.setBool(StorageKey.setman_syncOnAppOpened, value);
                                             setState(() {});
                                           },
                                           padding: EdgeInsets.zero,
                                           thumbColor: WidgetStatePropertyAll(
-                                            ((applicationPackagesSnapshot
-                                                                .data ??
-                                                            {})
-                                                        .isEmpty
-                                                    ? false
-                                                    : snapshot.data ?? false)
+                                            ((applicationPackagesSnapshot.data ?? {}).isEmpty ? false : snapshot.data ?? false)
                                                 ? primaryPositive
                                                 : secondaryLight,
                                           ),
                                           activeThumbColor: primaryPositive,
                                           inactiveTrackColor: tertiaryLight,
-                                          materialTapTargetSize:
-                                              MaterialTapTargetSize.shrinkWrap,
+                                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                         ),
                                       ),
                                     ),
@@ -238,12 +157,7 @@ class _AutoSyncSettingsState extends State<AutoSyncSettings> {
                                   label: Text(
                                     t.syncOnAppOpened,
                                     style: TextStyle(
-                                      color:
-                                          (applicationPackagesSnapshot.data ??
-                                                  {})
-                                              .isEmpty
-                                          ? tertiaryLight
-                                          : primaryLight,
+                                      color: (applicationPackagesSnapshot.data ?? {}).isEmpty ? tertiaryLight : primaryLight,
                                       fontSize: textMD,
                                     ),
                                   ),
@@ -251,86 +165,47 @@ class _AutoSyncSettingsState extends State<AutoSyncSettings> {
                               ),
                               SizedBox(height: spaceMD),
                               Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: spaceMD + spaceXS,
-                                ),
+                                padding: EdgeInsets.symmetric(horizontal: spaceMD + spaceXS),
                                 child: TextButton.icon(
                                   onPressed: () async {
                                     uiSettingsManager.setBool(
                                       StorageKey.setman_syncOnAppClosed,
-                                      !(await uiSettingsManager.getBool(
-                                        StorageKey.setman_syncOnAppClosed,
-                                      )),
+                                      !(await uiSettingsManager.getBool(StorageKey.setman_syncOnAppClosed)),
                                     );
                                     setState(() {});
                                   },
                                   iconAlignment: IconAlignment.end,
                                   style: ButtonStyle(
-                                    tapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
-                                    padding: WidgetStatePropertyAll(
-                                      EdgeInsets.only(
-                                        left: spaceMD,
-                                        top: spaceXS,
-                                        bottom: spaceXS,
-                                        right: spaceXS,
-                                      ),
-                                    ),
+                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    padding: WidgetStatePropertyAll(EdgeInsets.only(left: spaceMD, top: spaceXS, bottom: spaceXS, right: spaceXS)),
 
                                     shape: WidgetStatePropertyAll(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                          cornerRadiusMD,
-                                        ),
-                                        side: BorderSide.none,
-                                      ),
+                                      RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
                                     ),
-                                    backgroundColor: WidgetStatePropertyAll(
-                                      tertiaryDark,
-                                    ),
+                                    backgroundColor: WidgetStatePropertyAll(tertiaryDark),
                                   ),
                                   icon: FutureBuilder(
-                                    future: uiSettingsManager.getBool(
-                                      StorageKey.setman_syncOnAppClosed,
-                                    ),
+                                    future: uiSettingsManager.getBool(StorageKey.setman_syncOnAppClosed),
                                     builder: (context, snapshot) => Container(
-                                      margin: EdgeInsets.symmetric(
-                                        horizontal: spaceSM,
-                                        vertical: spaceXXS,
-                                      ),
+                                      margin: EdgeInsets.symmetric(horizontal: spaceSM, vertical: spaceXXS),
                                       width: spaceLG,
                                       child: FittedBox(
                                         fit: BoxFit.fill,
                                         child: Switch(
-                                          value:
-                                              (applicationPackagesSnapshot
-                                                          .data ??
-                                                      {})
-                                                  .isEmpty
-                                              ? false
-                                              : snapshot.data ?? false,
+                                          value: (applicationPackagesSnapshot.data ?? {}).isEmpty ? false : snapshot.data ?? false,
                                           onChanged: (value) {
-                                            uiSettingsManager.setBool(
-                                              StorageKey.setman_syncOnAppClosed,
-                                              value,
-                                            );
+                                            uiSettingsManager.setBool(StorageKey.setman_syncOnAppClosed, value);
                                             setState(() {});
                                           },
                                           padding: EdgeInsets.zero,
                                           thumbColor: WidgetStatePropertyAll(
-                                            ((applicationPackagesSnapshot
-                                                                .data ??
-                                                            {})
-                                                        .isEmpty
-                                                    ? false
-                                                    : snapshot.data ?? false)
+                                            ((applicationPackagesSnapshot.data ?? {}).isEmpty ? false : snapshot.data ?? false)
                                                 ? primaryPositive
                                                 : secondaryLight,
                                           ),
                                           activeThumbColor: primaryPositive,
                                           inactiveTrackColor: tertiaryLight,
-                                          materialTapTargetSize:
-                                              MaterialTapTargetSize.shrinkWrap,
+                                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                         ),
                                       ),
                                     ),
@@ -338,12 +213,7 @@ class _AutoSyncSettingsState extends State<AutoSyncSettings> {
                                   label: Text(
                                     t.syncOnAppClosed,
                                     style: TextStyle(
-                                      color:
-                                          (applicationPackagesSnapshot.data ??
-                                                  {})
-                                              .isEmpty
-                                          ? tertiaryLight
-                                          : primaryLight,
+                                      color: (applicationPackagesSnapshot.data ?? {}).isEmpty ? tertiaryLight : primaryLight,
                                       fontSize: textMD,
                                     ),
                                   ),
@@ -351,172 +221,71 @@ class _AutoSyncSettingsState extends State<AutoSyncSettings> {
                               ),
                               SizedBox(height: spaceMD),
                               Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: spaceMD + spaceXS,
-                                ),
+                                padding: EdgeInsets.symmetric(horizontal: spaceMD + spaceXS),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     TextButton.icon(
                                       onPressed: () async {
-                                        await SelectApplicationDialog.showDialog(
-                                          context,
-                                          applicationPackagesSnapshot.data,
-                                        );
+                                        await SelectApplicationDialog.showDialog(context, applicationPackagesSnapshot.data);
                                         setState(() {});
                                       },
                                       iconAlignment: IconAlignment.start,
                                       style: ButtonStyle(
-                                        tapTargetSize:
-                                            MaterialTapTargetSize.shrinkWrap,
-                                        padding: WidgetStatePropertyAll(
-                                          EdgeInsets.all(spaceMD),
-                                        ),
+                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                        padding: WidgetStatePropertyAll(EdgeInsets.all(spaceMD)),
                                         shape: WidgetStatePropertyAll(
-                                          RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(
-                                              cornerRadiusMD,
-                                            ),
-                                            side: BorderSide.none,
-                                          ),
+                                          RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
                                         ),
-                                        backgroundColor: WidgetStatePropertyAll(
-                                          tertiaryDark,
-                                        ),
+                                        backgroundColor: WidgetStatePropertyAll(tertiaryDark),
                                       ),
-                                      icon:
-                                          (applicationPackagesSnapshot.data ??
-                                                  {})
-                                              .isEmpty
-                                          ? FaIcon(
-                                              FontAwesomeIcons.circlePlus,
-                                              color: primaryLight,
-                                              size: textXL,
-                                            )
-                                          : ((applicationPackagesSnapshot
-                                                                .data ??
-                                                            {})
-                                                        .length ==
-                                                    1
+                                      icon: (applicationPackagesSnapshot.data ?? {}).isEmpty
+                                          ? FaIcon(FontAwesomeIcons.circlePlus, color: primaryLight, size: textXL)
+                                          : ((applicationPackagesSnapshot.data ?? {}).length == 1
                                                 ? FutureBuilder(
-                                                    future: AccessibilityServiceHelper.getApplicationIcon(
-                                                      applicationPackagesSnapshot
-                                                          .data!
-                                                          .first,
-                                                    ),
-                                                    builder:
-                                                        (
-                                                          context,
-                                                          iconSnapshot,
-                                                        ) =>
-                                                            iconSnapshot.data ==
-                                                                null
-                                                            ? SizedBox.shrink()
-                                                            : Image.memory(
-                                                                height: textXL,
-                                                                width: textXL,
-                                                                iconSnapshot
-                                                                    .data!,
-                                                              ),
+                                                    future: AccessibilityServiceHelper.getApplicationIcon(applicationPackagesSnapshot.data!.first),
+                                                    builder: (context, iconSnapshot) => iconSnapshot.data == null
+                                                        ? SizedBox.shrink()
+                                                        : Image.memory(height: textXL, width: textXL, iconSnapshot.data!),
                                                   )
                                                 : null),
                                       label: FutureBuilder(
-                                        future:
-                                            (applicationPackagesSnapshot.data ??
-                                                        {})
-                                                    .length ==
-                                                1
-                                            ? AccessibilityServiceHelper.getApplicationLabel(
-                                                applicationPackagesSnapshot
-                                                    .data!
-                                                    .first,
-                                              )
+                                        future: (applicationPackagesSnapshot.data ?? {}).length == 1
+                                            ? AccessibilityServiceHelper.getApplicationLabel(applicationPackagesSnapshot.data!.first)
                                             : Future.value(null),
                                         builder: (context, labelSnapshot) => Text(
-                                          ((applicationPackagesSnapshot.data ??
-                                                          {})
-                                                      .isEmpty
+                                          ((applicationPackagesSnapshot.data ?? {}).isEmpty
                                                   ? t.applicationNotSet
-                                                  : ((applicationPackagesSnapshot
-                                                                        .data ??
-                                                                    {})
-                                                                .length ==
-                                                            1
-                                                        ? (labelSnapshot.data ??
-                                                              "")
-                                                        : sprintf(
-                                                            t.multipleApplicationSelected,
-                                                            [
-                                                              (applicationPackagesSnapshot
-                                                                          .data ??
-                                                                      {})
-                                                                  .length,
-                                                            ],
-                                                          )))
+                                                  : ((applicationPackagesSnapshot.data ?? {}).length == 1
+                                                        ? (labelSnapshot.data ?? "")
+                                                        : sprintf(t.multipleApplicationSelected, [(applicationPackagesSnapshot.data ?? {}).length])))
                                               .toUpperCase(),
-                                          style: TextStyle(
-                                            color: primaryLight,
-                                            fontSize: textMD,
-                                          ),
+                                          style: TextStyle(color: primaryLight, fontSize: textMD),
                                         ),
                                       ),
                                     ),
-                                    (applicationPackagesSnapshot.data ?? {})
-                                                .length <=
-                                            1
+                                    (applicationPackagesSnapshot.data ?? {}).length <= 1
                                         ? SizedBox.shrink()
                                         : Expanded(
                                             child: Container(
-                                              padding: EdgeInsets.only(
-                                                left: spaceMD,
-                                              ),
+                                              padding: EdgeInsets.only(left: spaceMD),
                                               height: textXL + textMD,
                                               child: AnimatedListView(
                                                 shrinkWrap: true,
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                items:
-                                                    (applicationPackagesSnapshot
-                                                                .data ??
-                                                            {})
-                                                        .toList(),
+                                                scrollDirection: Axis.horizontal,
+                                                items: (applicationPackagesSnapshot.data ?? {}).toList(),
                                                 isSameItem: (a, b) => a == b,
                                                 itemBuilder: (context, index) {
-                                                  final packageName =
-                                                      (applicationPackagesSnapshot
-                                                                  .data ??
-                                                              {})
-                                                          .toList()[index];
+                                                  final packageName = (applicationPackagesSnapshot.data ?? {}).toList()[index];
 
                                                   return Padding(
                                                     key: Key(packageName),
-                                                    padding: EdgeInsets.only(
-                                                      right: spaceMD,
-                                                    ),
+                                                    padding: EdgeInsets.only(right: spaceMD),
                                                     child: FutureBuilder(
-                                                      future:
-                                                          AccessibilityServiceHelper.getApplicationIcon(
-                                                            packageName,
-                                                          ),
-                                                      builder:
-                                                          (
-                                                            context,
-                                                            iconSnapshot,
-                                                          ) =>
-                                                              iconSnapshot
-                                                                      .data ==
-                                                                  null
-                                                              ? SizedBox.shrink()
-                                                              : Image.memory(
-                                                                  height:
-                                                                      textXL +
-                                                                      textMD,
-                                                                  width:
-                                                                      textXL +
-                                                                      textMD,
-                                                                  iconSnapshot
-                                                                      .data!,
-                                                                ),
+                                                      future: AccessibilityServiceHelper.getApplicationIcon(packageName),
+                                                      builder: (context, iconSnapshot) => iconSnapshot.data == null
+                                                          ? SizedBox.shrink()
+                                                          : Image.memory(height: textXL + textMD, width: textXL + textMD, iconSnapshot.data!),
                                                     ),
                                                   );
                                                 },

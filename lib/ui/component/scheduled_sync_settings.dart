@@ -24,10 +24,7 @@ class _ScheduledSyncSettingsState extends State<ScheduledSyncSettings> {
 
   Future<void> setScheduledSync(String? frequency, int rate) async {
     // TODO: run these when repo/container is delete for cleanup
-    await uiSettingsManager.setString(
-      StorageKey.setman_schedule,
-      "$frequency|$rate",
-    );
+    await uiSettingsManager.setString(StorageKey.setman_schedule, "$frequency|$rate");
     final repoIndex = await repoManager.getInt(StorageKey.repoman_repoIndex);
 
     if (frequency == "never") {
@@ -62,14 +59,9 @@ class _ScheduledSyncSettingsState extends State<ScheduledSyncSettings> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: secondaryDark,
-        borderRadius: BorderRadius.all(cornerRadiusMD),
-      ),
+      decoration: BoxDecoration(color: secondaryDark, borderRadius: BorderRadius.all(cornerRadiusMD)),
       child: FutureBuilder(
-        future: uiSettingsManager.getBool(
-          StorageKey.setman_scheduledSyncSettingsExpanded,
-        ),
+        future: uiSettingsManager.getBool(StorageKey.setman_scheduledSyncSettingsExpanded),
         builder: (context, snapshot) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -77,35 +69,16 @@ class _ScheduledSyncSettingsState extends State<ScheduledSyncSettings> {
               width: double.infinity,
               child: TextButton.icon(
                 onPressed: () async {
-                  await uiSettingsManager.setBool(
-                    StorageKey.setman_scheduledSyncSettingsExpanded,
-                    !(snapshot.data ?? false),
-                  );
+                  await uiSettingsManager.setBool(StorageKey.setman_scheduledSyncSettingsExpanded, !(snapshot.data ?? false));
                   setState(() {});
                 },
                 iconAlignment: IconAlignment.end,
                 style: ButtonStyle(
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  padding: WidgetStatePropertyAll(
-                    EdgeInsets.symmetric(
-                      horizontal: spaceLG,
-                      vertical: spaceMD,
-                    ),
-                  ),
-                  shape: WidgetStatePropertyAll(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(cornerRadiusMD),
-                      side: BorderSide.none,
-                    ),
-                  ),
+                  padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceLG, vertical: spaceMD)),
+                  shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none)),
                 ),
-                icon: FaIcon(
-                  (snapshot.data ?? false)
-                      ? FontAwesomeIcons.chevronUp
-                      : FontAwesomeIcons.chevronDown,
-                  color: primaryLight,
-                  size: textXL,
-                ),
+                icon: FaIcon((snapshot.data ?? false) ? FontAwesomeIcons.chevronUp : FontAwesomeIcons.chevronDown, color: primaryLight, size: textXL),
                 label: SizedBox(
                   width: double.infinity,
                   child: Row(
@@ -119,29 +92,19 @@ class _ScheduledSyncSettingsState extends State<ScheduledSyncSettings> {
                           clipBehavior: Clip.hardEdge,
                           child: IconButton(
                             padding: EdgeInsets.zero,
-                            style: ButtonStyle(
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            ),
+                            style: ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
                             constraints: BoxConstraints(),
                             onPressed: () async {
                               launchUrl(Uri.parse(scheduledSyncDocsLink));
                             },
-                            icon: FaIcon(
-                              FontAwesomeIcons.circleQuestion,
-                              color: primaryLight,
-                              size: textLG,
-                            ),
+                            icon: FaIcon(FontAwesomeIcons.circleQuestion, color: primaryLight, size: textLG),
                           ),
                         ),
                       ),
                       SizedBox(width: (snapshot.data ?? false) ? spaceSM : 0),
                       Text(
                         t.scheduledSyncSettings,
-                        style: TextStyle(
-                          fontFeatures: [FontFeature.enable('smcp')],
-                          color: primaryLight,
-                          fontSize: textLG,
-                        ),
+                        style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),
                       ),
                     ],
                   ),
@@ -152,16 +115,11 @@ class _ScheduledSyncSettingsState extends State<ScheduledSyncSettings> {
               duration: Duration(milliseconds: 200),
               child: Container(
                 height: (snapshot.data ?? false) ? null : 0,
-                padding: EdgeInsets.symmetric(
-                  horizontal: spaceMD + spaceXS,
-                  vertical: 0,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: spaceMD + spaceXS, vertical: 0),
                 child: (snapshot.data ?? false)
                     ? FutureBuilder(
                         future: (() async {
-                          final parts = (await uiSettingsManager.getString(
-                            StorageKey.setman_schedule,
-                          )).split("|");
+                          final parts = (await uiSettingsManager.getString(StorageKey.setman_schedule)).split("|");
                           return (parts.first, int.tryParse(parts.last) ?? 0);
                         })(),
                         builder: (context, scheduleSnapshot) => SingleChildScrollView(
@@ -170,27 +128,14 @@ class _ScheduledSyncSettingsState extends State<ScheduledSyncSettings> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
-                                margin: EdgeInsets.symmetric(
-                                  vertical: spaceSM,
-                                  horizontal: 0,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: tertiaryDark,
-                                  borderRadius: BorderRadius.all(
-                                    cornerRadiusSM,
-                                  ),
-                                ),
+                                margin: EdgeInsets.symmetric(vertical: spaceSM, horizontal: 0),
+                                decoration: BoxDecoration(color: tertiaryDark, borderRadius: BorderRadius.all(cornerRadiusSM)),
                                 child: DropdownButton(
                                   isDense: true,
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: spaceXXS,
-                                    horizontal: spaceXS,
-                                  ),
+                                  padding: EdgeInsets.symmetric(vertical: spaceXXS, horizontal: spaceXS),
                                   value: scheduleSnapshot.data?.$1 != "never",
                                   menuMaxHeight: 250,
-                                  borderRadius: BorderRadius.all(
-                                    cornerRadiusSM,
-                                  ),
+                                  borderRadius: BorderRadius.all(cornerRadiusSM),
                                   underline: const SizedBox.shrink(),
                                   dropdownColor: tertiaryDark,
                                   onChanged: (value) {},
@@ -209,18 +154,13 @@ class _ScheduledSyncSettingsState extends State<ScheduledSyncSettings> {
                                       child: Row(
                                         children: [
                                           FaIcon(
-                                            (item
-                                                ? FontAwesomeIcons.arrowsRotate
-                                                : FontAwesomeIcons.ban),
-                                            color: (!item
-                                                ? tertiaryNegative
-                                                : primaryLight),
+                                            (item ? FontAwesomeIcons.arrowsRotate : FontAwesomeIcons.ban),
+                                            color: (!item ? tertiaryNegative : primaryLight),
                                             size: textSM,
                                           ),
                                           SizedBox(width: spaceXS),
                                           Text(
-                                            (item ? t.sync : t.dontSync)
-                                                .toUpperCase(),
+                                            (item ? t.sync : t.dontSync).toUpperCase(),
                                             style: TextStyle(
                                               fontSize: textSM,
                                               color: primaryLight,
@@ -241,8 +181,7 @@ class _ScheduledSyncSettingsState extends State<ScheduledSyncSettings> {
                                         ? [
                                             SizedBox(width: spaceSM),
                                             Text(
-                                              t.iosDefaultSyncRate
-                                                  .toUpperCase(),
+                                              t.iosDefaultSyncRate.toUpperCase(),
                                               style: TextStyle(
                                                 fontSize: textSM,
                                                 color: primaryLight,
@@ -265,49 +204,21 @@ class _ScheduledSyncSettingsState extends State<ScheduledSyncSettings> {
                                             SizedBox(width: spaceXS),
                                             Container(
                                               width: spaceXL,
-                                              margin: EdgeInsets.symmetric(
-                                                vertical: spaceSM,
-                                                horizontal: 0,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                color: tertiaryDark,
-                                                borderRadius: BorderRadius.all(
-                                                  cornerRadiusSM,
-                                                ),
-                                              ),
+                                              margin: EdgeInsets.symmetric(vertical: spaceSM, horizontal: 0),
+                                              decoration: BoxDecoration(color: tertiaryDark, borderRadius: BorderRadius.all(cornerRadiusSM)),
                                               child: TextField(
                                                 maxLines: 1,
-                                                controller:
-                                                    TextEditingController(
-                                                      text: scheduleSnapshot
-                                                          .data
-                                                          ?.$2
-                                                          .toString(),
-                                                    ),
-                                                keyboardType:
-                                                    TextInputType.number,
+                                                controller: TextEditingController(text: scheduleSnapshot.data?.$2.toString()),
+                                                keyboardType: TextInputType.number,
                                                 inputFormatters: [
-                                                  FilteringTextInputFormatter
-                                                      .digitsOnly,
-                                                  TextInputFormatter.withFunction((
-                                                    oldValue,
-                                                    newValue,
-                                                  ) {
+                                                  FilteringTextInputFormatter.digitsOnly,
+                                                  TextInputFormatter.withFunction((oldValue, newValue) {
                                                     final text = newValue.text;
-                                                    if (text.isEmpty)
+                                                    if (text.isEmpty) {
                                                       return newValue;
-                                                    final value = int.tryParse(
-                                                      text,
-                                                    );
-                                                    if (value == null ||
-                                                        value <
-                                                            (scheduleSnapshot
-                                                                        .data
-                                                                        ?.$1 ==
-                                                                    "min"
-                                                                ? 15
-                                                                : 1) ||
-                                                        value > 1000) {
+                                                    }
+                                                    final value = int.tryParse(text);
+                                                    if (value == null || value < (scheduleSnapshot.data?.$1 == "min" ? 15 : 1) || value > 1000) {
                                                       return oldValue;
                                                     }
                                                     return newValue;
@@ -316,104 +227,59 @@ class _ScheduledSyncSettingsState extends State<ScheduledSyncSettings> {
                                                 style: TextStyle(
                                                   color: primaryLight,
                                                   fontWeight: FontWeight.bold,
-                                                  decoration:
-                                                      TextDecoration.none,
+                                                  decoration: TextDecoration.none,
                                                   decorationThickness: 0,
                                                   fontSize: textMD,
                                                 ),
                                                 decoration: InputDecoration(
-                                                  border:
-                                                      const OutlineInputBorder(
-                                                        borderSide:
-                                                            BorderSide.none,
-                                                      ),
+                                                  border: const OutlineInputBorder(borderSide: BorderSide.none),
                                                   isCollapsed: true,
-                                                  contentPadding:
-                                                      EdgeInsets.symmetric(
-                                                        vertical: spaceXXS,
-                                                        horizontal: spaceXS,
-                                                      ),
+                                                  contentPadding: EdgeInsets.symmetric(vertical: spaceXXS, horizontal: spaceXS),
                                                   hintText: "0",
-                                                  floatingLabelBehavior:
-                                                      FloatingLabelBehavior
-                                                          .always,
+                                                  floatingLabelBehavior: FloatingLabelBehavior.always,
                                                   isDense: true,
                                                 ),
                                                 onChanged: (value) async {
                                                   await setScheduledSync(
                                                     scheduleSnapshot.data?.$1,
-                                                    int.tryParse(value) ??
-                                                        (scheduleSnapshot
-                                                                    .data
-                                                                    ?.$1 ==
-                                                                "min"
-                                                            ? 15
-                                                            : 1),
+                                                    int.tryParse(value) ?? (scheduleSnapshot.data?.$1 == "min" ? 15 : 1),
                                                   );
                                                 },
                                               ),
                                             ),
                                             SizedBox(width: spaceXS),
                                             Container(
-                                              margin: EdgeInsets.symmetric(
-                                                vertical: spaceSM,
-                                                horizontal: 0,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                color: tertiaryDark,
-                                                borderRadius: BorderRadius.all(
-                                                  cornerRadiusSM,
-                                                ),
-                                              ),
+                                              margin: EdgeInsets.symmetric(vertical: spaceSM, horizontal: 0),
+                                              decoration: BoxDecoration(color: tertiaryDark, borderRadius: BorderRadius.all(cornerRadiusSM)),
                                               child: DropdownButton(
                                                 isDense: true,
-                                                padding: EdgeInsets.symmetric(
-                                                  vertical: spaceXXS,
-                                                  horizontal: spaceXS,
-                                                ),
-                                                value:
-                                                    scheduleSnapshot.data?.$1,
+                                                padding: EdgeInsets.symmetric(vertical: spaceXXS, horizontal: spaceXS),
+                                                value: scheduleSnapshot.data?.$1,
                                                 menuMaxHeight: 250,
-                                                borderRadius: BorderRadius.all(
-                                                  cornerRadiusSM,
-                                                ),
-                                                underline:
-                                                    const SizedBox.shrink(),
+                                                borderRadius: BorderRadius.all(cornerRadiusSM),
+                                                underline: const SizedBox.shrink(),
                                                 dropdownColor: primaryDark,
                                                 onChanged: (value) async {
-                                                  await setScheduledSync(
-                                                    value,
-                                                    (value == "min" ? 15 : 1),
-                                                  );
+                                                  await setScheduledSync(value, (value == "min" ? 15 : 1));
                                                 },
-                                                items: recurFrequency
-                                                    .sublist(1)
-                                                    .map((item) {
-                                                      return DropdownMenuItem(
-                                                        value: item,
-                                                        child: Row(
-                                                          children: [
-                                                            Text(
-                                                              "$item(s)"
-                                                                  .toUpperCase(),
-                                                              style: TextStyle(
-                                                                fontSize:
-                                                                    textSM,
-                                                                color:
-                                                                    primaryLight,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                              ),
-                                                            ),
-                                                          ],
+                                                items: recurFrequency.sublist(1).map((item) {
+                                                  return DropdownMenuItem(
+                                                    value: item,
+                                                    child: Row(
+                                                      children: [
+                                                        Text(
+                                                          "$item(s)".toUpperCase(),
+                                                          style: TextStyle(
+                                                            fontSize: textSM,
+                                                            color: primaryLight,
+                                                            fontWeight: FontWeight.bold,
+                                                            overflow: TextOverflow.ellipsis,
+                                                          ),
                                                         ),
-                                                      );
-                                                    })
-                                                    .toList(),
+                                                      ],
+                                                    ),
+                                                  );
+                                                }).toList(),
                                               ),
                                             ),
                                           ]),

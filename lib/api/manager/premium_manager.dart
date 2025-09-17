@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:GitSync/api/helper.dart';
 import 'package:GitSync/api/manager/settings_manager.dart';
 import 'package:GitSync/api/manager/storage.dart';
-import 'package:GitSync/constant/secrets.dart';
 import 'package:GitSync/global.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;

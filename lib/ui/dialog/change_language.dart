@@ -8,17 +8,12 @@ import '../../../ui/dialog/base_alert_dialog.dart';
 import 'package:GitSync/global.dart';
 import 'package:GitSync/l10n/app_localizations.dart';
 
-Future<void> showDialog(
-  BuildContext context,
-  Future<void> Function(String locale) callback,
-) {
+Future<void> showDialog(BuildContext context, Future<void> Function(String locale) callback) {
   final localesOrder = ["en", "es", "zh", "de", "ru"];
   final localesMap = {
     for (var locale in [
       ...localesOrder,
-      ...AppLocalizations.supportedLocales
-          .map((locale) => locale.languageCode)
-          .where((code) => !localesOrder.contains(code)),
+      ...AppLocalizations.supportedLocales.map((locale) => locale.languageCode).where((code) => !localesOrder.contains(code)),
     ])
       locale: LocaleNamesLocalizationsDelegate.nativeLocaleNames[locale],
   };
@@ -32,20 +27,12 @@ Future<void> showDialog(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FaIcon(
-              FontAwesomeIcons.language,
-              color: primaryLight,
-              size: textLG,
-            ),
+            FaIcon(FontAwesomeIcons.language, color: primaryLight, size: textLG),
             SizedBox(width: spaceSM),
             Text(
               t.language.toUpperCase(),
               textAlign: TextAlign.center,
-              style: TextStyle(
-                color: primaryLight,
-                fontSize: textLG,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(color: primaryLight, fontSize: textLG, fontWeight: FontWeight.bold),
             ),
             SizedBox(width: spaceLG),
           ],
@@ -65,18 +52,8 @@ Future<void> showDialog(
                     iconAlignment: IconAlignment.end,
                     style: ButtonStyle(
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      padding: WidgetStatePropertyAll(
-                        EdgeInsets.symmetric(
-                          horizontal: spaceLG,
-                          vertical: spaceMD,
-                        ),
-                      ),
-                      shape: WidgetStatePropertyAll(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(cornerRadiusMD),
-                          side: BorderSide.none,
-                        ),
-                      ),
+                      padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceLG, vertical: spaceMD)),
+                      shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none)),
                       backgroundColor: WidgetStatePropertyAll(tertiaryDark),
                     ),
                     label: SizedBox(
@@ -84,11 +61,7 @@ Future<void> showDialog(
                       child: Text(
                         locale.value!,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFeatures: [FontFeature.enable('smcp')],
-                          color: primaryLight,
-                          fontSize: textLG,
-                        ),
+                        style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),
                       ),
                     ),
                   ),

@@ -36,7 +36,10 @@ class GroupSyncSettings extends StatelessWidget {
           icon: FaIcon(FontAwesomeIcons.squareArrowUpRight, color: primaryLight, size: textXL),
           label: SizedBox(
             width: double.infinity,
-            child: Text(t.otherSyncSettings, style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG)),
+            child: Text(
+              t.otherSyncSettings,
+              style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),
+            ),
           ),
         ),
       ],

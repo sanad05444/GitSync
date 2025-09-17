@@ -15,11 +15,7 @@ Future<void> showDialog(BuildContext context, String issueUrl) {
         width: MediaQuery.of(context).size.width,
         child: Text(
           t.issueReportSuccessTitle,
-          style: TextStyle(
-            color: primaryLight,
-            fontSize: textXL,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
         ),
       ),
       content: SingleChildScrollView(
@@ -27,11 +23,7 @@ Future<void> showDialog(BuildContext context, String issueUrl) {
           children: [
             Text(
               t.issueReportSuccessMsg,
-              style: const TextStyle(
-                color: primaryLight,
-                fontWeight: FontWeight.bold,
-                fontSize: textSM,
-              ),
+              style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
             ),
           ],
         ),

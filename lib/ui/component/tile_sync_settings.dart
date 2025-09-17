@@ -18,14 +18,9 @@ class _TileSyncSettingsState extends State<TileSyncSettings> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: secondaryDark,
-        borderRadius: BorderRadius.all(cornerRadiusMD),
-      ),
+      decoration: BoxDecoration(color: secondaryDark, borderRadius: BorderRadius.all(cornerRadiusMD)),
       child: FutureBuilder(
-        future: uiSettingsManager.getBool(
-          StorageKey.setman_otherSyncSettingsExpanded,
-        ),
+        future: uiSettingsManager.getBool(StorageKey.setman_otherSyncSettingsExpanded),
         builder: (context, snapshot) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -33,35 +28,16 @@ class _TileSyncSettingsState extends State<TileSyncSettings> {
               width: double.infinity,
               child: TextButton.icon(
                 onPressed: () async {
-                  uiSettingsManager.setBool(
-                    StorageKey.setman_otherSyncSettingsExpanded,
-                    !(snapshot.data ?? false),
-                  );
+                  uiSettingsManager.setBool(StorageKey.setman_otherSyncSettingsExpanded, !(snapshot.data ?? false));
                   setState(() {});
                 },
                 iconAlignment: IconAlignment.end,
                 style: ButtonStyle(
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  padding: WidgetStatePropertyAll(
-                    EdgeInsets.symmetric(
-                      horizontal: spaceLG,
-                      vertical: spaceMD,
-                    ),
-                  ),
-                  shape: WidgetStatePropertyAll(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(cornerRadiusMD),
-                      side: BorderSide.none,
-                    ),
-                  ),
+                  padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceLG, vertical: spaceMD)),
+                  shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none)),
                 ),
-                icon: FaIcon(
-                  (snapshot.data ?? false)
-                      ? FontAwesomeIcons.chevronUp
-                      : FontAwesomeIcons.chevronDown,
-                  color: primaryLight,
-                  size: textXL,
-                ),
+                icon: FaIcon((snapshot.data ?? false) ? FontAwesomeIcons.chevronUp : FontAwesomeIcons.chevronDown, color: primaryLight, size: textXL),
                 label: SizedBox(
                   width: double.infinity,
                   child: Row(
@@ -74,29 +50,19 @@ class _TileSyncSettingsState extends State<TileSyncSettings> {
                           clipBehavior: Clip.hardEdge,
                           child: IconButton(
                             padding: EdgeInsets.zero,
-                            style: ButtonStyle(
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            ),
+                            style: ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
                             constraints: BoxConstraints(),
                             onPressed: () async {
                               launchUrl(Uri.parse(tileSyncDocsLink));
                             },
-                            icon: FaIcon(
-                              FontAwesomeIcons.circleQuestion,
-                              color: primaryLight,
-                              size: textLG,
-                            ),
+                            icon: FaIcon(FontAwesomeIcons.circleQuestion, color: primaryLight, size: textLG),
                           ),
                         ),
                       ),
                       SizedBox(width: (snapshot.data ?? false) ? spaceSM : 0),
                       Text(
                         t.tileSyncSettings,
-                        style: TextStyle(
-                          fontFeatures: [FontFeature.enable('smcp')],
-                          color: primaryLight,
-                          fontSize: textLG,
-                        ),
+                        style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),
                       ),
                     ],
                   ),
@@ -113,49 +79,26 @@ class _TileSyncSettingsState extends State<TileSyncSettings> {
                       ? [
                           TextButton.icon(
                             onPressed: () async {
-                              await repoManager.setInt(
-                                StorageKey.repoman_tileSyncIndex,
-                                await repoManager.getInt(
-                                  StorageKey.repoman_repoIndex,
-                                ),
-                              );
+                              await repoManager.setInt(StorageKey.repoman_tileSyncIndex, await repoManager.getInt(StorageKey.repoman_repoIndex));
                               setState(() {});
                             },
                             iconAlignment: IconAlignment.end,
                             style: ButtonStyle(
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               padding: WidgetStatePropertyAll(
-                                EdgeInsets.only(
-                                  left: spaceMD + spaceXS,
-                                  right: spaceLG,
-                                  top: spaceMD,
-                                  bottom: spaceMD,
-                                ),
+                                EdgeInsets.only(left: spaceMD + spaceXS, right: spaceLG, top: spaceMD, bottom: spaceMD),
                               ),
                               shape: WidgetStatePropertyAll(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                    cornerRadiusMD,
-                                  ),
-                                  side: BorderSide.none,
-                                ),
+                                RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
                               ),
                             ),
                             icon: FutureBuilder(
                               future: (() async =>
-                                  await repoManager.getInt(
-                                    StorageKey.repoman_tileSyncIndex,
-                                  ) ==
-                                  await repoManager.getInt(
-                                    StorageKey.repoman_repoIndex,
-                                  ))(),
+                                  await repoManager.getInt(StorageKey.repoman_tileSyncIndex) ==
+                                  await repoManager.getInt(StorageKey.repoman_repoIndex))(),
                               builder: (context, snapshot) => FaIcon(
-                                snapshot.data == true
-                                    ? FontAwesomeIcons.solidCircleCheck
-                                    : FontAwesomeIcons.circle,
-                                color: snapshot.data == true
-                                    ? primaryPositive
-                                    : secondaryLight,
+                                snapshot.data == true ? FontAwesomeIcons.solidCircleCheck : FontAwesomeIcons.circle,
+                                color: snapshot.data == true ? primaryPositive : secondaryLight,
                                 size: textLG,
                               ),
                             ),
@@ -163,10 +106,7 @@ class _TileSyncSettingsState extends State<TileSyncSettings> {
                               width: double.infinity,
                               child: Text(
                                 t.useForTileSync,
-                                style: TextStyle(
-                                  color: primaryLight,
-                                  fontSize: textMD,
-                                ),
+                                style: TextStyle(color: primaryLight, fontSize: textMD),
                               ),
                             ),
                           ),
@@ -174,9 +114,7 @@ class _TileSyncSettingsState extends State<TileSyncSettings> {
                             onPressed: () async {
                               await repoManager.setInt(
                                 StorageKey.repoman_tileManualSyncIndex,
-                                await repoManager.getInt(
-                                  StorageKey.repoman_repoIndex,
-                                ),
+                                await repoManager.getInt(StorageKey.repoman_repoIndex),
                               );
                               setState(() {});
                             },
@@ -184,37 +122,19 @@ class _TileSyncSettingsState extends State<TileSyncSettings> {
                             style: ButtonStyle(
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               padding: WidgetStatePropertyAll(
-                                EdgeInsets.only(
-                                  left: spaceMD + spaceXS,
-                                  right: spaceLG,
-                                  top: spaceMD,
-                                  bottom: spaceMD,
-                                ),
+                                EdgeInsets.only(left: spaceMD + spaceXS, right: spaceLG, top: spaceMD, bottom: spaceMD),
                               ),
                               shape: WidgetStatePropertyAll(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                    cornerRadiusMD,
-                                  ),
-                                  side: BorderSide.none,
-                                ),
+                                RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
                               ),
                             ),
                             icon: FutureBuilder(
                               future: (() async =>
-                                  await repoManager.getInt(
-                                    StorageKey.repoman_tileManualSyncIndex,
-                                  ) ==
-                                  await repoManager.getInt(
-                                    StorageKey.repoman_repoIndex,
-                                  ))(),
+                                  await repoManager.getInt(StorageKey.repoman_tileManualSyncIndex) ==
+                                  await repoManager.getInt(StorageKey.repoman_repoIndex))(),
                               builder: (context, snapshot) => FaIcon(
-                                snapshot.data == true
-                                    ? FontAwesomeIcons.solidCircleCheck
-                                    : FontAwesomeIcons.circle,
-                                color: snapshot.data == true
-                                    ? primaryPositive
-                                    : secondaryLight,
+                                snapshot.data == true ? FontAwesomeIcons.solidCircleCheck : FontAwesomeIcons.circle,
+                                color: snapshot.data == true ? primaryPositive : secondaryLight,
                                 size: textLG,
                               ),
                             ),
@@ -222,10 +142,7 @@ class _TileSyncSettingsState extends State<TileSyncSettings> {
                               width: double.infinity,
                               child: Text(
                                 t.useForTileManualSync,
-                                style: TextStyle(
-                                  color: primaryLight,
-                                  fontSize: textMD,
-                                ),
+                                style: TextStyle(color: primaryLight, fontSize: textMD),
                               ),
                             ),
                           ),

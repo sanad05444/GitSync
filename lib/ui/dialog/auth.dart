@@ -27,61 +27,34 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
   bool privKeyCopied = false;
 
   bool getHttpsCanLogin() {
-    return !(httpsUsernameController.text.isEmpty ||
-        httpsTokenController.text.isEmpty);
+    return !(httpsUsernameController.text.isEmpty || httpsTokenController.text.isEmpty);
   }
 
-  Future<void> finish(
-    BuildContext context,
-    GitProvider selectedGitProvider,
-  ) async {
+  Future<void> finish(BuildContext context, GitProvider selectedGitProvider) async {
     await repoManager.setOnboardingStep(3);
-    await uiSettingsManager.setStringNullable(
-      StorageKey.setman_gitProvider,
-      selectedGitProvider.name,
-    );
+    await uiSettingsManager.setStringNullable(StorageKey.setman_gitProvider, selectedGitProvider.name);
     Navigator.of(context).canPop() ? Navigator.pop(context) : null;
     callback();
   }
 
-  Future<void> setHttpAuth(
-    BuildContext context,
-    (String, String, String) authCredentials,
-    GitProvider selectedGitProvider,
-  ) async {
-    await uiSettingsManager.setGitHttpAuthCredentials(
-      authCredentials.$1,
-      authCredentials.$2,
-      authCredentials.$3,
-    );
+  Future<void> setHttpAuth(BuildContext context, (String, String, String) authCredentials, GitProvider selectedGitProvider) async {
+    await uiSettingsManager.setGitHttpAuthCredentials(authCredentials.$1, authCredentials.$2, authCredentials.$3);
     await finish(context, selectedGitProvider);
   }
 
-  Future<void> setSshAuth(
-    BuildContext context,
-    (String, String) sshCredentials,
-    GitProvider selectedGitProvider,
-  ) async {
-    uiSettingsManager.setGitSshAuthCredentials(
-      sshCredentials.$1,
-      sshCredentials.$2,
-    );
+  Future<void> setSshAuth(BuildContext context, (String, String) sshCredentials, GitProvider selectedGitProvider) async {
+    uiSettingsManager.setGitSshAuthCredentials(sshCredentials.$1, sshCredentials.$2);
     await finish(context, selectedGitProvider);
   }
 
-  Widget buildActions(
-    BuildContext context,
-    void Function(void Function()) setState,
-  ) {
+  Widget buildActions(BuildContext context, void Function(void Function()) setState) {
     switch (selectedGitProvider) {
       case GitProvider.GITHUB:
       case GitProvider.GITEA:
       case GitProvider.GITLAB:
         return TextButton.icon(
           onPressed: () async {
-            final gitProviderManager = GitProviderManager.getGitProviderManager(
-              selectedGitProvider,
-            );
+            final gitProviderManager = GitProviderManager.getGitProviderManager(selectedGitProvider);
             if (gitProviderManager == null) return;
 
             final result = await gitProviderManager.launchOAuthFlow();
@@ -92,63 +65,31 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
           style: ButtonStyle(
             alignment: Alignment.center,
             backgroundColor: WidgetStatePropertyAll(primaryPositive),
-            padding: WidgetStatePropertyAll(
-              EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
-            ),
-            shape: WidgetStatePropertyAll(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(cornerRadiusMD),
-                side: BorderSide.none,
-              ),
-            ),
+            padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM)),
+            shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none)),
           ),
-          icon: FaIcon(
-            FontAwesomeIcons.squareArrowUpRight,
-            color: secondaryDark,
-            size: textLG,
-          ),
+          icon: FaIcon(FontAwesomeIcons.squareArrowUpRight, color: secondaryDark, size: textLG),
           label: Text(
             t.oauth.toUpperCase(),
-            style: TextStyle(
-              color: secondaryDark,
-              fontSize: textSM,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(color: secondaryDark, fontSize: textSM, fontWeight: FontWeight.bold),
           ),
         );
       case GitProvider.HTTPS:
         return TextButton(
           onPressed: getHttpsCanLogin()
               ? () async {
-                  await setHttpAuth(context, (
-                    httpsUsernameController.text.trim(),
-                    "",
-                    httpsTokenController.text.trim(),
-                  ), selectedGitProvider);
+                  await setHttpAuth(context, (httpsUsernameController.text.trim(), "", httpsTokenController.text.trim()), selectedGitProvider);
                 }
               : null,
           style: ButtonStyle(
             alignment: Alignment.center,
-            backgroundColor: WidgetStatePropertyAll(
-              getHttpsCanLogin() ? primaryPositive : secondaryPositive,
-            ),
-            padding: WidgetStatePropertyAll(
-              EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
-            ),
-            shape: WidgetStatePropertyAll(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(cornerRadiusMD),
-                side: BorderSide.none,
-              ),
-            ),
+            backgroundColor: WidgetStatePropertyAll(getHttpsCanLogin() ? primaryPositive : secondaryPositive),
+            padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM)),
+            shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none)),
           ),
           child: Text(
             t.login.toUpperCase(),
-            style: TextStyle(
-              color: getHttpsCanLogin() ? secondaryDark : tertiaryDark,
-              fontSize: textSM,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(color: getHttpsCanLogin() ? secondaryDark : tertiaryDark, fontSize: textSM, fontWeight: FontWeight.bold),
           ),
         );
       case GitProvider.SSH:
@@ -166,39 +107,19 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                         }
                       : (pubKeyCopied
                             ? () async {
-                                setSshAuth(parentContext, (
-                                  passphraseController.text,
-                                  keyPair!.$1,
-                                ), selectedGitProvider);
+                                setSshAuth(parentContext, (passphraseController.text, keyPair!.$1), selectedGitProvider);
                               }
                             : null),
                   style: ButtonStyle(
                     alignment: Alignment.center,
-                    backgroundColor: WidgetStatePropertyAll(
-                      (keyPair != null && !pubKeyCopied)
-                          ? secondaryPositive
-                          : primaryPositive,
-                    ),
-                    padding: WidgetStatePropertyAll(
-                      EdgeInsets.symmetric(
-                        horizontal: spaceMD,
-                        vertical: spaceSM,
-                      ),
-                    ),
-                    shape: WidgetStatePropertyAll(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(cornerRadiusMD),
-                        side: BorderSide.none,
-                      ),
-                    ),
+                    backgroundColor: WidgetStatePropertyAll((keyPair != null && !pubKeyCopied) ? secondaryPositive : primaryPositive),
+                    padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM)),
+                    shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none)),
                   ),
                   child: Text(
-                    (keyPair == null ? t.generateKeys : t.confirmKeySaved)
-                        .toUpperCase(),
+                    (keyPair == null ? t.generateKeys : t.confirmKeySaved).toUpperCase(),
                     style: TextStyle(
-                      color: (keyPair != null && !pubKeyCopied)
-                          ? tertiaryDark
-                          : secondaryDark,
+                      color: (keyPair != null && !pubKeyCopied) ? tertiaryDark : secondaryDark,
                       fontSize: textSM,
                       fontWeight: FontWeight.bold,
                     ),
@@ -210,39 +131,19 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                       right: 0,
                       child: IconButton(
                         onPressed: () async {
-                          ImportPrivKeyDialog.showDialog(context, (
-                            (String, String) sshCredentials,
-                          ) {
-                            setSshAuth(
-                              context,
-                              sshCredentials,
-                              selectedGitProvider,
-                            );
+                          ImportPrivKeyDialog.showDialog(context, ((String, String) sshCredentials) {
+                            setSshAuth(context, sshCredentials, selectedGitProvider);
                           });
                         },
                         style: ButtonStyle(
                           alignment: Alignment.center,
-                          backgroundColor: WidgetStatePropertyAll(
-                            primaryPositive,
-                          ),
-                          padding: WidgetStatePropertyAll(
-                            EdgeInsets.symmetric(
-                              horizontal: spaceMD,
-                              vertical: spaceSM,
-                            ),
-                          ),
+                          backgroundColor: WidgetStatePropertyAll(primaryPositive),
+                          padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM)),
                           shape: WidgetStatePropertyAll(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(cornerRadiusMD),
-                              side: BorderSide.none,
-                            ),
+                            RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
                           ),
                         ),
-                        icon: FaIcon(
-                          FontAwesomeIcons.key,
-                          color: secondaryDark,
-                          size: textSM,
-                        ),
+                        icon: FaIcon(FontAwesomeIcons.key, color: secondaryDark, size: textSM),
                       ),
                     )
                   : SizedBox.shrink(),
@@ -262,11 +163,7 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
           child: Text(
             t.oauthNoAffiliation,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: secondaryLight,
-              fontWeight: FontWeight.bold,
-              fontSize: textSM,
-            ),
+            style: const TextStyle(color: secondaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
           ),
         );
       case GitProvider.HTTPS:
@@ -276,11 +173,7 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
             Text(
               t.ensureTokenScope,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: secondaryLight,
-                fontWeight: FontWeight.bold,
-                fontSize: textSM,
-              ),
+              style: const TextStyle(color: secondaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
             ),
             SizedBox(height: spaceLG),
             Row(
@@ -292,11 +185,7 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                       padding: EdgeInsets.symmetric(vertical: spaceSM),
                       child: Text(
                         t.user.toUpperCase(),
-                        style: TextStyle(
-                          color: primaryLight,
-                          fontSize: textSM,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                       ),
                     ),
                     SizedBox(height: spaceMD),
@@ -304,11 +193,7 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                       padding: EdgeInsets.symmetric(vertical: spaceSM),
                       child: Text(
                         t.token.toUpperCase(),
-                        style: TextStyle(
-                          color: primaryLight,
-                          fontSize: textSM,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
@@ -330,23 +215,12 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                         decoration: InputDecoration(
                           fillColor: secondaryDark,
                           filled: true,
-                          border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.all(cornerRadiusSM),
-                            borderSide: BorderSide.none,
-                          ),
+                          border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusSM), borderSide: BorderSide.none),
                           hintText: t.exampleUser,
-                          hintStyle: TextStyle(
-                            fontSize: textSM,
-                            fontWeight: FontWeight.bold,
-                            overflow: TextOverflow.ellipsis,
-                            color: tertiaryLight,
-                          ),
+                          hintStyle: TextStyle(fontSize: textSM, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis, color: tertiaryLight),
                           isCollapsed: true,
                           floatingLabelBehavior: FloatingLabelBehavior.always,
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: spaceMD,
-                            vertical: spaceSM,
-                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
                           isDense: true,
                         ),
                         onChanged: (_) {
@@ -367,23 +241,12 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                         decoration: InputDecoration(
                           fillColor: secondaryDark,
                           filled: true,
-                          border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.all(cornerRadiusSM),
-                            borderSide: BorderSide.none,
-                          ),
+                          border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusSM), borderSide: BorderSide.none),
                           hintText: t.exampleToken,
-                          hintStyle: TextStyle(
-                            fontSize: textSM,
-                            fontWeight: FontWeight.bold,
-                            overflow: TextOverflow.ellipsis,
-                            color: tertiaryLight,
-                          ),
+                          hintStyle: TextStyle(fontSize: textSM, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis, color: tertiaryLight),
                           isCollapsed: true,
                           floatingLabelBehavior: FloatingLabelBehavior.always,
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: spaceMD,
-                            vertical: spaceSM,
-                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
                           isDense: true,
                         ),
                         onChanged: (_) {
@@ -409,11 +272,7 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                       padding: EdgeInsets.symmetric(vertical: spaceSM),
                       child: Text(
                         t.passphrase.toUpperCase(),
-                        style: TextStyle(
-                          color: primaryLight,
-                          fontSize: textSM,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                       ),
                     ),
                     SizedBox(height: spaceMD),
@@ -421,11 +280,7 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                       padding: EdgeInsets.symmetric(vertical: spaceSM),
                       child: Text(
                         t.privKey.toUpperCase(),
-                        style: TextStyle(
-                          color: primaryLight,
-                          fontSize: textSM,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                       ),
                     ),
                     SizedBox(height: spaceMD),
@@ -433,11 +288,7 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                       padding: EdgeInsets.symmetric(vertical: spaceSM),
                       child: Text(
                         t.pubKey.toUpperCase(),
-                        style: TextStyle(
-                          color: primaryLight,
-                          fontSize: textSM,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
@@ -460,23 +311,12 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                         decoration: InputDecoration(
                           fillColor: secondaryDark,
                           filled: true,
-                          border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.all(cornerRadiusSM),
-                            borderSide: BorderSide.none,
-                          ),
+                          border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusSM), borderSide: BorderSide.none),
                           hintText: t.optionalLabel.toUpperCase(),
-                          hintStyle: TextStyle(
-                            fontSize: textSM,
-                            fontWeight: FontWeight.bold,
-                            overflow: TextOverflow.ellipsis,
-                            color: tertiaryLight,
-                          ),
+                          hintStyle: TextStyle(fontSize: textSM, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis, color: tertiaryLight),
                           isCollapsed: true,
                           floatingLabelBehavior: FloatingLabelBehavior.always,
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: spaceMD,
-                            vertical: spaceSM,
-                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
                           isDense: true,
                         ),
                       ),
@@ -485,54 +325,31 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                         onPressed: keyPair == null
                             ? null
                             : () async {
-                                ConfirmPrivKeyCopyDialog.showDialog(
-                                  parentContext,
-                                  () {
-                                    Clipboard.setData(
-                                      ClipboardData(text: keyPair!.$1),
-                                    );
-                                    privKeyCopied = true;
-                                    setState(() {});
-                                  },
-                                );
+                                ConfirmPrivKeyCopyDialog.showDialog(parentContext, () {
+                                  Clipboard.setData(ClipboardData(text: keyPair!.$1));
+                                  privKeyCopied = true;
+                                  setState(() {});
+                                });
                               },
                         style: ButtonStyle(
                           alignment: Alignment.center,
-                          backgroundColor: WidgetStatePropertyAll(
-                            secondaryDark,
-                          ),
-                          padding: WidgetStatePropertyAll(
-                            EdgeInsets.symmetric(
-                              horizontal: spaceMD,
-                              vertical: spaceSM,
-                            ),
-                          ),
+                          backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                          padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM)),
                           shape: WidgetStatePropertyAll(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(cornerRadiusSM),
-                              side: BorderSide.none,
-                            ),
+                            RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusSM), side: BorderSide.none),
                           ),
                         ),
                         iconAlignment: IconAlignment.end,
                         icon: FaIcon(
-                          privKeyCopied
-                              ? FontAwesomeIcons.clipboardCheck
-                              : FontAwesomeIcons.solidCopy,
-                          color: keyPair == null
-                              ? tertiaryLight
-                              : (privKeyCopied
-                                    ? primaryPositive
-                                    : primaryLight),
+                          privKeyCopied ? FontAwesomeIcons.clipboardCheck : FontAwesomeIcons.solidCopy,
+                          color: keyPair == null ? tertiaryLight : (privKeyCopied ? primaryPositive : primaryLight),
                           size: textMD,
                         ),
                         label: Text(
                           keyPair == null ? t.sshPrivKeyExample : keyPair!.$1,
                           maxLines: 1,
                           style: TextStyle(
-                            color: keyPair == null
-                                ? tertiaryLight
-                                : primaryLight,
+                            color: keyPair == null ? tertiaryLight : primaryLight,
                             fontSize: textSM,
                             fontWeight: FontWeight.bold,
                             overflow: TextOverflow.ellipsis,
@@ -544,47 +361,29 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                         onPressed: keyPair == null
                             ? null
                             : () async {
-                                Clipboard.setData(
-                                  ClipboardData(text: keyPair!.$2),
-                                );
+                                Clipboard.setData(ClipboardData(text: keyPair!.$2));
                                 pubKeyCopied = true;
                                 setState(() {});
                               },
                         style: ButtonStyle(
                           alignment: Alignment.center,
-                          backgroundColor: WidgetStatePropertyAll(
-                            secondaryDark,
-                          ),
-                          padding: WidgetStatePropertyAll(
-                            EdgeInsets.symmetric(
-                              horizontal: spaceMD,
-                              vertical: spaceSM,
-                            ),
-                          ),
+                          backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                          padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM)),
                           shape: WidgetStatePropertyAll(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(cornerRadiusSM),
-                              side: BorderSide.none,
-                            ),
+                            RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusSM), side: BorderSide.none),
                           ),
                         ),
                         iconAlignment: IconAlignment.end,
                         icon: FaIcon(
-                          pubKeyCopied
-                              ? FontAwesomeIcons.clipboardCheck
-                              : FontAwesomeIcons.solidCopy,
-                          color: keyPair == null
-                              ? tertiaryLight
-                              : (pubKeyCopied ? primaryPositive : primaryLight),
+                          pubKeyCopied ? FontAwesomeIcons.clipboardCheck : FontAwesomeIcons.solidCopy,
+                          color: keyPair == null ? tertiaryLight : (pubKeyCopied ? primaryPositive : primaryLight),
                           size: textMD,
                         ),
                         label: Text(
                           keyPair == null ? t.sshPubKeyExample : keyPair!.$2,
                           maxLines: 1,
                           style: TextStyle(
-                            color: keyPair == null
-                                ? tertiaryLight
-                                : primaryLight,
+                            color: keyPair == null ? tertiaryLight : primaryLight,
                             fontSize: textSM,
                             fontWeight: FontWeight.bold,
                             overflow: TextOverflow.ellipsis,
@@ -611,11 +410,7 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
           child: Text(
             t.auth.toUpperCase(),
             textAlign: TextAlign.center,
-            style: TextStyle(
-              color: primaryLight,
-              fontSize: textXL,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
           ),
         ),
         content: SingleChildScrollView(
@@ -624,49 +419,29 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
               Text(
                 t.selectYourGitProviderAndAuthenticate,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: secondaryLight,
-                  fontWeight: FontWeight.bold,
-                  fontSize: textSM,
-                ),
+                style: const TextStyle(color: secondaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
               ),
               SizedBox(height: spaceMD),
               Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(cornerRadiusMD),
-                  color: secondaryDark,
-                ),
+                decoration: BoxDecoration(borderRadius: BorderRadius.all(cornerRadiusMD), color: secondaryDark),
                 child: DropdownButton(
                   borderRadius: BorderRadius.all(cornerRadiusMD),
                   isExpanded: true,
                   padding: const EdgeInsets.only(left: spaceSM),
                   icon: Padding(
                     padding: EdgeInsets.only(right: spaceMD),
-                    child: FaIcon(
-                      FontAwesomeIcons.caretDown,
-                      color: secondaryLight,
-                      size: textMD,
-                      semanticLabel: t.authDropdownLabel,
-                    ),
+                    child: FaIcon(FontAwesomeIcons.caretDown, color: secondaryLight, size: textMD, semanticLabel: t.authDropdownLabel),
                   ),
                   value: selectedGitProvider.name,
-                  style: const TextStyle(
-                    backgroundColor: secondaryDark,
-                    color: tertiaryLight,
-                    fontWeight: FontWeight.bold,
-                    fontSize: textMD,
-                  ),
+                  style: const TextStyle(backgroundColor: secondaryDark, color: tertiaryLight, fontWeight: FontWeight.bold, fontSize: textMD),
                   underline: const SizedBox.shrink(),
                   dropdownColor: secondaryDark,
                   onChanged: (value) {
                     if (value == null) return;
 
-                    selectedGitProvider = GitProvider.values.firstWhere(
-                      (provider) => provider.name == value,
-                    );
+                    selectedGitProvider = GitProvider.values.firstWhere((provider) => provider.name == value);
                     setState(() {});
                   },
-
                   items:
                       [
                             ...GitProviderManager.GitProviderIconsMap.keys.toList().sublist(

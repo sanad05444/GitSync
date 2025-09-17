@@ -7,12 +7,7 @@ import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
 import 'package:GitSync/l10n/app_localizations.dart';
 
-Future<void> showDialog(
-  BuildContext context,
-  String originalName,
-  bool fileDir,
-  Function(String text) callback,
-) {
+Future<void> showDialog(BuildContext context, String originalName, bool fileDir, Function(String text) callback) {
   final textController = TextEditingController();
   textController.text = originalName;
   return mat.showDialog(
@@ -23,11 +18,7 @@ Future<void> showDialog(
         width: MediaQuery.of(context).size.width,
         child: Text(
           sprintf(t.renameFileDir, [fileDir ? t.folder : t.file]),
-          style: TextStyle(
-            color: primaryLight,
-            fontSize: textXL,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
         ),
       ),
       content: SingleChildScrollView(
@@ -47,24 +38,14 @@ Future<void> showDialog(
               decoration: InputDecoration(
                 fillColor: tertiaryDark,
                 filled: true,
-                border: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(cornerRadiusSM),
-                  borderSide: BorderSide.none,
-                ),
+                border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusSM), borderSide: BorderSide.none),
                 isCollapsed: true,
                 label: Text(
                   t.fileName.toUpperCase(),
-                  style: TextStyle(
-                    color: secondaryLight,
-                    fontSize: textSM,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(color: secondaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                 ),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: spaceMD,
-                  vertical: spaceSM,
-                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
                 isDense: true,
               ),
             ),

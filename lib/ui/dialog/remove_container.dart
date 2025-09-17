@@ -10,13 +10,8 @@ import '../../../ui/dialog/base_alert_dialog.dart';
 
 import 'confirm_remove_container.dart' as ConfirmRemoveContainer;
 
-Future<void> showDialog(
-  BuildContext context,
-  Function(bool deleteContents) callback,
-) async {
-  final containerName = await repoManager.getRepoName(
-    await repoManager.getInt(StorageKey.repoman_repoIndex),
-  );
+Future<void> showDialog(BuildContext context, Function(bool deleteContents) callback) async {
+  final containerName = await repoManager.getRepoName(await repoManager.getInt(StorageKey.repoman_repoIndex));
   bool deleteContents = false;
 
   return mat.showDialog(
@@ -26,11 +21,7 @@ Future<void> showDialog(
         width: MediaQuery.of(context).size.width,
         child: Text(
           t.confirmRepositoryDelete,
-          style: TextStyle(
-            color: primaryLight,
-            fontSize: textXL,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
         ),
       ),
       content: SingleChildScrollView(
@@ -38,11 +29,7 @@ Future<void> showDialog(
           children: [
             Text(
               sprintf(t.confirmRepositoryDeleteMsg, [containerName]),
-              style: const TextStyle(
-                color: primaryLight,
-                fontWeight: FontWeight.bold,
-                fontSize: textSM,
-              ),
+              style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
             ),
             SizedBox(height: spaceSM),
             StatefulBuilder(
@@ -51,42 +38,22 @@ Future<void> showDialog(
                   deleteContents = !deleteContents;
                   setState(() {});
                 },
-                style: ButtonStyle(
-                  shape: WidgetStatePropertyAll(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(cornerRadiusSM),
-                    ),
-                  ),
-                ),
+                style: ButtonStyle(shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusSM)))),
                 label: Padding(
                   padding: EdgeInsets.only(left: spaceSM),
                   child: Text(
                     t.deleteRepoDirectoryCheckbox,
-                    style: TextStyle(
-                      color: primaryLight,
-                      fontSize: textSM,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                   ),
                 ),
                 iconAlignment: IconAlignment.start,
-                icon: FaIcon(
-                  deleteContents
-                      ? FontAwesomeIcons.solidSquareCheck
-                      : FontAwesomeIcons.squareCheck,
-                  color: primaryPositive,
-                  size: textLG,
-                ),
+                icon: FaIcon(deleteContents ? FontAwesomeIcons.solidSquareCheck : FontAwesomeIcons.squareCheck, color: primaryPositive, size: textLG),
               ),
             ),
             SizedBox(height: spaceSM),
             Text(
               t.thisActionCannotBeUndone,
-              style: const TextStyle(
-                color: primaryLight,
-                fontWeight: FontWeight.bold,
-                fontSize: textSM,
-              ),
+              style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
             ),
           ],
         ),
@@ -99,16 +66,10 @@ Future<void> showDialog(
           ),
           onPressed: () async {
             if (deleteContents) {
-              await ConfirmRemoveContainer.showDialog(
-                context,
-                containerName,
-                () async {
-                  callback(true);
-                  Navigator.of(context).canPop()
-                      ? Navigator.pop(context)
-                      : null;
-                },
-              );
+              await ConfirmRemoveContainer.showDialog(context, containerName, () async {
+                callback(true);
+                Navigator.of(context).canPop() ? Navigator.pop(context) : null;
+              });
               return;
             }
 

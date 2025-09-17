@@ -100,11 +100,7 @@ class GitsyncService {
     // final serviceStrings = ServiceStrings.fromMap(stringMap);
 
     await service.configure(
-      androidConfiguration: AndroidConfiguration(
-        autoStart: true,
-        isForegroundMode: false,
-        onStart: onServiceStart,
-      ),
+      androidConfiguration: AndroidConfiguration(autoStart: true, isForegroundMode: false, onStart: onServiceStart),
       iosConfiguration: IosConfiguration(
         autoStart: true,
         onForeground: onServiceStart,
@@ -120,11 +116,7 @@ class GitsyncService {
     s = ServiceStrings.fromMap(stringMap);
   }
 
-  Future<void> debouncedSync(
-    int repomanRepoindex, [
-    bool forced = false,
-    bool immediate = false,
-  ]) async {
+  Future<void> debouncedSync(int repomanRepoindex, [bool forced = false, bool immediate = false]) async {
     if (!await hasNetworkConnection()) {
       Workmanager().registerOneOffTask(
         "$networkScheduledSyncKey$repomanRepoindex",
@@ -151,25 +143,14 @@ class GitsyncService {
           await _sync(repomanRepoindex, forced);
           return;
         }
-        debounce(
-          repomanRepoindex.toString(),
-          500,
-          () => _sync(repomanRepoindex, forced),
-        );
+        debounce(repomanRepoindex.toString(), 500, () => _sync(repomanRepoindex, forced));
       }
     }
   }
 
-  void _displaySyncMessage(
-    SettingsManager settingsManager,
-    String message,
-  ) async {
+  void _displaySyncMessage(SettingsManager settingsManager, String message) async {
     if (await settingsManager.getBool(StorageKey.setman_syncMessageEnabled)) {
-      Fluttertoast.showToast(
-        msg: message,
-        toastLength: Toast.LENGTH_LONG,
-        gravity: null,
-      );
+      Fluttertoast.showToast(msg: message, toastLength: Toast.LENGTH_LONG, gravity: null);
     }
   }
 
@@ -184,20 +165,12 @@ class GitsyncService {
           ? (await settingsManager.getGitSshAuthCredentials()).$2.isEmpty
           : (await settingsManager.getGitHttpAuthCredentials()).$2.isEmpty) {
         Logger.gmLog(type: LogType.Sync, "Credentials Not Found");
-        Fluttertoast.showToast(
-          msg: repositoryNotFound,
-          toastLength: Toast.LENGTH_LONG,
-          gravity: null,
-        );
+        Fluttertoast.showToast(msg: repositoryNotFound, toastLength: Toast.LENGTH_LONG, gravity: null);
         return;
       }
 
       if ((await GitManager.getConflicting(repomanRepoindex)).isNotEmpty) {
-        Fluttertoast.showToast(
-          msg: s.ongoingMergeConflict,
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: null,
-        );
+        Fluttertoast.showToast(msg: s.ongoingMergeConflict, toastLength: Toast.LENGTH_SHORT, gravity: null);
         return;
       }
 
@@ -212,11 +185,7 @@ class GitsyncService {
 
         if (gitDirPath == null) {
           Logger.gmLog(type: LogType.Sync, "Repository Not Found");
-          Fluttertoast.showToast(
-            msg: repositoryNotFound,
-            toastLength: Toast.LENGTH_LONG,
-            gravity: null,
-          );
+          Fluttertoast.showToast(msg: repositoryNotFound, toastLength: Toast.LENGTH_LONG, gravity: null);
           return;
         }
 
@@ -233,14 +202,10 @@ class GitsyncService {
         }
 
         Logger.gmLog(type: LogType.Sync, "Start Pull Repo");
-        final pullResult = await GitManager.downloadChanges(
-          repomanRepoindex,
-          settingsManager,
-          () {
-            synced = true;
-            _displaySyncMessage(settingsManager, s.syncStartPull);
-          },
-        );
+        final pullResult = await GitManager.downloadChanges(repomanRepoindex, settingsManager, () {
+          synced = true;
+          _displaySyncMessage(settingsManager, s.syncStartPull);
+        });
 
         switch (pullResult) {
           case null:
@@ -278,15 +243,11 @@ class GitsyncService {
         }
 
         Logger.gmLog(type: LogType.Sync, "Start Push Repo");
-        final pushResult = await GitManager.uploadChanges(
-          repomanRepoindex,
-          settingsManager,
-          () {
-            if (!synced) {
-              _displaySyncMessage(settingsManager, s.syncStartPush);
-            }
-          },
-        );
+        final pushResult = await GitManager.uploadChanges(repomanRepoindex, settingsManager, () {
+          if (!synced) {
+            _displaySyncMessage(settingsManager, s.syncStartPush);
+          }
+        });
 
         switch (pushResult) {
           case null:
@@ -351,11 +312,7 @@ class GitsyncService {
       repomanRepoindex,
       settingsManager,
       () {
-        Fluttertoast.showToast(
-          msg: resolvingMerge,
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: null,
-        );
+        Fluttertoast.showToast(msg: resolvingMerge, toastLength: Toast.LENGTH_SHORT, gravity: null);
       },
       null,
       commitMessage,
@@ -381,27 +338,13 @@ class GitsyncService {
   String lastOpenPackageName = conflictSeparator;
   String lastOpenPackageNameExcludingInputs = conflictSeparator;
 
-  void accessibilityEvent(
-    String packageName,
-    List<String> enabledInputMethods,
-  ) async {
-    for (
-      var index = 0;
-      index <
-          (await repoManager.getStringList(
-            StorageKey.repoman_repoNames,
-          )).length;
-      index++
-    ) {
+  void accessibilityEvent(String packageName, List<String> enabledInputMethods) async {
+    for (var index = 0; index < (await repoManager.getStringList(StorageKey.repoman_repoNames)).length; index++) {
       final settingsManager = SettingsManager();
       await settingsManager.reinit(repoIndex: index);
 
-      final syncClosed = await settingsManager.getBool(
-        StorageKey.setman_syncOnAppClosed,
-      );
-      final syncOpened = await settingsManager.getBool(
-        StorageKey.setman_syncOnAppOpened,
-      );
+      final syncClosed = await settingsManager.getBool(StorageKey.setman_syncOnAppClosed);
+      final syncOpened = await settingsManager.getBool(StorageKey.setman_syncOnAppOpened);
 
       final packageNames = await settingsManager.getApplicationPackages();
 

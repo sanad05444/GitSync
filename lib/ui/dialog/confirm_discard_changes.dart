@@ -6,11 +6,7 @@ import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
 import 'package:GitSync/global.dart';
 
-Future<void> showDialog(
-  BuildContext context,
-  List<String> selectedFiles,
-  Future<void> Function() callback,
-) {
+Future<void> showDialog(BuildContext context, List<String> selectedFiles, Future<void> Function() callback) {
   return mat.showDialog(
     context: context,
     builder: (BuildContext context) => BaseAlertDialog(
@@ -18,11 +14,7 @@ Future<void> showDialog(
         width: MediaQuery.of(context).size.width,
         child: Text(
           t.discardChangesTitle,
-          style: TextStyle(
-            color: primaryLight,
-            fontSize: textXL,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
         ),
       ),
       content: SingleChildScrollView(
@@ -31,24 +23,13 @@ Future<void> showDialog(
             Text(
               selectedFiles.length == 1
                   ? sprintf(t.discardChangesMsg, [selectedFiles[0]])
-                  : sprintf(t.discardChangesMsg, [""]).replaceAll(
-                      "\"\"?",
-                      "\n\n${selectedFiles.map((file) => " $file").join("\n")}",
-                    ),
-              style: const TextStyle(
-                color: primaryLight,
-                fontWeight: FontWeight.bold,
-                fontSize: textSM,
-              ),
+                  : sprintf(t.discardChangesMsg, [""]).replaceAll("\"\"?", "\n\n${selectedFiles.map((file) => " $file").join("\n")}"),
+              style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
             ),
             SizedBox(height: spaceMD),
             Text(
               t.thisActionCannotBeUndone,
-              style: const TextStyle(
-                color: primaryLight,
-                fontWeight: FontWeight.bold,
-                fontSize: textSM,
-              ),
+              style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
             ),
           ],
         ),

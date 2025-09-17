@@ -5,11 +5,7 @@ import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
 import 'package:GitSync/global.dart';
 
-Future<void> showDialog(
-  BuildContext context,
-  String currentName,
-  Function(String text) callback,
-) {
+Future<void> showDialog(BuildContext context, String currentName, Function(String text) callback) {
   final textController = TextEditingController(text: currentName);
   return mat.showDialog(
     context: context,
@@ -18,11 +14,7 @@ Future<void> showDialog(
         width: MediaQuery.of(context).size.width,
         child: Text(
           t.renameRepository,
-          style: TextStyle(
-            color: primaryLight,
-            fontSize: textXL,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
         ),
       ),
       content: SingleChildScrollView(
@@ -30,11 +22,7 @@ Future<void> showDialog(
           children: [
             Text(
               t.renameRepositoryMsg,
-              style: const TextStyle(
-                color: primaryLight,
-                fontWeight: FontWeight.bold,
-                fontSize: textSM,
-              ),
+              style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
             ),
             SizedBox(height: spaceMD + spaceSM),
             TextField(
@@ -50,24 +38,14 @@ Future<void> showDialog(
               decoration: InputDecoration(
                 fillColor: secondaryDark,
                 filled: true,
-                border: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(cornerRadiusSM),
-                  borderSide: BorderSide.none,
-                ),
+                border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusSM), borderSide: BorderSide.none),
                 isCollapsed: true,
                 label: Text(
                   t.defaultContainerName.toUpperCase(),
-                  style: TextStyle(
-                    color: secondaryLight,
-                    fontSize: textSM,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(color: secondaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
                 ),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: spaceMD,
-                  vertical: spaceSM,
-                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
                 isDense: true,
               ),
             ),

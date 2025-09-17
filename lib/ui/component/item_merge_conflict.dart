@@ -5,11 +5,7 @@ import '../dialog/merge_conflict.dart' as MergeConflictDialog;
 import 'package:GitSync/global.dart';
 
 class ItemMergeConflict extends StatefulWidget {
-  const ItemMergeConflict(
-    this.conflictingPaths,
-    this.conflictCallback, {
-    super.key,
-  });
+  const ItemMergeConflict(this.conflictingPaths, this.conflictCallback, {super.key});
 
   final Function() conflictCallback;
   final List<String> conflictingPaths;
@@ -36,21 +32,13 @@ class _ItemMergeConflict extends State<ItemMergeConflict> {
       margin: EdgeInsets.only(top: spaceSM),
       child: TextButton(
         onPressed: () {
-          MergeConflictDialog.showDialog(
-            context,
-            widget.conflictingPaths,
-          ).then((_) => widget.conflictCallback()).then((_) => setState(() {}));
+          MergeConflictDialog.showDialog(context, widget.conflictingPaths).then((_) => widget.conflictCallback()).then((_) => setState(() {}));
         },
         style: ButtonStyle(
           alignment: Alignment.centerLeft,
           backgroundColor: WidgetStatePropertyAll(tertiaryNegative),
           padding: WidgetStatePropertyAll(EdgeInsets.all(spaceSM)),
-          shape: WidgetStatePropertyAll(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(cornerRadiusSM),
-              side: BorderSide.none,
-            ),
-          ),
+          shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusSM), side: BorderSide.none)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,20 +47,11 @@ class _ItemMergeConflict extends State<ItemMergeConflict> {
           children: [
             Text(
               t.mergeConflict.toUpperCase(),
-              style: TextStyle(
-                color: primaryDark,
-                fontSize: textMD,
-                overflow: TextOverflow.ellipsis,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(color: primaryDark, fontSize: textMD, overflow: TextOverflow.ellipsis, fontWeight: FontWeight.bold),
             ),
             Text(
               t.mergeConflictItemMessage,
-              style: TextStyle(
-                color: secondaryDark,
-                fontSize: textSM,
-                overflow: TextOverflow.ellipsis,
-              ),
+              style: TextStyle(color: secondaryDark, fontSize: textSM, overflow: TextOverflow.ellipsis),
             ),
           ],
         ),

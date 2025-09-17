@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:GitSync/api/helper.dart';
-import 'package:GitSync/api/manager/storage.dart';
 import 'package:GitSync/constant/colors.dart';
 import 'package:GitSync/constant/dimens.dart';
 import 'package:GitSync/global.dart';
