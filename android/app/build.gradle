@@ -38,6 +38,12 @@ android {
         multiDexEnabled true
     }
     
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
+    
     buildTypes {
         release {
             shrinkResources true
