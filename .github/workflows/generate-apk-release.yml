@@ -57,7 +57,7 @@ jobs:
       - uses: SimonMarquis/android-accept-licenses@v1
 
       - name: Build Release APKs
-        run: flutter build apk --release  --split-per-abi
+        run: flutter build apk --release --split-per-abi
 
       - name: Sign App
         id: sign_app
@@ -70,12 +70,21 @@ jobs:
           keyPassword: ${{ secrets.RELEASE_SIGNING_PASSWORD }}
           buildToolsVersion: 34.0.0
 
+      - uses: jungwinter/split@v2
+        id: signed_files
+        with:
+          msg: ${{ steps.sign_app.outputs.signedFiles }}
+          separator: ":"
+
       - name: Upload Release Build to Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: release-artifacts
           path: |
-            ${{ steps.sign_app.outputs.signedFile }}
+            ${{ steps.signed_files.outputs._0 }}
+            ${{ steps.signed_files.outputs._1 }}
+            ${{ steps.signed_files.outputs._2 }}
+            !*-release.apk
 
       - name: Build Changelog
         id: changelog
@@ -86,11 +95,35 @@ jobs:
           include-compare: false
           semver: false
 
+      - name: Find and Replace
+        uses: mad9000/actions-find-and-replace-string@5
+        id: signed_file_path_0
+        with:
+          source: ${{ steps.signed_files.outputs._0 }}
+          find: "/github/workspace/"
+          replace: ""
+
+      - name: Find and Replace
+        uses: mad9000/actions-find-and-replace-string@5
+        id: signed_file_path_1
+        with:
+          source: ${{ steps.signed_files.outputs._1 }}
+          find: "/github/workspace/"
+          replace: ""
+
+      - name: Find and Replace
+        uses: mad9000/actions-find-and-replace-string@5
+        id: signed_file_path_2
+        with:
+          source: ${{ steps.signed_files.outputs._2 }}
+          find: "/github/workspace/"
+          replace: ""
+
       - name: Create Release
         id: create_release
         uses: ncipollo/release-action@v1.13.0
         with:
-          artifacts: "${{ steps.sign_app.outputs.signedFile }}"
+          artifacts: "${{ steps.signed_file_path_0.outputs.value }},${{ steps.signed_file_path_1.outputs.value }},${{ steps.signed_file_path_2.outputs.value }}"
           body: ${{ steps.changelog.outputs.changelog }}
           draft: true
           name: Release ${{ github.ref_name }}
