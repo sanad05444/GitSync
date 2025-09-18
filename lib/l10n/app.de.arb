@@ -13,7 +13,7 @@
     "select": "Auswählen",
     "cancel": "Abbrechen",
     "learnMore": "Mehr erfahren",
-    "loadingElipsis": "Lädt…",
+    "loadingElipsis": "Wird geladen…",
     
     
     
@@ -27,7 +27,7 @@
     "syncStarting": "Änderungen werden erkannt…",
     "syncStartPull": "Änderungen werden synchronisiert…",
     "syncStartPush": "Lokale Änderungen werden synchronisiert…",
-    "syncNotRequired": "Synchronisation nicht erforderlich!",
+    "syncNotRequired": "Keine Synchronisation erforderlich!",
     "syncComplete": "Repository synchronisiert!",
     
     
@@ -85,7 +85,7 @@
     "discardChangesMsg": "Sind Sie sicher, dass Sie alle Änderungen an \"%s\" verwerfen möchten?",
     "mergeConflictItemMessage": "Es gibt einen Merge-Konflikt! Tippen Sie zum Lösen",
     "mergeConflict": "Merge-Konflikt",
-    "mergeDialogMessage": "Verwenden Sie den Editor, um die Merge-Konflikte zu lösen",
+    "mergeDialogMessage": "Verwenden Sie den Editor, um die Merge-Konflikte zu beheben",
     "commitMessage": "Commit-Nachricht",
     "abortMerge": "Merge abbrechen",
     "keepChanges": "Änderungen behalten",
@@ -136,15 +136,15 @@
     
     "detachedHead": "Detached Head",
     "commitsNotFound": "Keine Commits gefunden…",
-    "repoNotFound": "Keine Commits gefunden…",
-    "committed": "committed",
+    "repoNotFound": "Repository nicht gefunden…",
+    "committed": "Commit erstellt",
     "additions": "%s ++",
     "deletions": "%s --",
     "auth": "AUTH",
     "gitDirPathHint": "/storage/emulated/0/…",
     
     "enableApplicationObserver": "Auto-Sync-Einstellungen",
-    "accessibilityServiceDisclosureTitle": "Offenlegung Barrierefreiheitsdienst",
+    "accessibilityServiceDisclosureTitle": "Hinweis zum Barrierefreiheitsdienst",
     "accessibilityServiceDisclosureMessage": "Um Ihre Erfahrung zu verbessern,\nverwendet GitSync Androids Barrierefreiheitsdienst, um zu erkennen, wann Apps geöffnet oder geschlossen werden.\n\nDies hilft uns, maßgeschneiderte Funktionen bereitzustellen, ohne Daten zu speichern oder zu teilen.\n\nʙɪᴛᴛᴇ ᴀᴋᴛɪᴠɪᴇʀᴇɴ sɪᴇ ɢɪᴛsʏɴᴄ ᴀᴜғ ᴅᴇᴍ ɴäᴄʜsᴛᴇɴ ʙɪʟᴅsᴄʜɪʀᴍ",
     "accessibilityServiceDescription": "Um Ihre Erfahrung zu verbessern, verwendet GitSync Androids Barrierefreiheitsdienst, um zu erkennen, wann Apps geöffnet oder geschlossen werden. Dies hilft uns, maßgeschneiderte Funktionen bereitzustellen, ohne Daten zu speichern oder zu teilen. \n\n Wichtige Punkte: \n Zweck: Wir verwenden diesen Dienst ausschließlich zur Verbesserung Ihrer App-Erfahrung. \n Datenschutz: Keine Daten werden gespeichert oder anderweitig gesendet. \n Kontrolle: Sie können diese Berechtigungen jederzeit in Ihren Geräteeinstellungen deaktivieren.",
     "search": "Suchen",
