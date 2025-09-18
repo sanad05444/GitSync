@@ -8,10 +8,13 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These functions are ignored because they are not marked as `pub`: `_log`, `commit`, `fast_forward`, `fetch_remote_priv`, `get_branch_name_priv`, `get_default_callbacks`, `get_staged_file_paths_priv`, `get_uncommitted_file_paths_priv`, `pull_changes_priv`, `push_changes_priv`, `set_author`, `update_submodules_priv`
 
-Future<void> init({String? homepath}) => RustLib.instance.api.crateApiGitManagerInit(homepath: homepath);
+Future<void> init({String? homepath}) =>
+    RustLib.instance.api.crateApiGitManagerInit(homepath: homepath);
 
-Future<List<String>> getSubmodulePaths({required String pathString}) =>
-    RustLib.instance.api.crateApiGitManagerGetSubmodulePaths(pathString: pathString);
+Future<List<String>> getSubmodulePaths({required String pathString}) => RustLib
+    .instance
+    .api
+    .crateApiGitManagerGetSubmodulePaths(pathString: pathString);
 
 Future<void> cloneRepository({
   required String url,
@@ -33,21 +36,35 @@ Future<void> cloneRepository({
   log: log,
 );
 
-Future<void> unstageAll({required String pathString, required FutureOr<void> Function(LogType, String) log}) =>
-    RustLib.instance.api.crateApiGitManagerUnstageAll(pathString: pathString, log: log);
+Future<void> unstageAll({
+  required String pathString,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerUnstageAll(
+  pathString: pathString,
+  log: log,
+);
 
 Future<List<Commit>> getRecentCommits({
   required String pathString,
   required String remoteName,
   required FutureOr<void> Function(LogType, String) log,
-}) => RustLib.instance.api.crateApiGitManagerGetRecentCommits(pathString: pathString, remoteName: remoteName, log: log);
+}) => RustLib.instance.api.crateApiGitManagerGetRecentCommits(
+  pathString: pathString,
+  remoteName: remoteName,
+  log: log,
+);
 
 Future<void> updateSubmodules({
   required String pathString,
   required String provider,
   required (String, String) credentials,
   required FutureOr<void> Function(LogType, String) log,
-}) => RustLib.instance.api.crateApiGitManagerUpdateSubmodules(pathString: pathString, provider: provider, credentials: credentials, log: log);
+}) => RustLib.instance.api.crateApiGitManagerUpdateSubmodules(
+  pathString: pathString,
+  provider: provider,
+  credentials: credentials,
+  log: log,
+);
 
 Future<bool?> fetchRemote({
   required String pathString,
@@ -115,11 +132,25 @@ Future<bool?> pushChanges({
   log: log,
 );
 
-Future<void> stageFilePaths({required String pathString, required List<String> paths, required FutureOr<void> Function(LogType, String) log}) =>
-    RustLib.instance.api.crateApiGitManagerStageFilePaths(pathString: pathString, paths: paths, log: log);
+Future<void> stageFilePaths({
+  required String pathString,
+  required List<String> paths,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerStageFilePaths(
+  pathString: pathString,
+  paths: paths,
+  log: log,
+);
 
-Future<void> unstageFilePaths({required String pathString, required List<String> paths, required FutureOr<void> Function(LogType, String) log}) =>
-    RustLib.instance.api.crateApiGitManagerUnstageFilePaths(pathString: pathString, paths: paths, log: log);
+Future<void> unstageFilePaths({
+  required String pathString,
+  required List<String> paths,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerUnstageFilePaths(
+  pathString: pathString,
+  paths: paths,
+  log: log,
+);
 
 Future<int?> getRecommendedAction({
   required String pathString,
@@ -175,8 +206,13 @@ Future<bool?> uploadChanges({
   log: log,
 );
 
-Future<void> forcePull({required String pathString, required FutureOr<void> Function(LogType, String) log}) =>
-    RustLib.instance.api.crateApiGitManagerForcePull(pathString: pathString, log: log);
+Future<void> forcePull({
+  required String pathString,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerForcePull(
+  pathString: pathString,
+  log: log,
+);
 
 Future<void> forcePush({
   required String pathString,
@@ -228,44 +264,96 @@ Future<void> downloadAndOverwrite({
   log: log,
 );
 
-Future<void> discardChanges({required String pathString, required List<String> filePaths, required FutureOr<void> Function(LogType, String) log}) =>
-    RustLib.instance.api.crateApiGitManagerDiscardChanges(pathString: pathString, filePaths: filePaths, log: log);
+Future<void> discardChanges({
+  required String pathString,
+  required List<String> filePaths,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerDiscardChanges(
+  pathString: pathString,
+  filePaths: filePaths,
+  log: log,
+);
 
-Future<List<String>> getConflicting({required String pathString, required FutureOr<void> Function(LogType, String) log}) =>
-    RustLib.instance.api.crateApiGitManagerGetConflicting(pathString: pathString, log: log);
+Future<List<String>> getConflicting({
+  required String pathString,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerGetConflicting(
+  pathString: pathString,
+  log: log,
+);
 
-Future<List<(String, int)>> getStagedFilePaths({required String pathString, required FutureOr<void> Function(LogType, String) log}) =>
-    RustLib.instance.api.crateApiGitManagerGetStagedFilePaths(pathString: pathString, log: log);
+Future<List<(String, int)>> getStagedFilePaths({
+  required String pathString,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerGetStagedFilePaths(
+  pathString: pathString,
+  log: log,
+);
 
-Future<List<(String, int)>> getUncommittedFilePaths({required String pathString, required FutureOr<void> Function(LogType, String) log}) =>
-    RustLib.instance.api.crateApiGitManagerGetUncommittedFilePaths(pathString: pathString, log: log);
+Future<List<(String, int)>> getUncommittedFilePaths({
+  required String pathString,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerGetUncommittedFilePaths(
+  pathString: pathString,
+  log: log,
+);
 
-Future<void> abortMerge({required String pathString, required FutureOr<void> Function(LogType, String) log}) =>
-    RustLib.instance.api.crateApiGitManagerAbortMerge(pathString: pathString, log: log);
+Future<void> abortMerge({
+  required String pathString,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerAbortMerge(
+  pathString: pathString,
+  log: log,
+);
 
 Future<(String, String)> generateSshKey({
   required String format,
   required String passphrase,
   required FutureOr<void> Function(LogType, String) log,
-}) => RustLib.instance.api.crateApiGitManagerGenerateSshKey(format: format, passphrase: passphrase, log: log);
+}) => RustLib.instance.api.crateApiGitManagerGenerateSshKey(
+  format: format,
+  passphrase: passphrase,
+  log: log,
+);
 
-Future<String?> getBranchName({required String pathString, required FutureOr<void> Function(LogType, String) log}) =>
-    RustLib.instance.api.crateApiGitManagerGetBranchName(pathString: pathString, log: log);
+Future<String?> getBranchName({
+  required String pathString,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerGetBranchName(
+  pathString: pathString,
+  log: log,
+);
 
-Future<List<String>> getBranchNames({required String pathString, required String remote, required FutureOr<void> Function(LogType, String) log}) =>
-    RustLib.instance.api.crateApiGitManagerGetBranchNames(pathString: pathString, remote: remote, log: log);
+Future<List<String>> getBranchNames({
+  required String pathString,
+  required String remote,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerGetBranchNames(
+  pathString: pathString,
+  remote: remote,
+  log: log,
+);
 
 Future<void> checkoutBranch({
   required String pathString,
   required String remote,
   required String branchName,
   required FutureOr<void> Function(LogType, String) log,
-}) => RustLib.instance.api.crateApiGitManagerCheckoutBranch(pathString: pathString, remote: remote, branchName: branchName, log: log);
+}) => RustLib.instance.api.crateApiGitManagerCheckoutBranch(
+  pathString: pathString,
+  remote: remote,
+  branchName: branchName,
+  log: log,
+);
 
-Future<bool> getDisableSsl({required String gitDir}) => RustLib.instance.api.crateApiGitManagerGetDisableSsl(gitDir: gitDir);
+Future<bool> getDisableSsl({required String gitDir}) =>
+    RustLib.instance.api.crateApiGitManagerGetDisableSsl(gitDir: gitDir);
 
 Future<void> setDisableSsl({required String gitDir, required bool disable}) =>
-    RustLib.instance.api.crateApiGitManagerSetDisableSsl(gitDir: gitDir, disable: disable);
+    RustLib.instance.api.crateApiGitManagerSetDisableSsl(
+      gitDir: gitDir,
+      disable: disable,
+    );
 
 Future<void> createBranch({
   required String pathString,
