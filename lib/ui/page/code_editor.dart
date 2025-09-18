@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
@@ -85,7 +86,7 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
 
     try {
       _mapFile();
-      controller.text = writeMmap == null ? "" : String.fromCharCodes(writeMmap!.writableData);
+      controller.text = writeMmap == null ? "" : utf8.decode(writeMmap!.writableData, allowMalformed: true);
 
       controller.addListener(_onTextChanged);
     } catch (e) {
@@ -145,7 +146,7 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
     if (writeMmap == null) return;
 
     if (newBytes.length != writeMmap!.writableData.length) {
-      File(widget.path).writeAsBytesSync(newBytes);
+      File(widget.path).writeAsStringSync(controller.text);
       _mapFile();
     } else {
       writeMmap!.writableData.setAll(0, newBytes);
