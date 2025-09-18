@@ -277,26 +277,27 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
                     },
                   ),
           ),
-          Positioned(
-            bottom: spaceXXL,
-            child: Container(
-              decoration: BoxDecoration(color: primaryDark, borderRadius: BorderRadius.all(cornerRadiusSM)),
-              padding: EdgeInsets.symmetric(horizontal: spaceSM, vertical: spaceXS),
-              child: Column(
-                children: [
-                  Text(
-                    t.experimental.toUpperCase(),
-                    style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: spaceXXXS),
-                  Text(
-                    t.experimentalMsg,
-                    style: TextStyle(color: secondaryLight, fontSize: textSM),
-                  ),
-                ],
+          if (!widget.logs)
+            Positioned(
+              bottom: spaceXXL,
+              child: Container(
+                decoration: BoxDecoration(color: primaryDark, borderRadius: BorderRadius.all(cornerRadiusSM)),
+                padding: EdgeInsets.symmetric(horizontal: spaceSM, vertical: spaceXS),
+                child: Column(
+                  children: [
+                    Text(
+                      t.experimental.toUpperCase(),
+                      style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: spaceXXXS),
+                    Text(
+                      t.experimentalMsg,
+                      style: TextStyle(color: secondaryLight, fontSize: textSM),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
         ],
       ),
     );
