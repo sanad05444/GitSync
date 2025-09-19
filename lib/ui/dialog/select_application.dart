@@ -18,13 +18,14 @@ Future<void> showDialog(BuildContext parentContext, Set<String>? prevSelectedApp
   final searchController = TextEditingController();
   final Map<String, Uint8List?> iconCache = {};
   final Map<String, String> labelCache = {};
-  List<String> deviceApplications = await AccessibilityServiceHelper.getDeviceApplications();
+  bool initialised = false;
+  List<String> originalDeviceApplications = [];
+  List<String>? deviceApplications;
 
   return await mat.showDialog(
     context: parentContext,
     builder: (BuildContext context) => BaseAlertDialog(
-      title: SizedBox(
-        width: MediaQuery.of(context).size.width,
+      title: Center(
         child: Text(
           t.selectApplication.toUpperCase(),
           textAlign: TextAlign.center,
@@ -33,8 +34,16 @@ Future<void> showDialog(BuildContext parentContext, Set<String>? prevSelectedApp
       ),
       content: StatefulBuilder(
         builder: (BuildContext context, setState) {
+          initAsync(() async {
+            if (initialised) return;
+
+            initialised = true;
+            originalDeviceApplications = await AccessibilityServiceHelper.getDeviceApplications();
+            deviceApplications = [...originalDeviceApplications];
+            setState(() {});
+          });
           return SingleChildScrollView(
-            child: ListBody(
+            child: Column(
               children: [
                 TextField(
                   controller: searchController,
@@ -59,102 +68,132 @@ Future<void> showDialog(BuildContext parentContext, Set<String>? prevSelectedApp
                     contentPadding: const EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
                     isDense: true,
                   ),
-                  onChanged: (value) {
+                  onChanged: (searchText) {
                     debounce(selectApplicationSearchReference, 100, () async {
-                      deviceApplications = await AccessibilityServiceHelper.getDeviceApplications(value);
+                      if (searchText.isEmpty) {
+                        deviceApplications = [...originalDeviceApplications];
+                      }
+
+                      final List<String> filteredPackageNames = [];
+
+                      for (var devicePackageName in originalDeviceApplications) {
+                        Future<String> labelFuture;
+                        if (labelCache.containsKey(devicePackageName)) {
+                          labelFuture = Future.value(labelCache[devicePackageName]!);
+                        } else {
+                          labelFuture = AccessibilityServiceHelper.getApplicationLabel(devicePackageName).then((label) {
+                            labelCache[devicePackageName] = label;
+                            return label;
+                          });
+                        }
+                        if ((await labelFuture).toLowerCase().contains(searchText.toLowerCase().trim())) {
+                          filteredPackageNames.add(devicePackageName);
+                        }
+                      }
+
+                      deviceApplications = [...filteredPackageNames];
                       setState(() {});
                     });
                   },
                 ),
                 SizedBox(height: spaceMD),
-                SizedBox(
-                  width: double.maxFinite,
-                  height: MediaQuery.of(context).size.height / 3,
-                  child: GridView.builder(
-                    shrinkWrap: true,
-                    itemCount: <String>{...selectedApplications, ...deviceApplications}.toList().length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: spaceMD, mainAxisSpacing: spaceMD),
-                    itemBuilder: (BuildContext context, int index) {
-                      final packageName = <String>{...selectedApplications, ...deviceApplications}.toList()[index];
-
-                      Future<Uint8List?> iconFuture;
-                      if (iconCache.containsKey(packageName)) {
-                        iconFuture = Future.value(iconCache[packageName]!);
-                      } else {
-                        iconFuture = AccessibilityServiceHelper.getApplicationIcon(packageName).then((bytes) {
-                          iconCache[packageName] = bytes;
-                          return bytes;
-                        });
-                      }
-
-                      Future<String> labelFuture;
-                      if (labelCache.containsKey(packageName)) {
-                        labelFuture = Future.value(labelCache[packageName]!);
-                      } else {
-                        labelFuture = AccessibilityServiceHelper.getApplicationLabel(packageName).then((label) {
-                          labelCache[packageName] = label;
-                          return label;
-                        });
-                      }
-
-                      return Stack(
-                        key: Key(packageName),
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              if (selectedApplications.contains(packageName)) {
-                                selectedApplications.remove(packageName);
-                              } else {
-                                selectedApplications.add(packageName);
-                              }
-                              setState(() {});
-                            },
-                            style: ButtonStyle(
-                              alignment: Alignment.centerLeft,
-                              backgroundColor: WidgetStatePropertyAll(tertiaryDark),
-                              padding: WidgetStatePropertyAll(EdgeInsets.all(spaceSM)),
-                              shape: WidgetStatePropertyAll(
-                                RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
-                              ),
-                            ),
-                            child: Center(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  SizedBox(
-                                    height: textXXL,
-                                    width: textXXL,
-                                    child: FutureBuilder(
-                                      future: iconFuture,
-                                      builder: (context, snapshot) => snapshot.data == null
-                                          ? CircularProgressIndicator(color: tertiaryLight)
-                                          : Image.memory(snapshot.data!, height: textXXL, width: textXXL, gaplessPlayback: true),
-                                    ),
-                                  ),
-                                  SizedBox(height: spaceSM),
-                                  FutureBuilder(
-                                    future: labelFuture,
-                                    builder: (context, snapshot) => Text(
-                                      (snapshot.data ?? "").toUpperCase(),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                deviceApplications == null
+                    ? Padding(
+                        padding: EdgeInsets.symmetric(vertical: spaceSM),
+                        child: Center(child: CircularProgressIndicator(color: primaryLight)),
+                      )
+                    : SizedBox(
+                        width: double.maxFinite,
+                        height: MediaQuery.of(context).size.height / 3,
+                        child: GridView.builder(
+                          shrinkWrap: true,
+                          itemCount: <String>{...selectedApplications, ...(deviceApplications!)}.toList().length,
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: spaceMD,
+                            mainAxisSpacing: spaceMD,
                           ),
-                          if (selectedApplications.contains(packageName))
-                            Positioned(
-                              top: spaceSM,
-                              right: spaceSM,
-                              child: FaIcon(FontAwesomeIcons.solidCircleCheck, color: primaryPositive, size: textXL),
-                            ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
+                          itemBuilder: (BuildContext context, int index) {
+                            final packageName = <String>{...selectedApplications, ...deviceApplications!}.toList()[index];
+
+                            Future<Uint8List?> iconFuture;
+                            if (iconCache.containsKey(packageName)) {
+                              iconFuture = Future.value(iconCache[packageName]!);
+                            } else {
+                              iconFuture = AccessibilityServiceHelper.getApplicationIcon(packageName).then((bytes) {
+                                iconCache[packageName] = bytes;
+                                return bytes;
+                              });
+                            }
+
+                            Future<String> labelFuture;
+                            if (labelCache.containsKey(packageName)) {
+                              labelFuture = Future.value(labelCache[packageName]!);
+                            } else {
+                              labelFuture = AccessibilityServiceHelper.getApplicationLabel(packageName).then((label) {
+                                labelCache[packageName] = label;
+                                return label;
+                              });
+                            }
+
+                            return Stack(
+                              key: Key(packageName),
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    if (selectedApplications.contains(packageName)) {
+                                      selectedApplications.remove(packageName);
+                                    } else {
+                                      selectedApplications.add(packageName);
+                                    }
+                                    setState(() {});
+                                  },
+                                  style: ButtonStyle(
+                                    alignment: Alignment.centerLeft,
+                                    backgroundColor: WidgetStatePropertyAll(tertiaryDark),
+                                    padding: WidgetStatePropertyAll(EdgeInsets.all(spaceSM)),
+                                    shape: WidgetStatePropertyAll(
+                                      RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        SizedBox(
+                                          height: textXXL,
+                                          width: textXXL,
+                                          child: FutureBuilder(
+                                            future: iconFuture,
+                                            builder: (context, snapshot) => snapshot.data == null
+                                                ? CircularProgressIndicator(color: tertiaryLight)
+                                                : Image.memory(snapshot.data!, height: textXXL, width: textXXL, gaplessPlayback: true),
+                                          ),
+                                        ),
+                                        SizedBox(height: spaceSM),
+                                        FutureBuilder(
+                                          future: labelFuture,
+                                          builder: (context, snapshot) => Text(
+                                            (snapshot.data ?? "").toUpperCase(),
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(color: primaryLight, fontSize: textSM, fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                if (selectedApplications.contains(packageName))
+                                  Positioned(
+                                    top: spaceSM,
+                                    right: spaceSM,
+                                    child: FaIcon(FontAwesomeIcons.solidCircleCheck, color: primaryPositive, size: textXL),
+                                  ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
               ],
             ),
           );

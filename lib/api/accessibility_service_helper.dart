@@ -42,24 +42,8 @@ class AccessibilityServiceHelper {
     await _channel.invokeMethod('openAccessibilitySettings');
   }
 
-  static Future<List<String>> getDeviceApplications([String? searchText]) async {
-    final devicePackageNames = ((await _channel.invokeMethod('getDeviceApplications') ?? []) as List).map((item) => item.toString()).toSet().toList();
-
-    if (searchText == null || searchText.isEmpty) {
-      return devicePackageNames;
-    }
-
-    final List<String> filteredPackageNames = [];
-
-    for (var devicePackageName in devicePackageNames) {
-      if ((await getApplicationLabel(devicePackageName)).toLowerCase().contains(searchText.toLowerCase().trim())) {
-        filteredPackageNames.add(devicePackageName);
-      }
-    }
-
-    return filteredPackageNames;
-  }
-
+  static Future<List<String>> getDeviceApplications() async =>
+      ((await _channel.invokeMethod('getDeviceApplications') ?? []) as List).map((item) => item.toString()).toSet().toList();
   static Future<String> getApplicationLabel(String packageName) async => await _channel.invokeMethod('getApplicationLabel', packageName);
   static Future<Uint8List?> getApplicationIcon(String packageName) async => await _channel.invokeMethod<Uint8List>('getApplicationIcon', packageName);
 }
