@@ -33,7 +33,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get learnMore => 'Mehr erfahren';
 
   @override
-  String get loadingElipsis => 'Lädt…';
+  String get loadingElipsis => 'Wird geladen…';
 
   @override
   String get previous => 'Previous';
@@ -72,7 +72,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get syncStartPush => 'Lokale Änderungen werden synchronisiert…';
 
   @override
-  String get syncNotRequired => 'Synchronisation nicht erforderlich!';
+  String get syncNotRequired => 'Keine Synchronisation erforderlich!';
 
   @override
   String get syncComplete => 'Repository synchronisiert!';
@@ -256,7 +256,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get mergeConflict => 'Merge-Konflikt';
 
   @override
-  String get mergeDialogMessage => 'Verwenden Sie den Editor, um die Merge-Konflikte zu lösen';
+  String get mergeDialogMessage => 'Verwenden Sie den Editor, um die Merge-Konflikte zu beheben';
 
   @override
   String get commitMessage => 'Commit-Nachricht';
@@ -413,10 +413,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get commitsNotFound => 'Keine Commits gefunden…';
 
   @override
-  String get repoNotFound => 'Keine Commits gefunden…';
+  String get repoNotFound => 'Repository nicht gefunden…';
 
   @override
-  String get committed => 'committed';
+  String get committed => 'Commit erstellt';
 
   @override
   String get additions => '%s ++';
@@ -440,7 +440,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get enableApplicationObserver => 'Auto-Sync-Einstellungen';
 
   @override
-  String get accessibilityServiceDisclosureTitle => 'Offenlegung Barrierefreiheitsdienst';
+  String get accessibilityServiceDisclosureTitle => 'Hinweis zum Barrierefreiheitsdienst';
 
   @override
   String get accessibilityServiceDisclosureMessage =>
