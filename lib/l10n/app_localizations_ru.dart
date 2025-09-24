@@ -768,7 +768,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get contributeTitle => 'Поддержите нашу работу';
 
   @override
-  String get joinTheDiscussion => 'Присоединиться к обсуждению';
+  String get improveTranslations => 'Improve Translations';
+
+  @override
+  String get joinTheDiscussion => 'Присоединиться к Discord';
 
   @override
   String get noLogFilesFound => 'No log files found!';

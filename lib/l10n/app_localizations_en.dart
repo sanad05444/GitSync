@@ -765,7 +765,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get contributeTitle => 'Support Our Work';
 
   @override
-  String get joinTheDiscussion => 'Join The Discussion';
+  String get improveTranslations => 'Improve Translations';
+
+  @override
+  String get joinTheDiscussion => 'Join The Discord';
 
   @override
   String get noLogFilesFound => 'No log files found!';

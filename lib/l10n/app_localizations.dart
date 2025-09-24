@@ -93,7 +93,14 @@ abstract class AppLocalizations {
   ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('de'), Locale('en'), Locale('es'), Locale('ru'), Locale('zh')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('de'),
+    Locale('en'),
+    Locale('es'),
+    Locale('ru'),
+    Locale('zh'),
+    Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'),
+  ];
 
   /// No description provided for @dismiss.
   ///
@@ -1577,10 +1584,16 @@ abstract class AppLocalizations {
   /// **'Support Our Work'**
   String get contributeTitle;
 
+  /// No description provided for @improveTranslations.
+  ///
+  /// In en, this message translates to:
+  /// **'Improve Translations'**
+  String get improveTranslations;
+
   /// No description provided for @joinTheDiscussion.
   ///
   /// In en, this message translates to:
-  /// **'Join The Discussion'**
+  /// **'Join The Discord'**
   String get joinTheDiscussion;
 
   /// No description provided for @noLogFilesFound.
@@ -2146,6 +2159,18 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+  // Lookup logic when language+script codes are specified.
+  switch (locale.languageCode) {
+    case 'zh':
+      {
+        switch (locale.scriptCode) {
+          case 'Hans':
+            return AppLocalizationsZhHans();
+        }
+        break;
+      }
+  }
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
     case 'de':

@@ -771,7 +771,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get contributeTitle => 'Unterstützen Sie unsere Arbeit';
 
   @override
-  String get joinTheDiscussion => 'An der Diskussion teilnehmen';
+  String get improveTranslations => 'Improve Translations';
+
+  @override
+  String get joinTheDiscussion => 'An der Discord teilnehmen';
 
   @override
   String get noLogFilesFound => 'No log files found!';

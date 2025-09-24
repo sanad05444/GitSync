@@ -484,11 +484,21 @@ ${await Logger.generateDeviceInfo()}
                 ),
                 SizedBox(height: spaceMD),
                 ButtonSetting(
-                  text: t.joinTheDiscussion,
-                  icon: FontAwesomeIcons.solidComments,
+                  text: t.improveTranslations,
+                  icon: FontAwesomeIcons.language,
                   onPressed: () async {
-                    if (await canLaunchUrl(Uri.parse(githubDiscussionsLink))) {
-                      await launchUrl(Uri.parse(githubDiscussionsLink));
+                    if (await canLaunchUrl(Uri.parse(githubImproveTranslationsDocs))) {
+                      await launchUrl(Uri.parse(githubImproveTranslationsDocs));
+                    }
+                  },
+                ),
+                SizedBox(height: spaceMD),
+                ButtonSetting(
+                  text: t.joinTheDiscussion,
+                  icon: FontAwesomeIcons.discord,
+                  onPressed: () async {
+                    if (await canLaunchUrl(Uri.parse(discordLink))) {
+                      await launchUrl(Uri.parse(discordLink));
                     }
                   },
                 ),

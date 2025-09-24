@@ -66,7 +66,7 @@ const String defaultSyncMessageTimeFormat = "yyyy-MM-dd HH:mm";
 const String documentationLink = "https://gitsync.viscouspotenti.al/wiki/";
 const String privacyPolicyLink = "https://gitsync.viscouspotenti.al/wiki/privacy-policy/";
 const String eulaLink = "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/";
-const String githubDiscussionsLink = "https://github.com/ViscousPot/GitSync/discussions";
+const String discordLink = "https://discord.gg/fd4wSAuK";
 const String multiRepoDocsLink = "https://gitsync.viscouspotenti.al/wiki/multi-repo-support";
 const String scheduledSyncDocsLink = "https://gitsync.viscouspotenti.al/wiki/sync-options/background/scheduled";
 const String autoSyncDocsLink = "https://gitsync.viscouspotenti.al/wiki/sync-options/background/app-based";
@@ -77,6 +77,7 @@ const String repositorySettingsDocsLink = "https://gitsync.viscouspotenti.al/wik
 const String syncOptionsDocsLink = "https://gitsync.viscouspotenti.al/wiki/sync-options";
 const String syncOptionsBGDocsLink = "https://gitsync.viscouspotenti.al/wiki/sync-options/background";
 const String githubFeatureTemplate = "https://github.com/ViscousPot/GitSync/issues/new?template=FEATURE_REQUEST.yaml";
+const String githubImproveTranslationsDocs = "https://github.com/ViscousPot/GitSync/?tab=readme-ov-file#localization-contributions";
 const String contributeLink = "https://github.com/sponsors/ViscousPot?sponsor=ViscousPot&frequency=one-time&amount=15";
 const String githubIssueTemplate =
     "https://www.github.com/ViscousPot/GitSync/issues/new?template=BUG_REPORT.yaml&title=[Bug]:%20(%s)%%20Application%%20Error!&labels=%s,bug&logs=%s";
