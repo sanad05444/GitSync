@@ -58,22 +58,25 @@
     "verifyGhSponsorTitle": "验证 GitHub 赞助",
     "verifyGhSponsorMsg": "如果您是 GitHub 赞助者，可以免费使用高级功能。请使用 GitHub 进行身份验证，以便我们验证您的赞助者状态。",
     "verifyGhSponsorNote": "注意：新的赞助关系可能需要最多 1 天才能在应用中生效。",
+    
+    
+
+    "@@x-SYNC_OPTIONS": "",
     "switchToClientMode": "切换到客户端模式…",
     "switchToSyncMode": "切换到同步模式…",
     "clientMode": "客户端模式",
     "syncMode": "同步模式",
-    
-
-    "@@x-SYNC_OPTIONS": "",
     "syncNow": "立即同步",
     "syncAllChanges": "同步所有更改",
     "stageAndCommit": "暂存及提交",
     "downloadChanges": "下载更改",
-
-
-
+    
+    
+    
+    
     "pullChanges": "拉取更改",
     "pushChanges": "推送更改",
+    
     "forcePush": "强制推送",
     "forcePushing": "强制推送中…",
     "confirmForcePush": "确认强制推送",
@@ -107,12 +110,12 @@
 
 
 
+    "@@x-ONBOARDING": "",
+    
+    
     "clearDataConfirmTitle": "确认数据重置",
     "clearDataConfirmMsg": "这将永久删除所有应用数据，包括钥匙条目。您确定要继续吗？",
     "iosClearDataAction": "清除所有数据",
-
-
-    "@@x-ONBOARDING": "",
     "legacyAppUserDialogTitle": "欢迎使用新版本！",
     "legacyAppUserDialogMessagePart1": "我们从头重建了应用，以获得更好的性能和未来发展。",
     "legacyAppUserDialogMessagePart2": "遗憾的是，您的旧设置无法继承，因此您需要重新设置。\n\n您喜爱的所有功能都还在。多仓库支持现在是一个小的一次性升级的一部分，有助于支持持续开发。",
@@ -186,6 +189,8 @@
 
     "@@x-AUTH": "",
     "selectYourGitProviderAndAuthenticate": "选择您的 Git 提供商并进行身份验证",
+    
+    
     "oauthNoAffiliation": "通过第三方进行身份验证；\n不表示关联或认可。",
     "oauth": "oauth",
     "ensureTokenScope": "确保您的令牌包含\"repo\"范围以获得完整功能。",
@@ -227,9 +232,10 @@
     "confirmCloneOverwriteMsg": "您选择的文件夹已包含文件。克隆到其中将覆盖其内容。",
     "confirmCloneOverwriteWarning": "此操作不可逆转。",
     "confirmCloneOverwriteAction": "覆盖",
-    "repositorySettings": "仓库设置",
+
 
     "@@x-SETTINGS_PAGE": "",
+    "repositorySettings": "仓库设置",
     "settings": "设置",
     "signedCommitsLabel": "签署提交",
     "signedCommitsDescription": "签署提交以验证您的身份",
@@ -277,6 +283,7 @@
     "viewDocumentation": "查看指南和文档",
     "requestAFeature": "请求功能",
     "contributeTitle": "支持我们的工作",
+    
     "joinTheDiscussion": "加入 Discord",
     "noLogFilesFound": "未找到记录档！",
     "guidedSetup": "引导设置",
@@ -290,6 +297,10 @@
 
 
     "@@x-FILE_MANAGEMENT": "",
+    
+    
+    
+    
     
     
     
@@ -316,6 +327,9 @@
     "deleteRepoDirectoryCheckbox": "同时删除仓库的目录及其所有内容",
     "confirmRepositoryDeleteTitle": "确认删除仓库",
     "confirmRepositoryDeleteMessage": "您确定要删除仓库 \"%s\" 及其内容吗？",
+    
+    
+    
 
 
     "@@x-BRANCH_MANAGEMENT": "",

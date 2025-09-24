@@ -62,9 +62,21 @@
     
 
     "@@x-SYNC_OPTIONS": "",
+    
+    
+    
+    
     "syncNow": "Синхронизировать изменения",
+    
+    
+    
+    
+    
+    
+    
     "pullChanges": "Получить изменения",
     "pushChanges": "Отправить изменения",
+    
     "forcePush": "Принудительная отправка",
     "forcePushing": "Принудительная отправка…",
     "confirmForcePush": "Подтвердить принудительную отправку",
@@ -99,6 +111,11 @@
 
 
     "@@x-ONBOARDING": "",
+    
+    
+    
+    
+    
     "legacyAppUserDialogTitle": "Добро пожаловать в новую версию!",
     "legacyAppUserDialogMessagePart1": "Мы полностью перестроили приложение для лучшей производительности и будущего роста.",
     "legacyAppUserDialogMessagePart2": "К сожалению, ваши старые настройки не могут быть перенесены, поэтому вам нужно будет настроить все заново.\n\nВсе ваши любимые функции по-прежнему здесь. Поддержка нескольких репозиториев теперь является частью небольшого разового обновления, которое помогает поддерживать дальнейшую разработку.",
@@ -143,6 +160,7 @@
     "auth": "АВТОРИЗАЦИЯ",
     "gitDirPathHint": "/storage/emulated/0/…",
     
+    
     "enableApplicationObserver": "Настройки автосинхронизации",
     "accessibilityServiceDisclosureTitle": "Раскрытие информации о службе специальных возможностей",
     "accessibilityServiceDisclosureMessage": "Для улучшения вашего опыта\nGitSync использует службу специальных возможностей Android для обнаружения открытия или закрытия приложений.\n\nЭто помогает нам предоставить персонализированные функции без сохранения или передачи данных.\n\nᴘᴏᴊᴀʟᴜʏsᴛᴀ ᴠᴋʟᴊuᴄʜɪᴛᴇ ɢɪᴛsʏɴᴄ ɴᴀ sʟᴇᴅᴜʏsᴄʜᴇᴍ ᴇᴋʀᴀɴᴇ",
@@ -171,6 +189,8 @@
 
     "@@x-AUTH": "",
     "selectYourGitProviderAndAuthenticate": "Выберите вашего провайдера git и авторизуйтесь",
+    
+    
     "oauthNoAffiliation": "Авторизация через третьи стороны;\nникакой принадлежности или одобрения не подразумевается.",
     "oauth": "oauth",
     "ensureTokenScope": "Убедитесь, что ваш токен включает область \"repo\" для полной функциональности.",
@@ -215,6 +235,7 @@
 
 
     "@@x-SETTINGS_PAGE": "",
+    
     "settings": "Настройки",
     
     
@@ -262,6 +283,7 @@
     "viewDocumentation": "Просмотреть руководства и Wiki",
     "requestAFeature": "Запросить функцию",
     "contributeTitle": "Поддержите нашу работу",
+    
     "joinTheDiscussion": "Присоединиться к Discord",
     
     "guidedSetup": "Пошаговая настройка",
@@ -275,6 +297,10 @@
 
 
     "@@x-FILE_MANAGEMENT": "",
+    
+    
+    
+    
     
     
     
@@ -301,6 +327,9 @@
     "deleteRepoDirectoryCheckbox": "Также удалить папку репозитория и все её содержимое",
     "confirmRepositoryDeleteTitle": "Подтвердить удаление репозитория",
     "confirmRepositoryDeleteMessage": "Вы уверены, что хотите удалить репозиторий \"%s\" и его содержимое?",
+    
+    
+    
 
 
     "@@x-BRANCH_MANAGEMENT": "",
@@ -363,10 +392,5 @@
     "report": "Сообщить",
     "issueReportSuccessTitle": "Проблема успешно зарегистрирована",
     "issueReportSuccessMsg": "Ваша проблема была зарегистрирована. Вы можете отслеживать её прогресс и отвечать на сообщения, используя ссылку ниже.\n\nПроблемы без активности в течение 7 дней автоматически закрываются.",
-    "trackIssue": "Отслеживать проблему",
-    "copyLink": "Link kopieren",
-    "dontShowAgain": "Nicht erneut anzeigen",
-    "githubAppRedirectDisclosureMsg": "Dieser Link könnte in der GitHub-App geöffnet werden, was zu Fehlverhalten führen kann. Um sicherzustellen, dass er im Browser geöffnet wird, deaktiviere die GitHub-App für unterstützte Links in den Systemeinstellungen.\n\nDu kannst den Link kopieren und manuell öffnen oder trotzdem fortfahren.",
-    "githubAppRedirectDisclosureTitle": "GitHub-Link-Warnung",
-    "openLink": "Link öffnen"
+    "trackIssue": "Отслеживать проблему"
 }

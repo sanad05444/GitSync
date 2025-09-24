@@ -62,9 +62,21 @@
     
 
     
+    
+    
+    
+    
     "syncNow": "Änderungen synchronisieren",
+    
+    
+    
+    
+    
+    
+    
     "pullChanges": "Änderungen abrufen",
     "pushChanges": "Änderungen hochladen",
+    
     "forcePush": "Erzwungener Push",
     "forcePushing": "Erzwungener Push läuft…",
     "confirmForcePush": "Erzwungenen Push bestätigen",
@@ -98,6 +110,11 @@
 
 
 
+    
+    
+    
+    
+    
     
     "legacyAppUserDialogTitle": "Willkommen zur neuen Version!",
     "legacyAppUserDialogMessagePart1": "Wir haben die App von Grund auf neu entwickelt für bessere Leistung und zukünftiges Wachstum.",
@@ -143,6 +160,7 @@
     "auth": "AUTH",
     "gitDirPathHint": "/storage/emulated/0/…",
     
+    
     "enableApplicationObserver": "Auto-Sync-Einstellungen",
     "accessibilityServiceDisclosureTitle": "Hinweis zum Barrierefreiheitsdienst",
     "accessibilityServiceDisclosureMessage": "Um Ihre Erfahrung zu verbessern,\nverwendet GitSync Androids Barrierefreiheitsdienst, um zu erkennen, wann Apps geöffnet oder geschlossen werden.\n\nDies hilft uns, maßgeschneiderte Funktionen bereitzustellen, ohne Daten zu speichern oder zu teilen.\n\nʙɪᴛᴛᴇ ᴀᴋᴛɪᴠɪᴇʀᴇɴ sɪᴇ ɢɪᴛsʏɴᴄ ᴀᴜғ ᴅᴇᴍ ɴäᴄʜsᴛᴇɴ ʙɪʟᴅsᴄʜɪʀᴍ",
@@ -171,6 +189,8 @@
 
     
     "selectYourGitProviderAndAuthenticate": "Wählen Sie Ihren Git-Anbieter aus und authentifizieren Sie sich",
+    
+    
     "oauthNoAffiliation": "Authentifizierung über Drittanbieter;\nkeine Zugehörigkeit oder Befürwortung impliziert.",
     "oauth": "oauth",
     "ensureTokenScope": "Stellen Sie sicher, dass Ihr Token den \"repo\"-Bereich für volle Funktionalität enthält.",
@@ -214,6 +234,7 @@
     "confirmCloneOverwriteAction": "Überschreiben",
 
 
+    
     
     "settings": "Einstellungen",
     
@@ -262,6 +283,7 @@
     "viewDocumentation": "Anleitungen & Wiki anzeigen",
     "requestAFeature": "Feature anfordern",
     "contributeTitle": "Unterstützen Sie unsere Arbeit",
+    
     "joinTheDiscussion": "An der Discord teilnehmen",
     
     "guidedSetup": "Geführte Einrichtung",
@@ -274,6 +296,10 @@
 
 
 
+    
+    
+    
+    
     
     
     
@@ -301,6 +327,9 @@
     "deleteRepoDirectoryCheckbox": "Auch das Repository-Verzeichnis und alle seine Inhalte löschen",
     "confirmRepositoryDeleteTitle": "Repository-Löschung bestätigen",
     "confirmRepositoryDeleteMessage": "Sind Sie sicher, dass Sie das Repository \"%s\" und seine Inhalte löschen möchten?",
+    
+    
+    
 
 
     

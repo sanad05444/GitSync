@@ -62,9 +62,21 @@
     
 
     "@@x-SYNC_OPTIONS": "",
+    
+    
+    
+    
     "syncNow": "Sync Cambios",
+    
+    
+    
+    
+    
+    
+    
     "pullChanges": "Extraer Cambios",
     "pushChanges": "Enviar Cambios",
+    
     "forcePush": "Push Forzado",
     "forcePushing": "Realizando push forzado…",
     "confirmForcePush": "Confirmar Push Forzado",
@@ -99,6 +111,11 @@
 
 
     "@@x-ONBOARDING": "",
+    
+    
+    
+    
+    
     "legacyAppUserDialogTitle": "¡Bienvenido a la Nueva Versión!",
     "legacyAppUserDialogMessagePart1": "Hemos reconstruido la aplicación desde cero para un mejor rendimiento y crecimiento futuro.",
     "legacyAppUserDialogMessagePart2": "Lamentablemente, tu configuración anterior no se puede transferir, por lo que necesitarás configurar todo de nuevo.\n\nTodas tus funciones favoritas siguen aquí. El soporte multi-repositorio ahora es parte de una pequeña actualización única que ayuda a apoyar el desarrollo continuo.",
@@ -143,6 +160,7 @@
     "auth": "AUTENTICACIÓN",
     "gitDirPathHint": "/storage/emulated/0/…",
     
+    
     "enableApplicationObserver": "Configuración de Sync Automática",
     "accessibilityServiceDisclosureTitle": "Divulgación del Servicio de Accesibilidad",
     "accessibilityServiceDisclosureMessage": "Para mejorar tu experiencia,\nGitSync usa el Servicio de Accesibilidad de Android para detectar cuándo se abren o cierran aplicaciones.\n\nEsto nos ayuda a proporcionar funciones personalizadas sin almacenar o compartir ningún dato.\n\nᴘᴏʀ ғᴀᴠᴏʀ ʜᴀʙɪʟɪᴛᴀ ɢɪᴛsʏɴᴄ ᴇɴ ʟᴀ sɪɢᴜɪᴇɴᴛᴇ ᴘᴀɴᴛᴀʟʟᴀ",
@@ -171,6 +189,8 @@
 
     "@@x-AUTH": "",
     "selectYourGitProviderAndAuthenticate": "Selecciona tu proveedor git y auténticate",
+    
+    
     "oauthNoAffiliation": "Autenticación a través de terceros;\nno se implica afiliación o respaldo.",
     "oauth": "oauth",
     "ensureTokenScope": "Asegúrate de que tu token incluya el ámbito \"repo\" para funcionalidad completa.",
@@ -215,6 +235,7 @@
 
 
     "@@x-SETTINGS_PAGE": "",
+    
     "settings": "Configuración",
     
     
@@ -262,6 +283,7 @@
     "viewDocumentation": "Ver Guías y Wiki",
     "requestAFeature": "Solicitar una Función",
     "contributeTitle": "Apoya Nuestro Trabajo",
+    
     "joinTheDiscussion": "Únete a la Discord",
     
     "guidedSetup": "Configuración Guiada",
@@ -275,6 +297,10 @@
 
 
     "@@x-FILE_MANAGEMENT": "",
+    
+    
+    
+    
     
     
     
@@ -301,6 +327,9 @@
     "deleteRepoDirectoryCheckbox": "También eliminar el directorio del repositorio y todo su contenido",
     "confirmRepositoryDeleteTitle": "Confirmar Eliminación de Repositorio",
     "confirmRepositoryDeleteMessage": "¿Estás seguro de que quieres eliminar el repositorio \"%s\" y su contenido?",
+    
+    
+    
 
 
     "@@x-BRANCH_MANAGEMENT": "",
@@ -363,10 +392,5 @@
     "report": "Reportar",
     "issueReportSuccessTitle": "Problema Reportado Exitosamente",
     "issueReportSuccessMsg": "Tu problema ha sido reportado. Puedes rastrear su progreso y responder a mensajes usando el enlace de abajo. \n\nLos problemas sin actividad por 7 días se cierran automáticamente.",
-    "trackIssue": "Rastrear Problema",
-    "copyLink": "Link kopieren",
-    "dontShowAgain": "Nicht erneut anzeigen",
-    "githubAppRedirectDisclosureMsg": "Dieser Link könnte in der GitHub-App geöffnet werden, was zu Fehlverhalten führen kann. Um sicherzustellen, dass er im Browser geöffnet wird, deaktiviere die GitHub-App für unterstützte Links in den Systemeinstellungen.\n\nDu kannst den Link kopieren und manuell öffnen oder trotzdem fortfahren.",
-    "githubAppRedirectDisclosureTitle": "GitHub-Link-Warnung",
-    "openLink": "Link öffnen"
+    "trackIssue": "Rastrear Problema"
 }
