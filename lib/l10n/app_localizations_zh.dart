@@ -42,7 +42,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get next => 'Next';
 
   @override
-  String get finish => 'Finish';
+  String get finish => '结束';
 
   @override
   String get rename => '重命名';
@@ -54,7 +54,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get delete => '删除';
 
   @override
-  String get optionalLabel => '(optional)';
+  String get optionalLabel => '（选填）';
 
   @override
   String get ios => 'iOS';
@@ -78,13 +78,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get syncComplete => '仓库同步完成！';
 
   @override
-  String get syncInProgress => 'Sync In Progress';
+  String get syncInProgress => '同步进行中';
 
   @override
-  String get syncScheduled => 'Sync Scheduled';
+  String get syncScheduled => '同步已预定';
 
   @override
-  String get detectingChanges => 'Detecting Changes…';
+  String get detectingChanges => '检测更改中…';
 
   @override
   String get thisActionCannotBeUndone => '此操作无法撤销。';
@@ -147,28 +147,28 @@ class AppLocalizationsZh extends AppLocalizations {
   String get verifyGhSponsorNote => '注意：新的赞助关系可能需要最多 1 天才能在应用中生效。';
 
   @override
-  String get switchToClientMode => 'Switch to Client Mode…';
+  String get switchToClientMode => '切换到客户端模式…';
 
   @override
-  String get switchToSyncMode => 'Switch to Sync Mode…';
+  String get switchToSyncMode => '切换到同步模式…';
 
   @override
-  String get clientMode => 'Client Mode';
+  String get clientMode => '客户端模式';
 
   @override
-  String get syncMode => 'Sync Mode';
+  String get syncMode => '同步模式';
 
   @override
   String get syncNow => '立即同步';
 
   @override
-  String get syncAllChanges => 'Sync All Changes';
+  String get syncAllChanges => '同步所有更改';
 
   @override
-  String get stageAndCommit => 'Stage & Commit';
+  String get stageAndCommit => '暂存及提交';
 
   @override
-  String get downloadChanges => 'Download Changes';
+  String get downloadChanges => '下载更改';
 
   @override
   String get uploadChanges => 'Upload Changes';
@@ -289,13 +289,13 @@ class AppLocalizationsZh extends AppLocalizations {
       'We detected that this might be a reinstallation, but it could also be a false alarm. On iOS, your Keychain isn’t cleared when you delete and reinstall the app, so some data may still be stored securely.\n\nIf this isn’t a fresh install, or you don’t want to reset, you can safely skip this step.';
 
   @override
-  String get clearDataConfirmTitle => 'Confirm App Data Reset';
+  String get clearDataConfirmTitle => '确认数据重置';
 
   @override
-  String get clearDataConfirmMsg => 'This will permanently delete all app data, including Keychain entries. Are you sure you want to proceed?';
+  String get clearDataConfirmMsg => '这将永久删除所有应用数据，包括钥匙条目。您确定要继续吗？';
 
   @override
-  String get iosClearDataAction => 'Clear All Data';
+  String get iosClearDataAction => '清除所有数据';
 
   @override
   String get legacyAppUserDialogTitle => '欢迎使用新版本！';
@@ -419,7 +419,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get gitDirPathHint => '/storage/emulated/0/…';
 
   @override
-  String get openFileExplorer => 'Browse & Edit';
+  String get openFileExplorer => '浏览及编辑';
 
   @override
   String get syncSettings => 'Configuración de sincronización';
@@ -622,25 +622,25 @@ class AppLocalizationsZh extends AppLocalizations {
   String get confirmCloneOverwriteAction => '覆盖';
 
   @override
-  String get repositorySettings => 'Repository Settings';
+  String get repositorySettings => '仓库设置';
 
   @override
   String get settings => '设置';
 
   @override
-  String get signedCommitsLabel => 'Signed Commits';
+  String get signedCommitsLabel => '签署提交';
 
   @override
-  String get signedCommitsDescription => 'sign commits to verify your identity';
+  String get signedCommitsDescription => '签署提交以验证您的身份';
 
   @override
-  String get importCommitKey => 'Import Key';
+  String get importCommitKey => '导入密钥';
 
   @override
-  String get commitKeyImported => 'Key Imported';
+  String get commitKeyImported => '密钥已导入';
 
   @override
-  String get useSshKey => 'Use AUTH Key for Commit Signing';
+  String get useSshKey => '使用 AUTH 密钥进行提交签署';
 
   @override
   String get syncMessageLabel => '同步消息';
@@ -694,13 +694,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get disableSsl => '禁用 SSL';
 
   @override
-  String get disableSslPromptTitle => 'Disable SSL?';
+  String get disableSslPromptTitle => '禁用 SSL？';
 
   @override
-  String get disableSslPromptMsg => 'The address you cloned starts with \"http\" (not secure). Disabling SSL will match the URL but reduce security.';
+  String get disableSslPromptMsg => '您克隆的地址以 \"http\" 开头 （不安全）。您可以选择禁用 SSL 验证，但这会降低安全性。';
 
   @override
-  String get proceedAnyway => 'Proceed anyway?';
+  String get proceedAnyway => '照常进行吗？';
 
   @override
   String get moreOptions => '更多选项';
@@ -712,7 +712,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get language => '语言';
 
   @override
-  String get browseEditDir => 'Browse & Edit Directory';
+  String get browseEditDir => '浏览及编辑档案目录';
 
   @override
   String get backupRestoreTitle => '加密配置恢复';
@@ -724,10 +724,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get restore => '恢复';
 
   @override
-  String get selectBackupLocation => 'Select location to save backup';
+  String get selectBackupLocation => '选择保存备份的位置';
 
   @override
-  String get backupFileTemplate => 'backup_%s.gsbak';
+  String get backupFileTemplate => '备份_%s.gsbak';
 
   @override
   String get enterPassword => '输入密码';
@@ -736,10 +736,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get invalidPassword => '无效密码';
 
   @override
-  String get community => 'Community';
+  String get community => '社区';
 
   @override
-  String get guides => 'Guides';
+  String get guides => '指南';
 
   @override
   String get documentation => '指南和文档';
@@ -754,10 +754,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get contributeTitle => '支持我们的工作';
 
   @override
-  String get joinTheDiscussion => '加入讨论';
+  String get improveTranslations => 'Improve Translations';
 
   @override
-  String get noLogFilesFound => 'No log files found!';
+  String get joinTheDiscussion => '加入 Discord';
+
+  @override
+  String get noLogFilesFound => '未找到记录档！';
 
   @override
   String get guidedSetup => '引导设置';
@@ -1029,4 +1032,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get trackIssue => '跟踪问题';
+}
+
+/// The translations for Chinese, using the Han script (`zh_Hans`).
+class AppLocalizationsZhHans extends AppLocalizationsZh {
+  AppLocalizationsZhHans() : super('zh_Hans');
 }
