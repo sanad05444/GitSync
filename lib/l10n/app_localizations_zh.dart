@@ -422,7 +422,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get openFileExplorer => '浏览及编辑';
 
   @override
-  String get syncSettings => 'Configuración de sincronización';
+  String get syncSettings => '同步设置';
 
   @override
   String get enableApplicationObserver => '自动同步设置';
