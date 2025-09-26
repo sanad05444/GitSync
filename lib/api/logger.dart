@@ -121,8 +121,8 @@ class Logger {
     if (await repoManager.getStringNullable(StorageKey.repoman_reportIssueToken) == null) {
       await GithubIssueOauthDialog.showDialog(context, () async {
         final oauthManager = GithubManager();
-        final token = (await oauthManager.launchOAuthFlow(["public_repo"]))?.$2;
-        await repoManager.setStringNullable(StorageKey.repoman_reportIssueToken, token);
+        final result = (await oauthManager.launchOAuthFlow(["public_repo"]));
+        await repoManager.setStringNullable(StorageKey.repoman_reportIssueToken, result?.$3 ?? null);
       });
     }
 
@@ -172,6 +172,7 @@ $logs
       if (response.statusCode == 201) {
         print('Issue created successfully: ${response.statusCode} ${response.body}');
       } else {
+        await repoManager.setStringNullable(StorageKey.repoman_reportIssueToken, null);
         print('Failed to create issue: ${response.statusCode} ${response.body}');
       }
 
