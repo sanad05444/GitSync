@@ -255,7 +255,7 @@
     "submodulesFoundAction"
   ],
 
-  "zh_Hans": [
+  "zh_Hant": [
     "dismiss",
     "skip",
     "done",

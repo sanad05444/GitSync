@@ -99,7 +99,7 @@ abstract class AppLocalizations {
     Locale('es'),
     Locale('ru'),
     Locale('zh'),
-    Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'),
+    Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'),
   ];
 
   /// No description provided for @dismiss.
@@ -2164,8 +2164,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
     case 'zh':
       {
         switch (locale.scriptCode) {
-          case 'Hans':
-            return AppLocalizationsZhHans();
+          case 'Hant':
+            return AppLocalizationsZhHant();
         }
         break;
       }
