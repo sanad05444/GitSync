@@ -329,7 +329,7 @@
     "confirmRepositoryDeleteMessage": "Voulez-vous vraiment supprimer le dépôt \"%s\" et son contenu ?",
     "submodulesFoundTitle": "Sous-modules trouvés",
     "submodulesFoundMessage": "Le dépôt que vous avez ajouté contient des sous-modules. Souhaitez-vous les ajouter automatiquement en tant que dépôts séparés dans l'application ?\n\nCeci est une fonctionnalité premium.",
-    "submodulesFoundAction": "Ajouter les sous-modules
+    "submodulesFoundAction": "Ajouter les sous-modules",
 
 
     "@@x-BRANCH_MANAGEMENT": "",
@@ -341,7 +341,7 @@
     "create": "Créer",
     "createBranch": "Créer une nouvelle branche",
     "createBranchName": "Nom de la branche",
-    "createBranchBasedOn": "Basé sur
+    "createBranchBasedOn": "Basé sur",
 
 
     "@@x-ERRORS": "",
@@ -375,7 +375,7 @@
     "rejectionWithReasonException": "La mise à jour de la référence distante a été rejetée car %s.",
     "remoteChangedException": "La mise à jour de la référence distante a été rejetée, car l'ancien ID d'objet dans le dépôt distant n'était pas le même que celui défini dans l'ancien objet attendu.",
     "mergingExceptionMessage": "FUSION EN COURS",
-    "fieldCannotBeEmpty": "Le champ ne peut pas être vide
+    "fieldCannotBeEmpty": "Le champ ne peut pas être vide",
 
 
     "@@x-ISSUE_REPORTING": "",
