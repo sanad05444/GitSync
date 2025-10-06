@@ -74,8 +74,20 @@ class GiteaManager extends GitProviderManager {
   }
 
   @override
-  Future<void> getRepos(String accessToken, Function(List<(String, String)>) updateCallback, Function(Function()?) nextPageCallback) async {
-    await getReposRequest(accessToken, "https://$_domain/api/v1/user/repos", updateCallback, nextPageCallback);
+  Future<void> getRepos(
+    String accessToken,
+    String searchString,
+    Function(List<(String, String)>) updateCallback,
+    Function(Function()?) nextPageCallback,
+  ) async {
+    await getReposRequest(
+      accessToken,
+      searchString == "" ? "https://$_domain/api/v1/user/repos" : "https://$_domain/api/v1/user/repos?limit=100",
+      searchString == ""
+          ? updateCallback
+          : (list) => updateCallback(list.where((item) => item.$1.toLowerCase().contains(searchString.toLowerCase())).toList()),
+      searchString == "" ? nextPageCallback : (_) => {},
+    );
   }
 
   Future<void> getReposRequest(

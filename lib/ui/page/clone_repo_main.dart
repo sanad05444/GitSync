@@ -17,6 +17,7 @@ import '../../../ui/dialog/cloning_repository.dart' as CloningRepositoryDialog;
 import '../../../ui/dialog/repo_url_invalid.dart' as RepoUrlInvalid;
 import '../../../ui/dialog/clone_failed.dart' as CloneFailedDialog;
 import '../../../ui/dialog/confirm_clone_overwrite.dart' as ConfirmCloneOverwriteDialog;
+import '../dialog/info_dialog.dart' as InfoDialog;
 
 class CloneRepoMain extends StatefulWidget {
   const CloneRepoMain({super.key});
@@ -27,50 +28,68 @@ class CloneRepoMain extends StatefulWidget {
 
 class _CloneRepoMain extends State<CloneRepoMain> with WidgetsBindingObserver {
   final _controller = ScrollController();
+  final searchController = TextEditingController();
   final cloneUrlController = TextEditingController();
 
   bool atTop = true;
   bool atBottom = false;
 
+  bool hasList = false;
   bool loadingRepos = false;
   Function()? loadNextRepos;
-  final List<(String, String)> repoList = [];
+  final Map<String, String> repoMap = {};
 
   @override
   void initState() {
     super.initState();
-    _controller.addListener(() {
-      if (_controller.position.atEdge) {
-        atTop = _controller.offset == 0;
-        atBottom = _controller.offset != 0;
-        if (atBottom) {
-          if (loadNextRepos == null) return;
-          setLoadingRepos(true);
-          loadNextRepos!();
-        }
-      } else {
-        atTop = false;
-        atBottom = false;
-      }
-
-      if (!mounted) return;
-      setState(() {});
-    });
+    _controller.addListener(scrollListener);
 
     initAsync(() async {
-      final gitProviderManager = GitProviderManager.getGitProviderManager(await uiSettingsManager.getGitProvider());
-      if (gitProviderManager == null) return;
-
-      setLoadingRepos(true);
-      final accessToken = (await uiSettingsManager.getGitHttpAuthCredentials()).$2;
-
-      gitProviderManager.getRepos(accessToken, addRepos, (callback) => loadNextRepos = callback);
+      searchRepos("");
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.removeListener(scrollListener);
+  }
+
+  void scrollListener() {
+    if (_controller.position.atEdge) {
+      atTop = _controller.offset == 0;
+      atBottom = _controller.offset != 0;
+      if (atBottom) {
+        if (loadNextRepos == null) return;
+        setLoadingRepos(true);
+        loadNextRepos!();
+      }
+    } else {
+      atTop = false;
+      atBottom = false;
+    }
+
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  Future<void> searchRepos(String searchString) async {
+    final gitProviderManager = GitProviderManager.getGitProviderManager(await uiSettingsManager.getGitProvider());
+    if (gitProviderManager == null) return;
+
+    setLoadingRepos(true);
+    final accessToken = (await uiSettingsManager.getGitHttpAuthCredentials()).$2;
+
+    gitProviderManager.getRepos(accessToken, searchString, addRepos, (callback) => loadNextRepos = callback);
   }
 
   void addRepos(List<(String, String)> repos) {
     setLoadingRepos(false);
-    repoList.addAll(repos);
+    hasList = true;
+
+    for (final r in repos) {
+      repoMap[r.$1] = r.$2;
+    }
 
     if (!mounted) return;
     setState(() {});
@@ -78,9 +97,9 @@ class _CloneRepoMain extends State<CloneRepoMain> with WidgetsBindingObserver {
 
   void setLoadingRepos(bool loading) {
     if (loading && loadNextRepos != null) {
-      repoList.add((t.loadingElipsis, t.loadingElipsis));
+      repoMap[t.loadingElipsis] = t.loadingElipsis;
     } else {
-      repoList.removeWhere((repo) => repo.$1 == t.loadingElipsis);
+      repoMap.removeWhere((key, value) => key == t.loadingElipsis);
     }
     loadingRepos = loading;
 
@@ -168,152 +187,210 @@ class _CloneRepoMain extends State<CloneRepoMain> with WidgetsBindingObserver {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  !loadingRepos && repoList.isEmpty
-                      ? SizedBox.shrink()
-                      : Expanded(
-                          child: Container(
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: secondaryDark,
-                              borderRadius: BorderRadius.only(
-                                topLeft: cornerRadiusMD,
-                                bottomLeft: cornerRadiusSM,
-                                topRight: cornerRadiusMD,
-                                bottomRight: cornerRadiusSM,
+            ...!hasList
+                ? []
+                : [
+                    Expanded(
+                      child: Container(
+                        margin: EdgeInsets.only(top: spaceLG, bottom: spaceLG),
+                        decoration: BoxDecoration(
+                          color: secondaryDark,
+                          borderRadius: BorderRadius.only(
+                            topLeft: cornerRadiusMD,
+                            bottomLeft: cornerRadiusSM,
+                            topRight: cornerRadiusMD,
+                            bottomRight: cornerRadiusSM,
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            TextField(
+                              controller: searchController,
+                              maxLines: 1,
+                              style: TextStyle(color: primaryLight, decoration: TextDecoration.none, decorationThickness: 0, fontSize: textMD),
+                              decoration: InputDecoration(
+                                hintText: "Search...",
+                                hintStyle: TextStyle(color: secondaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
+                                fillColor: tertiaryDark,
+                                filled: true,
+                                prefixIcon: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: spaceXS),
+                                  child: FaIcon(FontAwesomeIcons.magnifyingGlass, size: textMD, color: secondaryLight),
+                                ),
+                                prefixIconConstraints: BoxConstraints(minWidth: textMD, minHeight: textMD),
+                                border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: cornerRadiusMD,
+                                    topRight: cornerRadiusMD,
+                                    bottomLeft: cornerRadiusXS,
+                                    bottomRight: cornerRadiusXS,
+                                  ),
+                                  borderSide: BorderSide.none,
+                                ),
+                                suffixIcon: IconButton(
+                                  padding: EdgeInsets.symmetric(horizontal: spaceSM),
+                                  style: ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                                  constraints: BoxConstraints(),
+                                  onPressed: () async {
+                                    InfoDialog.showDialog(
+                                      context,
+                                      "Repository Search Limits",
+                                      "Repository search only examines the first 100 repositories returned by the API, so it may sometimes omit the repository you expect. \n\nIf the repository you want does not appear in search results, please clone it directly using its HTTPS or SSH URL.",
+                                    );
+                                  },
+                                  visualDensity: VisualDensity.compact,
+                                  icon: FaIcon(FontAwesomeIcons.circleInfo, color: secondaryLight, size: textMD),
+                                ),
+                                suffixIconConstraints: BoxConstraints(minWidth: textMD, minHeight: textMD),
+                                isCollapsed: true,
+                                floatingLabelBehavior: FloatingLabelBehavior.always,
+                                contentPadding: const EdgeInsets.symmetric(horizontal: spaceSM, vertical: spaceXS),
+                                isDense: true,
                               ),
-                            ),
-                            margin: EdgeInsets.only(top: spaceLG, bottom: spaceLG),
-                            padding: EdgeInsets.all(spaceMD),
-                            child: ShaderMask(
-                              shaderCallback: (Rect rect) {
-                                return LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    atTop ? Colors.transparent : Colors.black,
-                                    Colors.transparent,
-                                    Colors.transparent,
-                                    atBottom ? Colors.transparent : Colors.black,
-                                  ],
-                                  stops: [0.0, 0.1, 0.9, 1.0],
-                                ).createShader(rect);
+                              onChanged: (text) async {
+                                repoMap.clear();
+                                setState(() {});
+                                debounce("clone_repo_search_string", 500, () async {
+                                  await searchRepos(text);
+                                });
                               },
-                              blendMode: BlendMode.dstOut,
-                              child: AnimatedListView(
-                                items: repoList,
-                                controller: _controller,
-                                isSameItem: (a, b) => a.$2 == b.$2,
-                                itemBuilder: (BuildContext context, int index) {
-                                  final repo = repoList[index];
-                                  return Container(
-                                    key: Key(repo.$2),
-                                    width: double.infinity,
-                                    margin: EdgeInsets.only(bottom: spaceMD),
-                                    child: TextButton.icon(
-                                      onPressed: () => cloneRepository(repo.$2),
-                                      style: ButtonStyle(
-                                        alignment: Alignment.centerLeft,
-                                        backgroundColor: WidgetStatePropertyAll(tertiaryDark),
-                                        padding: WidgetStatePropertyAll(
-                                          EdgeInsets.only(right: spaceMD, top: spaceSM, bottom: spaceSM, left: spaceXS),
+                            ),
+                            SizedBox(height: spaceMD),
+                            Expanded(
+                              child: ShaderMask(
+                                shaderCallback: (Rect rect) {
+                                  return LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      atTop ? Colors.transparent : Colors.black,
+                                      Colors.transparent,
+                                      Colors.transparent,
+                                      atBottom ? Colors.transparent : Colors.black,
+                                    ],
+                                    stops: [0.0, 0.1, 0.9, 1.0],
+                                  ).createShader(rect);
+                                },
+                                blendMode: BlendMode.dstOut,
+                                child: AnimatedListView(
+                                  items: repoMap.entries.toList(),
+                                  padding: EdgeInsets.only(bottom: spaceMD, left: spaceMD, right: spaceMD),
+                                  controller: _controller,
+                                  isSameItem: (a, b) => a.value == b.value,
+                                  itemBuilder: (BuildContext context, int index) {
+                                    final repo = repoMap.entries.toList()[index];
+                                    return Container(
+                                      key: Key("${searchController.text} ${repo.key}"),
+                                      width: double.infinity,
+                                      margin: EdgeInsets.only(bottom: spaceMD),
+                                      child: TextButton.icon(
+                                        onPressed: () => cloneRepository(repo.value),
+                                        style: ButtonStyle(
+                                          alignment: Alignment.centerLeft,
+                                          backgroundColor: WidgetStatePropertyAll(tertiaryDark),
+                                          padding: WidgetStatePropertyAll(
+                                            EdgeInsets.only(right: spaceMD, top: spaceSM, bottom: spaceSM, left: spaceXS),
+                                          ),
+                                          shape: WidgetStatePropertyAll(
+                                            RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
+                                          ),
                                         ),
-                                        shape: WidgetStatePropertyAll(
-                                          RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
-                                        ),
-                                      ),
-                                      iconAlignment: IconAlignment.end,
-                                      icon: FaIcon(FontAwesomeIcons.solidCircleDown, color: primaryPositive, size: textXL),
-                                      label: Container(
-                                        width: double.infinity,
-                                        padding: EdgeInsets.only(left: spaceXS),
-                                        child: Text(
-                                          repo.$1,
-                                          maxLines: 1,
-                                          style: TextStyle(
-                                            overflow: TextOverflow.ellipsis,
-                                            color: primaryLight,
-                                            fontSize: textLG,
-                                            fontWeight: FontWeight.bold,
+                                        iconAlignment: IconAlignment.end,
+                                        icon: FaIcon(FontAwesomeIcons.solidCircleDown, color: primaryPositive, size: textXL),
+                                        label: Container(
+                                          width: double.infinity,
+                                          padding: EdgeInsets.only(left: spaceXS),
+                                          child: Text(
+                                            repo.key,
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                              overflow: TextOverflow.ellipsis,
+                                              color: primaryLight,
+                                              fontSize: textLG,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  );
-                                },
+                                    );
+                                  },
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
-                  SizedBox(height: spaceLG),
-                  IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: cloneUrlController,
-                            maxLines: 1,
-                            style: TextStyle(color: primaryLight, decoration: TextDecoration.none, decorationThickness: 0, fontSize: textLG),
-                            decoration: InputDecoration(
-                              hintText: t.gitRepoUrlHint,
-                              hintStyle: TextStyle(color: secondaryLight, fontSize: textLG),
-                              fillColor: secondaryDark,
-                              filled: true,
-                              border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusMD), borderSide: BorderSide.none),
-                              isCollapsed: true,
-                              floatingLabelBehavior: FloatingLabelBehavior.always,
-                              contentPadding: const EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
-                              isDense: true,
-                            ),
-                            onChanged: (_) => setState(() {}),
-                          ),
-                        ),
-                        SizedBox(width: spaceMD),
-                        TextButton.icon(
-                          onPressed: cloneUrlController.text.isEmpty
-                              ? null
-                              : () async {
-                                  final isValid = validateGitRepoUrl(
-                                    await uiSettingsManager.getGitProvider() == GitProvider.SSH,
-                                    cloneUrlController.text,
-                                  );
-                                  if (isValid) {
-                                    cloneRepository(cloneUrlController.text);
-                                  } else {
-                                    RepoUrlInvalid.showDialog(context, () => cloneRepository(cloneUrlController.text));
-                                  }
-                                },
-                          style: ButtonStyle(
-                            alignment: Alignment.center,
-                            backgroundColor: WidgetStatePropertyAll(secondaryDark),
-                            padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: 0)),
-                            shape: WidgetStatePropertyAll(
-                              RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
-                            ),
-                          ),
-                          icon: FaIcon(
-                            FontAwesomeIcons.solidCircleDown,
-                            color: cloneUrlController.text.isEmpty ? secondaryPositive : primaryPositive,
-                            size: textLG,
-                          ),
-                          label: Padding(
-                            padding: EdgeInsets.only(left: spaceXS),
-                            child: Text(
-                              t.clone.toUpperCase(),
-                              style: TextStyle(color: cloneUrlController.text.isEmpty ? tertiaryLight : primaryLight, fontSize: textMD),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
+                  ],
+            Column(
+              children: [
+                SizedBox(height: spaceLG),
+                IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: cloneUrlController,
+                          maxLines: 1,
+                          style: TextStyle(color: primaryLight, decoration: TextDecoration.none, decorationThickness: 0, fontSize: textLG),
+                          decoration: InputDecoration(
+                            hintText: t.gitRepoUrlHint,
+                            hintStyle: TextStyle(color: secondaryLight, fontSize: textLG),
+                            fillColor: secondaryDark,
+                            filled: true,
+                            border: const OutlineInputBorder(borderRadius: BorderRadius.all(cornerRadiusMD), borderSide: BorderSide.none),
+                            isCollapsed: true,
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            contentPadding: const EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM),
+                            isDense: true,
+                          ),
+                          onChanged: (_) => setState(() {}),
+                        ),
+                      ),
+                      SizedBox(width: spaceMD),
+                      TextButton.icon(
+                        onPressed: cloneUrlController.text.isEmpty
+                            ? null
+                            : () async {
+                                final isValid = validateGitRepoUrl(
+                                  await uiSettingsManager.getGitProvider() == GitProvider.SSH,
+                                  cloneUrlController.text,
+                                );
+                                if (isValid) {
+                                  cloneRepository(cloneUrlController.text);
+                                } else {
+                                  RepoUrlInvalid.showDialog(context, () => cloneRepository(cloneUrlController.text));
+                                }
+                              },
+                        style: ButtonStyle(
+                          alignment: Alignment.center,
+                          backgroundColor: WidgetStatePropertyAll(secondaryDark),
+                          padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: 0)),
+                          shape: WidgetStatePropertyAll(
+                            RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
+                          ),
+                        ),
+                        icon: FaIcon(
+                          FontAwesomeIcons.solidCircleDown,
+                          color: cloneUrlController.text.isEmpty ? secondaryPositive : primaryPositive,
+                          size: textLG,
+                        ),
+                        label: Padding(
+                          padding: EdgeInsets.only(left: spaceXS),
+                          child: Text(
+                            t.clone.toUpperCase(),
+                            style: TextStyle(color: cloneUrlController.text.isEmpty ? tertiaryLight : primaryLight, fontSize: textMD),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: spaceXXL),
-                ],
-              ),
+                ),
+                SizedBox(height: spaceXXL),
+              ],
             ),
             Column(
               children: [
