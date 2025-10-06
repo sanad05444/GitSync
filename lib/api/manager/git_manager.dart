@@ -1030,7 +1030,7 @@ class GitManager {
   static String _convertToWebUrl(String remoteUrl) {
     remoteUrl = remoteUrl.trim();
 
-    final sshPattern = RegExp(r'^git@([^:]+):([^/]+)/(.+?)(?:\.git)?$');
+    final sshPattern = RegExp(r'^(?:ssh://)?(?:[^:@]+)@([^:]+):([^/]+)/(.+?)(?:\.git)?$');
     if (sshPattern.hasMatch(remoteUrl)) {
       final match = sshPattern.firstMatch(remoteUrl)!;
       final host = match.group(1)!;
