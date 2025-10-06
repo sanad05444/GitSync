@@ -6,7 +6,9 @@ import 'package:GitSync/api/accessibility_service_helper.dart';
 import 'package:GitSync/api/helper.dart';
 import 'package:GitSync/api/manager/auth/github_manager.dart';
 import 'package:GitSync/api/manager/git_manager.dart';
+import 'package:GitSync/api/manager/settings_manager.dart';
 import 'package:GitSync/main.dart';
+import 'package:GitSync/type/git_provider.dart';
 import 'package:GitSync/ui/dialog/github_issue_oauth.dart' as GithubIssueOauthDialog;
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
@@ -118,17 +120,26 @@ class Logger {
   }
 
   static Future<void> reportIssue(BuildContext context) async {
-    if (await repoManager.getStringNullable(StorageKey.repoman_reportIssueToken) == null) {
+    String? reportIssueToken = await repoManager.getStringNullable(StorageKey.repoman_reportIssueToken);
+    if (reportIssueToken == "" || reportIssueToken == null) {
+      SettingsManager tempSettingsManager = SettingsManager();
+      await tempSettingsManager.reinit(repoIndex: 0);
+      final provider = await tempSettingsManager.getGitProvider();
+      if (provider != GitProvider.GITHUB) return;
+      reportIssueToken = (await tempSettingsManager.getGitHttpAuthCredentials()).$2;
+      if (reportIssueToken == "") return;
+    }
+
+    if (reportIssueToken == "") {
       await GithubIssueOauthDialog.showDialog(context, () async {
         final oauthManager = GithubManager();
         final result = (await oauthManager.launchOAuthFlow(["public_repo"]));
         await repoManager.setStringNullable(StorageKey.repoman_reportIssueToken, result?.$3 ?? null);
+        reportIssueToken = await repoManager.getStringNullable(StorageKey.repoman_reportIssueToken);
       });
     }
 
-    final reportIssueToken = await repoManager.getStringNullable(StorageKey.repoman_reportIssueToken);
-
-    if (reportIssueToken == null) return;
+    if (reportIssueToken == "" || reportIssueToken == null) return;
 
     await GithubIssueReportDialog.showDialog(context, (title, description, minimalRepro, includeLogFiles) async {
       final logs = !includeLogFiles
