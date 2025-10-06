@@ -3,15 +3,20 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:GitSync/api/helper.dart';
+import 'package:GitSync/api/logger.dart';
 import 'package:GitSync/constant/colors.dart';
 import 'package:GitSync/constant/dimens.dart';
 import 'package:GitSync/constant/values.dart';
 import 'package:GitSync/global.dart';
+import 'package:GitSync/ui/component/button_setting.dart';
+import 'package:GitSync/ui/dialog/info_dialog.dart' as InfoDialog;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mmap2/mmap2.dart';
 import 'package:mmap2_flutter/mmap2_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../constant/strings.dart';
 import 'package:path/path.dart' as p;
 import 'package:re_editor/re_editor.dart' as ReEditor;
@@ -285,9 +290,54 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
                 padding: EdgeInsets.symmetric(horizontal: spaceSM, vertical: spaceXS),
                 child: Column(
                   children: [
-                    Text(
-                      t.experimental.toUpperCase(),
-                      style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          style: ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                          constraints: BoxConstraints(),
+                          onPressed: () async {
+                            InfoDialog.showDialog(
+                              context,
+                              "Code Editor Limits",
+                              "The code editor provides basic, functional editing but hasn’t been exhaustively tested for edge cases or heavy use. \n\nIf you encounter bugs or want to suggest features, I welcome feedback! Please use the Bug Report or Feature Request options in Global Settings or below.",
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  SizedBox(height: spaceMD),
+                                  ButtonSetting(
+                                    text: t.requestAFeature,
+                                    icon: FontAwesomeIcons.solidHandPointUp,
+                                    onPressed: () async {
+                                      if (await canLaunchUrl(Uri.parse(githubFeatureTemplate))) {
+                                        await launchUrl(Uri.parse(githubFeatureTemplate));
+                                      }
+                                    },
+                                  ),
+                                  SizedBox(height: spaceSM),
+                                  ButtonSetting(
+                                    text: t.reportABug,
+                                    icon: FontAwesomeIcons.bug,
+                                    textColor: primaryDark,
+                                    iconColor: primaryDark,
+                                    buttonColor: tertiaryNegative,
+                                    onPressed: () async {
+                                      await Logger.reportIssue(context);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          visualDensity: VisualDensity.compact,
+                          icon: FaIcon(FontAwesomeIcons.circleInfo, color: secondaryLight, size: textMD),
+                        ),
+                        Text(
+                          t.experimental.toUpperCase(),
+                          style: TextStyle(color: primaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(width: spaceXS),
+                      ],
                     ),
                     SizedBox(height: spaceXXXS),
                     Text(
