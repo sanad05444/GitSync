@@ -1027,6 +1027,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get issueReportMessage => 'Logs werden automatisch mit Berichten eingefügt';
 
   @override
+  String get includeLogs => 'Include Log File(s)';
+
+  @override
   String get issueReportTitleTitle => 'Titel';
 
   @override

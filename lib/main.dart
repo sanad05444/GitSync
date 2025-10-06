@@ -753,14 +753,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                   setState(() {});
                 },
                 onTap: () async {
-                  final Directory dir = await getTemporaryDirectory();
-                  print(Directory("${dir.path}/logs").listSync().map((e) => e.path));
-                  File logFile = File("${dir.path}/logs/log_1.log");
-                  print(logFile.existsSync());
-                  if (!logFile.existsSync()) {
-                    logFile = File("${dir.path}/logs/log_0.log");
-                  }
-                  await Navigator.of(context).push(createCodeEditorRoute(logFile.path, logs: true)).then((_) => setState(() {}));
+                  await openLogViewer(context).then((_) => setState(() {}));
                 },
                 child: Stack(
                   children: [

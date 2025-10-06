@@ -1,3 +1,5 @@
+import 'package:GitSync/api/helper.dart';
+import 'package:GitSync/ui/dialog/info_dialog.dart' as InfoDialog;
 import 'package:flutter/material.dart' as mat;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -6,10 +8,11 @@ import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
 import 'package:GitSync/global.dart';
 
-Future<void> showDialog(BuildContext context, Future<void> Function(String, String, String) report) {
+Future<void> showDialog(BuildContext context, Future<void> Function(String, String, String, bool) report) {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   final minimalReproController = TextEditingController();
+  bool includeLogFiles = true;
 
   return mat.showDialog(
     context: context,
@@ -181,12 +184,45 @@ Future<void> showDialog(BuildContext context, Future<void> Function(String, Stri
               SizedBox(height: spaceMD),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    t.issueReportMessage,
-                    textAlign: TextAlign.end,
-                    style: const TextStyle(color: secondaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    style: ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                    constraints: BoxConstraints(),
+                    onPressed: () async {
+                      openLogViewer(context);
+                    },
+                    icon: FaIcon(FontAwesomeIcons.eye, color: tertiaryInfo, size: textSM),
+                  ),
+                  SizedBox(width: spaceXS),
+                  TextButton.icon(
+                    onPressed: () {
+                      includeLogFiles = !includeLogFiles;
+                      if (includeLogFiles == false) {
+                        InfoDialog.showDialog(
+                          context,
+                          "Include Log File(s)",
+                          "Including log files with your bug report is strongly recommended as they can greatly speed up diagnosing the root cause. \nIf you choose to disable \"Include log file(s)\", please copy and paste the relevant log excerpts into your report so we can reproduce the issue. You can review logs before sending by using the eye icon to confirm there’s nothing sensitive. \n\nIncluding logs is optional, not mandatory.",
+                        );
+                      }
+                      setState(() {});
+                    },
+                    style: ButtonStyle(
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceSM)),
+                      shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusSM), side: BorderSide.none)),
+                    ),
+                    icon: FaIcon(
+                      includeLogFiles ? FontAwesomeIcons.solidSquareCheck : FontAwesomeIcons.squareCheck,
+                      color: primaryPositive,
+                      size: textSM,
+                    ),
+                    label: Text(
+                      t.includeLogs,
+                      textAlign: TextAlign.end,
+                      style: const TextStyle(color: secondaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
+                    ),
                   ),
                 ],
               ),
@@ -223,7 +259,7 @@ Future<void> showDialog(BuildContext context, Future<void> Function(String, Stri
                 ? null
                 : () async {
                     Navigator.of(context).canPop() ? Navigator.pop(context) : null;
-                    await report(titleController.text, descriptionController.text, minimalReproController.text);
+                    await report(titleController.text, descriptionController.text, minimalReproController.text, includeLogFiles);
                   },
           ),
         ],

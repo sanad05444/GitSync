@@ -2082,6 +2082,12 @@ abstract class AppLocalizations {
   /// **'Logs automatically included with reports'**
   String get issueReportMessage;
 
+  /// No description provided for @includeLogs.
+  ///
+  /// In en, this message translates to:
+  /// **'Include Log File(s)'**
+  String get includeLogs;
+
   /// No description provided for @issueReportTitleTitle.
   ///
   /// In en, this message translates to:

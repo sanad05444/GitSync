@@ -1022,6 +1022,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get issueReportMessage => 'Логи автоматически включаются в отчеты';
 
   @override
+  String get includeLogs => 'Include Log File(s)';
+
+  @override
   String get issueReportTitleTitle => 'Заголовок';
 
   @override

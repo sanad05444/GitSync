@@ -1004,6 +1004,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get issueReportMessage => '日志自动包含在报告中';
 
   @override
+  String get includeLogs => 'Include Log File(s)';
+
+  @override
   String get issueReportTitleTitle => '标题';
 
   @override

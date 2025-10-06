@@ -130,8 +130,10 @@ class Logger {
 
     if (reportIssueToken == null) return;
 
-    await GithubIssueReportDialog.showDialog(context, (title, description, minimalRepro) async {
-      final logs = utf8.decode(utf8.encode((await _generateLogs()).split("\n").reversed.join("\n")).take(62 * 1024).toList(), allowMalformed: true);
+    await GithubIssueReportDialog.showDialog(context, (title, description, minimalRepro, includeLogFiles) async {
+      final logs = !includeLogFiles
+          ? ""
+          : utf8.decode(utf8.encode((await _generateLogs()).split("\n").reversed.join("\n")).take(62 * 1024).toList(), allowMalformed: true);
       final deviceInfo = await generateDeviceInfo();
 
       final url = Uri.parse('https://api.github.com/repos/ViscousPot/GitSync/issues');
@@ -226,9 +228,26 @@ ${(await uiSettingsManager.getString(StorageKey.setman_schedule)).isNotEmpty ? "
 
   static Future<String> _generateLogs() async {
     final Directory dir = await getTemporaryDirectory();
-    File logFile = File("${dir.path}/logs/log_1.log");
-    if (!logFile.existsSync()) {
-      logFile = File("${dir.path}/logs/log_0.log");
+    final logsDir = Directory("${dir.path}/logs");
+
+    final logFiles = <File>[];
+    if (logsDir.existsSync()) {
+      logFiles.addAll(logsDir.listSync().whereType<File>().where((f) => RegExp(r'log_(\d+)\.log$').hasMatch(f.path)));
+    }
+
+    File logFile;
+    if (logFiles.isEmpty) {
+      logFile = File("${logsDir.path}/log_0.log");
+    } else {
+      // pick file with largest numeric suffix
+      final fileWithMax = logFiles.reduce((a, b) {
+        final ma = RegExp(r'log_(\d+)\.log$').firstMatch(a.path)!.group(1)!;
+        final mb = RegExp(r'log_(\d+)\.log$').firstMatch(b.path)!.group(1)!;
+        final ia = int.parse(ma);
+        final ib = int.parse(mb);
+        return ia >= ib ? a : b;
+      });
+      logFile = File(fileWithMax.path);
     }
     final logsString = (await logFile.exists()) ? (await logFile.readAsLines()).join("\n") : "";
     return logsString;

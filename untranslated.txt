@@ -68,7 +68,8 @@
     "experimentalMsg",
     "submodulesFoundTitle",
     "submodulesFoundMessage",
-    "submodulesFoundAction"
+    "submodulesFoundAction",
+    "includeLogs"
   ],
 
   "es": [
@@ -140,7 +141,8 @@
     "experimentalMsg",
     "submodulesFoundTitle",
     "submodulesFoundMessage",
-    "submodulesFoundAction"
+    "submodulesFoundAction",
+    "includeLogs"
   ],
 
   "ru": [
@@ -212,7 +214,8 @@
     "experimentalMsg",
     "submodulesFoundTitle",
     "submodulesFoundMessage",
-    "submodulesFoundAction"
+    "submodulesFoundAction",
+    "includeLogs"
   ],
 
   "zh": [
@@ -252,7 +255,8 @@
     "experimentalMsg",
     "submodulesFoundTitle",
     "submodulesFoundMessage",
-    "submodulesFoundAction"
+    "submodulesFoundAction",
+    "includeLogs"
   ],
 
   "zh_Hant": [
@@ -586,6 +590,7 @@
     "githubIssueOauthTitle",
     "githubIssueOauthMsg",
     "issueReportMessage",
+    "includeLogs",
     "issueReportTitleTitle",
     "issueReportTitleDesc",
     "issueReportDescTitle",

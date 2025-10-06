@@ -383,6 +383,7 @@
     "githubIssueOauthTitle": "Connect GitHub to Report Automatically",
     "githubIssueOauthMsg": "You need to connect your GitHub account to report bugs and track their progress.\nYou can reset this connection anytime in Global Settings.",
     "issueReportMessage": "Logs automatically included with reports",
+    "includeLogs": "Include Log File(s)",
     "issueReportTitleTitle": "Title",
     "issueReportTitleDesc": "A few words summarizing the issue",
     "issueReportDescTitle": "Description",

@@ -1025,6 +1025,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get issueReportMessage => 'Registros incluidos automáticamente con los reportes';
 
   @override
+  String get includeLogs => 'Include Log File(s)';
+
+  @override
   String get issueReportTitleTitle => 'Título';
 
   @override
