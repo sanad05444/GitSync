@@ -60,9 +60,13 @@ class _TileSyncSettingsState extends State<TileSyncSettings> {
                         ),
                       ),
                       SizedBox(width: (snapshot.data ?? false) ? spaceSM : 0),
-                      Text(
-                        t.tileSyncSettings,
-                        style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),
+                      Flexible(
+                        child: Text(
+                          t.tileSyncSettings,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),
+                        ),
                       ),
                     ],
                   ),

@@ -2,11 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:math' as math;
 import 'dart:typed_data';
 import 'package:GitSync/api/manager/git_manager.dart';
 import 'package:GitSync/api/manager/settings_manager.dart';
 import 'package:GitSync/api/manager/storage.dart';
 import 'package:GitSync/ui/dialog/unlock_premium.dart' as UnlockPremiumDialog show showDialog;
+import 'package:GitSync/ui/page/code_editor.dart';
 import 'package:cryptography/cryptography.dart';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -79,6 +81,42 @@ void cancelDebounce(String index, [bool run = false]) {
   if (run) {
     _callbacks[index]!();
   }
+}
+
+String formatBytes(int? bytes, [int precision = 2]) {
+  if (bytes == null || bytes <= 0) return '0 B';
+  final base = (math.log(bytes) / math.log(1024)).floor();
+  final size = bytes / [1, 1024, 1048576, 1073741824, 1099511627776][base];
+  final formattedSize = size.toStringAsFixed(precision);
+  return '$formattedSize ${['B', 'KB', 'MB', 'GB', 'TB'][base]}';
+}
+
+Future<void> openLogViewer(BuildContext context) async {
+  final Directory dir = await getTemporaryDirectory();
+  final logsDir = Directory("${dir.path}/logs");
+
+  final logFiles = <File>[];
+  if (logsDir.existsSync()) {
+    logFiles.addAll(logsDir.listSync().whereType<File>().where((f) => RegExp(r'log_(\d+)\.log$').hasMatch(f.path)));
+  }
+
+  File logFile;
+  if (logFiles.isEmpty) {
+    logFile = File("${logsDir.path}/log_0.log");
+  } else {
+    // pick file with largest numeric suffix
+    final fileWithMax = logFiles.reduce((a, b) {
+      final ma = RegExp(r'log_(\d+)\.log$').firstMatch(a.path)!.group(1)!;
+      final mb = RegExp(r'log_(\d+)\.log$').firstMatch(b.path)!.group(1)!;
+      final ia = int.parse(ma);
+      final ib = int.parse(mb);
+      return ia >= ib ? a : b;
+    });
+    logFile = File(fileWithMax.path);
+  }
+
+  print("Using log file: ${logFile.path}");
+  await Navigator.of(context).push(createCodeEditorRoute(logFile.path, logs: true));
 }
 
 Future<void> sendMergeConflictNotification() async {

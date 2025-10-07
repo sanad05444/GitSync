@@ -18,13 +18,14 @@ import 'package:path/path.dart' as path;
 import 'package:collection/collection.dart';
 
 class GitManager {
-  static final Map<String, String?> _errorContentMap = {
-    "failed to parse signature - Signature cannot have an empty name or email": missingAuthorDetailsError,
-    "authentication required but no callback set": authMethodMismatchError,
-    "invalid data in index - incorrect header signature": invalidIndexHeaderError,
-    "cannot push because a reference that you are trying to update on the remote contains commits that are not present locally.": null,
-    "error reading file for hashing:": null,
-    "failed to parse loose object: invalid header": null,
+  static final Map<String, Future<String?> Function()> _errorContentMap = {
+    "failed to parse signature - Signature cannot have an empty name or email": () async => missingAuthorDetailsError,
+    "authentication required but no callback set": () async =>
+        sprintf(authMethodMismatchError, [await uiSettingsManager.getGitProvider() == GitProvider.SSH ? "HTTP/S" : "SSH"]),
+    "invalid data in index - incorrect header signature": () async => invalidIndexHeaderError,
+    "cannot push because a reference that you are trying to update on the remote contains commits that are not present locally.": () async => null,
+    "error reading file for hashing:": () async => null,
+    "failed to parse loose object: invalid header": () async => null,
   };
 
   static Future<T?> _runWithLock<T>(int index, Future<T?> Function() fn) async {
@@ -75,10 +76,10 @@ class GitManager {
     );
   }
 
-  static String? _getErrorContent(String message) {
+  static Future<String?> _getErrorContent(String message) async {
     final error = message.split(";").first;
 
-    return _errorContentMap.containsKey(error) ? _errorContentMap[error] : message;
+    return _errorContentMap.containsKey(error) ? await _errorContentMap[error]!() : message;
   }
 
   static Future<(String, String)> _getCredentials(SettingsManager settingsManager) async {
@@ -122,7 +123,7 @@ class GitManager {
           if (offline != null) return offline;
 
           Logger.logError(LogType.CloneRepo, e.message, stackTrace, causeError: false);
-          return _getErrorContent(e.message) ?? e.message.split(";").first;
+          return await _getErrorContent(e.message) ?? e.message.split(";").first;
         } catch (e, stackTrace) {
           Logger.logError(LogType.CloneRepo, e, stackTrace);
         }
@@ -153,7 +154,7 @@ class GitManager {
       await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
         if (!isGitDir(dirPath)) return;
 
-        Logger.gmLog(type: LogType.ForcePull, ".git folder found");
+        Logger.gmLog(type: LogType.PullFromRepo, ".git folder found");
 
         try {
           await GitManagerRs.updateSubmodules(
@@ -164,7 +165,7 @@ class GitManager {
           );
         } catch (e, stackTrace) {
           if (!await hasNetworkConnection()) return;
-          Logger.logError(LogType.ForcePull, e, stackTrace);
+          Logger.logError(LogType.PullFromRepo, e, stackTrace);
           return;
         }
       });
@@ -188,7 +189,7 @@ class GitManager {
       await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
         if (!isGitDir(dirPath)) return;
 
-        Logger.gmLog(type: LogType.ForcePull, ".git folder found");
+        Logger.gmLog(type: LogType.PullFromRepo, ".git folder found");
 
         try {
           await GitManagerRs.fetchRemote(
@@ -200,7 +201,7 @@ class GitManager {
           );
         } catch (e, stackTrace) {
           if (!await hasNetworkConnection()) return;
-          Logger.logError(LogType.ForcePull, e, stackTrace);
+          Logger.logError(LogType.PullFromRepo, e, stackTrace);
           return;
         }
       });
@@ -224,7 +225,7 @@ class GitManager {
       await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
         if (!isGitDir(dirPath)) return;
 
-        Logger.gmLog(type: LogType.ForcePull, ".git folder found");
+        Logger.gmLog(type: LogType.PullFromRepo, ".git folder found");
 
         try {
           await GitManagerRs.pullChanges(
@@ -236,7 +237,7 @@ class GitManager {
           );
         } catch (e, stackTrace) {
           if (!await hasNetworkConnection()) return;
-          Logger.logError(LogType.ForcePull, e, stackTrace);
+          Logger.logError(LogType.PullFromRepo, e, stackTrace);
           return;
         }
       });
@@ -260,13 +261,13 @@ class GitManager {
       await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
         if (!isGitDir(dirPath)) return;
 
-        Logger.gmLog(type: LogType.ForcePull, ".git folder found");
+        Logger.gmLog(type: LogType.Commit, ".git folder found");
 
         try {
           await GitManagerRs.stageFilePaths(pathString: dirPath, paths: paths, log: _logWrapper);
         } catch (e, stackTrace) {
           if (!await hasNetworkConnection()) return;
-          Logger.logError(LogType.ForcePull, e, stackTrace);
+          Logger.logError(LogType.Commit, e, stackTrace);
           return;
         }
       });
@@ -290,13 +291,13 @@ class GitManager {
       await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
         if (!isGitDir(dirPath)) return;
 
-        Logger.gmLog(type: LogType.ForcePull, ".git folder found");
+        Logger.gmLog(type: LogType.Commit, ".git folder found");
 
         try {
           await GitManagerRs.unstageFilePaths(pathString: dirPath, paths: paths, log: _logWrapper);
         } catch (e, stackTrace) {
           if (!await hasNetworkConnection()) return;
-          Logger.logError(LogType.ForcePull, e, stackTrace);
+          Logger.logError(LogType.Commit, e, stackTrace);
           return;
         }
       });
@@ -317,7 +318,7 @@ class GitManager {
     return await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
       if (!isGitDir(dirPath)) return null;
 
-      Logger.gmLog(type: LogType.ForcePull, ".git folder found");
+      Logger.gmLog(type: LogType.Global, ".git folder found");
 
       try {
         return await GitManagerRs.getRecommendedAction(
@@ -329,7 +330,7 @@ class GitManager {
         );
       } catch (e, stackTrace) {
         if (!await hasNetworkConnection()) return null;
-        Logger.logError(LogType.ForcePull, e, stackTrace, causeError: false);
+        Logger.logError(LogType.Global, e, stackTrace, causeError: false);
         return null;
       }
     });
@@ -352,7 +353,7 @@ class GitManager {
       await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
         if (!isGitDir(dirPath)) return;
 
-        Logger.gmLog(type: LogType.ForcePull, ".git folder found");
+        Logger.gmLog(type: LogType.Commit, ".git folder found");
 
         try {
           await GitManagerRs.commitChanges(
@@ -366,7 +367,7 @@ class GitManager {
           );
         } catch (e, stackTrace) {
           if (!await hasNetworkConnection()) return;
-          Logger.logError(LogType.ForcePull, e, stackTrace);
+          Logger.logError(LogType.Commit, e, stackTrace);
           return;
         }
       });
@@ -390,7 +391,7 @@ class GitManager {
       await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
         if (!isGitDir(dirPath)) return;
 
-        Logger.gmLog(type: LogType.ForcePull, ".git folder found");
+        Logger.gmLog(type: LogType.PushToRepo, ".git folder found");
 
         try {
           await GitManagerRs.pushChanges(
@@ -403,7 +404,7 @@ class GitManager {
           );
         } catch (e, stackTrace) {
           if (!await hasNetworkConnection()) return;
-          Logger.logError(LogType.ForcePull, e, stackTrace);
+          Logger.logError(LogType.PushToRepo, e, stackTrace);
           return;
         }
       });
@@ -1030,7 +1031,7 @@ class GitManager {
   static String _convertToWebUrl(String remoteUrl) {
     remoteUrl = remoteUrl.trim();
 
-    final sshPattern = RegExp(r'^git@([^:]+):([^/]+)/(.+?)(?:\.git)?$');
+    final sshPattern = RegExp(r'^(?:ssh://)?(?:[^:@]+)@([^:]+):([^/]+)/(.+?)(?:\.git)?$');
     if (sshPattern.hasMatch(remoteUrl)) {
       final match = sshPattern.firstMatch(remoteUrl)!;
       final host = match.group(1)!;
@@ -1076,22 +1077,55 @@ class GitManager {
 
       await useDirectory(gitDirPath, (bookmarkPath) async => await settingsManager.setGitDirPath(bookmarkPath), (selectedDirectory) async {
         final dir = Directory(selectedDirectory);
-        if (Platform.isIOS) {
-          try {
+        try {
+          if (Platform.isIOS) {
             final entities = dir.listSync(recursive: false);
             for (var entity in entities) {
-              if (entity is File) {
-                await entity.delete();
-              } else if (entity is Directory) {
-                await entity.delete(recursive: true);
+              try {
+                final type = FileSystemEntity.typeSync(entity.path, followLinks: false);
+                if (type == FileSystemEntityType.link) {
+                  await entity.delete();
+                  continue;
+                }
+
+                if (entity is File) {
+                  await entity.delete();
+                } else if (entity is Directory) {
+                  final childEntities = entity.listSync(recursive: false);
+                  for (var child in childEntities) {
+                    try {
+                      final childType = FileSystemEntity.typeSync(child.path, followLinks: false);
+                      if (childType == FileSystemEntityType.link) {
+                        await child.delete();
+                      }
+                    } catch (e) {
+                      print('Error while deleting symlink inside subdir: $e');
+                    }
+                  }
+                  await entity.delete(recursive: true);
+                }
+              } catch (e) {
+                print('Error while processing entity ${entity.path}: $e');
               }
             }
-          } catch (e) {
-            print('Error while deleting folder contents: $e');
+          } else {
+            final entities = dir.listSync(recursive: false);
+            for (var entity in entities) {
+              try {
+                final type = FileSystemEntity.typeSync(entity.path, followLinks: false);
+                if (type == FileSystemEntityType.link) {
+                  await entity.delete();
+                }
+              } catch (e) {
+                print('Error while deleting symlink ${entity.path}: $e');
+              }
+            }
+
+            await dir.delete(recursive: true);
+            await dir.create();
           }
-        } else {
-          await dir.delete(recursive: true);
-          await dir.create();
+        } catch (e) {
+          print('Error while deleting folder contents: $e');
         }
       });
     });
@@ -1141,7 +1175,7 @@ class GitManager {
     });
   }
 
-  static final List<String> _lastSubmodulePaths = [];
+  static List<String> _lastSubmodulePaths = [];
   static Future<List<String>> getSubmodulePaths(String repoPath) async {
     if (await isLocked()) {
       return _lastSubmodulePaths;
@@ -1154,12 +1188,69 @@ class GitManager {
           Logger.gmLog(type: LogType.SelectDirectory, ".git folder found");
 
           try {
-            return await GitManagerRs.getSubmodulePaths(pathString: dirPath);
+            _lastSubmodulePaths = await GitManagerRs.getSubmodulePaths(pathString: dirPath);
+            return _lastSubmodulePaths;
           } catch (e, stackTrace) {
             if (!await hasNetworkConnection()) return null;
             Logger.logError(LogType.SelectDirectory, e, stackTrace);
             return null;
           }
+        }) ??
+        [];
+  }
+
+  // static List<String> _lastLfsFilePaths = [];
+  static Future<List<String>> getLfsFilePaths([int? repomanRepoindex]) async {
+    if (await isLocked()) {
+      return await uiSettingsManager.getStringList(StorageKey.setman_lfsFilePaths);
+    }
+
+    final repoIndex = await repoManager.getInt(StorageKey.repoman_repoIndex);
+
+    return await _runWithLock(repoIndex, () async {
+          final settingsManager = repomanRepoindex == null ? uiSettingsManager : await SettingsManager().reinit(repoIndex: repomanRepoindex);
+          final gitDirPath = await uiSettingsManager.getGitDirPath();
+          if (gitDirPath == null || gitDirPath.isEmpty) return null;
+
+          return await useDirectory(gitDirPath, (bookmarkPath) async => await settingsManager.setGitDirPath(bookmarkPath), (selectedDirectory) async {
+            final Directory directory = Directory(gitDirPath);
+            if (!await directory.exists()) {
+              throw Exception('Directory does not exist');
+            }
+
+            final int sizeThresholdBytes = 100 * 1024 * 1024;
+
+            List<String> largeFilePaths = [];
+
+            await for (var entity in directory.list(recursive: true, followLinks: false)) {
+              if (entity is File) {
+                final FileStat fileStat = await entity.stat();
+
+                if (fileStat.size > sizeThresholdBytes) {
+                  largeFilePaths.add(entity.path);
+                }
+              }
+            }
+
+            final gitInfoExcludeFullPath = '$gitDirPath/$gitInfoExcludePath';
+            final file = File(gitInfoExcludeFullPath);
+            final parentDir = file.parent;
+            if (!parentDir.existsSync()) {
+              parentDir.createSync(recursive: true);
+            }
+            if (!file.existsSync()) file.createSync();
+            final lines = file.readAsLinesSync();
+            for (final filePath in largeFilePaths) {
+              final ignoreLine = filePath.replaceFirst("$gitDirPath/", "");
+              if (!lines.contains(ignoreLine)) {
+                file.writeAsStringSync("$ignoreLine\n", mode: FileMode.append);
+              }
+            }
+
+            await uiSettingsManager.setStringList(StorageKey.setman_lfsFilePaths, largeFilePaths);
+
+            return largeFilePaths;
+          });
         }) ??
         [];
   }
@@ -1185,8 +1276,7 @@ class GitManager {
           );
         });
       } on AnyhowException catch (e, stackTrace) {
-        final errorContent = _getErrorContent(e.message);
-        if (errorContent == null) return false;
+        final errorContent = await _getErrorContent(e.message);
         Logger.logError(LogType.PullFromRepo, e.message, stackTrace, errorContent: errorContent);
       } catch (e, stackTrace) {
         Logger.logError(LogType.PullFromRepo, e, stackTrace);
@@ -1230,8 +1320,7 @@ class GitManager {
           );
         });
       } on AnyhowException catch (e, stackTrace) {
-        final errorContent = _getErrorContent(e.message);
-        if (errorContent == null) return false;
+        final errorContent = await _getErrorContent(e.message);
         Logger.logError(LogType.PushToRepo, e.message, stackTrace, errorContent: errorContent);
       } catch (e, stackTrace) {
         Logger.logError(LogType.PushToRepo, e, stackTrace);

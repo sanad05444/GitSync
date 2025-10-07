@@ -973,9 +973,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Fehlende Repository-Autor-Details. Bitte setzen Sie Ihren Namen und Ihre E-Mail in den Repository-Einstellungen.';
 
   @override
-  String get authMethodMismatchError => 'Authentifizierungsmethoden-Konflikt. Verwenden Sie SSH für SSH-Repositorys und HTTPS für HTTP-Repositorys.';
-
-  @override
   String get outOfMemory => 'Der Anwendung ist der Speicher ausgegangen!';
 
   @override
@@ -1025,6 +1022,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get issueReportMessage => 'Logs werden automatisch mit Berichten eingefügt';
+
+  @override
+  String get includeLogs => 'Include Log File(s)';
 
   @override
   String get issueReportTitleTitle => 'Titel';

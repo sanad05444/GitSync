@@ -8,6 +8,7 @@ import 'package:intl/intl.dart' as intl;
 import 'app_localizations_de.dart';
 import 'app_localizations_en.dart';
 import 'app_localizations_es.dart';
+import 'app_localizations_fr.dart';
 import 'app_localizations_ru.dart';
 import 'app_localizations_zh.dart';
 
@@ -97,6 +98,7 @@ abstract class AppLocalizations {
     Locale('de'),
     Locale('en'),
     Locale('es'),
+    Locale('fr'),
     Locale('ru'),
     Locale('zh'),
     Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'),
@@ -1980,12 +1982,6 @@ abstract class AppLocalizations {
   /// **'Missing repository author details. Please set your name and email in the repository settings.'**
   String get missingAuthorDetailsError;
 
-  /// No description provided for @authMethodMismatchError.
-  ///
-  /// In en, this message translates to:
-  /// **'Authentication method mismatch. Use SSH for SSH repositories and HTTPS for HTTP repositories.'**
-  String get authMethodMismatchError;
-
   /// No description provided for @outOfMemory.
   ///
   /// In en, this message translates to:
@@ -2082,6 +2078,12 @@ abstract class AppLocalizations {
   /// **'Logs automatically included with reports'**
   String get issueReportMessage;
 
+  /// No description provided for @includeLogs.
+  ///
+  /// In en, this message translates to:
+  /// **'Include Log File(s)'**
+  String get includeLogs;
+
   /// No description provided for @issueReportTitleTitle.
   ///
   /// In en, this message translates to:
@@ -2152,7 +2154,7 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['de', 'en', 'es', 'ru', 'zh'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['de', 'en', 'es', 'fr', 'ru', 'zh'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -2179,6 +2181,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
       return AppLocalizationsEn();
     case 'es':
       return AppLocalizationsEs();
+    case 'fr':
+      return AppLocalizationsFr();
     case 'ru':
       return AppLocalizationsRu();
     case 'zh':

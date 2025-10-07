@@ -87,9 +87,13 @@ class _AutoSyncSettingsState extends State<AutoSyncSettings> {
                           ),
                         ),
                         SizedBox(width: (expandedSnapshot.data ?? false) ? spaceSM : 0),
-                        Text(
-                          t.enableApplicationObserver,
-                          style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),
+                        Flexible(
+                          child: Text(
+                            t.enableApplicationObserver,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),
+                          ),
                         ),
                       ],
                     ),

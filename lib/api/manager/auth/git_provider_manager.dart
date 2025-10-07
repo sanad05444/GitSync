@@ -51,5 +51,10 @@ class GitProviderManager {
     return null;
   }
 
-  Future<void> getRepos(String accessToken, Function(List<(String, String)>) updateCallback, Function(Function()?) nextPageCallback) async {}
+  Future<void> getRepos(
+    String accessToken,
+    String searchString,
+    Function(List<(String, String)>) updateCallback,
+    Function(Function()?) nextPageCallback,
+  ) async {}
 }

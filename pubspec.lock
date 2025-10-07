@@ -250,7 +250,7 @@ packages:
     dependency: "direct main"
     description:
       path: "packages/flutter_background_service"
-      ref: HEAD
+      ref: fe783b40c0cba7331dda5a2e4987e1c739d0dbf9
       resolved-ref: fe783b40c0cba7331dda5a2e4987e1c739d0dbf9
       url: "https://github.com/ViscousPot/flutter_background_service_with_intents"
     source: git

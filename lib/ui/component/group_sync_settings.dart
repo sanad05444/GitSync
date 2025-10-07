@@ -38,6 +38,8 @@ class GroupSyncSettings extends StatelessWidget {
             width: double.infinity,
             child: Text(
               t.otherSyncSettings,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),
             ),
           ),

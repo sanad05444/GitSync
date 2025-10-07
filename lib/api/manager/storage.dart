@@ -23,6 +23,7 @@ enum StorageKey<T> {
   repoman_defaultRemote<String>(name: "defaultRemote", defaultValue: "origin"),
 
   // Settings Manager
+  setman_lfsFilePaths<List<String>>(name: "lfsFilePaths", defaultValue: []),
   setman_authorName<String?>(name: "authorName", defaultValue: "", hasDefault: true),
   setman_authorEmail<String?>(name: "authorEmail", defaultValue: "", hasDefault: true),
   setman_syncMessage<String?>(name: "syncMessage", defaultValue: defaultSyncMessage, hasDefault: true),

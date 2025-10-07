@@ -74,6 +74,8 @@ class _ButtonSettingState extends State<ButtonSetting> {
               padding: EdgeInsets.only(left: spaceXS),
               child: Text(
                 widget.text.toUpperCase(),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(color: widget.textColor, fontSize: textMD, fontWeight: FontWeight.bold),
               ),
             ),
@@ -101,6 +103,8 @@ class _ButtonSettingState extends State<ButtonSetting> {
                         padding: EdgeInsets.only(left: spaceXS),
                         child: Text(
                           widget.text.toUpperCase(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(color: widget.textColor, fontSize: textMD, fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -119,7 +123,6 @@ class _ButtonSettingState extends State<ButtonSetting> {
                     onPressed: () => setState(() {
                       expanded = !expanded;
                     }),
-
                     style: ButtonStyle(
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       backgroundColor: WidgetStatePropertyAll(widget.buttonColor),

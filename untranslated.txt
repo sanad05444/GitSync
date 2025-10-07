@@ -68,7 +68,8 @@
     "experimentalMsg",
     "submodulesFoundTitle",
     "submodulesFoundMessage",
-    "submodulesFoundAction"
+    "submodulesFoundAction",
+    "includeLogs"
   ],
 
   "es": [
@@ -140,7 +141,12 @@
     "experimentalMsg",
     "submodulesFoundTitle",
     "submodulesFoundMessage",
-    "submodulesFoundAction"
+    "submodulesFoundAction",
+    "includeLogs"
+  ],
+
+  "fr": [
+    "includeLogs"
   ],
 
   "ru": [
@@ -212,7 +218,8 @@
     "experimentalMsg",
     "submodulesFoundTitle",
     "submodulesFoundMessage",
-    "submodulesFoundAction"
+    "submodulesFoundAction",
+    "includeLogs"
   ],
 
   "zh": [
@@ -252,7 +259,8 @@
     "experimentalMsg",
     "submodulesFoundTitle",
     "submodulesFoundMessage",
-    "submodulesFoundAction"
+    "submodulesFoundAction",
+    "includeLogs"
   ],
 
   "zh_Hant": [
@@ -569,7 +577,6 @@
     "errorOccurredMessagePart2",
     "applicationError",
     "missingAuthorDetailsError",
-    "authMethodMismatchError",
     "outOfMemory",
     "invalidRemote",
     "largeFile",
@@ -586,6 +593,7 @@
     "githubIssueOauthTitle",
     "githubIssueOauthMsg",
     "issueReportMessage",
+    "includeLogs",
     "issueReportTitleTitle",
     "issueReportTitleDesc",
     "issueReportDescTitle",

@@ -156,6 +156,8 @@ class GitsyncService {
 
   Future<void> _sync(int repomanRepoindex, [bool forced = false]) async {
     try {
+      await GitManager.getLfsFilePaths();
+
       final settingsManager = SettingsManager();
       await settingsManager.reinit(repoIndex: repomanRepoindex);
 
@@ -165,7 +167,7 @@ class GitsyncService {
           ? (await settingsManager.getGitSshAuthCredentials()).$2.isEmpty
           : (await settingsManager.getGitHttpAuthCredentials()).$2.isEmpty) {
         Logger.gmLog(type: LogType.Sync, "Credentials Not Found");
-        Fluttertoast.showToast(msg: repositoryNotFound, toastLength: Toast.LENGTH_LONG, gravity: null);
+        Fluttertoast.showToast(msg: "Credentials not found", toastLength: Toast.LENGTH_LONG, gravity: null);
         return;
       }
 
@@ -282,12 +284,13 @@ class GitsyncService {
         } else {
           _displaySyncMessage(settingsManager, s.syncComplete);
         }
+
+        Logger.dismissError(null);
       }();
 
       Logger.gmLog(type: LogType.Sync, "Sync Complete!");
       isSyncing = false;
 
-      Logger.dismissError(null);
       serviceInstance?.invoke(REFRESH);
 
       if (isScheduled) {

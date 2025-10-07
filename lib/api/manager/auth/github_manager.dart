@@ -86,8 +86,21 @@ class GithubManager extends GitProviderManager {
   }
 
   @override
-  Future<void> getRepos(String accessToken, Function(List<(String, String)>) updateCallback, Function(Function()?) nextPageCallback) async {
-    await _getReposRequest(accessToken, "https://api.$_domain/user/repos", updateCallback, nextPageCallback);
+  Future<void> getRepos(
+    String accessToken,
+    String searchString,
+    Function(List<(String, String)>) updateCallback,
+    Function(Function()?) nextPageCallback,
+  ) async {
+    await _getReposRequest(
+      accessToken,
+      searchString == "" ? "https://api.$_domain/user/repos" : "https://api.$_domain/user/repos?per_page=100",
+      searchString == ""
+          ? updateCallback
+          : (list) => updateCallback(list.where((item) => item.$1.toLowerCase().contains(searchString.toLowerCase())).toList()),
+
+      searchString == "" ? nextPageCallback : (_) => {},
+    );
   }
 
   Future<void> _getReposRequest(

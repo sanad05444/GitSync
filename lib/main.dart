@@ -3,11 +3,13 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:GitSync/ui/component/button_setting.dart';
 import 'package:GitSync/ui/component/custom_showcase.dart';
 import 'package:GitSync/ui/component/group_sync_settings.dart';
 import 'package:GitSync/ui/dialog/base_alert_dialog.dart';
 import 'package:GitSync/api/manager/storage.dart';
 import 'package:GitSync/ui/dialog/create_branch.dart' as CreateBranchDialog;
+import 'package:GitSync/ui/dialog/info_dialog.dart' as InfoDialog;
 import 'package:GitSync/ui/dialog/merge_conflict.dart' as MergeConflictDialog;
 import 'package:GitSync/ui/page/code_editor.dart';
 import 'package:GitSync/ui/page/file_explorer.dart';
@@ -26,6 +28,7 @@ import 'package:GitSync/api/accessibility_service_helper.dart';
 import 'package:GitSync/ui/component/item_merge_conflict.dart';
 import 'package:GitSync/ui/dialog/onboarding_controller.dart';
 import 'package:mixin_logger/mixin_logger.dart';
+import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -80,7 +83,7 @@ Future<void> main() async {
       WidgetsFlutterBinding.ensureInitialized();
       await gitSyncService.initialise(onServiceStart, callbackDispatcher);
       await uiSettingsManager.reinit();
-      initLogger("${(await getTemporaryDirectory()).path}/logs", maxFileCount: 10, maxFileLength: 5 * 1024 * 1024);
+      initLogger("${(await getTemporaryDirectory()).path}/logs", maxFileCount: 50, maxFileLength: 1 * 1024 * 1024);
       await Logger.init();
       await RustLib.init();
       await requestStoragePerm(false);
@@ -272,6 +275,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   bool repoSettingsExpanded = false;
+  bool gitLfsExpanded = false;
   bool demoConflicting = false;
   bool? previousLocked;
   bool showCheck = false;
@@ -316,6 +320,10 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     // Future.delayed(Duration(seconds: 5), () => Logger.logError(LogType.TEST, "test", StackTrace.fromString("test stack")));
 
     initAsync(() async {
+      await GitManager.getLfsFilePaths();
+    });
+
+    initAsync(() async {
       if (premiumManager.hasPremiumNotifier.value == false) {
         await premiumManager.cullNonPremium();
         setState(() {});
@@ -330,7 +338,6 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     });
 
     FlutterBackgroundService().on(GitsyncService.REFRESH).listen((event) async {
-      await Logger.dismissError(context);
       widget.setState(() {});
     });
 
@@ -471,6 +478,30 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
         clientModeEnabled ? t.syncAllChanges : t.syncNow: (
           FontAwesomeIcons.solidCircleDown,
           () async {
+            if (await GitManager.getBranchName() == null) {
+              await InfoDialog.showDialog(
+                context,
+                "Sync Unavailable on DETACHED HEAD",
+                "You can't sync while on a detached HEAD. That means your repository isn't on a branch right now, so changes can't be pushed. To fix this, click the \"DETACHED HEAD\" label, choose either \"main\" or \"master\" from the dropdown to switch back onto a branch, then press sync again.\n\nIf you're unsure which to pick, choose the branch your project normally uses (often main).\n\nIf you find you're often kicked off the branch you expect to be on, please use the \"Report a bug\" button below to describe the issue and the circumstances (what you were doing, branch names, screenshots if possible) so I can investigate and improve the app.",
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(height: spaceMD),
+                    ButtonSetting(
+                      text: t.reportABug,
+                      icon: FontAwesomeIcons.bug,
+                      textColor: primaryDark,
+                      iconColor: primaryDark,
+                      buttonColor: tertiaryNegative,
+                      onPressed: () async {
+                        await Logger.reportIssue(context);
+                      },
+                    ),
+                  ],
+                ),
+              );
+              return;
+            }
             FlutterBackgroundService().invoke(GitsyncService.FORCE_SYNC);
           },
         ),
@@ -644,7 +675,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.resumed) {
-      await Logger.dismissError(context);
+      gitLfsExpanded = false;
       setState(() {});
     }
     if (state == AppLifecycleState.paused) {
@@ -689,6 +720,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    Logger.dismissError(context);
+
     return Scaffold(
       backgroundColor: primaryDark,
       appBar: AppBar(
@@ -753,14 +786,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                   setState(() {});
                 },
                 onTap: () async {
-                  final Directory dir = await getTemporaryDirectory();
-                  print(Directory("${dir.path}/logs").listSync().map((e) => e.path));
-                  File logFile = File("${dir.path}/logs/log_1.log");
-                  print(logFile.existsSync());
-                  if (!logFile.existsSync()) {
-                    logFile = File("${dir.path}/logs/log_0.log");
-                  }
-                  await Navigator.of(context).push(createCodeEditorRoute(logFile.path, logs: true)).then((_) => setState(() {}));
+                  await openLogViewer(context).then((_) => setState(() {}));
                 },
                 child: Stack(
                   children: [
@@ -1318,6 +1344,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                       setState(() {});
                                                     });
 
+                                                    await GitManager.getLfsFilePaths();
+
                                                     if (syncOptionsSnapshot.data?.containsKey(lastSyncMethodSnapshot.data) == true) {
                                                       await syncOptionsSnapshot.data![lastSyncMethodSnapshot.data]!.$2();
                                                     } else {
@@ -1419,15 +1447,19 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                                   size: textLG,
                                                                 ),
                                                                 SizedBox(width: spaceMD),
-                                                                Text(
-                                                                  item.key.toUpperCase(),
-                                                                  style: TextStyle(
-                                                                    fontSize: textMD,
-                                                                    color: [t.switchToClientMode, t.switchToSyncMode].contains(item.key)
-                                                                        ? tertiaryInfo
-                                                                        : primaryLight,
-                                                                    fontWeight: FontWeight.bold,
+                                                                Flexible(
+                                                                  child: Text(
+                                                                    item.key.toUpperCase(),
+                                                                    maxLines: 1,
                                                                     overflow: TextOverflow.ellipsis,
+                                                                    style: TextStyle(
+                                                                      fontSize: textMD,
+                                                                      color: [t.switchToClientMode, t.switchToSyncMode].contains(item.key)
+                                                                          ? tertiaryInfo
+                                                                          : primaryLight,
+                                                                      fontWeight: FontWeight.bold,
+                                                                      overflow: TextOverflow.ellipsis,
+                                                                    ),
                                                                   ),
                                                                 ),
                                                               ],
@@ -1864,6 +1896,176 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                     ),
                                   ),
                                 ),
+                              ),
+                              FutureBuilder(
+                                future: uiSettingsManager.getStringList(StorageKey.setman_lfsFilePaths),
+                                builder: (context, lfsFilePathsSnapshot) => lfsFilePathsSnapshot.data?.isEmpty ?? true
+                                    ? SizedBox.shrink()
+                                    : Column(
+                                        children: [
+                                          SizedBox(height: spaceMD),
+                                          Container(
+                                            decoration: BoxDecoration(color: secondaryDark, borderRadius: BorderRadius.all(cornerRadiusMD)),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                SizedBox(
+                                                  width: double.infinity,
+                                                  child: TextButton.icon(
+                                                    onPressed: () async {
+                                                      gitLfsExpanded = !gitLfsExpanded;
+                                                      await GitManager.getLfsFilePaths();
+                                                      setState(() {});
+                                                    },
+                                                    iconAlignment: IconAlignment.end,
+                                                    style: ButtonStyle(
+                                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                      padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceLG, vertical: spaceMD)),
+                                                      shape: WidgetStatePropertyAll(
+                                                        RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
+                                                      ),
+                                                    ),
+                                                    icon: FaIcon(
+                                                      gitLfsExpanded ? FontAwesomeIcons.chevronUp : FontAwesomeIcons.chevronDown,
+                                                      color: primaryLight,
+                                                      size: textXL,
+                                                    ),
+                                                    label: SizedBox(
+                                                      width: double.infinity,
+                                                      child: Row(
+                                                        children: [
+                                                          AnimatedSize(
+                                                            duration: Duration(milliseconds: 200),
+                                                            child: Container(
+                                                              width: gitLfsExpanded ? null : 0,
+                                                              decoration: BoxDecoration(),
+                                                              clipBehavior: Clip.hardEdge,
+                                                              child: IconButton(
+                                                                padding: EdgeInsets.zero,
+                                                                style: ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                                                                constraints: BoxConstraints(),
+                                                                onPressed: () async {
+                                                                  await InfoDialog.showDialog(
+                                                                    context,
+                                                                    "Large Files Management",
+                                                                    "Large files over 100 MB cannot be synced because GitSync does not currently support Git Large File Storage (LFS). \n\nThese files have been automatically excluded from synchronization and added to the \".git/info/exclude\" file to prevent sync issues. If you need to manage these large files, you'll need to use Git LFS through the command line or update to a future version of the app that supports LFS functionality. You can modify the excluded files list in the repository settings if needed.",
+                                                                  );
+                                                                  // launchUrl(Uri.parse(autoSyncDocsLink));
+                                                                },
+                                                                icon: FaIcon(FontAwesomeIcons.circleQuestion, color: primaryLight, size: textLG),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(width: gitLfsExpanded ? spaceSM : 0),
+                                                          Text(
+                                                            sprintf(clientModeEnabledSnapshot.data == true ? "%sLFS Files" : "%sUnsynced Files", [
+                                                              (lfsFilePathsSnapshot.data?.length ?? 0) == 0
+                                                                  ? ""
+                                                                  : "(${lfsFilePathsSnapshot.data?.length}) ",
+                                                            ]).toUpperCase(),
+                                                            style: TextStyle(color: tertiaryNegative, fontSize: textMD, fontWeight: FontWeight.bold),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                AnimatedSize(
+                                                  duration: Duration(milliseconds: 200),
+                                                  child: SizedBox(
+                                                    height: gitLfsExpanded ? null : 0,
+                                                    child: gitLfsExpanded
+                                                        ? Container(
+                                                            padding: EdgeInsets.only(left: spaceSM, right: spaceSM, bottom: spaceSM),
+                                                            height: spaceXL * 4,
+                                                            child: ShaderMask(
+                                                              shaderCallback: (Rect rect) {
+                                                                return LinearGradient(
+                                                                  begin: Alignment.topCenter,
+                                                                  end: Alignment.bottomCenter,
+                                                                  colors: [Colors.transparent, Colors.transparent, Colors.transparent, Colors.black],
+                                                                  stops: [0.0, 0.1, 0.9, 1.0],
+                                                                ).createShader(rect);
+                                                              },
+                                                              blendMode: BlendMode.dstOut,
+                                                              child: GridView.builder(
+                                                                shrinkWrap: true,
+                                                                itemCount: lfsFilePathsSnapshot.data?.length,
+                                                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                                  crossAxisCount: 4,
+                                                                  crossAxisSpacing: spaceSM,
+                                                                  mainAxisSpacing: spaceSM,
+                                                                ),
+                                                                itemBuilder: (BuildContext context, int index) {
+                                                                  final filePath = (lfsFilePathsSnapshot.data ?? [])[index];
+
+                                                                  return Container(
+                                                                    child: Column(
+                                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                                      children: [
+                                                                        Stack(
+                                                                          clipBehavior: Clip.none,
+                                                                          children: [
+                                                                            FaIcon(FontAwesomeIcons.solidFile, color: primaryLight, size: textXL),
+                                                                            Positioned(
+                                                                              bottom: -spaceXS,
+                                                                              left: -spaceXS,
+                                                                              child: Text(
+                                                                                "${formatBytes(File(filePath).statSync().size, 0)}",
+                                                                                maxLines: 1,
+                                                                                style: TextStyle(
+                                                                                  fontSize: textXS,
+
+                                                                                  shadows: [
+                                                                                    Shadow(offset: Offset(-1, -1), color: tertiaryDark),
+                                                                                    Shadow(offset: Offset(1, -1), color: tertiaryDark),
+                                                                                    Shadow(offset: Offset(1, 1), color: tertiaryDark),
+                                                                                    Shadow(offset: Offset(-1, 1), color: tertiaryDark),
+                                                                                  ],
+                                                                                  color: primaryLight,
+                                                                                  overflow: TextOverflow.ellipsis,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        SizedBox(height: spaceXS),
+                                                                        Text(
+                                                                          p.basename(filePath),
+                                                                          maxLines: 1,
+                                                                          style: TextStyle(
+                                                                            fontSize: textSM,
+                                                                            color: primaryLight,
+                                                                            overflow: TextOverflow.ellipsis,
+                                                                            fontWeight: FontWeight.bold,
+                                                                          ),
+                                                                        ),
+                                                                        SizedBox(height: spaceXXXXS),
+                                                                        Text(
+                                                                          "${File(filePath).statSync().modified}".substring(0, 10),
+                                                                          maxLines: 1,
+                                                                          style: TextStyle(
+                                                                            fontSize: textXS,
+                                                                            color: primaryLight,
+                                                                            overflow: TextOverflow.ellipsis,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  );
+                                                                },
+                                                              ),
+                                                            ),
+                                                          )
+                                                        : SizedBox.shrink(),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                               ),
                             ],
                           ),

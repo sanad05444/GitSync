@@ -964,9 +964,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get missingAuthorDetailsError => 'Missing repository author details. Please set your name and email in the repository settings.';
 
   @override
-  String get authMethodMismatchError => 'Authentication method mismatch. Use SSH for SSH repositories and HTTPS for HTTP repositories.';
-
-  @override
   String get outOfMemory => 'Application ran out of memory!';
 
   @override
@@ -1016,6 +1013,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get issueReportMessage => 'Logs automatically included with reports';
+
+  @override
+  String get includeLogs => 'Include Log File(s)';
 
   @override
   String get issueReportTitleTitle => 'Title';

@@ -74,8 +74,20 @@ class GitlabManager extends GitProviderManager {
   }
 
   @override
-  Future<void> getRepos(String accessToken, Function(List<(String, String)>) updateCallback, Function(Function()?) nextPageCallback) async {
-    await _getReposRequest(accessToken, "https://$_domain/api/v4/projects?membership=true&per_page=100", updateCallback, nextPageCallback);
+  Future<void> getRepos(
+    String accessToken,
+    String searchString,
+    Function(List<(String, String)>) updateCallback,
+    Function(Function()?) nextPageCallback,
+  ) async {
+    await _getReposRequest(
+      accessToken,
+      "https://$_domain/api/v4/projects?membership=true&per_page=100",
+      searchString == ""
+          ? updateCallback
+          : (list) => updateCallback(list.where((item) => item.$1.toLowerCase().contains(searchString.toLowerCase())).toList()),
+      searchString == "" ? nextPageCallback : (_) => {},
+    );
   }
 
   Future<void> _getReposRequest(

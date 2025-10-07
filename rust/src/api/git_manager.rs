@@ -444,7 +444,7 @@ pub async fn get_recent_commits(
 
     revwalk.set_sorting(git2::Sort::TOPOLOGICAL | git2::Sort::TIME)?;
 
-    let mut commits = Vec::new();
+    let mut commits: Vec<Commit> = Vec::new();
 
     for oid_result in revwalk.take(50) {
         let oid = match oid_result {
@@ -472,9 +472,11 @@ pub async fn get_recent_commits(
             )?,
             None => repo.diff_tree_to_tree(None, Some(&commit.tree()?), Some(&mut diff_opts))?,
         };
-        let stats = diff.stats()?;
-        let additions = stats.insertions() as i32;
-        let deletions = stats.deletions() as i32;
+
+        let (additions, deletions) = match diff.stats() {
+            Ok(s) => (s.insertions() as i32, s.deletions() as i32),
+            Err(_) => (0, 0),
+        };
 
         let (ahead_local, _) = if let Some(local_oid) = local_oid {
             repo.graph_ahead_behind(oid, local_oid)?
