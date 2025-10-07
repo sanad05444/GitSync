@@ -66,22 +66,22 @@ class AppLocalizationsFr extends AppLocalizations {
   String get syncStarting => 'Détection des modifications…';
 
   @override
-  String get syncStartPull => 'Synchronisation des modifications…';
+  String get syncStartPull => 'Sync des modifications…';
 
   @override
-  String get syncStartPush => 'Synchronisation des modifications locales…';
+  String get syncStartPush => 'Sync des modifications locales…';
 
   @override
-  String get syncNotRequired => 'Synchronisation non requise !';
+  String get syncNotRequired => 'Sync non requise !';
 
   @override
   String get syncComplete => 'Dépôt synchronisé !';
 
   @override
-  String get syncInProgress => 'Synchronisation en cours';
+  String get syncInProgress => 'Sync en cours';
 
   @override
-  String get syncScheduled => 'Synchronisation planifiée';
+  String get syncScheduled => 'Sync planifiée';
 
   @override
   String get detectingChanges => 'Détection des modifications…';
@@ -99,7 +99,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get forcePullProgressLabel => 'progression du pull forcé';
 
   @override
-  String get moreSyncOptionsLabel => 'plus d\'options de synchronisation';
+  String get moreSyncOptionsLabel => 'plus d\'options de sync';
 
   @override
   String get repositorySettingsLabel => 'paramètres du dépôt';
@@ -114,7 +114,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get selectDirLabel => 'sélectionner le répertoire';
 
   @override
-  String get syncMessagesLabel => 'désactiver/activer les messages de synchronisation';
+  String get syncMessagesLabel => 'désactiver/activer les messages de sync';
 
   @override
   String get backLabel => 'retour';
@@ -152,19 +152,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get switchToClientMode => 'Passer en mode client…';
 
   @override
-  String get switchToSyncMode => 'Passer en mode synchronisation…';
+  String get switchToSyncMode => 'Passer en mode sync…';
 
   @override
   String get clientMode => 'Mode client';
 
   @override
-  String get syncMode => 'Mode synchronisation';
+  String get syncMode => 'Mode sync';
 
   @override
-  String get syncNow => 'Synchroniser les modifications';
+  String get syncNow => 'Sync les modifications';
 
   @override
-  String get syncAllChanges => 'Synchroniser toutes les modifications';
+  String get syncAllChanges => 'Sync toutes les modifications';
 
   @override
   String get stageAndCommit => 'Préparer et valider';
@@ -173,13 +173,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get downloadChanges => 'Télécharger les modifications';
 
   @override
-  String get uploadChanges => 'Télécharger les modifications';
+  String get uploadChanges => 'Téléverser les modifications';
 
   @override
   String get downloadAndOverwrite => 'Télécharger + Écraser';
 
   @override
-  String get uploadAndOverwrite => 'Télécharger + Écraser';
+  String get uploadAndOverwrite => 'Téléverser + Écraser';
 
   @override
   String get fetchRemote => 'Récupérer %s';
@@ -436,10 +436,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get openFileExplorer => 'Parcourir & Modifier';
 
   @override
-  String get syncSettings => 'Paramètres de synchronisation';
+  String get syncSettings => 'Paramètres de sync';
 
   @override
-  String get enableApplicationObserver => 'Paramètres de synchronisation automatique';
+  String get enableApplicationObserver => 'Paramètres de sync automatique';
 
   @override
   String get accessibilityServiceDisclosureTitle => 'Avis de service d\'accessibilité';
@@ -474,7 +474,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get syncOnAppOpened => 'Synchroniser à l\'ouverture des applications';
 
   @override
-  String get scheduledSyncSettings => 'Paramètres de synchronisation planifiée';
+  String get scheduledSyncSettings => 'Paramètres de sync planifiée';
 
   @override
   String get sync => 'Synchroniser';
@@ -504,10 +504,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Remarque : la synchronisation en arrière-plan peut être affectée par les modes d\'économie de batterie et de Ne pas déranger.';
 
   @override
-  String get tileSyncSettings => 'Paramètres de synchronisation de vignette';
+  String get tileSyncSettings => 'Paramètres de sync de vignette';
 
   @override
-  String get otherSyncSettings => 'Autres paramètres de synchronisation';
+  String get otherSyncSettings => 'Autres paramètres de sync';
 
   @override
   String get useForTileSync => 'Utiliser pour la synchronisation de vignette';
@@ -975,10 +975,6 @@ class AppLocalizationsFr extends AppLocalizations {
       'Détails de l\'auteur du dépôt manquants. Veuillez définir votre nom et votre e-mail dans les paramètres du dépôt.';
 
   @override
-  String get authMethodMismatchError =>
-      'Incompatibilité de la méthode d\'authentification. Utilisez SSH pour les dépôts SSH et HTTPS pour les dépôts HTTP.';
-
-  @override
   String get outOfMemory => 'L\'application a manqué de mémoire !';
 
   @override
@@ -1029,6 +1025,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get issueReportMessage => 'Journaux automatiquement inclus dans les rapports';
+
+  @override
+  String get includeLogs => 'Include Log File(s)';
 
   @override
   String get issueReportTitleTitle => 'Titre';
