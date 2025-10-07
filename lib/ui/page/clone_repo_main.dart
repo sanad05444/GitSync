@@ -209,14 +209,20 @@ class _CloneRepoMain extends State<CloneRepoMain> with WidgetsBindingObserver {
                             TextField(
                               controller: searchController,
                               maxLines: 1,
-                              style: TextStyle(color: primaryLight, decoration: TextDecoration.none, decorationThickness: 0, fontSize: textMD),
+                              style: TextStyle(
+                                color: primaryLight,
+                                decoration: TextDecoration.none,
+                                decorationThickness: 0,
+                                fontSize: textMD,
+                                fontWeight: FontWeight.bold,
+                              ),
                               decoration: InputDecoration(
                                 hintText: "Search...",
                                 hintStyle: TextStyle(color: secondaryLight, fontSize: textMD, fontWeight: FontWeight.bold),
                                 fillColor: tertiaryDark,
                                 filled: true,
                                 prefixIcon: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: spaceXS),
+                                  padding: EdgeInsets.only(left: spaceSM, right: spaceXS),
                                   child: FaIcon(FontAwesomeIcons.magnifyingGlass, size: textMD, color: secondaryLight),
                                 ),
                                 prefixIconConstraints: BoxConstraints(minWidth: textMD, minHeight: textMD),
@@ -234,7 +240,7 @@ class _CloneRepoMain extends State<CloneRepoMain> with WidgetsBindingObserver {
                                   style: ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
                                   constraints: BoxConstraints(),
                                   onPressed: () async {
-                                    InfoDialog.showDialog(
+                                    await InfoDialog.showDialog(
                                       context,
                                       "Repository Search Limits",
                                       "Repository search only examines the first 100 repositories returned by the API, so it may sometimes omit the repository you expect. \n\nIf the repository you want does not appear in search results, please clone it directly using its HTTPS or SSH URL.",

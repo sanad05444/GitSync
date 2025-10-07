@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:GitSync/ui/component/button_setting.dart';
 import 'package:GitSync/ui/component/custom_showcase.dart';
 import 'package:GitSync/ui/component/group_sync_settings.dart';
 import 'package:GitSync/ui/dialog/base_alert_dialog.dart';
@@ -479,10 +480,26 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
           FontAwesomeIcons.solidCircleDown,
           () async {
             if (await GitManager.getBranchName() == null) {
-              InfoDialog.showDialog(
+              await InfoDialog.showDialog(
                 context,
                 "Sync Unavailable on DETACHED HEAD",
-                "You can’t sync while on a detached HEAD. That means your repository isn’t on a branch right now, so changes can’t be pushed. To fix this, click the \"DETACHED HEAD\" label, choose either \"main\" or \"master\" from the dropdown to switch back onto a branch, then press sync again.\n\nIf you’re unsure which to pick, choose the branch your project normally uses (often main).",
+                "You can't sync while on a detached HEAD. That means your repository isn't on a branch right now, so changes can't be pushed. To fix this, click the \"DETACHED HEAD\" label, choose either \"main\" or \"master\" from the dropdown to switch back onto a branch, then press sync again.\n\nIf you're unsure which to pick, choose the branch your project normally uses (often main).\n\nIf you find you're often kicked off the branch you expect to be on, please use the \"Report a bug\" button below to describe the issue and the circumstances (what you were doing, branch names, screenshots if possible) so I can investigate and improve the app.",
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(height: spaceMD),
+                    ButtonSetting(
+                      text: t.reportABug,
+                      icon: FontAwesomeIcons.bug,
+                      textColor: primaryDark,
+                      iconColor: primaryDark,
+                      buttonColor: tertiaryNegative,
+                      onPressed: () async {
+                        await Logger.reportIssue(context);
+                      },
+                    ),
+                  ],
+                ),
               );
               return;
             }
@@ -1924,7 +1941,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                                 style: ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
                                                                 constraints: BoxConstraints(),
                                                                 onPressed: () async {
-                                                                  InfoDialog.showDialog(
+                                                                  await InfoDialog.showDialog(
                                                                     context,
                                                                     "Large Files Management",
                                                                     "Large files over 100 MB cannot be synced because GitSync does not currently support Git Large File Storage (LFS). \n\nThese files have been automatically excluded from synchronization and added to the \".git/info/exclude\" file to prevent sync issues. If you need to manage these large files, you'll need to use Git LFS through the command line or update to a future version of the app that supports LFS functionality. You can modify the excluded files list in the repository settings if needed.",

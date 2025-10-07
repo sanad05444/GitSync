@@ -38,6 +38,7 @@ dependencies:
     git:
       url: https://github.com/ViscousPot/flutter_background_service_with_intents
       path: packages/flutter_background_service
+      ref: fe783b40c0cba7331dda5a2e4987e1c739d0dbf9
   flutter_local_notifications: ^18.0.1
   fluttertoast: ^8.2.12
   permission_handler: ^11.4.0

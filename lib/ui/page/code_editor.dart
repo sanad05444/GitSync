@@ -297,7 +297,7 @@ class _CodeEditor extends State<CodeEditor> with WidgetsBindingObserver {
                           style: ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
                           constraints: BoxConstraints(),
                           onPressed: () async {
-                            InfoDialog.showDialog(
+                            await InfoDialog.showDialog(
                               context,
                               "Code Editor Limits",
                               "The code editor provides basic, functional editing but hasn’t been exhaustively tested for edge cases or heavy use. \n\nIf you encounter bugs or want to suggest features, I welcome feedback! Please use the Bug Report or Feature Request options in Global Settings or below.",
