@@ -1447,15 +1447,19 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                                   size: textLG,
                                                                 ),
                                                                 SizedBox(width: spaceMD),
-                                                                Text(
-                                                                  item.key.toUpperCase(),
-                                                                  style: TextStyle(
-                                                                    fontSize: textMD,
-                                                                    color: [t.switchToClientMode, t.switchToSyncMode].contains(item.key)
-                                                                        ? tertiaryInfo
-                                                                        : primaryLight,
-                                                                    fontWeight: FontWeight.bold,
+                                                                Flexible(
+                                                                  child: Text(
+                                                                    item.key.toUpperCase(),
+                                                                    maxLines: 1,
                                                                     overflow: TextOverflow.ellipsis,
+                                                                    style: TextStyle(
+                                                                      fontSize: textMD,
+                                                                      color: [t.switchToClientMode, t.switchToSyncMode].contains(item.key)
+                                                                          ? tertiaryInfo
+                                                                          : primaryLight,
+                                                                      fontWeight: FontWeight.bold,
+                                                                      overflow: TextOverflow.ellipsis,
+                                                                    ),
                                                                   ),
                                                                 ),
                                                               ],

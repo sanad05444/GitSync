@@ -102,9 +102,13 @@ class _ScheduledSyncSettingsState extends State<ScheduledSyncSettings> {
                         ),
                       ),
                       SizedBox(width: (snapshot.data ?? false) ? spaceSM : 0),
-                      Text(
-                        t.scheduledSyncSettings,
-                        style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),
+                      Flexible(
+                        child: Text(
+                          t.scheduledSyncSettings,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),
+                        ),
                       ),
                     ],
                   ),
