@@ -953,9 +953,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get missingAuthorDetailsError => '缺少仓库作者详细信息。请在仓库设置中设置您的姓名和邮箱。';
 
   @override
-  String get authMethodMismatchError => '身份验证方法不匹配。对 SSH 仓库使用 SSH，对 HTTP 仓库使用 HTTPS。';
-
-  @override
   String get outOfMemory => '应用程序内存不足！';
 
   @override

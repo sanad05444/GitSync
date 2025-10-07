@@ -1980,12 +1980,6 @@ abstract class AppLocalizations {
   /// **'Missing repository author details. Please set your name and email in the repository settings.'**
   String get missingAuthorDetailsError;
 
-  /// No description provided for @authMethodMismatchError.
-  ///
-  /// In en, this message translates to:
-  /// **'Authentication method mismatch. Use SSH for SSH repositories and HTTPS for HTTP repositories.'**
-  String get authMethodMismatchError;
-
   /// No description provided for @outOfMemory.
   ///
   /// In en, this message translates to:

@@ -363,7 +363,6 @@
     "errorOccurredMessagePart2": "Si no, puedes descartar y continuar.",
     "applicationError": "¡Error de Aplicación!",
     "missingAuthorDetailsError": "Faltan detalles del autor del repositorio. Por favor, establece tu nombre y email en la configuración del repositorio.",
-    "authMethodMismatchError": "Desajuste en el método de autenticación. Usa SSH para repositorios SSH y HTTPS para repositorios HTTP.",
     "outOfMemory": "¡La aplicación se quedó sin memoria!",
     "invalidRemote": "¡Remoto inválido! Modifica esto en configuración",
     "largeFile": "¡Archivos individuales mayores a 50MB no están soportados!",

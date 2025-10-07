@@ -363,7 +363,6 @@
     "errorOccurredMessagePart2": "Andernfalls können Sie schließen und fortfahren.",
     "applicationError": "Anwendungsfehler!",
     "missingAuthorDetailsError": "Fehlende Repository-Autor-Details. Bitte setzen Sie Ihren Namen und Ihre E-Mail in den Repository-Einstellungen.",
-    "authMethodMismatchError": "Authentifizierungsmethoden-Konflikt. Verwenden Sie SSH für SSH-Repositorys und HTTPS für HTTP-Repositorys.",
     "outOfMemory": "Der Anwendung ist der Speicher ausgegangen!",
     "invalidRemote": "Ungültiges Remote! Ändern Sie dies in den Einstellungen",
     "largeFile": "Einzelne Dateien größer als 50MB werden nicht unterstützt!",

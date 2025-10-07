@@ -363,7 +363,6 @@
     "errorOccurredMessagePart2": "否则，您可以关闭并继续。",
     "applicationError": "应用程序错误！",
     "missingAuthorDetailsError": "缺少仓库作者详细信息。请在仓库设置中设置您的姓名和邮箱。",
-    "authMethodMismatchError": "身份验证方法不匹配。对 SSH 仓库使用 SSH，对 HTTP 仓库使用 HTTPS。",
     "outOfMemory": "应用程序内存不足！",
     "invalidRemote": "无效远程！在设置中修改此项",
     "largeFile": "不支持大于 50MB 的单个文件！",

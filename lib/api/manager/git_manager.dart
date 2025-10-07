@@ -18,13 +18,14 @@ import 'package:path/path.dart' as path;
 import 'package:collection/collection.dart';
 
 class GitManager {
-  static final Map<String, String?> _errorContentMap = {
-    "failed to parse signature - Signature cannot have an empty name or email": missingAuthorDetailsError,
-    "authentication required but no callback set": authMethodMismatchError,
-    "invalid data in index - incorrect header signature": invalidIndexHeaderError,
-    "cannot push because a reference that you are trying to update on the remote contains commits that are not present locally.": null,
-    "error reading file for hashing:": null,
-    "failed to parse loose object: invalid header": null,
+  static final Map<String, Future<String?> Function()> _errorContentMap = {
+    "failed to parse signature - Signature cannot have an empty name or email": () async => missingAuthorDetailsError,
+    "authentication required but no callback set": () async =>
+        sprintf(authMethodMismatchError, [await uiSettingsManager.getGitProvider() == GitProvider.SSH ? "HTTP/S" : "SSH"]),
+    "invalid data in index - incorrect header signature": () async => invalidIndexHeaderError,
+    "cannot push because a reference that you are trying to update on the remote contains commits that are not present locally.": () async => null,
+    "error reading file for hashing:": () async => null,
+    "failed to parse loose object: invalid header": () async => null,
   };
 
   static Future<T?> _runWithLock<T>(int index, Future<T?> Function() fn) async {
@@ -75,10 +76,10 @@ class GitManager {
     );
   }
 
-  static String? _getErrorContent(String message) {
+  static Future<String?> _getErrorContent(String message) async {
     final error = message.split(";").first;
 
-    return _errorContentMap.containsKey(error) ? _errorContentMap[error] : message;
+    return _errorContentMap.containsKey(error) ? await _errorContentMap[error]!() : message;
   }
 
   static Future<(String, String)> _getCredentials(SettingsManager settingsManager) async {
@@ -122,7 +123,7 @@ class GitManager {
           if (offline != null) return offline;
 
           Logger.logError(LogType.CloneRepo, e.message, stackTrace, causeError: false);
-          return _getErrorContent(e.message) ?? e.message.split(";").first;
+          return await _getErrorContent(e.message) ?? e.message.split(";").first;
         } catch (e, stackTrace) {
           Logger.logError(LogType.CloneRepo, e, stackTrace);
         }
@@ -1275,8 +1276,7 @@ class GitManager {
           );
         });
       } on AnyhowException catch (e, stackTrace) {
-        final errorContent = _getErrorContent(e.message);
-        if (errorContent == null) return false;
+        final errorContent = await _getErrorContent(e.message);
         Logger.logError(LogType.PullFromRepo, e.message, stackTrace, errorContent: errorContent);
       } catch (e, stackTrace) {
         Logger.logError(LogType.PullFromRepo, e, stackTrace);
@@ -1320,8 +1320,7 @@ class GitManager {
           );
         });
       } on AnyhowException catch (e, stackTrace) {
-        final errorContent = _getErrorContent(e.message);
-        if (errorContent == null) return false;
+        final errorContent = await _getErrorContent(e.message);
         Logger.logError(LogType.PushToRepo, e.message, stackTrace, errorContent: errorContent);
       } catch (e, stackTrace) {
         Logger.logError(LogType.PushToRepo, e, stackTrace);

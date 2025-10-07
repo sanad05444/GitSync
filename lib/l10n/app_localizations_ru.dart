@@ -967,9 +967,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get missingAuthorDetailsError => 'Отсутствуют данные автора репозитория. Пожалуйста, установите ваше имя и email в настройках репозитория.';
 
   @override
-  String get authMethodMismatchError => 'Несоответствие метода авторизации. Используйте SSH для SSH-репозиториев и HTTPS для HTTP-репозиториев.';
-
-  @override
   String get outOfMemory => 'В приложении закончилась память!';
 
   @override

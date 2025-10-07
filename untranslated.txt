@@ -573,7 +573,6 @@
     "errorOccurredMessagePart2",
     "applicationError",
     "missingAuthorDetailsError",
-    "authMethodMismatchError",
     "outOfMemory",
     "invalidRemote",
     "largeFile",
