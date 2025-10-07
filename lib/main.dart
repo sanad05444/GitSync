@@ -83,7 +83,7 @@ Future<void> main() async {
       WidgetsFlutterBinding.ensureInitialized();
       await gitSyncService.initialise(onServiceStart, callbackDispatcher);
       await uiSettingsManager.reinit();
-      initLogger("${(await getTemporaryDirectory()).path}/logs", maxFileCount: 10, maxFileLength: 5 * 1024 * 1024);
+      initLogger("${(await getTemporaryDirectory()).path}/logs", maxFileCount: 50, maxFileLength: 1 * 1024 * 1024);
       await Logger.init();
       await RustLib.init();
       await requestStoragePerm(false);
