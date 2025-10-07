@@ -27,6 +27,7 @@ import 'package:GitSync/api/accessibility_service_helper.dart';
 import 'package:GitSync/ui/component/item_merge_conflict.dart';
 import 'package:GitSync/ui/dialog/onboarding_controller.dart';
 import 'package:mixin_logger/mixin_logger.dart';
+import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -273,6 +274,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   bool repoSettingsExpanded = false;
+  bool gitLfsExpanded = false;
   bool demoConflicting = false;
   bool? previousLocked;
   bool showCheck = false;
@@ -315,6 +317,10 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     // TODO: Make sure this is commented for release
     // Logger.logError(LogType.TEST, "test", StackTrace.fromString("test stack"));
     // Future.delayed(Duration(seconds: 5), () => Logger.logError(LogType.TEST, "test", StackTrace.fromString("test stack")));
+
+    initAsync(() async {
+      await GitManager.getLfsFilePaths();
+    });
 
     initAsync(() async {
       if (premiumManager.hasPremiumNotifier.value == false) {
@@ -654,6 +660,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.resumed) {
       await Logger.dismissError(context);
+      gitLfsExpanded = false;
       setState(() {});
     }
     if (state == AppLifecycleState.paused) {
@@ -1320,6 +1327,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                       setState(() {});
                                                     });
 
+                                                    await GitManager.getLfsFilePaths();
+
                                                     if (syncOptionsSnapshot.data?.containsKey(lastSyncMethodSnapshot.data) == true) {
                                                       await syncOptionsSnapshot.data![lastSyncMethodSnapshot.data]!.$2();
                                                     } else {
@@ -1866,6 +1875,176 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                     ),
                                   ),
                                 ),
+                              ),
+                              FutureBuilder(
+                                future: uiSettingsManager.getStringList(StorageKey.setman_lfsFilePaths),
+                                builder: (context, lfsFilePathsSnapshot) => lfsFilePathsSnapshot.data?.isEmpty ?? true
+                                    ? SizedBox.shrink()
+                                    : Column(
+                                        children: [
+                                          SizedBox(height: spaceMD),
+                                          Container(
+                                            decoration: BoxDecoration(color: secondaryDark, borderRadius: BorderRadius.all(cornerRadiusMD)),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                SizedBox(
+                                                  width: double.infinity,
+                                                  child: TextButton.icon(
+                                                    onPressed: () async {
+                                                      gitLfsExpanded = !gitLfsExpanded;
+                                                      await GitManager.getLfsFilePaths();
+                                                      setState(() {});
+                                                    },
+                                                    iconAlignment: IconAlignment.end,
+                                                    style: ButtonStyle(
+                                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                      padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceLG, vertical: spaceMD)),
+                                                      shape: WidgetStatePropertyAll(
+                                                        RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
+                                                      ),
+                                                    ),
+                                                    icon: FaIcon(
+                                                      gitLfsExpanded ? FontAwesomeIcons.chevronUp : FontAwesomeIcons.chevronDown,
+                                                      color: primaryLight,
+                                                      size: textXL,
+                                                    ),
+                                                    label: SizedBox(
+                                                      width: double.infinity,
+                                                      child: Row(
+                                                        children: [
+                                                          AnimatedSize(
+                                                            duration: Duration(milliseconds: 200),
+                                                            child: Container(
+                                                              width: gitLfsExpanded ? null : 0,
+                                                              decoration: BoxDecoration(),
+                                                              clipBehavior: Clip.hardEdge,
+                                                              child: IconButton(
+                                                                padding: EdgeInsets.zero,
+                                                                style: ButtonStyle(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                                                                constraints: BoxConstraints(),
+                                                                onPressed: () async {
+                                                                  InfoDialog.showDialog(
+                                                                    context,
+                                                                    "Large Files Management",
+                                                                    "Large files over 100 MB cannot be synced because GitSync does not currently support Git Large File Storage (LFS). \n\nThese files have been automatically excluded from synchronization and added to the \".git/info/exclude\" file to prevent sync issues. If you need to manage these large files, you'll need to use Git LFS through the command line or update to a future version of the app that supports LFS functionality. You can modify the excluded files list in the repository settings if needed.",
+                                                                  );
+                                                                  // launchUrl(Uri.parse(autoSyncDocsLink));
+                                                                },
+                                                                icon: FaIcon(FontAwesomeIcons.circleQuestion, color: primaryLight, size: textLG),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(width: gitLfsExpanded ? spaceSM : 0),
+                                                          Text(
+                                                            sprintf(clientModeEnabledSnapshot.data == true ? "%sLFS Files" : "%sUnsynced Files", [
+                                                              (lfsFilePathsSnapshot.data?.length ?? 0) == 0
+                                                                  ? ""
+                                                                  : "(${lfsFilePathsSnapshot.data?.length}) ",
+                                                            ]).toUpperCase(),
+                                                            style: TextStyle(color: tertiaryNegative, fontSize: textMD, fontWeight: FontWeight.bold),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                AnimatedSize(
+                                                  duration: Duration(milliseconds: 200),
+                                                  child: SizedBox(
+                                                    height: gitLfsExpanded ? null : 0,
+                                                    child: gitLfsExpanded
+                                                        ? Container(
+                                                            padding: EdgeInsets.only(left: spaceSM, right: spaceSM, bottom: spaceSM),
+                                                            height: spaceXL * 4,
+                                                            child: ShaderMask(
+                                                              shaderCallback: (Rect rect) {
+                                                                return LinearGradient(
+                                                                  begin: Alignment.topCenter,
+                                                                  end: Alignment.bottomCenter,
+                                                                  colors: [Colors.transparent, Colors.transparent, Colors.transparent, Colors.black],
+                                                                  stops: [0.0, 0.1, 0.9, 1.0],
+                                                                ).createShader(rect);
+                                                              },
+                                                              blendMode: BlendMode.dstOut,
+                                                              child: GridView.builder(
+                                                                shrinkWrap: true,
+                                                                itemCount: lfsFilePathsSnapshot.data?.length,
+                                                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                                  crossAxisCount: 4,
+                                                                  crossAxisSpacing: spaceSM,
+                                                                  mainAxisSpacing: spaceSM,
+                                                                ),
+                                                                itemBuilder: (BuildContext context, int index) {
+                                                                  final filePath = (lfsFilePathsSnapshot.data ?? [])[index];
+
+                                                                  return Container(
+                                                                    child: Column(
+                                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                                      children: [
+                                                                        Stack(
+                                                                          clipBehavior: Clip.none,
+                                                                          children: [
+                                                                            FaIcon(FontAwesomeIcons.solidFile, color: primaryLight, size: textXL),
+                                                                            Positioned(
+                                                                              bottom: -spaceXS,
+                                                                              left: -spaceXS,
+                                                                              child: Text(
+                                                                                "${formatBytes(File(filePath).statSync().size, 0)}",
+                                                                                maxLines: 1,
+                                                                                style: TextStyle(
+                                                                                  fontSize: textXS,
+
+                                                                                  shadows: [
+                                                                                    Shadow(offset: Offset(-1, -1), color: tertiaryDark),
+                                                                                    Shadow(offset: Offset(1, -1), color: tertiaryDark),
+                                                                                    Shadow(offset: Offset(1, 1), color: tertiaryDark),
+                                                                                    Shadow(offset: Offset(-1, 1), color: tertiaryDark),
+                                                                                  ],
+                                                                                  color: primaryLight,
+                                                                                  overflow: TextOverflow.ellipsis,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        SizedBox(height: spaceXS),
+                                                                        Text(
+                                                                          p.basename(filePath),
+                                                                          maxLines: 1,
+                                                                          style: TextStyle(
+                                                                            fontSize: textSM,
+                                                                            color: primaryLight,
+                                                                            overflow: TextOverflow.ellipsis,
+                                                                            fontWeight: FontWeight.bold,
+                                                                          ),
+                                                                        ),
+                                                                        SizedBox(height: spaceXXXXS),
+                                                                        Text(
+                                                                          "${File(filePath).statSync().modified}".substring(0, 10),
+                                                                          maxLines: 1,
+                                                                          style: TextStyle(
+                                                                            fontSize: textXS,
+                                                                            color: primaryLight,
+                                                                            overflow: TextOverflow.ellipsis,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  );
+                                                                },
+                                                              ),
+                                                            ),
+                                                          )
+                                                        : SizedBox.shrink(),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                               ),
                             ],
                           ),

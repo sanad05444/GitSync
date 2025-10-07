@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:math' as math;
 import 'dart:typed_data';
 import 'package:GitSync/api/manager/git_manager.dart';
 import 'package:GitSync/api/manager/settings_manager.dart';
@@ -80,6 +81,14 @@ void cancelDebounce(String index, [bool run = false]) {
   if (run) {
     _callbacks[index]!();
   }
+}
+
+String formatBytes(int? bytes, [int precision = 2]) {
+  if (bytes == null || bytes <= 0) return '0 B';
+  final base = (math.log(bytes) / math.log(1024)).floor();
+  final size = bytes / [1, 1024, 1048576, 1073741824, 1099511627776][base];
+  final formattedSize = size.toStringAsFixed(precision);
+  return '$formattedSize ${['B', 'KB', 'MB', 'GB', 'TB'][base]}';
 }
 
 Future<void> openLogViewer(BuildContext context) async {

@@ -1174,7 +1174,7 @@ class GitManager {
     });
   }
 
-  static final List<String> _lastSubmodulePaths = [];
+  static List<String> _lastSubmodulePaths = [];
   static Future<List<String>> getSubmodulePaths(String repoPath) async {
     if (await isLocked()) {
       return _lastSubmodulePaths;
@@ -1187,12 +1187,69 @@ class GitManager {
           Logger.gmLog(type: LogType.SelectDirectory, ".git folder found");
 
           try {
-            return await GitManagerRs.getSubmodulePaths(pathString: dirPath);
+            _lastSubmodulePaths = await GitManagerRs.getSubmodulePaths(pathString: dirPath);
+            return _lastSubmodulePaths;
           } catch (e, stackTrace) {
             if (!await hasNetworkConnection()) return null;
             Logger.logError(LogType.SelectDirectory, e, stackTrace);
             return null;
           }
+        }) ??
+        [];
+  }
+
+  // static List<String> _lastLfsFilePaths = [];
+  static Future<List<String>> getLfsFilePaths([int? repomanRepoindex]) async {
+    if (await isLocked()) {
+      return await uiSettingsManager.getStringList(StorageKey.setman_lfsFilePaths);
+    }
+
+    final repoIndex = await repoManager.getInt(StorageKey.repoman_repoIndex);
+
+    return await _runWithLock(repoIndex, () async {
+          final settingsManager = repomanRepoindex == null ? uiSettingsManager : await SettingsManager().reinit(repoIndex: repomanRepoindex);
+          final gitDirPath = await uiSettingsManager.getGitDirPath();
+          if (gitDirPath == null || gitDirPath.isEmpty) return null;
+
+          return await useDirectory(gitDirPath, (bookmarkPath) async => await settingsManager.setGitDirPath(bookmarkPath), (selectedDirectory) async {
+            final Directory directory = Directory(gitDirPath);
+            if (!await directory.exists()) {
+              throw Exception('Directory does not exist');
+            }
+
+            final int sizeThresholdBytes = 100 * 1024 * 1024;
+
+            List<String> largeFilePaths = [];
+
+            await for (var entity in directory.list(recursive: true, followLinks: false)) {
+              if (entity is File) {
+                final FileStat fileStat = await entity.stat();
+
+                if (fileStat.size > sizeThresholdBytes) {
+                  largeFilePaths.add(entity.path);
+                }
+              }
+            }
+
+            final gitInfoExcludeFullPath = '$gitDirPath/$gitInfoExcludePath';
+            final file = File(gitInfoExcludeFullPath);
+            final parentDir = file.parent;
+            if (!parentDir.existsSync()) {
+              parentDir.createSync(recursive: true);
+            }
+            if (!file.existsSync()) file.createSync();
+            final lines = file.readAsLinesSync();
+            for (final filePath in largeFilePaths) {
+              final ignoreLine = filePath.replaceFirst("$gitDirPath/", "");
+              if (!lines.contains(ignoreLine)) {
+                file.writeAsStringSync("$ignoreLine\n", mode: FileMode.append);
+              }
+            }
+
+            await uiSettingsManager.setStringList(StorageKey.setman_lfsFilePaths, largeFilePaths);
+
+            return largeFilePaths;
+          });
         }) ??
         [];
   }

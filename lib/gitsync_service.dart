@@ -156,6 +156,8 @@ class GitsyncService {
 
   Future<void> _sync(int repomanRepoindex, [bool forced = false]) async {
     try {
+      await GitManager.getLfsFilePaths();
+
       final settingsManager = SettingsManager();
       await settingsManager.reinit(repoIndex: repomanRepoindex);
 

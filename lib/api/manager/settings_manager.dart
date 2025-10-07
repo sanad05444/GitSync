@@ -80,6 +80,7 @@ class SettingsManager extends Storage {
 
   Future<void> setGitDirPath(String dir) async {
     await setString(StorageKey.setman_gitDirPath, dir);
+    await setStringList(StorageKey.setman_lfsFilePaths, []);
   }
 
   Future<String?> getGitDirPath([bool iosGetPath = false]) async {
