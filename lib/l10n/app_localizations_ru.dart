@@ -499,6 +499,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get enhancedScheduledSyncNote => 'Примечание: Фоновая синхронизация может быть затронута режимами энергосбережения и \"Не беспокоить\".';
 
   @override
+  String get quickSyncSettings => 'Quick Sync Settings';
+
+  @override
   String get tileSyncSettings => 'Настройки синхронизации плитки';
 
   @override

@@ -29,6 +29,7 @@
     "authorDetailsShowcasePrompt",
     "openFileExplorer",
     "syncSettings",
+    "quickSyncSettings",
     "oauthProviders",
     "gitProtocols",
     "passphrase",
@@ -102,6 +103,7 @@
     "authorDetailsShowcasePrompt",
     "openFileExplorer",
     "syncSettings",
+    "quickSyncSettings",
     "oauthProviders",
     "gitProtocols",
     "passphrase",
@@ -146,6 +148,7 @@
   ],
 
   "fr": [
+    "quickSyncSettings",
     "includeLogs"
   ],
 
@@ -179,6 +182,7 @@
     "authorDetailsShowcasePrompt",
     "openFileExplorer",
     "syncSettings",
+    "quickSyncSettings",
     "oauthProviders",
     "gitProtocols",
     "passphrase",
@@ -235,6 +239,7 @@
     "iosClearDataTitle",
     "iosClearDataMsg",
     "authorDetailsShowcasePrompt",
+    "quickSyncSettings",
     "oauthProviders",
     "gitProtocols",
     "passphrase",
@@ -422,6 +427,7 @@
     "enhancedScheduledSyncMsg1",
     "enhancedScheduledSyncMsg2",
     "enhancedScheduledSyncNote",
+    "quickSyncSettings",
     "tileSyncSettings",
     "otherSyncSettings",
     "useForTileSync",

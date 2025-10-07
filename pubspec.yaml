@@ -78,6 +78,7 @@ dependencies:
   re_highlight: ^0.0.3
   async: any
   collection: any
+  quick_actions: ^1.1.0
 
 dependency_overrides:
   flutter_background_service_platform_interface:

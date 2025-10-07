@@ -1052,6 +1052,12 @@ abstract class AppLocalizations {
   /// **'Note: Background syncing may be affected by battery saver and Do Not Disturb modes.'**
   String get enhancedScheduledSyncNote;
 
+  /// No description provided for @quickSyncSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Sync Settings'**
+  String get quickSyncSettings;
+
   /// No description provided for @tileSyncSettings.
   ///
   /// In en, this message translates to:

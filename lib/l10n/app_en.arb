@@ -181,6 +181,7 @@
     "enhancedScheduledSyncMsg1": "Unlike the basic sync, this feature uses advanced background updates to deliver fresh data more frequently and reliably.",
     "enhancedScheduledSyncMsg2": "Sync your repositories in the background as often as a sync per minute, even when the app is closed!\n\nEffortless, continuous updates mean your repos are always ready when you are.",
     "enhancedScheduledSyncNote": "Note: Background syncing may be affected by battery saver and Do Not Disturb modes.",
+    "quickSyncSettings": "Quick Sync Settings",
     "tileSyncSettings": "Tile Sync Settings",
     "otherSyncSettings": "Other Sync Settings",
     "useForTileSync": "Use for Tile Sync",

@@ -496,6 +496,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enhancedScheduledSyncNote => 'Note: Background syncing may be affected by battery saver and Do Not Disturb modes.';
 
   @override
+  String get quickSyncSettings => 'Quick Sync Settings';
+
+  @override
   String get tileSyncSettings => 'Tile Sync Settings';
 
   @override

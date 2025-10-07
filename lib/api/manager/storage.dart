@@ -8,6 +8,8 @@ enum StorageKey<T> {
   repoman_repoIndex<int>(name: "repoIndex", defaultValue: 0),
   repoman_tileSyncIndex<int>(name: "tileSyncIndex", defaultValue: 0),
   repoman_tileManualSyncIndex<int>(name: "tileManualSyncIndex", defaultValue: 0),
+  repoman_shortcutSyncIndex<int>(name: "shortcutSyncIndex", defaultValue: 0),
+  repoman_shortcutManualSyncIndex<int>(name: "shortcutManualSyncIndex", defaultValue: 0),
   repoman_onboardingStep<int>(name: "onboardingStep", defaultValue: 0),
   repoman_erroring<String?>(name: "erroring", defaultValue: null),
   repoman_ghSponsorToken<String?>(name: "ghSponsorToken", defaultValue: null),

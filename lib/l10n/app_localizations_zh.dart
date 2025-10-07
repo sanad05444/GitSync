@@ -487,6 +487,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get enhancedScheduledSyncNote => '注意：后台同步可能会受到省电模式和勿扰模式的影响。';
 
   @override
+  String get quickSyncSettings => 'Quick Sync Settings';
+
+  @override
   String get tileSyncSettings => '磁贴同步设置';
 
   @override

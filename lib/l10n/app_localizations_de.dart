@@ -502,6 +502,9 @@ class AppLocalizationsDe extends AppLocalizations {
       'Hinweis: Hintergrund-Synchronisation kann durch Energiesparmodus und Nicht-stören-Modus beeinflusst werden.';
 
   @override
+  String get quickSyncSettings => 'Quick Sync Settings';
+
+  @override
   String get tileSyncSettings => 'Kachel-Sync-Einstellungen';
 
   @override

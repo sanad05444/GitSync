@@ -30,6 +30,7 @@ import 'package:GitSync/ui/dialog/onboarding_controller.dart';
 import 'package:mixin_logger/mixin_logger.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:quick_actions/quick_actions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:sprintf/sprintf.dart';
@@ -318,6 +319,29 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     // TODO: Make sure this is commented for release
     // Logger.logError(LogType.TEST, "test", StackTrace.fromString("test stack"));
     // Future.delayed(Duration(seconds: 5), () => Logger.logError(LogType.TEST, "test", StackTrace.fromString("test stack")));
+
+    final QuickActions quickActions = const QuickActions();
+    quickActions.initialize((shortcutType) async {
+      final shortcutSyncIndex = await repoManager.getInt(StorageKey.repoman_shortcutSyncIndex);
+      if (shortcutType == GitsyncService.FORCE_SYNC) {
+        await repoManager.setInt(StorageKey.repoman_repoIndex, shortcutSyncIndex);
+        await uiSettingsManager.reinit();
+        FlutterBackgroundService().invoke(GitsyncService.FORCE_SYNC, {REPO_INDEX: shortcutSyncIndex.toString()});
+        return;
+      }
+      if (shortcutType == GitsyncService.MANUAL_SYNC) {
+        await repoManager.setInt(StorageKey.repoman_repoIndex, shortcutSyncIndex);
+        await uiSettingsManager.reinit();
+        setState(() {});
+        await ManualSyncDialog.showDialog(context, () async {});
+        return;
+      }
+    });
+
+    quickActions.setShortcutItems(<ShortcutItem>[
+      ShortcutItem(type: GitsyncService.FORCE_SYNC, localizedTitle: t.syncNow, icon: "sync_now"),
+      ShortcutItem(type: GitsyncService.MANUAL_SYNC, localizedTitle: t.manualSync, icon: "manual_sync"),
+    ]);
 
     initAsync(() async {
       await GitManager.getLfsFilePaths();

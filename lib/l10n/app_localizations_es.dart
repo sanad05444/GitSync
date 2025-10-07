@@ -501,6 +501,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get enhancedScheduledSyncNote => 'Nota: La sync en segundo plano puede verse afectada por el modo de ahorro de batería y No Molestar.';
 
   @override
+  String get quickSyncSettings => 'Quick Sync Settings';
+
+  @override
   String get tileSyncSettings => 'Configuración de Sync de Acceso Rápido';
 
   @override

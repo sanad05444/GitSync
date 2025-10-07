@@ -504,6 +504,9 @@ class AppLocalizationsFr extends AppLocalizations {
       'Remarque : la synchronisation en arrière-plan peut être affectée par les modes d\'économie de batterie et de Ne pas déranger.';
 
   @override
+  String get quickSyncSettings => 'Quick Sync Settings';
+
+  @override
   String get tileSyncSettings => 'Paramètres de sync de vignette';
 
   @override
