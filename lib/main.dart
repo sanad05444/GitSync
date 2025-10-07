@@ -8,6 +8,7 @@ import 'package:GitSync/ui/component/group_sync_settings.dart';
 import 'package:GitSync/ui/dialog/base_alert_dialog.dart';
 import 'package:GitSync/api/manager/storage.dart';
 import 'package:GitSync/ui/dialog/create_branch.dart' as CreateBranchDialog;
+import 'package:GitSync/ui/dialog/info_dialog.dart' as InfoDialog;
 import 'package:GitSync/ui/dialog/merge_conflict.dart' as MergeConflictDialog;
 import 'package:GitSync/ui/page/code_editor.dart';
 import 'package:GitSync/ui/page/file_explorer.dart';
@@ -471,6 +472,14 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
         clientModeEnabled ? t.syncAllChanges : t.syncNow: (
           FontAwesomeIcons.solidCircleDown,
           () async {
+            if (await GitManager.getBranchName() == null) {
+              InfoDialog.showDialog(
+                context,
+                "Sync Unavailable on DETACHED HEAD",
+                "You can’t sync while on a detached HEAD. That means your repository isn’t on a branch right now, so changes can’t be pushed. To fix this, click the \"DETACHED HEAD\" label, choose either \"main\" or \"master\" from the dropdown to switch back onto a branch, then press sync again.\n\nIf you’re unsure which to pick, choose the branch your project normally uses (often main).",
+              );
+              return;
+            }
             FlutterBackgroundService().invoke(GitsyncService.FORCE_SYNC);
           },
         ),
