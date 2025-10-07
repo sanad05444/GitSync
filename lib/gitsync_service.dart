@@ -284,12 +284,13 @@ class GitsyncService {
         } else {
           _displaySyncMessage(settingsManager, s.syncComplete);
         }
+
+        Logger.dismissError(null);
       }();
 
       Logger.gmLog(type: LogType.Sync, "Sync Complete!");
       isSyncing = false;
 
-      Logger.dismissError(null);
       serviceInstance?.invoke(REFRESH);
 
       if (isScheduled) {

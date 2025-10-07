@@ -338,7 +338,6 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     });
 
     FlutterBackgroundService().on(GitsyncService.REFRESH).listen((event) async {
-      await Logger.dismissError(context);
       widget.setState(() {});
     });
 
@@ -676,7 +675,6 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.resumed) {
-      await Logger.dismissError(context);
       gitLfsExpanded = false;
       setState(() {});
     }
@@ -722,6 +720,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    Logger.dismissError(context);
+
     return Scaffold(
       backgroundColor: primaryDark,
       appBar: AppBar(
