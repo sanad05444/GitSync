@@ -632,6 +632,17 @@ ${await Logger.generateDeviceInfo()}
                     launchUrl(Uri.parse(eulaLink));
                   },
                 ),
+                SizedBox(height: spaceMD),
+                FutureBuilder(
+                  future: PackageInfo.fromPlatform(),
+                  builder: (context, versionSnapshot) => ButtonSetting(
+                    text: versionSnapshot.data?.version ?? "x.x.xx",
+                    icon: FontAwesomeIcons.tag,
+                    onPressed: () async {
+                      launchUrl(Uri.parse(eulaLink));
+                    },
+                  ),
+                ),
 
                 SizedBox(height: spaceLG),
 
