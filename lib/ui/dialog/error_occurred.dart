@@ -2,6 +2,7 @@ import 'package:GitSync/api/manager/git_manager.dart';
 import 'package:GitSync/constant/strings.dart';
 import 'package:flutter/material.dart' as mat;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
@@ -33,21 +34,24 @@ Future<void> showDialog(BuildContext context, String error, Function() callback)
       content: SingleChildScrollView(
         child: ListBody(
           children: [
-            Text(
-              error,
-              style: const TextStyle(color: tertiaryNegative, fontWeight: FontWeight.bold, fontSize: textSM),
+            GestureDetector(
+              onLongPress: () {
+                Clipboard.setData(ClipboardData(text: error));
+              },
+              child: Text(
+                error,
+                style: const TextStyle(color: tertiaryNegative, fontWeight: FontWeight.bold, fontSize: textSM),
+              ),
             ),
             SizedBox(height: spaceMD),
             ...autoFixCallbackMap.containsKey(error.split(";")[0])
                 ? [
-                    // SizedBox(height: spaceSM),
                     StatefulBuilder(
                       builder: (context, setState) => TextButton.icon(
                         onPressed: () async {
                           autoFixing = true;
                           setState(() {});
 
-                          // await Future.delayed(Duration(seconds: 1), () {});
                           await (autoFixCallbackMap[error] ?? () async {})();
 
                           autoFixing = false;
