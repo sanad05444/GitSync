@@ -2174,6 +2174,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                               Expanded(
                                                 child: Text(
                                                   t.repositorySettings,
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
                                                   style: TextStyle(fontFeatures: [FontFeature.enable('smcp')], color: primaryLight, fontSize: textLG),
                                                 ),
                                               ),
