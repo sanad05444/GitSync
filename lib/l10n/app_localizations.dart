@@ -1997,7 +1997,7 @@ abstract class AppLocalizations {
   /// No description provided for @errorOccurredMessagePart2.
   ///
   /// In en, this message translates to:
-  /// **'Otherwise, you can dismiss and continue.'**
+  /// **'Otherwise, you can long-press to copy to clipboard or dismiss and continue.'**
   String get errorOccurredMessagePart2;
 
   /// No description provided for @applicationError.

@@ -970,7 +970,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorOccurredMessagePart1 => 'If this caused any issues, please create a bug report quickly using the button below.';
 
   @override
-  String get errorOccurredMessagePart2 => 'Otherwise, you can dismiss and continue.';
+  String get errorOccurredMessagePart2 => 'Otherwise, you can long-press to copy to clipboard or dismiss and continue.';
 
   @override
   String get applicationError => 'Application Error!';
