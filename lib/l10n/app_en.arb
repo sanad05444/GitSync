@@ -184,8 +184,12 @@
     "quickSyncSettings": "Quick Sync Settings",
     "tileSyncSettings": "Tile Sync Settings",
     "otherSyncSettings": "Other Sync Settings",
-    "useForTileSync": "Use for Tile Sync",
-    "useForTileManualSync": "Use for Tile Manual Sync",
+    "useForTileSync": "Use for Sync Tile ",
+    "useForTileManualSync": "Use for Manual Sync Tile",
+    "useForShortcutSync": "Use for Sync Shortcut",
+    "useForShortcutManualSync": "Use for Manual Sync Shortcut",
+    "useForWidgetSync": "Use for Sync Widget",
+    "useForWidgetManualSync": "Use for Manual Sync Widget",
 
 
     "@@x-AUTH": "",

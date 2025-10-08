@@ -517,6 +517,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get useForTileManualSync => 'Für manuelle Kachel-Sync verwenden';
 
   @override
+  String get useForShortcutSync => 'Use for Sync Shortcut';
+
+  @override
+  String get useForShortcutManualSync => 'Use for Manual Sync Shortcut';
+
+  @override
+  String get useForWidgetSync => 'Use for Sync Widget';
+
+  @override
+  String get useForWidgetManualSync => 'Use for Manual Sync Widget';
+
+  @override
   String get selectYourGitProviderAndAuthenticate => 'Wählen Sie Ihren Git-Anbieter aus und authentifizieren Sie sich';
 
   @override

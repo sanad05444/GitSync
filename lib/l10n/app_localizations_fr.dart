@@ -519,6 +519,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get useForTileManualSync => 'Utiliser pour la synchronisation manuelle de vignette';
 
   @override
+  String get useForShortcutSync => 'Use for Sync Shortcut';
+
+  @override
+  String get useForShortcutManualSync => 'Use for Manual Sync Shortcut';
+
+  @override
+  String get useForWidgetSync => 'Use for Sync Widget';
+
+  @override
+  String get useForWidgetManualSync => 'Use for Manual Sync Widget';
+
+  @override
   String get selectYourGitProviderAndAuthenticate => 'Sélectionnez votre fournisseur Git et authentifiez-vous';
 
   @override

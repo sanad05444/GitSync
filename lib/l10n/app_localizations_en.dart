@@ -505,10 +505,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get otherSyncSettings => 'Other Sync Settings';
 
   @override
-  String get useForTileSync => 'Use for Tile Sync';
+  String get useForTileSync => 'Use for Sync Tile ';
 
   @override
-  String get useForTileManualSync => 'Use for Tile Manual Sync';
+  String get useForTileManualSync => 'Use for Manual Sync Tile';
+
+  @override
+  String get useForShortcutSync => 'Use for Sync Shortcut';
+
+  @override
+  String get useForShortcutManualSync => 'Use for Manual Sync Shortcut';
+
+  @override
+  String get useForWidgetSync => 'Use for Sync Widget';
+
+  @override
+  String get useForWidgetManualSync => 'Use for Manual Sync Widget';
 
   @override
   String get selectYourGitProviderAndAuthenticate => 'Select your git provider and authenticate';

@@ -27,6 +27,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:GitSync/api/accessibility_service_helper.dart';
 import 'package:GitSync/ui/component/item_merge_conflict.dart';
 import 'package:GitSync/ui/dialog/onboarding_controller.dart';
+import 'package:home_widget/home_widget.dart';
 import 'package:mixin_logger/mixin_logger.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -82,6 +83,7 @@ Future<void> main() async {
   runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
+      HomeWidget.registerInteractivityCallback(backgroundCallback);
       await gitSyncService.initialise(onServiceStart, callbackDispatcher);
       await uiSettingsManager.reinit();
       initLogger("${(await getTemporaryDirectory()).path}/logs", maxFileCount: 50, maxFileLength: 1 * 1024 * 1024);
@@ -97,6 +99,18 @@ Future<void> main() async {
       e(LogType.Global.name, error, stackTrace);
     },
   );
+}
+
+@pragma("vm:entry-point")
+FutureOr<void> backgroundCallback(Uri? data) async {
+  switch (data.toString()) {
+    case "forcesyncwidget://click":
+      {
+        final widgetSyncIndex = await repoManager.getInt(StorageKey.repoman_widgetSyncIndex);
+        FlutterBackgroundService().invoke(GitsyncService.FORCE_SYNC, {REPO_INDEX: widgetSyncIndex.toString()});
+        break;
+      }
+  }
 }
 
 @pragma('vm:entry-point')
@@ -320,6 +334,18 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     // Logger.logError(LogType.TEST, "test", StackTrace.fromString("test stack"));
     // Future.delayed(Duration(seconds: 5), () => Logger.logError(LogType.TEST, "test", StackTrace.fromString("test stack")));
 
+    initAsync(() async {
+      if (await HomeWidget.initiallyLaunchedFromHomeWidget().toString() == "manualsyncwidget://click") {
+        await launchWidgetManualSync();
+      }
+    });
+
+    HomeWidget.widgetClicked.listen((uri) async {
+      if (uri.toString() == "manualsyncwidget://click") {
+        await launchWidgetManualSync();
+      }
+    });
+
     final QuickActions quickActions = const QuickActions();
     quickActions.initialize((shortcutType) async {
       if (shortcutType == GitsyncService.FORCE_SYNC) {
@@ -401,6 +427,14 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     });
 
     super.initState();
+  }
+
+  Future<void> launchWidgetManualSync() async {
+    final widgetManualSyncIndex = await repoManager.getInt(StorageKey.repoman_widgetManualSyncIndex);
+    await repoManager.setInt(StorageKey.repoman_repoIndex, widgetManualSyncIndex);
+    await uiSettingsManager.reinit();
+    setState(() {});
+    await ManualSyncDialog.showDialog(context, () async {});
   }
 
   Future<void> updateRecommendedAction([int? override]) async {

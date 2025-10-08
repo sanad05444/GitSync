@@ -514,6 +514,18 @@ class AppLocalizationsRu extends AppLocalizations {
   String get useForTileManualSync => 'Использовать для ручной синхронизации плитки';
 
   @override
+  String get useForShortcutSync => 'Use for Sync Shortcut';
+
+  @override
+  String get useForShortcutManualSync => 'Use for Manual Sync Shortcut';
+
+  @override
+  String get useForWidgetSync => 'Use for Sync Widget';
+
+  @override
+  String get useForWidgetManualSync => 'Use for Manual Sync Widget';
+
+  @override
   String get selectYourGitProviderAndAuthenticate => 'Выберите вашего провайдера git и авторизуйтесь';
 
   @override

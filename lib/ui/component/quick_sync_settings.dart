@@ -178,7 +178,7 @@ class _QuickSyncSettingsState extends State<QuickSyncSettings> {
                             label: SizedBox(
                               width: double.infinity,
                               child: Text(
-                                t.useForTileSync,
+                                t.useForShortcutSync,
                                 style: TextStyle(color: primaryLight, fontSize: textMD),
                               ),
                             ),
@@ -214,12 +214,80 @@ class _QuickSyncSettingsState extends State<QuickSyncSettings> {
                             label: SizedBox(
                               width: double.infinity,
                               child: Text(
-                                t.useForTileManualSync,
+                                t.useForShortcutManualSync,
                                 style: TextStyle(color: primaryLight, fontSize: textMD),
                               ),
                             ),
                           ),
-                          // SizedBox(height: spaceSM),
+                          TextButton.icon(
+                            onPressed: () async {
+                              await repoManager.setInt(StorageKey.repoman_widgetSyncIndex, await repoManager.getInt(StorageKey.repoman_repoIndex));
+                              setState(() {});
+                            },
+                            iconAlignment: IconAlignment.end,
+                            style: ButtonStyle(
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              padding: WidgetStatePropertyAll(
+                                EdgeInsets.only(left: spaceMD + spaceXS, right: spaceLG, top: spaceMD, bottom: spaceMD),
+                              ),
+                              shape: WidgetStatePropertyAll(
+                                RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
+                              ),
+                            ),
+                            icon: FutureBuilder(
+                              future: (() async =>
+                                  await repoManager.getInt(StorageKey.repoman_widgetSyncIndex) ==
+                                  await repoManager.getInt(StorageKey.repoman_repoIndex))(),
+                              builder: (context, snapshot) => FaIcon(
+                                snapshot.data == true ? FontAwesomeIcons.solidCircleCheck : FontAwesomeIcons.circle,
+                                color: snapshot.data == true ? primaryPositive : secondaryLight,
+                                size: textLG,
+                              ),
+                            ),
+                            label: SizedBox(
+                              width: double.infinity,
+                              child: Text(
+                                t.useForWidgetSync,
+                                style: TextStyle(color: primaryLight, fontSize: textMD),
+                              ),
+                            ),
+                          ),
+                          TextButton.icon(
+                            onPressed: () async {
+                              await repoManager.setInt(
+                                StorageKey.repoman_widgetManualSyncIndex,
+                                await repoManager.getInt(StorageKey.repoman_repoIndex),
+                              );
+                              setState(() {});
+                            },
+                            iconAlignment: IconAlignment.end,
+                            style: ButtonStyle(
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              padding: WidgetStatePropertyAll(
+                                EdgeInsets.only(left: spaceMD + spaceXS, right: spaceLG, top: spaceMD, bottom: spaceMD),
+                              ),
+                              shape: WidgetStatePropertyAll(
+                                RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none),
+                              ),
+                            ),
+                            icon: FutureBuilder(
+                              future: (() async =>
+                                  await repoManager.getInt(StorageKey.repoman_widgetManualSyncIndex) ==
+                                  await repoManager.getInt(StorageKey.repoman_repoIndex))(),
+                              builder: (context, snapshot) => FaIcon(
+                                snapshot.data == true ? FontAwesomeIcons.solidCircleCheck : FontAwesomeIcons.circle,
+                                color: snapshot.data == true ? primaryPositive : secondaryLight,
+                                size: textLG,
+                              ),
+                            ),
+                            label: SizedBox(
+                              width: double.infinity,
+                              child: Text(
+                                t.useForWidgetManualSync,
+                                style: TextStyle(color: primaryLight, fontSize: textMD),
+                              ),
+                            ),
+                          ),
                         ]
                       : [],
                 ),

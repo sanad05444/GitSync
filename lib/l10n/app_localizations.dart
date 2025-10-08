@@ -1073,14 +1073,38 @@ abstract class AppLocalizations {
   /// No description provided for @useForTileSync.
   ///
   /// In en, this message translates to:
-  /// **'Use for Tile Sync'**
+  /// **'Use for Sync Tile '**
   String get useForTileSync;
 
   /// No description provided for @useForTileManualSync.
   ///
   /// In en, this message translates to:
-  /// **'Use for Tile Manual Sync'**
+  /// **'Use for Manual Sync Tile'**
   String get useForTileManualSync;
+
+  /// No description provided for @useForShortcutSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Use for Sync Shortcut'**
+  String get useForShortcutSync;
+
+  /// No description provided for @useForShortcutManualSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Use for Manual Sync Shortcut'**
+  String get useForShortcutManualSync;
+
+  /// No description provided for @useForWidgetSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Use for Sync Widget'**
+  String get useForWidgetSync;
+
+  /// No description provided for @useForWidgetManualSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Use for Manual Sync Widget'**
+  String get useForWidgetManualSync;
 
   /// No description provided for @selectYourGitProviderAndAuthenticate.
   ///
