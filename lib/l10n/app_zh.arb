@@ -14,8 +14,8 @@
     "cancel": "取消",
     "learnMore": "了解更多",
     "loadingElipsis": "加载中…",
-    
-    
+    "previous": "之前",
+    "next": "下一个",
     "finish": "结束",
     "rename": "重命名",
     "add": "添加",
@@ -51,13 +51,13 @@
 
     "@@x-PAID_FEATURES": "",
     "premiumDialogTitle": "解锁高级版",
-    "premiumDialogMessage": "此功能是高级体验的一部分。\n一次性支付 %s 即可解锁并享受更强大的工具。\n\n高级功能：\n • 多仓库支持\n\n或者，连接您的 GitHub 账户以检查您是否是符合条件的 GitHub 赞助者。",
+    "premiumDialogMessage": "多仓库支持是高级会员功能的一部分。\n只需一次支付 %s 即可永久解锁。\n\n高级功能：\n • 多仓库支持\n\n或者，连接您的 GitHub 账户以检查您是否是符合条件的 GitHub 赞助者。",
     "premiumDialogButtonText": "以 %s 解锁",
     "premiumDialogGitHubButtonText": "使用 GitHub 赞助",
     "restorePurchase": "恢复购买",
     "verifyGhSponsorTitle": "验证 GitHub 赞助",
-    "verifyGhSponsorMsg": "如果您是 GitHub 赞助者，可以免费使用高级功能。请使用 GitHub 进行身份验证，以便我们验证您的赞助者状态。",
-    "verifyGhSponsorNote": "注意：新的赞助关系可能需要最多 1 天才能在应用中生效。",
+    "verifyGhSponsorMsg": "如果您已经赞助了 GitSync，可以自由使用高级功能。请使用 GitHub 进行身份验证，以便我们验证您的赞助者状态。",
+    "verifyGhSponsorNote": "注意：新的赞助者可能需要等待最多 1 天才会生效。",
     
     
 
@@ -113,34 +113,34 @@
     "@@x-ONBOARDING": "",
     
     
-    "clearDataConfirmTitle": "确认数据重置",
-    "clearDataConfirmMsg": "这将永久删除所有应用数据，包括钥匙条目。您确定要继续吗？",
+    "clearDataConfirmTitle": "确认数据清除",
+    "clearDataConfirmMsg": "这将永久删除所有应用数据，包括本地密钥。您确定要继续吗？",
     "iosClearDataAction": "清除所有数据",
     "legacyAppUserDialogTitle": "欢迎使用新版本！",
-    "legacyAppUserDialogMessagePart1": "我们从头重建了应用，以获得更好的性能和未来发展。",
-    "legacyAppUserDialogMessagePart2": "遗憾的是，您的旧设置无法继承，因此您需要重新设置。\n\n您喜爱的所有功能都还在。多仓库支持现在是一个小的一次性升级的一部分，有助于支持持续开发。",
+    "legacyAppUserDialogMessagePart1": "我们重构了应用，以获得更好的性能和未来发展。",
+    "legacyAppUserDialogMessagePart2": "遗憾的是，您的旧设置与登录状态无法继承，因此您需要重新设置与认证。\n\n您喜爱的所有功能都还在。多仓库支持现在是一个小的一次性升级的一部分，有助于支持持续开发。",
     "legacyAppUserDialogMessagePart3": "感谢您继续支持我们 :)",
     "setUp": "设置",
     "welcome": "欢迎！",
-    "welcomeMessage": "看起来这是您的第一次使用。\n\n您想要进行快速设置来开始吗？",
-    "welcomePositive": "开始吧",
+    "welcomeMessage": "看起来这是您的第一次使用 GitSync。\n\n您想要进行引导设置来开始使用吗？",
+    "welcomePositive": "开始引导",
     "welcomeNeutral": "跳过",
-    "welcomeNegative": "我很熟悉",
-    "notificationDialogTitle": "启用通知",
+    "welcomeNegative": "我很熟练",
+    "notificationDialogTitle": "启用通知权限",
     "notificationDialogMessage": "请启用通知权限以获得最佳体验。\n\n应用使用通知来：\n  • 弹出同步消息（可选）\n  • 错误报告",
     "allFilesAccessDialogTitle": "启用\"所有文件访问权限\"",
     "allFilesAccessDialogMessage": "没有\"所有文件访问权限\"您无法使用 GitSync！请启用它以获得最佳体验。\n\n应用使用\"所有文件访问权限\"将您的仓库同步到设备上选定的目录。应用不会尝试访问所选目录之外的任何文件。",
     "almostThereDialogTitle": "快完成了！",
-    "almostThereDialogMessageAndroid": "很快，我们将进行身份验证并将您的仓库克隆到设备上，为同步做准备。\n\n设置完成后，有几种方式可以触发同步：\n\n  • 从应用内\n  • 从快速磁贴\n  • 使用自动同步\n  • 使用自定义意图（高级）",
+    "almostThereDialogMessageAndroid": "很快，我们将进行身份验证并将您的仓库克隆到本地设备上，为同步做准备。\n\n设置完成后，有几种方式可以触发同步：\n\n  • 从应用内\n  • 从快速磁贴\n  • 使用自动同步\n  • 使用自定义 intent （高级）",
     "almostThereDialogMessageIos": "很快，我们将进行身份验证并将您的仓库克隆到设备上，为同步做准备。\n\n设置完成后，有几种方式可以触发同步：\n\n  • 从应用内",
-    "authDialogTitle": "使用 Git 提供商进行身份验证",
-    "authDialogMessage": "请使用您选择的 Git 提供商进行身份验证，然后继续克隆您的仓库！",
-    "authorDetailsPromptTitle": "需要作者详细信息",
-    "authorDetailsPromptMessage": "您的作者姓名或邮箱缺失。请在同步前在仓库设置中更新它们。",
+    "authDialogTitle": "使用 Git 服务商进行身份验证",
+    "authDialogMessage": "请使用您选择的 Git 服务商进行身份验证，然后克隆您的仓库！",
+    "authorDetailsPromptTitle": "需要提交者信息",
+    "authorDetailsPromptMessage": "您的提交者昵称或邮箱缺失。请在仓库设置中更新它们。",
     
     "goToSettings": "前往设置",
     "enableAutosyncTitle": "启用自动同步",
-    "enableAutosyncMessage": "轻松保持数据最新。开启自动同步，在应用打开或关闭时自动在后台同步。",
+    "enableAutosyncMessage": "保持数据最新。开启自动同步，可在应用打开或关闭时自动在后台同步。",
     "addMoreHint": "点击此按钮向应用添加其他仓库",
     "globalSettingsHint": "点击此按钮访问全局应用设置",
     "syncProgressHint": "在此处跟踪活动同步操作的状态",
@@ -162,7 +162,7 @@
     "openFileExplorer": "浏览及编辑",
     "syncSettings": "同步设置",
     "enableApplicationObserver": "自动同步设置",
-    "accessibilityServiceDisclosureTitle": "无障碍服务披露",
+    "accessibilityServiceDisclosureTitle": "启用无障碍服务介绍",
     "accessibilityServiceDisclosureMessage": "为了增强您的体验，\nGitSync 使用 Android 的无障碍服务来检测应用的打开或关闭。\n\n这帮助我们提供定制功能，而不存储或共享任何数据。\n\n请在下一个屏幕上启用 GitSync",
     "accessibilityServiceDescription": "为了增强您的体验，GitSync 使用 Android 的无障碍服务来检测应用的打开或关闭。这帮助我们提供定制功能，而不存储或共享任何数据。\n\n要点：\n目的：我们仅使用此服务来改善您的应用体验。\n隐私：不存储或发送数据到其他地方。\n控制：您可以随时在设备设置中禁用这些权限。",
     "search": "搜索",
@@ -187,7 +187,7 @@
     "useForTileManualSync": "用于磁贴手动同步",
 
 
-    "@@x-AUTH": "",
+    "@@x-AUTH": "身份认证",
     "selectYourGitProviderAndAuthenticate": "选择您的 Git 提供商并进行身份验证",
     
     
@@ -207,7 +207,7 @@
     "sshPrivKeyExample": "-----BEGIN OPENSSH PRIVATE KEY----- AABBCCDDEEFF112233445566",
     "generateKeys": "生成密钥",
     "confirmKeySaved": "确认公钥已保存",
-    "copiedText": "已复制文本！",
+    "copiedText": "已复制至剪贴板！",
     "confirmPrivKeyCopy": "确认私钥复制",
     "confirmPrivKeyCopyMsg": "您确定要将私钥复制到剪贴板吗？\n\n任何拥有此密钥的人都可以控制您的账户。确保您仅在安全位置粘贴它，并在之后清除剪贴板。",
     "understood": "明白了",
@@ -223,14 +223,14 @@
     "invalidRepositoryUrlTitle": "无效的仓库 URL！",
     "invalidRepositoryUrlMessage": "无效的仓库 URL！",
     "cloneAnyway": "仍然克隆",
-    "iHaveALocalRepository": "我有本地仓库",
+    "iHaveALocalRepository": "使用本地仓库",
     "cloningRepository": "克隆仓库中…",
-    "cloneMessagePart1": "不要退出此屏幕",
-    "cloneMessagePart2": "这可能需要一段时间，取决于您仓库的大小\n",
+    "cloneMessagePart1": "请不要退出此屏幕",
+    "cloneMessagePart2": "这需要一些时间将仓库克隆到本地，时间取决于您的仓库大小与网络速度\n",
     "selectCloneDirectory": "选择要克隆到的文件夹",
-    "confirmCloneOverwriteTitle": "文件夹不为空",
-    "confirmCloneOverwriteMsg": "您选择的文件夹已包含文件。克隆到其中将覆盖其内容。",
-    "confirmCloneOverwriteWarning": "此操作不可逆转。",
+    "confirmCloneOverwriteTitle": "文件夹内存在文件",
+    "confirmCloneOverwriteMsg": "您选择的文件夹已存在其他文件。可以将其覆盖（删除）或者取消该操作。",
+    "confirmCloneOverwriteWarning": "此操作不可逆。",
     "confirmCloneOverwriteAction": "覆盖",
 
 
@@ -248,12 +248,12 @@
     "syncMessageTimeFormatDescription": "使用标准日期时间格式语法",
     "remoteLabel": "默认远程",
     "defaultRemote": "origin",
-    "authorNameLabel": "作者姓名",
+    "authorNameLabel": "提交昵称",
     "authorName": "张三12",
-    "authorEmailLabel": "作者邮箱",
+    "authorEmailLabel": "提交邮箱",
     "authorEmail": "zhangsan12@example.com",
     "gitIgnore": ".gitignore",
-    "gitIgnoreDescription": "列出在所有设备上要忽略的文件或文件夹",
+    "gitIgnoreDescription": "列出仓库上要忽略的文件或文件夹",
     "gitIgnoreHint": ".trash/\n./…",
     "gitInfoExclude": ".git/info/exclude",
     "gitInfoExcludeDescription": "列出在此设备上要忽略的文件或文件夹",
@@ -297,19 +297,23 @@
 
 
     "@@x-FILE_MANAGEMENT": "",
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    "file": "文件",
+    "folder": "文件夹",
+    "directory": "目录",
+    "confirmFileDirDeleteTitle": "确认删除 %s",
+    "confirmFileDirDeleteMsg": "您确定要删除 %s \"%s\" 及其内容吗？",
+    "deleteMultipleSuffix": "和另外 %s 项及其内容",
+    "deleteSingularSuffix": "及其内容",
+    "createAFile": "创建文件",
+    "fileName": "文件名",
+    "createADir": "创建文件夹",
+    "dirName": "文件夹名",
+    "renameFileDir": "重命名 %s",
+    "fileTooLarge": "文件大小超过 %s 行",
+    "readOnly": "只读",
+    "experimental": "实验性",
+    "experimentalMsg": "使用风险自负",
+
     
     
     
@@ -363,7 +367,8 @@
     "errorOccurredMessagePart2": "否则，您可以关闭并继续。",
     "applicationError": "应用程序错误！",
     "missingAuthorDetailsError": "缺少仓库作者详细信息。请在仓库设置中设置您的姓名和邮箱。",
-    "outOfMemory": "应用程序内存不足！",
+    "authMethodMismatchError": "身份验证方法不匹配。对 SSH 仓库使用 SSH，对 HTTP 仓库使用 HTTPS。",
+    "outOfMemory": "内存分配不足！",
     "invalidRemote": "无效远程！在设置中修改此项",
     "largeFile": "不支持大于 50MB 的单个文件！",
     "cloneFailed": "克隆仓库失败！",
@@ -379,7 +384,7 @@
 
 
     "@@x-ISSUE_REPORTING": "",
-    "githubIssueOauthTitle": "连接 GitHub 以自动报告",
+    "githubIssueOauthTitle": "连接 GitHub 以自动发送报告",
     "githubIssueOauthMsg": "您需要连接您的 GitHub 账户来报告错误并跟踪其进度。\n您可以随时在全局设置中重置此连接。",
     "issueReportMessage": "日志自动包含在报告中",
     "issueReportTitleTitle": "标题",
