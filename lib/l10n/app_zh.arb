@@ -1,6 +1,6 @@
 {
     "@@locale": "zh",
-    "@@last_modified": "2025-10-05T06:47:20Z",
+    "@@last_modified": "2025-08-03T00:00:00Z",
 
 
 
@@ -14,8 +14,8 @@
     "cancel": "取消",
     "learnMore": "了解更多",
     "loadingElipsis": "加载中…",
-    "previous": "Previous",
-    "next": "Next",
+    "previous": "之前",
+    "next": "下一个",
     "finish": "结束",
     "rename": "重命名",
     "add": "添加",
@@ -54,7 +54,7 @@
     "premiumDialogMessage": "多仓库支持是高级会员功能的一部分。\n只需一次支付 %s 即可永久解锁。\n\n高级功能：\n • 多仓库支持\n\n或者，连接您的 GitHub 账户以检查您是否是符合条件的 GitHub 赞助者。",
     "premiumDialogButtonText": "以 %s 解锁",
     "premiumDialogGitHubButtonText": "使用 GitHub 赞助",
-    "restorePurchase": "重新购买",
+    "restorePurchase": "恢复购买",
     "verifyGhSponsorTitle": "验证 GitHub 赞助",
     "verifyGhSponsorMsg": "如果您已经赞助了 GitSync，可以自由使用高级功能。请使用 GitHub 进行身份验证，以便我们验证您的赞助者状态。",
     "verifyGhSponsorNote": "注意：新的赞助者可能需要等待最多 1 天才会生效。",
@@ -136,7 +136,7 @@
     "authDialogTitle": "使用 Git 服务商进行身份验证",
     "authDialogMessage": "请使用您选择的 Git 服务商进行身份验证，然后克隆您的仓库！",
     "authorDetailsPromptTitle": "需要提交者信息",
-    "authorDetailsPromptMessage": "您的提交者昵称或邮箱缺失。请在同步前在仓库设置中更新它们。",
+    "authorDetailsPromptMessage": "您的提交者昵称或邮箱缺失。请在仓库设置中更新它们。",
     
     "goToSettings": "前往设置",
     "enableAutosyncTitle": "启用自动同步",
@@ -207,7 +207,7 @@
     "sshPrivKeyExample": "-----BEGIN OPENSSH PRIVATE KEY----- AABBCCDDEEFF112233445566",
     "generateKeys": "生成密钥",
     "confirmKeySaved": "确认公钥已保存",
-    "copiedText": "已复制公钥至剪贴板！",
+    "copiedText": "已复制至剪贴板！",
     "confirmPrivKeyCopy": "确认私钥复制",
     "confirmPrivKeyCopyMsg": "您确定要将私钥复制到剪贴板吗？\n\n任何拥有此密钥的人都可以控制您的账户。确保您仅在安全位置粘贴它，并在之后清除剪贴板。",
     "understood": "明白了",
@@ -246,7 +246,7 @@
     "syncMessageDescription": "使用 %s 表示日期和时间",
     "syncMessageTimeFormatLabel": "同步消息时间格式",
     "syncMessageTimeFormatDescription": "使用标准日期时间格式语法",
-    "remoteLabel": "默认",
+    "remoteLabel": "默认远程",
     "defaultRemote": "origin",
     "authorNameLabel": "提交昵称",
     "authorName": "张三12",
