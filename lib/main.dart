@@ -322,14 +322,15 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
     final QuickActions quickActions = const QuickActions();
     quickActions.initialize((shortcutType) async {
-      final shortcutSyncIndex = await repoManager.getInt(StorageKey.repoman_shortcutSyncIndex);
       if (shortcutType == GitsyncService.FORCE_SYNC) {
+        final shortcutSyncIndex = await repoManager.getInt(StorageKey.repoman_shortcutSyncIndex);
         await repoManager.setInt(StorageKey.repoman_repoIndex, shortcutSyncIndex);
         await uiSettingsManager.reinit();
         FlutterBackgroundService().invoke(GitsyncService.FORCE_SYNC, {REPO_INDEX: shortcutSyncIndex.toString()});
         return;
       }
       if (shortcutType == GitsyncService.MANUAL_SYNC) {
+        final shortcutSyncIndex = await repoManager.getInt(StorageKey.repoman_shortcutManualSyncIndex);
         await repoManager.setInt(StorageKey.repoman_repoIndex, shortcutSyncIndex);
         await uiSettingsManager.reinit();
         setState(() {});
