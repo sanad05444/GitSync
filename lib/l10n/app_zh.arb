@@ -4,7 +4,7 @@
 
 
 
-    "@@x-GENERAL": "通用",
+    "@@x-GENERAL": "",
     "dismiss": "关闭",
     "skip": "跳过",
     "done": "完成",
@@ -35,7 +35,7 @@
     "thisActionCannotBeUndone": "此操作无法撤销。",
     
 
-    "@@x-ACCESSIBILITY_LABELS": "无障碍性标签",
+    "@@x-ACCESSIBILITY_LABELS": "",
     "cloneProgressLabel": "克隆进度",
     "forcePushProgressLabel": "强制推送进度",
     "forcePullProgressLabel": "强制拉取进度",
@@ -49,7 +49,7 @@
     "authDropdownLabel": "认证下拉菜单",
 
 
-    "@@x-PAID_FEATURES": "付费功能",
+    "@@x-PAID_FEATURES": "",
     "premiumDialogTitle": "解锁高级版",
     "premiumDialogMessage": "多仓库支持是高级会员功能的一部分。\n只需一次支付 %s 即可永久解锁。\n\n高级功能：\n • 多仓库支持\n\n或者，连接您的 GitHub 账户以检查您是否是符合条件的 GitHub 赞助者。",
     "premiumDialogButtonText": "以 %s 解锁",
@@ -61,7 +61,7 @@
     
     
 
-    "@@x-SYNC_OPTIONS": "同步设置",
+    "@@x-SYNC_OPTIONS": "",
     "switchToClientMode": "切换到客户端模式…",
     "switchToSyncMode": "切换到同步模式…",
     "clientMode": "客户端模式",
@@ -110,7 +110,7 @@
 
 
 
-    "@@x-ONBOARDING": "引导",
+    "@@x-ONBOARDING": "",
     
     
     "clearDataConfirmTitle": "确认数据清除",
@@ -150,7 +150,7 @@
     "guidedSetupHint": "需要演示或想要重新查看界面时，点击此处重新开始设置或界面指南",
 
 
-    "@@x-HOME_PAGE": "首页",
+    "@@x-HOME_PAGE": "",
     "detachedHead": "分离的 HEAD",
     "commitsNotFound": "未找到提交…",
     "repoNotFound": "未找到提交…",
@@ -216,7 +216,7 @@
     "importKey": "导入",
 
 
-    "@@x-CLONE_REPO_PAGE": "克隆远程仓库界面",
+    "@@x-CLONE_REPO_PAGE": "",
     "cloneRepo": "克隆远程仓库",
     "clone": "克隆",
     "gitRepoUrlHint": "https://git.abc/xyz.git",
@@ -234,7 +234,7 @@
     "confirmCloneOverwriteAction": "覆盖",
 
 
-    "@@x-SETTINGS_PAGE": "设置界面",
+    "@@x-SETTINGS_PAGE": "",
     "repositorySettings": "仓库设置",
     "settings": "设置",
     "signedCommitsLabel": "签署提交",
@@ -246,7 +246,7 @@
     "syncMessageDescription": "使用 %s 表示日期和时间",
     "syncMessageTimeFormatLabel": "同步消息时间格式",
     "syncMessageTimeFormatDescription": "使用标准日期时间格式语法",
-    "remoteLabel": "默认远程",
+    "remoteLabel": "默认",
     "defaultRemote": "origin",
     "authorNameLabel": "提交昵称",
     "authorName": "张三12",
@@ -266,7 +266,7 @@
 
 
 
-    "@@x-GLOBAL_SETTINGS_PAGE": "全局设置界面",
+    "@@x-GLOBAL_SETTINGS_PAGE": "",
     "globalSettings": "全局设置",
     "language": "语言",
     "browseEditDir": "浏览及编辑档案目录",
@@ -296,7 +296,7 @@
 
 
 
-    "@@x-FILE_MANAGEMENT": "文件管理",
+    "@@x-FILE_MANAGEMENT": "",
     "file": "文件",
     "folder": "文件夹",
     "directory": "目录",
@@ -319,7 +319,7 @@
     
 
 
-    "@@x-REPO_MANAGEMENT": "仓库管理",
+    "@@x-REPO_MANAGEMENT": "",
     "defaultContainerName": "别名",
     "renameRepository": "重命名仓库",
     "renameRepositoryMsg": "为仓库容器输入新别名",
