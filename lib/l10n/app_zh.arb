@@ -131,7 +131,7 @@
     "allFilesAccessDialogTitle": "启用\"所有文件访问权限\"",
     "allFilesAccessDialogMessage": "没有\"所有文件访问权限\"您无法使用 GitSync！请启用它以获得最佳体验。\n\n应用使用\"所有文件访问权限\"将您的仓库同步到设备上选定的目录。应用不会尝试访问所选目录之外的任何文件。",
     "almostThereDialogTitle": "快完成了！",
-    "almostThereDialogMessageAndroid": "很快，我们将进行身份验证并将您的仓库复制到设备上，为同步做准备。\n\n设置完成后，有几种方式可以触发同步：\n\n  • 从应用内\n  • 从快速磁贴\n  • 使用自动同步\n  • 使用自定义 intent （高级）",
+    "almostThereDialogMessageAndroid": "很快，我们将进行身份验证并将您的仓库克隆到本地设备上，为同步做准备。\n\n设置完成后，有几种方式可以触发同步：\n\n  • 从应用内\n  • 从快速磁贴\n  • 使用自动同步\n  • 使用自定义 intent （高级）",
     "almostThereDialogMessageIos": "很快，我们将进行身份验证并将您的仓库克隆到设备上，为同步做准备。\n\n设置完成后，有几种方式可以触发同步：\n\n  • 从应用内",
     "authDialogTitle": "使用 Git 服务商进行身份验证",
     "authDialogMessage": "请使用您选择的 Git 服务商进行身份验证，然后克隆您的仓库！",
