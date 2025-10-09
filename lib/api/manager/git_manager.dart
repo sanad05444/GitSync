@@ -876,9 +876,9 @@ class GitManager {
 
   static void writeGitignore(String gitignoreString) async {
     final gitDirPath = (await uiSettingsManager.getGitDirPath());
-    final gitignorePath = '$gitDirPath/$gitIgnorePath';
     if (gitDirPath == null) return;
     await useDirectory(gitDirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (gitDirPath) async {
+      final gitignorePath = '$gitDirPath/$gitIgnorePath';
       final file = File(gitignorePath);
       if (!file.existsSync()) file.createSync();
       file.writeAsStringSync(gitignoreString, mode: FileMode.write);
@@ -899,9 +899,9 @@ class GitManager {
 
   static void writeGitInfoExclude(String gitignoreString) async {
     final gitDirPath = (await uiSettingsManager.getGitDirPath());
-    final gitInfoExcludeFullPath = '$gitDirPath/$gitInfoExcludePath';
     if (gitDirPath == null) return;
     await useDirectory(gitDirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (gitDirPath) async {
+      final gitInfoExcludeFullPath = '$gitDirPath/$gitInfoExcludePath';
       final file = File(gitInfoExcludeFullPath);
       final parentDir = file.parent;
       if (!parentDir.existsSync()) {
