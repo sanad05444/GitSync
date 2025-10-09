@@ -20,8 +20,8 @@ import 'package:collection/collection.dart';
 class GitManager {
   static final Map<String, Future<String?> Function()> _errorContentMap = {
     "failed to parse signature - Signature cannot have an empty name or email": () async => missingAuthorDetailsError,
-    "authentication required but no callback set": () async =>
-        sprintf(authMethodMismatchError, [await uiSettingsManager.getGitProvider() == GitProvider.SSH ? "HTTP/S" : "SSH"]),
+    "authentication required but no callback set":
+        () async => sprintf(authMethodMismatchError, [await uiSettingsManager.getGitProvider() == GitProvider.SSH ? "HTTP/S" : "SSH"]),
     "invalid data in index - incorrect header signature": () async => invalidIndexHeaderError,
     "cannot push because a reference that you are trying to update on the remote contains commits that are not present locally.": () async => null,
     "error reading file for hashing:": () async => null,
@@ -1213,7 +1213,7 @@ class GitManager {
           if (gitDirPath == null || gitDirPath.isEmpty) return null;
 
           return await useDirectory(gitDirPath, (bookmarkPath) async => await settingsManager.setGitDirPath(bookmarkPath), (selectedDirectory) async {
-            final Directory directory = Directory(gitDirPath);
+            final Directory directory = Directory(selectedDirectory);
             if (!await directory.exists()) {
               throw Exception('Directory does not exist');
             }
@@ -1232,7 +1232,7 @@ class GitManager {
               }
             }
 
-            final gitInfoExcludeFullPath = '$gitDirPath/$gitInfoExcludePath';
+            final gitInfoExcludeFullPath = '$selectedDirectory/$gitInfoExcludePath';
             final file = File(gitInfoExcludeFullPath);
             final parentDir = file.parent;
             if (!parentDir.existsSync()) {
@@ -1241,7 +1241,7 @@ class GitManager {
             if (!file.existsSync()) file.createSync();
             final lines = file.readAsLinesSync();
             for (final filePath in largeFilePaths) {
-              final ignoreLine = filePath.replaceFirst("$gitDirPath/", "");
+              final ignoreLine = filePath.replaceFirst("$selectedDirectory/", "");
               if (!lines.contains(ignoreLine)) {
                 file.writeAsStringSync("$ignoreLine\n", mode: FileMode.append);
               }
