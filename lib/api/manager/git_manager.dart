@@ -20,8 +20,8 @@ import 'package:collection/collection.dart';
 class GitManager {
   static final Map<String, Future<String?> Function()> _errorContentMap = {
     "failed to parse signature - Signature cannot have an empty name or email": () async => missingAuthorDetailsError,
-    "authentication required but no callback set":
-        () async => sprintf(authMethodMismatchError, [await uiSettingsManager.getGitProvider() == GitProvider.SSH ? "HTTP/S" : "SSH"]),
+    "authentication required but no callback set": () async =>
+        sprintf(authMethodMismatchError, [await uiSettingsManager.getGitProvider() == GitProvider.SSH ? "HTTP/S" : "SSH"]),
     "invalid data in index - incorrect header signature": () async => invalidIndexHeaderError,
     "cannot push because a reference that you are trying to update on the remote contains commits that are not present locally.": () async => null,
     "error reading file for hashing:": () async => null,
@@ -864,9 +864,9 @@ class GitManager {
 
   static Future<String> readGitignore() async {
     final gitDirPath = (await uiSettingsManager.getGitDirPath());
-    final gitignorePath = '$gitDirPath/$gitIgnorePath';
     if (gitDirPath == null) return "";
     return await useDirectory(gitDirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (gitDirPath) async {
+          final gitignorePath = '$gitDirPath/$gitIgnorePath';
           final file = File(gitignorePath);
           if (!file.existsSync()) return '';
           return file.readAsStringSync();
@@ -887,9 +887,9 @@ class GitManager {
 
   static Future<String> readGitInfoExclude() async {
     final gitDirPath = (await uiSettingsManager.getGitDirPath());
-    final gitInfoExcludeFullPath = '$gitDirPath/$gitInfoExcludePath';
     if (gitDirPath == null) return "";
     return await useDirectory(gitDirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (gitDirPath) async {
+          final gitInfoExcludeFullPath = '$gitDirPath/$gitInfoExcludePath';
           final file = File(gitInfoExcludeFullPath);
           if (!file.existsSync()) return '';
           return file.readAsStringSync();
