@@ -36,10 +36,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get loadingElipsis => '加载中…';
 
   @override
-  String get previous => 'Previous';
+  String get previous => '之前';
 
   @override
-  String get next => 'Next';
+  String get next => '下一个';
 
   @override
   String get finish => '结束';
@@ -126,7 +126,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get premiumDialogTitle => '解锁高级版';
 
   @override
-  String get premiumDialogMessage => '此功能是高级体验的一部分。\n一次性支付 %s 即可解锁并享受更强大的工具。\n\n高级功能：\n • 多仓库支持\n\n或者，连接您的 GitHub 账户以检查您是否是符合条件的 GitHub 赞助者。';
+  String get premiumDialogMessage => '多仓库支持是高级会员功能的一部分。\n只需一次支付 %s 即可永久解锁。\n\n高级功能：\n • 多仓库支持\n\n或者，连接您的 GitHub 账户以检查您是否是符合条件的 GitHub 赞助者。';
 
   @override
   String get premiumDialogButtonText => '以 %s 解锁';
@@ -141,10 +141,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get verifyGhSponsorTitle => '验证 GitHub 赞助';
 
   @override
-  String get verifyGhSponsorMsg => '如果您是 GitHub 赞助者，可以免费使用高级功能。请使用 GitHub 进行身份验证，以便我们验证您的赞助者状态。';
+  String get verifyGhSponsorMsg => '如果您已经赞助了 GitSync，可以自由使用高级功能。请使用 GitHub 进行身份验证，以便我们验证您的赞助者状态。';
 
   @override
-  String get verifyGhSponsorNote => '注意：新的赞助关系可能需要最多 1 天才能在应用中生效。';
+  String get verifyGhSponsorNote => '注意：新的赞助者可能需要等待最多 1 天才会生效。';
 
   @override
   String get switchToClientMode => '切换到客户端模式…';
@@ -289,10 +289,10 @@ class AppLocalizationsZh extends AppLocalizations {
       'We detected that this might be a reinstallation, but it could also be a false alarm. On iOS, your Keychain isn’t cleared when you delete and reinstall the app, so some data may still be stored securely.\n\nIf this isn’t a fresh install, or you don’t want to reset, you can safely skip this step.';
 
   @override
-  String get clearDataConfirmTitle => '确认数据重置';
+  String get clearDataConfirmTitle => '确认数据清除';
 
   @override
-  String get clearDataConfirmMsg => '这将永久删除所有应用数据，包括钥匙条目。您确定要继续吗？';
+  String get clearDataConfirmMsg => '这将永久删除所有应用数据，包括本地密钥。您确定要继续吗？';
 
   @override
   String get iosClearDataAction => '清除所有数据';
@@ -301,10 +301,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get legacyAppUserDialogTitle => '欢迎使用新版本！';
 
   @override
-  String get legacyAppUserDialogMessagePart1 => '我们从头重建了应用，以获得更好的性能和未来发展。';
+  String get legacyAppUserDialogMessagePart1 => '我们重构了应用，以获得更好的性能和未来发展。';
 
   @override
-  String get legacyAppUserDialogMessagePart2 => '遗憾的是，您的旧设置无法继承，因此您需要重新设置。\n\n您喜爱的所有功能都还在。多仓库支持现在是一个小的一次性升级的一部分，有助于支持持续开发。';
+  String get legacyAppUserDialogMessagePart2 => '遗憾的是，您的旧设置与登录状态无法继承，因此您需要重新设置与认证。\n\n您喜爱的所有功能都还在。多仓库支持现在是一个小的一次性升级的一部分，有助于支持持续开发。';
 
   @override
   String get legacyAppUserDialogMessagePart3 => '感谢您继续支持我们 :)';
@@ -316,19 +316,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get welcome => '欢迎！';
 
   @override
-  String get welcomeMessage => '看起来这是您的第一次使用。\n\n您想要进行快速设置来开始吗？';
+  String get welcomeMessage => '看起来这是您的第一次使用 GitSync。\n\n您想要进行引导设置来开始使用吗？';
 
   @override
-  String get welcomePositive => '开始吧';
+  String get welcomePositive => '开始引导';
 
   @override
   String get welcomeNeutral => '跳过';
 
   @override
-  String get welcomeNegative => '我很熟悉';
+  String get welcomeNegative => '我很熟练';
 
   @override
-  String get notificationDialogTitle => '启用通知';
+  String get notificationDialogTitle => '启用通知权限';
 
   @override
   String get notificationDialogMessage => '请启用通知权限以获得最佳体验。\n\n应用使用通知来：\n  • 弹出同步消息（可选）\n  • 错误报告';
@@ -344,22 +344,22 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get almostThereDialogMessageAndroid =>
-      '很快，我们将进行身份验证并将您的仓库克隆到设备上，为同步做准备。\n\n设置完成后，有几种方式可以触发同步：\n\n  • 从应用内\n  • 从快速磁贴\n  • 使用自动同步\n  • 使用自定义意图（高级）';
+      '很快，我们将进行身份验证并将您的仓库克隆到本地设备上，为同步做准备。\n\n设置完成后，有几种方式可以触发同步：\n\n  • 从应用内\n  • 从快速磁贴\n  • 使用自动同步\n  • 使用自定义 intent （高级）';
 
   @override
   String get almostThereDialogMessageIos => '很快，我们将进行身份验证并将您的仓库克隆到设备上，为同步做准备。\n\n设置完成后，有几种方式可以触发同步：\n\n  • 从应用内';
 
   @override
-  String get authDialogTitle => '使用 Git 提供商进行身份验证';
+  String get authDialogTitle => '使用 Git 服务商进行身份验证';
 
   @override
-  String get authDialogMessage => '请使用您选择的 Git 提供商进行身份验证，然后继续克隆您的仓库！';
+  String get authDialogMessage => '请使用您选择的 Git 服务商进行身份验证，然后克隆您的仓库！';
 
   @override
-  String get authorDetailsPromptTitle => '需要作者详细信息';
+  String get authorDetailsPromptTitle => '需要提交者信息';
 
   @override
-  String get authorDetailsPromptMessage => '您的作者姓名或邮箱缺失。请在同步前在仓库设置中更新它们。';
+  String get authorDetailsPromptMessage => '您的提交者昵称或邮箱缺失。请在仓库设置中更新它们。';
 
   @override
   String get authorDetailsShowcasePrompt => 'Fill out your author details';
@@ -371,7 +371,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get enableAutosyncTitle => '启用自动同步';
 
   @override
-  String get enableAutosyncMessage => '轻松保持数据最新。开启自动同步，在应用打开或关闭时自动在后台同步。';
+  String get enableAutosyncMessage => '保持数据最新。开启自动同步，可在应用打开或关闭时自动在后台同步。';
 
   @override
   String get addMoreHint => '点击此按钮向应用添加其他仓库';
@@ -428,7 +428,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get enableApplicationObserver => '自动同步设置';
 
   @override
-  String get accessibilityServiceDisclosureTitle => '无障碍服务披露';
+  String get accessibilityServiceDisclosureTitle => '启用无障碍服务介绍';
 
   @override
   String get accessibilityServiceDisclosureMessage =>
@@ -571,7 +571,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get confirmKeySaved => '确认公钥已保存';
 
   @override
-  String get copiedText => '已复制文本！';
+  String get copiedText => '已复制至剪贴板！';
 
   @override
   String get confirmPrivKeyCopy => '确认私钥复制';
@@ -610,28 +610,28 @@ class AppLocalizationsZh extends AppLocalizations {
   String get cloneAnyway => '仍然克隆';
 
   @override
-  String get iHaveALocalRepository => '我有本地仓库';
+  String get iHaveALocalRepository => '使用本地仓库';
 
   @override
   String get cloningRepository => '克隆仓库中…';
 
   @override
-  String get cloneMessagePart1 => '不要退出此屏幕';
+  String get cloneMessagePart1 => '请不要退出此屏幕';
 
   @override
-  String get cloneMessagePart2 => '这可能需要一段时间，取决于您仓库的大小\n';
+  String get cloneMessagePart2 => '这需要一些时间将仓库克隆到本地，时间取决于您的仓库大小与网络速度\n';
 
   @override
   String get selectCloneDirectory => '选择要克隆到的文件夹';
 
   @override
-  String get confirmCloneOverwriteTitle => '文件夹不为空';
+  String get confirmCloneOverwriteTitle => '文件夹内存在文件';
 
   @override
-  String get confirmCloneOverwriteMsg => '您选择的文件夹已包含文件。克隆到其中将覆盖其内容。';
+  String get confirmCloneOverwriteMsg => '您选择的文件夹已存在其他文件。可以将其覆盖（删除）或者取消该操作。';
 
   @override
-  String get confirmCloneOverwriteWarning => '此操作不可逆转。';
+  String get confirmCloneOverwriteWarning => '此操作不可逆。';
 
   @override
   String get confirmCloneOverwriteAction => '覆盖';
@@ -676,13 +676,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get defaultRemote => 'origin';
 
   @override
-  String get authorNameLabel => '作者姓名';
+  String get authorNameLabel => '提交昵称';
 
   @override
   String get authorName => '张三12';
 
   @override
-  String get authorEmailLabel => '作者邮箱';
+  String get authorEmailLabel => '提交邮箱';
 
   @override
   String get authorEmail => 'zhangsan12@example.com';
@@ -691,7 +691,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get gitIgnore => '.gitignore';
 
   @override
-  String get gitIgnoreDescription => '列出在所有设备上要忽略的文件或文件夹';
+  String get gitIgnoreDescription => '列出仓库上要忽略的文件或文件夹';
 
   @override
   String get gitIgnoreHint => '.trash/\n./…';
@@ -799,52 +799,52 @@ class AppLocalizationsZh extends AppLocalizations {
   String get logsEmailRecipient => 'bugsviscouspotential@gmail.com';
 
   @override
-  String get file => 'File';
+  String get file => '文件';
 
   @override
-  String get folder => 'Folder';
+  String get folder => '文件夹';
 
   @override
-  String get directory => 'Directory';
+  String get directory => '目录';
 
   @override
-  String get confirmFileDirDeleteTitle => 'Confirm %s Deletion';
+  String get confirmFileDirDeleteTitle => '确认删除 %s';
 
   @override
-  String get confirmFileDirDeleteMsg => 'Are you sure you want to delete the %s \"%s\" %s?';
+  String get confirmFileDirDeleteMsg => '您确定要删除 %s \"%s\" 及其内容吗？';
 
   @override
-  String get deleteMultipleSuffix => 'and %s more and their contents';
+  String get deleteMultipleSuffix => '和另外 %s 项及其内容';
 
   @override
-  String get deleteSingularSuffix => 'and it\'s contents';
+  String get deleteSingularSuffix => '及其内容';
 
   @override
-  String get createAFile => 'Create a File';
+  String get createAFile => '创建文件';
 
   @override
-  String get fileName => 'File Name';
+  String get fileName => '文件名';
 
   @override
-  String get createADir => 'Create a Directory';
+  String get createADir => '创建文件夹';
 
   @override
-  String get dirName => 'Folder Name';
+  String get dirName => '文件夹名';
 
   @override
-  String get renameFileDir => 'Rename %s';
+  String get renameFileDir => '重命名 %s';
 
   @override
-  String get fileTooLarge => 'File larger than %s lines';
+  String get fileTooLarge => '文件大小超过 %s 行';
 
   @override
-  String get readOnly => 'Read-Only';
+  String get readOnly => '只读';
 
   @override
-  String get experimental => 'Experimental';
+  String get experimental => '实验性';
 
   @override
-  String get experimentalMsg => 'Use at your own risk';
+  String get experimentalMsg => '使用风险自负';
 
   @override
   String get defaultContainerName => '别名';
@@ -968,7 +968,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get missingAuthorDetailsError => '缺少仓库作者详细信息。请在仓库设置中设置您的姓名和邮箱。';
 
   @override
-  String get outOfMemory => '应用程序内存不足！';
+  String get outOfMemory => '内存分配不足！';
 
   @override
   String get invalidRemote => '无效远程！在设置中修改此项';
@@ -1007,7 +1007,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get fieldCannotBeEmpty => '字段不能为空';
 
   @override
-  String get githubIssueOauthTitle => '连接 GitHub 以自动报告';
+  String get githubIssueOauthTitle => '连接 GitHub 以自动发送报告';
 
   @override
   String get githubIssueOauthMsg => '您需要连接您的 GitHub 账户来报告错误并跟踪其进度。\n您可以随时在全局设置中重置此连接。';

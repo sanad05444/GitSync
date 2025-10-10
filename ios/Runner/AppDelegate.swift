@@ -1,6 +1,7 @@
 import Flutter
 import UIKit
 import workmanager
+import home_widget
 import flutter_background_service_ios 
 
 @main
@@ -10,6 +11,13 @@ import flutter_background_service_ios
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {    
     SwiftFlutterBackgroundServicePlugin.taskIdentifier = "dev.flutter.background.refresh" 
+    
+    if #available(iOS 17, *) {
+      HomeWidgetBackgroundWorker.setPluginRegistrantCallback { registry in
+          GeneratedPluginRegistrant.register(with: registry)
+      }
+    }
+
 
     UIApplication.shared.setMinimumBackgroundFetchInterval(TimeInterval(60*15))
     WorkmanagerPlugin.setPluginRegistrantCallback { registry in
