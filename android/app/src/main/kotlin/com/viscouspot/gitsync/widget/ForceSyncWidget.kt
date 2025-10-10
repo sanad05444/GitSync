@@ -50,7 +50,7 @@ class SyncAction : ActionCallback {
         glanceId: GlanceId,
         parameters: ActionParameters
     ) {
-        val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(context, Uri.parse("forcesyncwidget://click"))
+        val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(context, Uri.parse("forcesyncwidget://click?homeWidget"))
         backgroundIntent.send()
     }
 }

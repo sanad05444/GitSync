@@ -27,6 +27,13 @@ require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelpe
 
 flutter_ios_podfile_setup
 
+target 'ForceSyncWidgetExtension' do
+   use_frameworks!
+   use_modular_headers!
+
+   pod 'home_widget', :path => '.symlinks/plugins/home_widget/ios'
+end
+
 target 'Runner' do
   pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git', :tag => '11.10.0'
 

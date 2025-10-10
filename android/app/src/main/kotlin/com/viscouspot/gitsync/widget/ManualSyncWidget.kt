@@ -51,7 +51,7 @@ class ManualSyncAction : ActionCallback {
         glanceId: GlanceId,
         parameters: ActionParameters
     ) {
-        val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(context, Uri.parse("ManualSyncWidget://click"))
+        val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(context, Uri.parse("ManualSyncWidget://click?homeWidget"))
         backgroundIntent.send()
     }
 }
@@ -83,7 +83,7 @@ class ManualSyncWidget : GlanceAppWidget() {
             .background(Color(0xFF141414))
             .clickable(onClick = actionStartActivity<com.viscouspot.gitsync.MainActivity>(
                 context,
-                Uri.parse("manualsyncwidget://click")
+                Uri.parse("manualsyncwidget://click?homeWidget")
             )),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalAlignment = Alignment.CenterVertically

@@ -21,7 +21,8 @@ class GroupSyncSettings extends StatelessWidget {
         ...Platform.isIOS ? [] : [AutoSyncSettings(), SizedBox(height: spaceMD)],
         ScheduledSyncSettings(),
         SizedBox(height: spaceMD),
-        ...Platform.isIOS ? [] : [QuickSyncSettings(), SizedBox(height: spaceMD)],
+        QuickSyncSettings(),
+        SizedBox(height: spaceMD),
         TextButton.icon(
           onPressed: () async {
             launchUrl(Uri.parse(syncOptionsDocsLink));
