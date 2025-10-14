@@ -55,7 +55,7 @@ class _GlobalSettingsMain extends State<GlobalSettingsMain> with WidgetsBindingO
 
     if (widget.onboarding) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        await _controller.animateTo(_controller.position.maxScrollExtent, duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+        await _controller.animateTo(_controller.position.maxScrollExtent / 2, duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
         await Future.delayed(Duration(milliseconds: 200));
         ShowCaseWidget.of(context).startShowCase([_uiSetupGuideKey]);
         while (!ShowCaseWidget.of(context).isShowCaseCompleted) {

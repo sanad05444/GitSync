@@ -334,6 +334,18 @@ Future<List<String>> getBranchNames({
   log: log,
 );
 
+Future<void> setRemoteUrl({
+  required String pathString,
+  required String remoteName,
+  required String newRemoteUrl,
+  required FutureOr<void> Function(LogType, String) log,
+}) => RustLib.instance.api.crateApiGitManagerSetRemoteUrl(
+  pathString: pathString,
+  remoteName: remoteName,
+  newRemoteUrl: newRemoteUrl,
+  log: log,
+);
+
 Future<void> checkoutBranch({
   required String pathString,
   required String remote,
