@@ -5,7 +5,6 @@ import 'package:GitSync/api/manager/settings_manager.dart';
 import 'package:GitSync/api/manager/storage.dart';
 import 'package:GitSync/global.dart';
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
 
 class PremiumManager {
   final ValueNotifier<bool?> hasPremiumNotifier = ValueNotifier(null);
@@ -25,8 +24,6 @@ class PremiumManager {
 
   Future<void> updateGitHubSponsorPremium() async {
     if (!await hasNetworkConnection()) {
-      await repoManager.setBool(StorageKey.repoman_hasGHSponsorPremium, false);
-      hasPremiumNotifier.value = await _readPremiumStatus();
       return;
     }
 
@@ -37,24 +34,28 @@ class PremiumManager {
       return;
     }
 
-    final userRes = await http.get(
+    final userRes = await httpGet(
       Uri.parse('https://api.github.com/user'),
       headers: {'Authorization': 'token $userToken', 'Accept': 'application/vnd.github.v3+json'},
     );
 
-    if (userRes.statusCode != 200) {
+    if (userRes.statusCode != 200 && userRes.statusCode != 408) {
       await repoManager.setBool(StorageKey.repoman_hasGHSponsorPremium, false);
       hasPremiumNotifier.value = await _readPremiumStatus();
-      return;
     }
+
+    if (userRes.statusCode != 200) return;
 
     final userNodeId = jsonDecode(userRes.body)['node_id'].toString();
 
-    final fileRes = await http.get(Uri.parse('https://raw.githubusercontent.com/ViscousPot/sponsors-gitsync/refs/heads/main/sponsors.txt'));
+    final fileRes = await httpGet(Uri.parse('https://raw.githubusercontent.com/ViscousPot/sponsors-gitsync/refs/heads/main/sponsors.txt'));
 
-    if (userNodeId.isEmpty || fileRes.statusCode != 200) {
+    if (userNodeId.isEmpty || (fileRes.statusCode != 200 && fileRes.statusCode != 408)) {
       await repoManager.setBool(StorageKey.repoman_hasGHSponsorPremium, false);
       hasPremiumNotifier.value = await _readPremiumStatus();
+    }
+
+    if (userRes.statusCode != 200) {
       throw Exception('Failed to load sponsors.txt: ${fileRes.statusCode}');
     }
 

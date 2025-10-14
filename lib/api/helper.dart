@@ -29,6 +29,7 @@ import 'package:GitSync/global.dart';
 import '../constant/colors.dart';
 import '../constant/dimens.dart';
 import '../ui/dialog/submodules_found.dart' as SubmodulesFoundDialog;
+import 'package:http/http.dart' as http;
 
 const int mergeConflictNotificationId = 1758;
 Map<String, Timer> debounceTimers = {};
@@ -330,3 +331,12 @@ List<int> _randomBytes(int length) {
   final rand = Random.secure();
   return List<int>.generate(length, (_) => rand.nextInt(256));
 }
+
+Future<http.Response> httpGet(Uri url, {Map<String, String>? headers}) => http
+    .get(url, headers: headers)
+    .timeout(
+      const Duration(seconds: 10),
+      onTimeout: () {
+        return http.Response('Error', 408);
+      },
+    );

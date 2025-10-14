@@ -1,10 +1,10 @@
 import 'dart:convert';
+import 'package:GitSync/api/helper.dart';
 import 'package:GitSync/api/logger.dart';
 import 'package:GitSync/constant/strings.dart';
 
 import '../../manager/auth/git_provider_manager.dart';
 import '../../../constant/secrets.dart';
-import 'package:http/http.dart' as http;
 import 'package:oauth2_client/oauth2_client.dart';
 
 class GitlabManager extends GitProviderManager {
@@ -40,7 +40,7 @@ class GitlabManager extends GitProviderManager {
 
   @override
   Future<(String, String)?> getUsernameAndEmail(String accessToken) async {
-    final response = await http.get(Uri.parse("https://$_domain/api/v4/user"), headers: {"Authorization": "Bearer $accessToken"});
+    final response = await httpGet(Uri.parse("https://$_domain/api/v4/user"), headers: {"Authorization": "Bearer $accessToken"});
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = json.decode(response.body);
@@ -97,7 +97,7 @@ class GitlabManager extends GitProviderManager {
     Function(Function()?) nextPageCallback,
   ) async {
     try {
-      final response = await http.get(Uri.parse(url), headers: {"Authorization": "Bearer $accessToken"});
+      final response = await httpGet(Uri.parse(url), headers: {"Authorization": "Bearer $accessToken"});
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonArray = json.decode(response.body);

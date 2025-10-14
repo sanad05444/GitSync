@@ -1,10 +1,10 @@
 import 'dart:convert';
+import 'package:GitSync/api/helper.dart';
 import 'package:GitSync/api/logger.dart';
 import 'package:GitSync/constant/strings.dart';
 
 import '../../manager/auth/git_provider_manager.dart';
 import '../../../constant/secrets.dart';
-import 'package:http/http.dart' as http;
 import 'package:oauth2_client/github_oauth2_client.dart';
 import 'package:oauth2_client/oauth2_client.dart';
 
@@ -36,7 +36,7 @@ class GithubManager extends GitProviderManager {
 
   @override
   Future<(String, String)?> getUsernameAndEmail(String accessToken) async {
-    final response = await http.get(
+    final response = await httpGet(
       Uri.parse("https://api.$_domain/user"),
       headers: {"Accept": "application/json", "Authorization": "token $accessToken"},
     );
@@ -45,7 +45,7 @@ class GithubManager extends GitProviderManager {
       final Map<String, dynamic> jsonData = json.decode(response.body);
       String? email = jsonData["email"];
       if (email == null) {
-        final emailResp = await http.get(
+        final emailResp = await httpGet(
           Uri.parse("https://api.$_domain/user/emails"),
           headers: {"Accept": "application/json", "Authorization": "token $accessToken"},
         );
@@ -110,7 +110,7 @@ class GithubManager extends GitProviderManager {
     Function(Function()?) nextPageCallback,
   ) async {
     try {
-      final response = await http.get(Uri.parse(url), headers: {"Accept": "application/json", "Authorization": "token $accessToken"});
+      final response = await httpGet(Uri.parse(url), headers: {"Accept": "application/json", "Authorization": "token $accessToken"});
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonArray = json.decode(response.body);

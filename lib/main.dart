@@ -92,7 +92,7 @@ Future<void> main() async {
       await RustLib.init();
       await requestStoragePerm(false);
       // Loads premiumManager initial state
-      await premiumManager.init();
+      initAsync(() async => await premiumManager.init());
 
       runApp(const MyApp());
     },
