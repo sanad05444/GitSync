@@ -153,7 +153,7 @@
     "@@x-HOME_PAGE": "",
     "detachedHead": "Detached Head",
     "commitsNotFound": "No commits found…",
-    "repoNotFound": "No commits found…",
+    "repoNotFound": "No repo found…",
     "committed": "committed",
     "additions": "%s ++",
     "deletions": "%s --",

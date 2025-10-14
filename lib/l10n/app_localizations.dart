@@ -887,7 +887,7 @@ abstract class AppLocalizations {
   /// No description provided for @repoNotFound.
   ///
   /// In en, this message translates to:
-  /// **'No commits found…'**
+  /// **'No repo found…'**
   String get repoNotFound;
 
   /// No description provided for @committed.
