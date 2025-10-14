@@ -1,5 +1,4 @@
 import 'package:GitSync/global.dart';
-import 'package:GitSync/l10n/app_localizations.dart';
 import 'package:flutter/material.dart' as mat;
 import 'package:flutter/material.dart';
 import '../../../constant/colors.dart';
@@ -53,7 +52,7 @@ Future<void> showDialog(BuildContext context, Function(String text) callback) {
       actions: <Widget>[
         TextButton(
           child: Text(
-            AppLocalizations.of(context).cancel.toUpperCase(),
+            t.cancel.toUpperCase(),
             style: TextStyle(color: primaryLight, fontSize: textMD),
           ),
           onPressed: () {
@@ -62,7 +61,7 @@ Future<void> showDialog(BuildContext context, Function(String text) callback) {
         ),
         TextButton(
           child: Text(
-            AppLocalizations.of(context).create.toUpperCase(),
+            t.create.toUpperCase(),
             style: TextStyle(color: primaryPositive, fontSize: textMD),
           ),
           onPressed: () async {

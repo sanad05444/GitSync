@@ -794,6 +794,36 @@ class GitManager {
     return result;
   }
 
+  static Future<void> setRemoteUrl(String newRemoteUrl, [int? repomanRepoindex]) async {
+    if (await isLocked()) {
+      Fluttertoast.showToast(msg: operationInProgressError, toastLength: Toast.LENGTH_SHORT, gravity: null);
+      return;
+    }
+
+    final repoIndex = await repoManager.getInt(StorageKey.repoman_repoIndex);
+
+    return await _runWithLock(repomanRepoindex ?? repoIndex, () async {
+      final settingsManager = repomanRepoindex == null ? uiSettingsManager : await SettingsManager().reinit(repoIndex: repomanRepoindex);
+      final dirPath = (await settingsManager.getGitDirPath());
+      if (dirPath == null) return;
+      await useDirectory(dirPath, (bookmarkPath) async => await uiSettingsManager.setGitDirPath(bookmarkPath), (dirPath) async {
+        Logger.gmLog(type: LogType.RecentCommits, ".git folder found");
+
+        try {
+          return (await GitManagerRs.setRemoteUrl(
+            pathString: dirPath,
+            remoteName: await settingsManager.getRemote(),
+            newRemoteUrl: newRemoteUrl,
+            log: _logWrapper,
+          ));
+        } catch (e, stackTrace) {
+          Logger.logError(LogType.RecentCommits, e, stackTrace);
+          return;
+        }
+      });
+    });
+  }
+
   static Future<void> checkoutBranch(String branchName, [int? repomanRepoindex]) async {
     if (await isLocked()) {
       Fluttertoast.showToast(msg: operationInProgressError, toastLength: Toast.LENGTH_SHORT, gravity: null);

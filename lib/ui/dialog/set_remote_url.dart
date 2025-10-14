@@ -1,22 +1,25 @@
-import 'package:GitSync/global.dart';
 import 'package:flutter/material.dart' as mat;
 import 'package:flutter/material.dart';
-import 'package:sprintf/sprintf.dart';
+import 'package:GitSync/global.dart';
 import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
 
-Future<void> showDialog(BuildContext context, String originalName, bool fileDir, Function(String text) callback) {
-  final textController = TextEditingController();
-  textController.text = originalName;
-  return mat.showDialog(
+Future<void> showDialog(BuildContext context, String? oldRemoteUrl, Future<void> Function(String newRemoteUrl) callback) async {
+  final newRemoteController = TextEditingController(text: oldRemoteUrl);
+
+  // TODO: Dialog doesn't open without this (investigate)
+  await Future.delayed(Duration(milliseconds: 500));
+
+  return await mat.showDialog(
     context: context,
     builder: (BuildContext context) => BaseAlertDialog(
+      expandable: false,
       backgroundColor: secondaryDark,
       title: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Text(
-          sprintf(t.renameFileDir, [fileDir ? t.folder : t.file]),
+          "Set Remote URL".toUpperCase(),
           style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
         ),
       ),
@@ -25,7 +28,7 @@ Future<void> showDialog(BuildContext context, String originalName, bool fileDir,
           children: [
             SizedBox(height: spaceMD),
             TextField(
-              controller: textController,
+              controller: newRemoteController,
               maxLines: 1,
               style: TextStyle(
                 color: primaryLight,
@@ -63,11 +66,11 @@ Future<void> showDialog(BuildContext context, String originalName, bool fileDir,
         ),
         TextButton(
           child: Text(
-            t.rename.toUpperCase(),
+            "Modify".toUpperCase(),
             style: TextStyle(color: primaryPositive, fontSize: textMD),
           ),
           onPressed: () async {
-            callback(textController.text);
+            callback(newRemoteController.text);
             Navigator.of(context).canPop() ? Navigator.pop(context) : null;
           },
         ),

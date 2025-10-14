@@ -2327,6 +2327,25 @@ pub async fn get_branch_names(
     branch_set.into_iter().collect()
 }
 
+pub async fn set_remote_url(
+    path_string: &String,
+    remote_name: &String,
+    new_remote_url: &String,
+    log: impl Fn(LogType, String) -> DartFnFuture<()> + Send + Sync + 'static,
+) -> Result<(), git2::Error> {
+    let log_callback = Arc::new(log);
+
+    _log(
+        Arc::clone(&log_callback),
+        LogType::GitStatus,
+        "Getting local directory".to_string(),
+    );
+    let repo = Repository::open(Path::new(path_string)).unwrap();
+    repo.remote_set_url(&remote_name, &new_remote_url)?;
+    
+    Ok(())
+}
+
 pub async fn checkout_branch(
     path_string: &String,
     remote: &String,

@@ -7,7 +7,6 @@ import 'package:sprintf/sprintf.dart';
 import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
-import 'package:GitSync/l10n/app_localizations.dart';
 import 'package:path/path.dart' as p;
 
 Future<void> showDialog(BuildContext context, List<String> selectedPaths, Future<void> Function() callback) {
@@ -41,7 +40,7 @@ Future<void> showDialog(BuildContext context, List<String> selectedPaths, Future
             ),
             SizedBox(height: spaceMD),
             Text(
-              AppLocalizations.of(context).thisActionCannotBeUndone,
+              t.thisActionCannotBeUndone,
               style: const TextStyle(color: primaryLight, fontWeight: FontWeight.bold, fontSize: textSM),
             ),
           ],
@@ -50,7 +49,7 @@ Future<void> showDialog(BuildContext context, List<String> selectedPaths, Future
       actions: <Widget>[
         TextButton(
           child: Text(
-            AppLocalizations.of(context).cancel.toUpperCase(),
+            t.cancel.toUpperCase(),
             style: TextStyle(color: primaryLight, fontSize: textMD),
           ),
           onPressed: () {
@@ -59,7 +58,7 @@ Future<void> showDialog(BuildContext context, List<String> selectedPaths, Future
         ),
         TextButton(
           child: Text(
-            AppLocalizations.of(context).delete.toUpperCase(),
+            t.delete.toUpperCase(),
             style: TextStyle(color: tertiaryNegative, fontSize: textMD),
           ),
           onPressed: () async {
