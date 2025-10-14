@@ -5,7 +5,6 @@ import 'package:sprintf/sprintf.dart';
 import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
-import 'package:GitSync/l10n/app_localizations.dart';
 
 Future<void> showDialog(BuildContext context, String originalName, bool fileDir, Function(String text) callback) {
   final textController = TextEditingController();
@@ -55,7 +54,7 @@ Future<void> showDialog(BuildContext context, String originalName, bool fileDir,
       actions: <Widget>[
         TextButton(
           child: Text(
-            AppLocalizations.of(context).cancel.toUpperCase(),
+            t.cancel.toUpperCase(),
             style: TextStyle(color: primaryLight, fontSize: textMD),
           ),
           onPressed: () {
@@ -64,7 +63,7 @@ Future<void> showDialog(BuildContext context, String originalName, bool fileDir,
         ),
         TextButton(
           child: Text(
-            AppLocalizations.of(context).rename.toUpperCase(),
+            t.rename.toUpperCase(),
             style: TextStyle(color: primaryPositive, fontSize: textMD),
           ),
           onPressed: () async {
