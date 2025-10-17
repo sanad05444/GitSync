@@ -34,7 +34,6 @@ class GitManager {
     T? result;
     await repoManager.setStringList(StorageKey.repoman_locks, [...locks, index.toString()]);
     gitSyncService.refreshUi();
-    FlutterBackgroundService().invoke(GitsyncService.REFRESH);
 
     try {
       result = await fn();
@@ -43,7 +42,6 @@ class GitManager {
     } finally {
       await repoManager.setStringList(StorageKey.repoman_locks, locks.where((lock) => lock != index.toString()).toList());
       gitSyncService.refreshUi();
-      FlutterBackgroundService().invoke(GitsyncService.REFRESH);
     }
 
     return result;
