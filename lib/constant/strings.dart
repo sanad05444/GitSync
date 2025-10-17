@@ -91,6 +91,7 @@ const mergeConflictDebounceReference = "merge_conflict_scroll";
 const selectApplicationSearchReference = "select_application_search";
 const scheduledSyncSetDebounceReference = "scheduled_sync_set";
 const dismissErrorDebounceReference = "dismiss_error";
+const refreshDebounceReference = "refresh";
 
 const scheduledSyncKey = "scheduled_sync_";
 const networkScheduledSyncKey = "network_scheduled_sync_";

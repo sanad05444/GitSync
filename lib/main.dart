@@ -417,7 +417,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     });
 
     FlutterBackgroundService().on(GitsyncService.REFRESH).listen((event) async {
-      Future.delayed(Duration(milliseconds: 500), () => widget.setState(() {}));
+      debounce(refreshDebounceReference, 500, () => widget.setState(() {}));
     });
 
     FlutterBackgroundService().on(GitsyncService.MERGE_COMPLETE).listen((event) async {
