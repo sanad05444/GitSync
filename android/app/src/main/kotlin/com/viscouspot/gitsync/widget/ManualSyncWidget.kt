@@ -51,7 +51,7 @@ class ManualSyncAction : ActionCallback {
         glanceId: GlanceId,
         parameters: ActionParameters
     ) {
-        val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(context, Uri.parse("ManualSyncWidget://click?homeWidget"))
+        val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(context, Uri.parse("manualsyncwidget://click?homeWidget"))
         backgroundIntent.send()
     }
 }
