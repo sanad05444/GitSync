@@ -27,7 +27,6 @@ enum StorageKey<T> {
   repoman_defaultRemote<String>(name: "defaultRemote", defaultValue: "origin"),
 
   // Settings Manager
-  setman_lfsFilePaths<List<String>>(name: "lfsFilePaths", defaultValue: []),
   setman_authorName<String?>(name: "authorName", defaultValue: "", hasDefault: true),
   setman_authorEmail<String?>(name: "authorEmail", defaultValue: "", hasDefault: true),
   setman_syncMessage<String?>(name: "syncMessage", defaultValue: defaultSyncMessage, hasDefault: true),
@@ -50,7 +49,19 @@ enum StorageKey<T> {
   setman_lastSyncMethod<String>(name: "lastSyncMethod", defaultValue: ""),
   setman_gitCommitSigningKey<String?>(name: "gitCommitSigningKey", defaultValue: null),
   setman_gitCommitSigningPassphrase<String?>(name: "gitCommitSigningPassphrase", defaultValue: null),
-  setman_clientModeEnabled<bool?>(name: "clientModeEnabled", defaultValue: false, hasDefault: true);
+  setman_clientModeEnabled<bool?>(name: "clientModeEnabled", defaultValue: false, hasDefault: true),
+
+  // Git Manager
+  setman_lfsFilePaths<List<String>>(name: "lfsFilePaths", defaultValue: []),
+  setman_recommendedAction<int?>(name: "recommendedAction", defaultValue: null),
+  setman_recentCommits<List<String>>(name: "recentCommits", defaultValue: []),
+  setman_conflicting<List<String>>(name: "conflicting", defaultValue: []),
+  setman_uncommittedFilePaths<List<String>>(name: "uncommittedFilePaths", defaultValue: []),
+  setman_stagedFilePaths<List<String>>(name: "stagedFilePaths", defaultValue: []),
+  setman_branchName<String?>(name: "branchName", defaultValue: null),
+  setman_branchNames<List<String>>(name: "branchNames", defaultValue: []),
+  setman_disableSsl<bool>(name: "disableSsl", defaultValue: false),
+  setman_submodulePaths<List<String>>(name: "submodulePaths", defaultValue: []);
 
   const StorageKey({required this.name, required this.defaultValue, this.hasDefault = false});
   final T defaultValue;
@@ -79,6 +90,7 @@ class Storage<T extends StorageKey> {
   Future<String> getString(StorageKey<String> key, [bool defaulting = false]) async => _get<String>(key, defaulting);
   Future<String?> getStringNullable(StorageKey<String?> key, [bool defaulting = false]) async => _get<String?>(key, defaulting);
   Future<int> getInt(StorageKey<int> key, [bool defaulting = false]) async => _get<int>(key, defaulting);
+  Future<int?> getIntNullable(StorageKey<int?> key, [bool defaulting = false]) async => _get<int?>(key, defaulting);
   Future<List<String>> getStringList(StorageKey<List<String>> key, [bool defaulting = false]) async => _get<List<String>>(key, defaulting);
 
   Future<void> setBool(StorageKey<bool> key, bool value) async => _set<bool>(key, value);
@@ -86,6 +98,7 @@ class Storage<T extends StorageKey> {
   Future<void> setString(StorageKey<String> key, String value) async => _set<String>(key, value);
   Future<void> setStringNullable(StorageKey<String?> key, String? value) async => _set<String?>(key, value);
   Future<void> setInt(StorageKey<int> key, int value) async => _set<int>(key, value);
+  Future<void> setIntNullable(StorageKey<int?> key, int? value) async => _set<int?>(key, value);
   Future<void> setStringList(StorageKey<List<String>> key, List<String> value) async => _set<List<String>>(key, value);
 
   Future<N> _get<N>(StorageKey<N> key, [bool defaulting = false]) async {

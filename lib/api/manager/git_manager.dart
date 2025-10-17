@@ -304,10 +304,9 @@ class GitManager {
     });
   }
 
-  static int? _lastRecommendedAction;
   static Future<int?> getRecommendedAction() async {
     if (await isLocked()) {
-      return _lastRecommendedAction;
+      return await uiSettingsManager.getIntNullable(StorageKey.setman_recommendedAction);
     }
 
     final dirPath = (await uiSettingsManager.getGitDirPath());
@@ -321,13 +320,15 @@ class GitManager {
       Logger.gmLog(type: LogType.Global, ".git folder found");
 
       try {
-        return await GitManagerRs.getRecommendedAction(
+        final result = await GitManagerRs.getRecommendedAction(
           pathString: dirPath,
           remoteName: await uiSettingsManager.getRemote(),
           provider: (await uiSettingsManager.getGitProvider()).name,
           credentials: await _getCredentials(uiSettingsManager),
           log: _logWrapper,
         );
+        await uiSettingsManager.setIntNullable(StorageKey.setman_recommendedAction, result);
+        return result;
       } catch (e, stackTrace) {
         if (!await hasNetworkConnection()) return null;
         Logger.logError(LogType.Global, e, stackTrace, causeError: false);
@@ -629,10 +630,9 @@ class GitManager {
     return result;
   }
 
-  static List<String> _lastConflicting = [];
   static Future<List<String>> getConflicting([int? repomanRepoindex]) async {
     if (await isLocked()) {
-      return _lastConflicting;
+      return await uiSettingsManager.getStringList(StorageKey.setman_conflicting);
     }
 
     final settingsManager = repomanRepoindex == null ? uiSettingsManager : await SettingsManager().reinit(repoIndex: repomanRepoindex);
@@ -655,14 +655,16 @@ class GitManager {
         }) ??
         <String>[];
 
-    _lastConflicting = result;
+    await uiSettingsManager.setStringList(StorageKey.setman_conflicting, result);
     return result;
   }
 
-  static List<(String, int)> _lastUncommittedFilePaths = [];
   static Future<List<(String, int)>> getUncommittedFilePaths([int? repomanRepoindex]) async {
     if (await isLocked()) {
-      return _lastUncommittedFilePaths;
+      return (await uiSettingsManager.getStringList(StorageKey.setman_uncommittedFilePaths)).map((item) {
+        final parts = item.split(conflictSeparator);
+        return (parts.first, int.tryParse(parts.last) ?? 1);
+      }).toList();
     }
 
     if (demo) {
@@ -689,14 +691,19 @@ class GitManager {
         }) ??
         <(String, int)>[];
 
-    _lastUncommittedFilePaths = result;
+    await uiSettingsManager.setStringList(
+      StorageKey.setman_uncommittedFilePaths,
+      result.map((item) => "${item.$1}$conflictSeparator${item.$2}").toList(),
+    );
     return result;
   }
 
-  static List<(String, int)> _lastStagedFilePaths = [];
   static Future<List<(String, int)>> getStagedFilePaths([int? repomanRepoindex]) async {
     if (await isLocked()) {
-      return _lastStagedFilePaths;
+      return (await uiSettingsManager.getStringList(StorageKey.setman_stagedFilePaths)).map((item) {
+        final parts = item.split(conflictSeparator);
+        return (parts.first, int.tryParse(parts.last) ?? 1);
+      }).toList();
     }
 
     if (demo) {
@@ -719,7 +726,7 @@ class GitManager {
         }) ??
         <(String, int)>[];
 
-    _lastStagedFilePaths = result;
+    await uiSettingsManager.setStringList(StorageKey.setman_stagedFilePaths, result.map((item) => "${item.$1}$conflictSeparator${item.$2}").toList());
     return result;
   }
 
@@ -744,10 +751,9 @@ class GitManager {
     });
   }
 
-  static String? _lastBranchName;
   static Future<String?> getBranchName([int? repomanRepoindex]) async {
     if (await isLocked()) {
-      return _lastBranchName;
+      return await uiSettingsManager.getStringNullable(StorageKey.setman_branchName);
     }
 
     final settingsManager = repomanRepoindex == null ? uiSettingsManager : await SettingsManager().reinit(repoIndex: repomanRepoindex);
@@ -764,14 +770,13 @@ class GitManager {
       }
     });
 
-    _lastBranchName = result;
+    await uiSettingsManager.setStringNullable(StorageKey.setman_branchName, result);
     return result;
   }
 
-  static List<String> _lastBranchNames = [];
   static Future<List<String>> getBranchNames([int? repomanRepoindex]) async {
     if (await isLocked()) {
-      return _lastBranchNames;
+      return await uiSettingsManager.getStringList(StorageKey.setman_branchNames);
     }
 
     final settingsManager = repomanRepoindex == null ? uiSettingsManager : await SettingsManager().reinit(repoIndex: repomanRepoindex);
@@ -790,7 +795,7 @@ class GitManager {
         }) ??
         <String>[];
 
-    _lastBranchNames = result;
+    await uiSettingsManager.setStringList(StorageKey.setman_branchNames, result);
     return result;
   }
 
@@ -942,10 +947,9 @@ class GitManager {
     });
   }
 
-  static bool _lastDisableSsl = false;
   static Future<bool> getDisableSsl() async {
     if (await isLocked()) {
-      return _lastDisableSsl;
+      return await uiSettingsManager.getBool(StorageKey.setman_disableSsl);
     }
 
     final gitDirPath = (await uiSettingsManager.getGitDirPath());
@@ -963,7 +967,7 @@ class GitManager {
         }) ??
         false;
 
-    _lastDisableSsl = result;
+    await uiSettingsManager.setBool(StorageKey.setman_disableSsl, result);
     return result;
   }
 
@@ -1065,10 +1069,14 @@ class GitManager {
     if (sshPattern.hasMatch(remoteUrl)) {
       final match = sshPattern.firstMatch(remoteUrl)!;
       final host = match.group(1)!;
-      final username = match.group(2)!;
+      final usernameOrPort = match.group(2)!;
       final repo = match.group(3)!;
 
-      return 'https://$host/$username/$repo';
+      if (double.tryParse(usernameOrPort) != null) {
+        return 'https://$host:$usernameOrPort/$repo';
+      }
+
+      return 'https://$host/$usernameOrPort/$repo';
     }
 
     final httpsPattern = RegExp(r'^https?://([^/]+)/(.+?)(?:\.git)?$');
@@ -1205,10 +1213,9 @@ class GitManager {
     });
   }
 
-  static List<String> _lastSubmodulePaths = [];
   static Future<List<String>> getSubmodulePaths(String repoPath) async {
     if (await isLocked()) {
-      return _lastSubmodulePaths;
+      return await uiSettingsManager.getStringList(StorageKey.setman_submodulePaths);
     }
 
     if (!await hasNetworkConnection()) return [];
@@ -1218,8 +1225,9 @@ class GitManager {
           Logger.gmLog(type: LogType.SelectDirectory, ".git folder found");
 
           try {
-            _lastSubmodulePaths = await GitManagerRs.getSubmodulePaths(pathString: dirPath);
-            return _lastSubmodulePaths;
+            final submodulePaths = await GitManagerRs.getSubmodulePaths(pathString: dirPath);
+            await uiSettingsManager.setStringList(StorageKey.setman_submodulePaths, submodulePaths);
+            return submodulePaths;
           } catch (e, stackTrace) {
             if (!await hasNetworkConnection()) return null;
             Logger.logError(LogType.SelectDirectory, e, stackTrace);
@@ -1229,7 +1237,6 @@ class GitManager {
         [];
   }
 
-  // static List<String> _lastLfsFilePaths = [];
   static Future<List<String>> getLfsFilePaths([int? repomanRepoindex]) async {
     if (await isLocked()) {
       return await uiSettingsManager.getStringList(StorageKey.setman_lfsFilePaths);
@@ -1253,6 +1260,8 @@ class GitManager {
             List<String> largeFilePaths = [];
 
             await for (var entity in directory.list(recursive: true, followLinks: false)) {
+              if (entity.path.contains('/.git/')) continue;
+
               if (entity is File) {
                 final FileStat fileStat = await entity.stat();
 
