@@ -2072,6 +2072,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                                   child: TextButton.icon(
                                                     onPressed: () async {
                                                       gitLfsExpanded = !gitLfsExpanded;
+                                                      setState(() {});
                                                       await GitManager.getLfsFilePaths();
                                                       setState(() {});
                                                     },
