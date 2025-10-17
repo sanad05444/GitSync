@@ -127,7 +127,6 @@ class Logger {
       final provider = await tempSettingsManager.getGitProvider();
       if (provider != GitProvider.GITHUB) return;
       reportIssueToken = (await tempSettingsManager.getGitHttpAuthCredentials()).$2;
-      if (reportIssueToken == "") return;
     }
 
     if (reportIssueToken == "") {
