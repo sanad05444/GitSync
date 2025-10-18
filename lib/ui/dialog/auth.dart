@@ -102,7 +102,7 @@ Future<void> showDialog(BuildContext parentContext, Function() callback) async {
                 child: TextButton(
                   onPressed: keyPair == null
                       ? () async {
-                          keyPair = await GitManager.generateKeyPair("");
+                          keyPair = await GitManager.generateKeyPair(passphraseController.text);
                           setState(() {});
                         }
                       : (pubKeyCopied
