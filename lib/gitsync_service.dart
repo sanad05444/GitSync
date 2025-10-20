@@ -356,7 +356,7 @@ class GitsyncService {
       if (packageNames.contains(lastOpenPackageNameExcludingInputs) &&
           !packageNames.contains(packageName) &&
           !enabledInputMethods.contains(packageName)) {
-        Logger.gmLog(type: LogType.AccessibilityService, "Application Closed");
+        Logger.gmLog(type: LogType.AccessibilityService, "Application Closed $packageName");
         if (syncClosed) {
           debouncedSync(index);
         }
@@ -365,7 +365,7 @@ class GitsyncService {
       if (!packageNames.contains(lastOpenPackageNameExcludingInputs) &&
           packageNames.contains(packageName) &&
           !enabledInputMethods.contains(packageName)) {
-        Logger.gmLog(type: LogType.AccessibilityService, "Application Opened");
+        Logger.gmLog(type: LogType.AccessibilityService, "Application Opened $packageName");
         if (syncOpened) {
           debouncedSync(index);
         }
