@@ -14,29 +14,16 @@ class GitlabManager extends GitProviderManager {
 
   bool get oAuthSupport => true;
 
-  @override
-  OAuth2Client getOauthClient() => OAuth2Client(
+  get clientId => gitlabClientId;
+  get clientSecret => gitlabClientSecret;
+  get scopes => ["read_user", "read_api", "read_repository", "write_repository"];
+
+  OAuth2Client get oauthClient => OAuth2Client(
     authorizeUrl: 'https://gitlab.com/oauth/authorize',
     tokenUrl: 'https://gitlab.com/oauth/token',
     redirectUri: 'gitsync://auth',
     customUriScheme: 'gitsync',
   );
-
-  @override
-  Future<(String, String, String)?> launchOAuthFlow() async {
-    OAuth2Client gitlabClient = getOauthClient();
-    final response = await gitlabClient.getTokenWithAuthCodeFlow(
-      clientId: gitlabClientId,
-      clientSecret: gitlabClientSecret,
-      scopes: ["read_user", "read_api", "read_repository", "write_repository"],
-    );
-    if (response.accessToken == null) return null;
-
-    final usernameAndEmail = await getUsernameAndEmail(response.accessToken!);
-    if (usernameAndEmail == null) return null;
-
-    return (usernameAndEmail.$1, usernameAndEmail.$2, response.accessToken!);
-  }
 
   @override
   Future<(String, String)?> getUsernameAndEmail(String accessToken) async {
@@ -47,29 +34,6 @@ class GitlabManager extends GitProviderManager {
       return (jsonData["username"] as String, jsonData["email"] as String);
     }
 
-    return null;
-  }
-
-  @override
-  Future<String?> getToken(String token, Future<void> Function(String p1, String p2) setAccessRefreshToken) async {
-    final tokenParts = token.split(conflictSeparator);
-    final accessToken = tokenParts.first;
-    final refreshToken = tokenParts.last;
-
-    if (!token.contains(conflictSeparator) || refreshToken.isEmpty) {
-      return accessToken;
-    }
-
-    if (accessToken.isEmpty || refreshToken.isEmpty) return null;
-
-    final client = getOauthClient();
-    final refreshed = await client.refreshToken(refreshToken, clientId: gitlabClientId, clientSecret: gitlabClientSecret);
-
-    if (refreshed.accessToken != null) {
-      if (refreshed.accessToken == null || refreshed.refreshToken == null) return null;
-      await setAccessRefreshToken(refreshed.accessToken!, refreshed.refreshToken!);
-      return refreshed.accessToken;
-    }
     return null;
   }
 

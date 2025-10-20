@@ -168,6 +168,9 @@ Future<String?> pickDirectory() async {
   return null;
 }
 
+String buildAccessRefreshToken(String accessToken, DateTime? expirationDate, String refreshToken) =>
+    "$accessToken$conflictSeparator${expirationDate == null ? "" : "${expirationDate.millisecondsSinceEpoch}$conflictSeparator"}$refreshToken";
+
 Future<void> setGitDirPathGetSubmodules(BuildContext context, String dir) async {
   await uiSettingsManager.setGitDirPath(dir);
   final submodulePaths = await GitManager.getSubmodulePaths(dir);

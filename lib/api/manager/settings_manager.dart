@@ -112,8 +112,8 @@ class SettingsManager extends Storage {
     final username = await getString(StorageKey.setman_gitAuthUsername);
     final token = await getString(StorageKey.setman_gitAuthToken);
 
-    Future<void> setAccessRefreshToken(String accessToken, String refreshToken) async {
-      await setString(StorageKey.setman_gitAuthToken, "$accessToken$conflictSeparator$refreshToken");
+    Future<void> setAccessRefreshToken(String accessToken, DateTime? expirationDate, String refreshToken) async {
+      await setString(StorageKey.setman_gitAuthToken, buildAccessRefreshToken(accessToken, expirationDate, refreshToken));
     }
 
     String? oauthToken;

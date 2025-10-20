@@ -15,24 +15,11 @@ class GithubManager extends GitProviderManager {
 
   bool get oAuthSupport => true;
 
-  @override
-  OAuth2Client getOauthClient() => GitHubOAuth2Client(redirectUri: 'gitsync://auth', customUriScheme: 'gitsync');
+  get clientId => gitHubClientId;
+  get clientSecret => gitHubClientSecret;
+  get scopes => ["user", "user:email", "repo", "workflow"];
 
-  @override
-  Future<(String, String, String)?> launchOAuthFlow([List<String>? scopeOverride]) async {
-    OAuth2Client ghClient = getOauthClient();
-    final response = await ghClient.getTokenWithAuthCodeFlow(
-      clientId: gitHubClientId,
-      clientSecret: gitHubClientSecret,
-      scopes: scopeOverride ?? ["user", "user:email", "repo", "workflow"],
-    );
-    if (response.accessToken == null) return null;
-
-    final usernameAndEmail = await getUsernameAndEmail(response.accessToken!);
-    if (usernameAndEmail == null) return null;
-
-    return (usernameAndEmail.$1, usernameAndEmail.$2, response.accessToken!);
-  }
+  OAuth2Client get oauthClient => GitHubOAuth2Client(redirectUri: 'gitsync://auth', customUriScheme: 'gitsync');
 
   @override
   Future<(String, String)?> getUsernameAndEmail(String accessToken) async {
@@ -59,29 +46,6 @@ class GithubManager extends GitProviderManager {
       return ((jsonData["login"] as String?) ?? "", email ?? "");
     }
 
-    return null;
-  }
-
-  @override
-  Future<String?> getToken(String token, Future<void> Function(String p1, String p2) setAccessRefreshToken) async {
-    final tokenParts = token.split(conflictSeparator);
-    final accessToken = tokenParts.first;
-    final refreshToken = tokenParts.last;
-
-    if (!token.contains(conflictSeparator) || refreshToken.isEmpty) {
-      return accessToken;
-    }
-
-    if (accessToken.isEmpty || refreshToken.isEmpty) return null;
-
-    final client = getOauthClient();
-    final refreshed = await client.refreshToken(refreshToken, clientId: gitHubClientId, clientSecret: gitHubClientSecret);
-
-    if (refreshed.accessToken != null) {
-      if (refreshed.accessToken == null || refreshed.refreshToken == null) return null;
-      await setAccessRefreshToken(refreshed.accessToken!, refreshed.refreshToken!);
-      return refreshed.accessToken;
-    }
     return null;
   }
 

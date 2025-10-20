@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:GitSync/api/helper.dart';
+import 'package:GitSync/constant/strings.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:GitSync/api/manager/auth/gitlab_manager.dart';
 import 'package:oauth2_client/github_oauth2_client.dart';
@@ -37,14 +39,50 @@ class GitProviderManager {
     };
   }
 
-  OAuth2Client getOauthClient() => GitHubOAuth2Client(redirectUri: 'gitsync://auth', customUriScheme: 'gitsync');
+  String get clientId => "";
+  String get clientSecret => "";
+  List<String>? get scopes => null;
 
-  Future<String?> getToken(String token, Future<void> Function(String, String) setAccessRefreshToken) async {
+  OAuth2Client get oauthClient => GitHubOAuth2Client(redirectUri: 'gitsync://auth', customUriScheme: 'gitsync');
+
+  Future<String?> getToken(String token, Future<void> Function(String p1, DateTime? p2, String p3) setAccessRefreshToken) async {
+    final tokenParts = token.split(conflictSeparator);
+    final accessToken = tokenParts.first;
+    final expirationDate = tokenParts.length >= 2 ? DateTime.tryParse(tokenParts[1]) : null;
+    final refreshToken = tokenParts.last;
+
+    if (!token.contains(conflictSeparator) || refreshToken.isEmpty || expirationDate == null || expirationDate.isBefore(DateTime.now())) {
+      return accessToken;
+    }
+
+    if (accessToken.isEmpty) return null;
+
+    final client = oauthClient;
+    final refreshed = await client.refreshToken(refreshToken, clientId: clientId, clientSecret: clientSecret);
+
+    if (refreshed.accessToken != null) {
+      if (refreshed.accessToken == null || refreshed.refreshToken == null) return null;
+      await setAccessRefreshToken(refreshed.accessToken!, refreshed.expirationDate, refreshed.refreshToken!);
+      return refreshed.accessToken;
+    }
     return null;
   }
 
-  Future<(String, String, String)?> launchOAuthFlow() async {
-    return null;
+  Future<(String, String, String)?> launchOAuthFlow([List<String>? scopeOverride]) async {
+    OAuth2Client gitlabClient = oauthClient;
+    final response = await gitlabClient.getTokenWithAuthCodeFlow(clientId: clientId, clientSecret: clientSecret, scopes: scopeOverride ?? scopes);
+    if (response.accessToken == null) return null;
+
+    final usernameAndEmail = await getUsernameAndEmail(response.accessToken!);
+    if (usernameAndEmail == null) return null;
+
+    print(response.expirationDate);
+
+    return (
+      usernameAndEmail.$1,
+      usernameAndEmail.$2,
+      buildAccessRefreshToken(response.accessToken ?? "", response.expirationDate, response.refreshToken ?? ""),
+    );
   }
 
   Future<(String, String)?> getUsernameAndEmail(String accessToken) async {
