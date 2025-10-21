@@ -54,15 +54,7 @@ class GitManager {
 
     if (!waitForUnlock) return await internal();
 
-    final end = DateTime.now().add(const Duration(seconds: 5));
-    while (DateTime.now().isBefore(end)) {
-      try {
-        final locked = await internal();
-        if (!locked) return false;
-      } catch (_) {}
-      await Future.delayed(const Duration(milliseconds: 100));
-    }
-    return true;
+    return await waitFor(internal, maxWaitSeconds: 5);
   }
 
   static FutureOr<void> _logWrapper(GitManagerRs.LogType type, String message) {

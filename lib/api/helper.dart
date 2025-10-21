@@ -168,6 +168,18 @@ Future<String?> pickDirectory() async {
   return null;
 }
 
+Future<bool> waitFor(Future<bool> Function() fn, {int maxWaitSeconds = 30}) async {
+  final end = DateTime.now().add(Duration(seconds: maxWaitSeconds));
+  while (DateTime.now().isBefore(end)) {
+    try {
+      final locked = await fn();
+      if (!locked) return false;
+    } catch (_) {}
+    await Future.delayed(const Duration(milliseconds: 100));
+  }
+  return true;
+}
+
 String buildAccessRefreshToken(String accessToken, DateTime? expirationDate, String refreshToken) =>
     "$accessToken$conflictSeparator${expirationDate == null ? "" : "${expirationDate.millisecondsSinceEpoch}$conflictSeparator"}$refreshToken";
 
