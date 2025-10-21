@@ -304,7 +304,7 @@ class GitsyncService {
   }
 
   void refreshUi() {
-    serviceInstance?.invoke(REFRESH);
+    debounce(refreshDebounceReference, 500, () => serviceInstance?.invoke(REFRESH));
   }
 
   void merge(int repomanRepoindex, String commitMessage) async {
