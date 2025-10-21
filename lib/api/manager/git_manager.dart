@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:GitSync/gitsync_service.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:GitSync/api/helper.dart';
 import 'package:GitSync/type/git_provider.dart';
