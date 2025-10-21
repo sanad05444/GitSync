@@ -303,8 +303,12 @@ class GitsyncService {
     }
   }
 
-  void refreshUi() {
-    debounce(refreshDebounceReference, 500, () => serviceInstance?.invoke(REFRESH));
+  Future<void> refreshUi() async {
+    debounce(
+      refreshDebounceReference,
+      500,
+      () => serviceInstance == null ? FlutterBackgroundService().invoke(GitsyncService.REFRESH) : serviceInstance?.invoke(REFRESH),
+    );
   }
 
   void merge(int repomanRepoindex, String commitMessage) async {

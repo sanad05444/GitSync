@@ -11,7 +11,6 @@ import 'package:GitSync/api/manager/storage.dart';
 import 'package:GitSync/ui/dialog/create_branch.dart' as CreateBranchDialog;
 import 'package:GitSync/ui/dialog/info_dialog.dart' as InfoDialog;
 import 'package:GitSync/ui/dialog/merge_conflict.dart' as MergeConflictDialog;
-import 'package:GitSync/ui/page/code_editor.dart';
 import 'package:GitSync/ui/page/file_explorer.dart';
 import 'package:GitSync/ui/page/global_settings_main.dart';
 import 'package:GitSync/ui/page/sync_settings_main.dart';
@@ -182,6 +181,11 @@ void onServiceStart(ServiceInstance service) async {
   service.on(GitsyncService.FORCE_SYNC).listen((event) async {
     print(GitsyncService.FORCE_SYNC);
     gitSyncService.debouncedSync(int.tryParse(event?[REPO_INDEX] ?? "null") ?? await repoManager.getInt(StorageKey.repoman_repoIndex), true);
+  });
+
+  service.on(GitsyncService.REFRESH).listen((event) async {
+    print(GitsyncService.REFRESH);
+    gitSyncService.refreshUi();
   });
 
   service.on(GitsyncService.INTENT_SYNC).listen((event) async {
