@@ -125,11 +125,12 @@ class Logger {
       SettingsManager tempSettingsManager = SettingsManager();
       await tempSettingsManager.reinit(repoIndex: 0);
       final provider = await tempSettingsManager.getGitProvider();
-      if (provider != GitProvider.GITHUB) return;
-      reportIssueToken = (await tempSettingsManager.getGitHttpAuthCredentials()).$2;
+      if (provider == GitProvider.GITHUB) {
+        reportIssueToken = (await tempSettingsManager.getGitHttpAuthCredentials()).$2;
+      }
     }
 
-    if (reportIssueToken == "") {
+    if (reportIssueToken == "" || reportIssueToken == null) {
       await GithubIssueOauthDialog.showDialog(context, () async {
         final oauthManager = GithubManager();
         final result = (await oauthManager.launchOAuthFlow(["public_repo"]));
