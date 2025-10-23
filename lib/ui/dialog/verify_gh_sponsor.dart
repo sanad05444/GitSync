@@ -6,7 +6,10 @@ import 'package:GitSync/constant/colors.dart';
 import 'package:GitSync/constant/dimens.dart';
 import 'package:GitSync/ui/dialog/base_alert_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'enter_gh_sponsor_pat.dart' as EnterGhSponsorPatDialog;
 
 Future<void> showDialog(BuildContext context) async {
   return mat.showDialog(
@@ -56,6 +59,33 @@ Future<void> showDialog(BuildContext context) async {
             icon: FaIcon(FontAwesomeIcons.squareArrowUpRight, color: secondaryDark, size: textLG),
             label: Text(
               t.oauth.toUpperCase(),
+              style: TextStyle(color: secondaryDark, fontSize: textSM, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: spaceMD),
+          child: TextButton.icon(
+            onPressed: () async {
+              EnterGhSponsorPatDialog.showDialog(context, (text) async {
+                if (text.isEmpty) return;
+                await repoManager.setStringNullable(StorageKey.repoman_ghSponsorToken, text);
+                await premiumManager.updateGitHubSponsorPremium();
+                if (premiumManager.hasPremiumNotifier.value == false) {
+                  Fluttertoast.showToast(msg: "User does not have Premium", toastLength: Toast.LENGTH_SHORT, gravity: null);
+                }
+                if (context.mounted) Navigator.of(context).canPop() ? Navigator.pop(context) : null;
+              });
+            },
+            style: ButtonStyle(
+              alignment: Alignment.center,
+              backgroundColor: WidgetStatePropertyAll(tertiaryLight),
+              padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: spaceMD, vertical: spaceSM)),
+              shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.all(cornerRadiusMD), side: BorderSide.none)),
+            ),
+            icon: FaIcon(FontAwesomeIcons.qrcode, color: secondaryDark, size: textLG),
+            label: Text(
+              "Use PAT".toUpperCase(),
               style: TextStyle(color: secondaryDark, fontSize: textSM, fontWeight: FontWeight.bold),
             ),
           ),
