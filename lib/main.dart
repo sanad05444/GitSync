@@ -1597,7 +1597,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
                                                     searchForGestureDetector(syncMethodsDropdownKey.currentContext);
 
-                                                    detector?.onTap!();
+                                                    if (detector?.onTap != null) detector?.onTap!();
                                                   },
                                                   style: ButtonStyle(
                                                     backgroundColor: WidgetStatePropertyAll(secondaryDark),
