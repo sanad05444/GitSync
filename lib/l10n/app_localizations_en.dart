@@ -756,7 +756,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backupFileTemplate => 'backup_%s.gsbak';
 
   @override
-  String get enterPassword => 'Enter Password';
+  String get enterPassword => 'Enter %s Password';
 
   @override
   String get invalidPassword => 'Invalid Password';

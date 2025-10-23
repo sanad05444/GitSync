@@ -280,7 +280,7 @@
     "restore": "Restore",
     "selectBackupLocation": "Select location to save backup",
     "backupFileTemplate": "backup_%s.gsbak",
-    "enterPassword": "Enter Password",
+    "enterPassword": "Enter %s Password",
     "invalidPassword": "Invalid Password",
     "community": "Community",
     "guides": "Guides",

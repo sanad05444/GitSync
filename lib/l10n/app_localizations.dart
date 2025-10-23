@@ -1571,7 +1571,7 @@ abstract class AppLocalizations {
   /// No description provided for @enterPassword.
   ///
   /// In en, this message translates to:
-  /// **'Enter Password'**
+  /// **'Enter %s Password'**
   String get enterPassword;
 
   /// No description provided for @invalidPassword.

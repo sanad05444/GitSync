@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' as mat;
 import 'package:flutter/material.dart';
+import 'package:sprintf/sprintf.dart';
 import '../../../constant/colors.dart';
 import '../../../constant/dimens.dart';
 import '../../../ui/dialog/base_alert_dialog.dart';
@@ -14,7 +15,7 @@ Future<void> showDialog(BuildContext context, bool backupRestore, Function(Strin
       title: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Text(
-          t.enterPassword,
+          sprintf(t.enterPassword, [(backupRestore ? t.backup : t.restore)]),
           style: TextStyle(color: primaryLight, fontSize: textXL, fontWeight: FontWeight.bold),
         ),
       ),
