@@ -1443,7 +1443,14 @@ pub async fn upload_changes(
 
     match index.add_all(paths.iter(), git2::IndexAddOption::DEFAULT, None) {
         Ok(_) => {}
-        Err(_) => { index.update_all(paths.iter(), None)?; }
+        Err(_) => { 
+            let non_submodule_paths: Vec<&String> = paths.iter()
+                .filter(|path| {
+                    repo.find_submodule(path).is_err()
+                })
+                .collect();
+            index.update_all(non_submodule_paths.iter(), None)?; 
+        }
     }
 
     for path in &paths {
