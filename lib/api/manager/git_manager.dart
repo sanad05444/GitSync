@@ -589,8 +589,9 @@ class GitManager {
   }
 
   static List<GitManagerRs.Commit> _lastRecentCommits = [];
+  static DateTime _lastCalled = DateTime.now().subtract(Duration(days: 1));
   static Future<List<GitManagerRs.Commit>> getRecentCommits() async {
-    if (await isLocked()) {
+    if (DateTime.now().isBefore(_lastCalled.add(Duration(seconds: 1))) || await isLocked()) {
       return _lastRecentCommits;
     }
 
@@ -615,6 +616,7 @@ class GitManager {
         <GitManagerRs.Commit>[];
 
     _lastRecentCommits = result;
+    _lastCalled = DateTime.now();
     return result;
   }
 
